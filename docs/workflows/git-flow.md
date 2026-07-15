@@ -179,6 +179,10 @@ chore(submodule): backend v1.2.0 참조 반영
 - 서로 무관한 변경을 하나의 커밋이나 PR에 혼합
 - AI 도구나 작업자 이름을 브랜치 접두사로 사용
 
-## 11. 저장소 보호 권장 설정
+## 11. 저장소 보호 설정
 
-GitHub 플랜에서 기능을 사용할 수 있게 되면 `main`에 PR, 승인, force push 차단과 브랜치 삭제 금지를 적용한다. `develop`은 팀 운영 방식에 맞춰 직접 커밋을 허용하되 force push와 브랜치 삭제는 차단한다.
+모든 iRead 저장소에 다음 설정을 적용한다.
+
+- `main`: PR과 승인 1명을 요구하고 모든 리뷰 대화를 해결해야 하며, force push와 브랜치 삭제를 금지한다.
+- `develop`: 직접 push를 허용하고 force push와 브랜치 삭제를 금지한다.
+- GitHub Actions 사용 범위가 확정되기 전까지 필수 status check는 지정하지 않는다.

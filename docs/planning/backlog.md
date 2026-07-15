@@ -15,9 +15,9 @@
 | TASK-006 | P1 | 데이터 소유권, 주 데이터베이스, Redis 역할 결정 | TASK-005 | blocked |
 | TASK-007 | P1 | 인증·인가·개인정보 요구사항 정의 | TASK-002, TASK-004 | blocked |
 | TASK-008 | P1 | 서비스 간 API/이벤트 계약 초안 작성 | TASK-005, TASK-006 | blocked |
-| TASK-009 | P2 | 각 서비스 저장소명과 submodule 경로 결정 | TASK-005 | blocked |
+| TASK-009 | P2 | 각 서비스 저장소명과 submodule 경로 결정 | 사용자 결정 | done |
 | TASK-010 | P2 | 배포 환경, 관측성과 운영 목표 정의 | TASK-005 | blocked |
-| TASK-011 | P2 | Git 저장소 및 submodule 구성 | TASK-009 | blocked |
+| TASK-011 | P2 | Git 저장소 및 submodule 구성 | TASK-009 | done |
 
 ## 다음 확인 사항
 
