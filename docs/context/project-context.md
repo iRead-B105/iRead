@@ -12,10 +12,16 @@
 
 - 서비스명과 오케스트레이션 저장소명은 `iRead`다.
 - 현재 디렉터리는 오케스트레이션 저장소로 사용한다.
-- Backend, Frontend, AI server는 각각 별도 저장소로 만들고 Git submodule로 연결할 예정이다.
-- 현재 단계는 하네스와 기획 문서 구조만 구성한다.
+- Backend, Frontend, AI server는 각각 별도 저장소로 관리하고 Git submodule로 연결한다.
+- 서비스 저장소와 submodule 구성까지 완료했으며 다음 단계는 제품 탐색이다.
 - 기술 기준선은 [ADR-0002](../decisions/ADR-0002-technology-baseline.md)에 기록되어 있다.
 - GitHub `iRead-B105/iRead` 저장소에 `main`, `develop` 브랜치가 구성되어 있으며 기본 브랜치는 `develop`이다.
+- 네 저장소는 모두 공개 상태이며 서비스 저장소의 기본 브랜치도 `develop`이다.
+- 공개 범위와 보호 정책은 [ADR-0003](../decisions/ADR-0003-public-repositories.md)에 기록되어 있다.
+- 서비스 저장소명과 submodule 경로는 [ADR-0004](../decisions/ADR-0004-service-repository-layout.md)에 기록되어 있다.
+- Backend는 `iRead-B105/iRead-backend`를 `services/backend`에 연결한다.
+- Frontend는 `iRead-B105/iRead-frontend`를 `services/frontend`에 연결한다.
+- AI server는 `iRead-B105/iRead-ai`를 `services/ai`에 연결한다.
 - 향후 Git 운영은 [Git Flow 및 커밋 정책](../workflows/git-flow.md)을 따른다.
 - 요구사항이나 필수 정보가 모호하면 변경 작업 전에 사용자에게 질문한다.
 
@@ -24,21 +30,18 @@
 - 서비스 실행 코드 생성
 - Docker Compose 파일 생성
 - 패키지 및 의존성 설치
-- submodule 경로 또는 URL 확정
 - 데이터베이스 선정
 
 ## 미결 사항
 
-- [TBD] Backend, Frontend, AI server의 저장소명
 - [TBD] 해결할 사용자 문제와 핵심 가치
 - [TBD] 핵심 사용자 및 이해관계자
 - [TBD] MVP 범위와 성공 지표
-- [TBD] 각 서비스의 책임과 submodule 경로
+- [TBD] 각 서비스의 구체적인 책임
 - [TBD] Redis의 책임(캐시, 세션, 큐, pub/sub 등)
 - [TBD] 주 데이터베이스와 데이터 소유권
 - [TBD] 인증·인가 및 개인정보 처리 요구사항
 - [TBD] 배포 환경과 운영 제약
-- [BLOCKED] 현재 GitHub 플랜에서는 비공개 저장소의 브랜치 보호 규칙을 사용할 수 없음
 
 ## 갱신 원칙
 

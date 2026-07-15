@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_FILES = (
     ".gitignore",
     ".gitattributes",
+    ".gitmodules",
     ".github/pull_request_template.md",
     ".github/workflows/validate-harness.yml",
     "README.md",
@@ -28,6 +29,7 @@ REQUIRED_FILES = (
     "docs/workflows/ai-development.md",
     "docs/workflows/documentation-style.md",
     "docs/workflows/git-flow.md",
+    "docs/workflows/submodules.md",
 )
 
 MODEL_SPECIFIC_INSTRUCTION_FILES = (
@@ -38,10 +40,20 @@ MODEL_SPECIFIC_INSTRUCTION_FILES = (
 
 LINK_PATTERN = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 PLACEHOLDER_PATTERN = re.compile(r"\[(?:TBD|ASSUMPTION|BLOCKED)\]")
+SUBMODULE_DIRS = (
+    ROOT / "services/backend",
+    ROOT / "services/frontend",
+    ROOT / "services/ai",
+)
 
 
 def markdown_files() -> list[Path]:
-    return sorted(path for path in ROOT.rglob("*.md") if ".git" not in path.parts)
+    return sorted(
+        path
+        for path in ROOT.rglob("*.md")
+        if ".git" not in path.parts
+        and not any(directory in path.parents for directory in SUBMODULE_DIRS)
+    )
 
 
 def broken_links(files: list[Path]) -> list[str]:

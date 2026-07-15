@@ -28,12 +28,13 @@
 ## 현재 범위
 
 - 확정된 서비스명과 오케스트레이션 저장소명은 `iRead`다.
-- Backend, Frontend, AI server의 저장소명과 submodule 경로는 미확정이다.
 - 이 저장소에는 서비스 구현 코드를 만들지 않는다.
-- Backend, Frontend, AI server는 별도 저장소이며 추후 Git submodule로 연결한다.
+- Backend, Frontend, AI server는 각각 `iRead-backend`, `iRead-frontend`, `iRead-ai` 공개 저장소로 관리한다.
+- 서비스 저장소는 각각 `services/backend`, `services/frontend`, `services/ai`에 Git submodule로 연결한다.
 - 오케스트레이션 저장소는 GitHub `iRead-B105/iRead`와 연결되어 있으며 `main`, `develop` 브랜치를 사용한다.
-- 사용자가 요청하기 전에는 서비스 저장소 생성이나 submodule 추가를 하지 않는다.
-- submodule의 실제 경로와 저장소 URL은 결정 전까지 추측하지 않는다.
+- 네 저장소는 모두 공개 저장소이며 `main`, `develop` 브랜치를 사용하고 기본 브랜치는 `develop`이다.
+- `main`은 PR과 승인 1명이 필요하며, `develop`은 직접 push를 허용하되 두 브랜치 모두 force push와 삭제를 금지한다.
+- 사용자가 요청하기 전에는 새로운 서비스 저장소나 submodule을 추가하지 않는다.
 
 ## 기술 기준선
 
@@ -54,6 +55,7 @@
 - 우선순위와 진행 상태: `docs/planning/`
 - 장기 작업의 상세 진행 기록: `plans/`
 - Git 브랜치, 커밋과 병합 정책: `docs/workflows/git-flow.md`
+- submodule clone, 갱신과 참조 관리: `docs/workflows/submodules.md`
 - 문서 어투와 표현 원칙: `docs/workflows/documentation-style.md`
 
 문서가 충돌하면 추측으로 정리하지 말고 사용자에게 확인한다. 확인 후 관련 문서와 ADR을 같은 변경에서 함께 갱신한다.

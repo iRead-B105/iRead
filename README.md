@@ -4,6 +4,14 @@ iRead의 제품 기획, 시스템 아키텍처, 서비스 간 계약과 주요 �
 
 Backend, Frontend, AI server는 별도 저장소로 관리하고 Git submodule로 연결합니다.
 
+## 서비스 저장소
+
+| 영역 | 저장소 | 경로 |
+| --- | --- | --- |
+| Backend | [iRead-backend](https://github.com/iRead-B105/iRead-backend) | `services/backend` |
+| Frontend | [iRead-frontend](https://github.com/iRead-B105/iRead-frontend) | `services/frontend` |
+| AI server | [iRead-ai](https://github.com/iRead-B105/iRead-ai) | `services/ai` |
+
 ## 주요 문서
 
 | 목적 | 문서 |
@@ -30,6 +38,7 @@ Backend, Frontend, AI server는 별도 저장소로 관리하고 Git submodule�
 - `PLANS.md`: 긴 작업의 실행 계획 작성 규약
 - `docs/workflows/ai-development.md`: 탐색부터 컨텍스트 갱신까지의 작업 루프
 - `docs/workflows/git-flow.md`: 브랜치, 커밋과 병합 정책
+- `docs/workflows/submodules.md`: submodule clone, 갱신과 참조 관리
 - `docs/workflows/documentation-style.md`: 문서 어투와 표현 원칙
 - `tools/validate_harness.py`: 필수 문서와 내부 Markdown 링크 검증
 - `.github/pull_request_template.md`: 내부 팀용 PR 작성 기준
