@@ -1,0 +1,27 @@
+# ADR-0001: Separate service repositories
+
+- Status: accepted
+- Date: 2026-07-15
+
+## Context
+
+공통 기획과 아키텍처 컨텍스트는 한곳에서 관리하되 Backend, Frontend, AI server는 독립적으로 개발하고 연결할 필요가 있다.
+
+## Decision
+
+- 현재 디렉터리를 오케스트레이션 저장소로 사용한다.
+- Backend, Frontend, AI server는 각각 별도 저장소로 만든다.
+- 세 서비스 저장소는 추후 오케스트레이션 저장소의 Git submodule로 연결한다.
+- 저장소명, URL과 submodule 경로는 별도 결정으로 남긴다.
+
+## Consequences
+
+- 서비스별 이력과 배포 주기를 독립적으로 관리할 수 있다.
+- 저장소 간 계약과 submodule commit 갱신 절차가 필요하다.
+- 신규 참여자는 여러 저장소를 함께 초기화해야 한다.
+- 통합 검증의 소유권은 오케스트레이션 저장소에 둔다.
+
+## Alternatives considered
+
+- 단일 monorepo: 현재 선택한 독립 저장소 운영 방향과 맞지 않아 채택하지 않았다.
+
