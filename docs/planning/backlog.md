@@ -1,11 +1,11 @@
-# Product discovery backlog
+# 제품 탐색 백로그
 
-- Status: active
-- Last reviewed: 2026-07-15
+- 상태: active
+- 최종 검토일: 2026-07-15
 
 작업 순서는 선행 결정을 반영한다. 상태는 `todo`, `in-progress`, `blocked`, `done`을 사용한다.
 
-| ID | Priority | Work item | Depends on | Status |
+| ID | 우선순위 | 작업 | 선행 조건 | 상태 |
 | --- | --- | --- | --- | --- |
 | TASK-001 | P0 | 해결할 사용자 문제와 근거 정의 | 사용자 입력 | todo |
 | TASK-002 | P0 | 핵심 사용자와 이해관계자 정의 | TASK-001 | blocked |
@@ -19,7 +19,7 @@
 | TASK-010 | P2 | 배포 환경, 관측성과 운영 목표 정의 | TASK-005 | blocked |
 | TASK-011 | P2 | Git 저장소 및 submodule 구성 | TASK-009 | blocked |
 
-## Next clarification
+## 다음 확인 사항
 
 다음 작업을 시작하려면 TASK-001에 필요한 아래 정보를 사용자에게 질문한다.
 

@@ -1,6 +1,6 @@
-# Documentation map
+# 문서 안내
 
-이 문서는 필요한 컨텍스트만 빠르게 찾기 위한 라우터다. 상태 표기는 `draft`, `proposed`, `accepted`, `deprecated`를 사용한다.
+필요한 문서를 빠르게 찾을 수 있도록 문서별 역할과 함께 갱신할 항목을 정리한다. 상태는 `draft`, `proposed`, `accepted`, `deprecated`로 표시한다.
 
 | 질문 | 먼저 읽을 문서 | 함께 갱신할 문서 |
 | --- | --- | --- |
@@ -11,9 +11,10 @@
 | 서비스는 어떻게 통신하는가? | [인터페이스 원칙](architecture/interface-principles.md) | 요구사항, ADR |
 | 왜 이렇게 결정했는가? | [ADR 인덱스](decisions/README.md) | 프로젝트 컨텍스트 |
 | 다음에 무엇을 하는가? | [백로그](planning/backlog.md) | [로드맵](planning/roadmap.md) |
-| 작업을 시작/완료할 수 있는가? | [Definition of Ready](planning/definition-of-ready.md) | [Definition of Done](planning/definition-of-done.md) |
+| 작업을 시작/완료할 수 있는가? | [시작 준비 기준](planning/definition-of-ready.md) | [완료 기준](planning/definition-of-done.md) |
 | AI 에이전트는 어떻게 작업하는가? | [AI 개발 워크플로](workflows/ai-development.md) | `AGENTS.md`, `PLANS.md` |
 | 브랜치와 커밋을 어떻게 관리하는가? | [Git Flow 및 커밋 정책](workflows/git-flow.md) | 저장소 전략, 관련 ADR |
+| 문서는 어떤 어투로 작성하는가? | [문서 작성 원칙](workflows/documentation-style.md) | `AGENTS.md`, 문서 템플릿 |
 
 ## 문서 갱신 원칙
 

@@ -26,6 +26,7 @@ REQUIRED_FILES = (
     "docs/decisions/README.md",
     "docs/planning/backlog.md",
     "docs/workflows/ai-development.md",
+    "docs/workflows/documentation-style.md",
     "docs/workflows/git-flow.md",
 )
 

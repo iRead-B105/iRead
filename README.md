@@ -30,8 +30,9 @@ Backend, Frontend, AI server는 별도 저장소로 관리하고 Git submodule�
 - `PLANS.md`: 긴 작업의 실행 계획 작성 규약
 - `docs/workflows/ai-development.md`: 탐색부터 컨텍스트 갱신까지의 작업 루프
 - `docs/workflows/git-flow.md`: 브랜치, 커밋과 병합 정책
+- `docs/workflows/documentation-style.md`: 문서 어투와 표현 원칙
 - `tools/validate_harness.py`: 필수 문서와 내부 Markdown 링크 검증
-- `.github/pull_request_template.md`: 내부 팀용 Pull Request 작성 기준
+- `.github/pull_request_template.md`: 내부 팀용 PR 작성 기준
 
 ## 하네스 검증
 
@@ -41,4 +42,4 @@ Python 3.12 이상에서 다음 명령을 실행합니다.
 python tools/validate_harness.py
 ```
 
-Pull Request와 `main`, `develop` push에서는 GitHub Actions가 같은 검증을 실행합니다.
+PR과 `main`, `develop` push에서는 GitHub Actions가 같은 검증을 실행합니다.
