@@ -3,11 +3,11 @@
 - 상태: proposed
 - 최종 검토일: 2026-07-15
 
-현재 다이어그램은 확정된 저장소 분리 원칙만 표현한다. 서비스 책임, 호출 방향, 외부 시스템과 저장소 경로는 결정하지 않았다.
+현재 다이어그램은 확정된 사용자·이해관계자와 저장소 분리 원칙만 표현한다. 사용자별 흐름, 서비스 책임, 호출 방향과 외부 시스템은 결정하지 않았다.
 
 ```mermaid
 flowchart LR
-    U["사용자 / 이해관계자 [TBD]"]
+    U["아동 학습자 · 보호자<br/>전문가 · 교육기관"]
     F["Frontend 저장소<br/>Vue 3 + TypeScript"]
     B["Backend 저장소<br/>Spring Boot 3 + Java 21"]
     A["AI server 저장소<br/>FastAPI + Python 3.12"]

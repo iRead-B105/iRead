@@ -6,6 +6,7 @@
 | --- | --- | --- |
 | 지금 확정된 사실은 무엇인가? | [프로젝트 컨텍스트](context/project-context.md) | 관련 ADR |
 | 어떤 문제를 누구를 위해 푸는가? | [비전과 범위](product/vision-and-scope.md) | [요구사항](product/requirements.md) |
+| 문제의 근거와 검증할 가설은 무엇인가? | [문제 및 근거 조사](product/research-basis.md) | 비전과 범위, 백로그 |
 | 용어가 무엇을 뜻하는가? | [용어집](context/glossary.md) | 관련 제품 문서 |
 | 시스템과 저장소 경계는 무엇인가? | [시스템 컨텍스트](architecture/system-context.md) | [저장소 전략](architecture/repository-strategy.md) |
 | 서비스는 어떻게 통신하는가? | [인터페이스 원칙](architecture/interface-principles.md) | 요구사항, ADR |
