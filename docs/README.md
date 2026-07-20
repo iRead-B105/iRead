@@ -18,6 +18,7 @@
 | AI 에이전트는 어떻게 작업하는가? | [AI 개발 워크플로](workflows/ai-development.md) | `AGENTS.md`, `PLANS.md` |
 | 브랜치와 커밋을 어떻게 관리하는가? | [Git Flow 및 커밋 정책](workflows/git-flow.md) | 저장소 전략, 관련 ADR |
 | submodule을 어떻게 받거나 갱신하는가? | [submodule 운영 가이드](workflows/submodules.md) | 저장소 전략 |
+| GitLab 단일 저장소를 어떻게 갱신하는가? | [GitLab 단일 저장소 동기화 가이드](workflows/gitlab-monorepo-sync.md) | 저장소 전략, ADR-0005 |
 | 문서는 어떤 어투로 작성하는가? | [문서 작성 원칙](workflows/documentation-style.md) | `AGENTS.md`, 문서 템플릿 |
 
 ## 문서 갱신 원칙

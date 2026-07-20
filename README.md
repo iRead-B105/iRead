@@ -6,6 +6,8 @@ iRead는 난독증 또는 읽기곤란 위험이 있는 초등 저학년 아동�
 
 Backend, Frontend, AI server는 별도 저장소로 관리하고 Git submodule로 연결합니다.
 
+GitLab [`S15P11B105`](https://lab.ssafy.com/s15-webmobile2-sub1/S15P11B105)는 세 서비스의 실제 코드를 포함하는 읽기 전용 통합 미러입니다.
+
 ## 서비스 저장소
 
 | 영역 | 저장소 | 경로 |
@@ -41,6 +43,7 @@ Backend, Frontend, AI server는 별도 저장소로 관리하고 Git submodule�
 - `docs/workflows/ai-development.md`: 탐색부터 컨텍스트 갱신까지의 작업 루프
 - `docs/workflows/git-flow.md`: 브랜치, 커밋과 병합 정책
 - `docs/workflows/submodules.md`: submodule clone, 갱신과 참조 관리
+- `docs/workflows/gitlab-monorepo-sync.md`: GitLab 단일 저장소 동기화
 - `docs/workflows/documentation-style.md`: 문서 어투와 표현 원칙
 - `tools/validate_harness.py`: 필수 문서와 내부 Markdown 링크 검증
 - `.github/pull_request_template.md`: 내부 팀용 PR 작성 기준

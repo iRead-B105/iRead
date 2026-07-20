@@ -22,6 +22,7 @@
 - 네 저장소는 모두 공개 상태이며 서비스 저장소의 기본 브랜치도 `develop`이다.
 - 공개 범위와 보호 정책은 [ADR-0003](../decisions/ADR-0003-public-repositories.md)에 기록되어 있다.
 - 서비스 저장소명과 submodule 경로는 [ADR-0004](../decisions/ADR-0004-service-repository-layout.md)에 기록되어 있다.
+- GitLab `S15P11B105`는 GitHub 네 저장소의 단일 통합 미러로 사용하며 운영 방식은 [ADR-0005](../decisions/ADR-0005-gitlab-monorepo-mirror.md)에 기록되어 있다.
 - Backend는 `iRead-B105/iRead-backend`를 `services/backend`에 연결한다.
 - Frontend는 `iRead-B105/iRead-frontend`를 `services/frontend`에 연결한다.
 - AI server는 `iRead-B105/iRead-ai`를 `services/ai`에 연결한다.
