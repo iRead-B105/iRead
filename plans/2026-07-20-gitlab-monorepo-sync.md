@@ -45,6 +45,7 @@ GitHub의 오케스트레이션 및 세 서비스 저장소를 개발 기준으�
 - 2026-07-20: 오케스트레이션 기본 브랜치와 submodule 추적 브랜치가 모두 `develop`임을 확인했다.
 - 2026-07-20: Backend `3d1125c`, Frontend `74ecda4`, AI server `f4167a2`를 기준으로 초기 subtree 통합 이력을 로컬에 생성했다.
 - 2026-07-20: 현재 인증 계정으로 빈 GitLab 프로젝트의 기본 브랜치를 생성할 권한이 없어 최초 push가 거부됨을 확인했다.
+- 2026-07-20: 자동 동기화 변경을 GitHub draft PR [#4](https://github.com/iRead-B105/iRead/pull/4)로 게시했다.
 
 ## 결정 및 변경 사항
 
