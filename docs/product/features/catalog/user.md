@@ -1,0 +1,24 @@
+---
+type: Feature Catalog
+title: "기능 카탈로그: user"
+description: "user 도메인의 기능 식별자, 설명과 API 관계를 정리합니다."
+tags: [feature, catalog, user]
+timestamp: 2026-07-24T17:47:15+09:00
+---
+# 기능 카탈로그: user
+
+| 기능 ID | 기능 | 설명 | API operationId |
+| --- | --- | --- | --- |
+| HD-01 | 프로필 화면 이동 | 프로필 버튼 클릭 시 아동 프로필 화면으로 이동한다. | `patch_app_user_session_navigation` |
+| HD-02 | 홈 화면 이동 | 홈 버튼을 선택하면 아동 메인 화면으로 이동한다. 진행 중인 활동에 미저장 데이터가 있는 경우 이탈 확인 절차를 수행한다. | `patch_app_user_session_navigation` |
+| HD-03 | 활동 이탈 확인 | 저장되지 않은 진행 상태가 있는 활동에서 홈 이동을 요청하면 활동 이탈 여부를 확인한다. | `patch_app_user_session_navigation` |
+| HD-04 | 활동 진행 상태 임시 저장 | 진행 중인 활동에서 홈 이동을 요청하면 현재 문항과 응답 상태를 임시 저장한다. | `patch_app_user_session_navigation` |
+| HM-01 | 이야기 나라 화면 이동 | 이야기 나라 영역을 선택하면 읽을 이야기를 선택하는 화면으로 이동한다 | `get_app_user_home_navigation` |
+| HM-02 | 오늘의 학습 화면 이동 | 훈련 영역을 선택하면 오늘 배정된 학습을 확인하거나 시작하는 화면으로 이동한다. | `get_app_user_home_navigation` |
+| HM-03 | 실력 확인 화면 이동 | 테스트 영역을 선택하면 현재 실력을 확인하는 테스트 안내 화면으로 이동한다. | `get_app_user_home_navigation` |
+| HM-04 | 학습 기록 화면 이동 | 나의 성장 영역을 선택하면 사용자의 학습 이력과 성장 기록 화면으로 이동한다. | `get_app_user_home_navigation` |
+| HM-05 | 캐릭터 인사말 표시 | 현재 사용자에게 필요한 오늘의 학습 또는 안내 내용을 캐릭터를 통해 제공한다. | `get_app_user_home_navigation` |
+
+# Sources
+
+[Notion 기능 명세](https://app.notion.com/p/de0027df905383e98fb00120c64321fc)

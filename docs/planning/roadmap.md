@@ -1,3 +1,10 @@
+---
+type: Roadmap
+title: "iRead 로드맵"
+description: "하네스 구성부터 제품 탐색, 아키텍처, 저장소와 MVP 제공까지의 단계를 정의합니다."
+tags: [planning, roadmap, milestones]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # 로드맵
 
 - 상태: proposed

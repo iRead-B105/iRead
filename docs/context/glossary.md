@@ -1,3 +1,10 @@
+---
+type: Glossary
+title: "iRead 용어집"
+description: "제품과 아키텍처 문서에서 사용하는 핵심 용어와 의미를 정의합니다."
+tags: [context, glossary, terminology]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # 용어집
 
 - 상태: draft

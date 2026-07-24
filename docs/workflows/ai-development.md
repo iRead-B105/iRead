@@ -1,3 +1,10 @@
+---
+type: Workflow
+title: "AI 개발 워크플로"
+description: "AI 에이전트가 작업을 파악하고 확인, 계획, 변경, 검증과 보고를 수행하는 절차입니다."
+tags: [workflow, ai, agents, development]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # AI 개발 워크플로
 
 - 상태: accepted
@@ -7,7 +14,7 @@
 
 ## 1. 작업 파악
 
-- `AGENTS.md`와 `docs/README.md`를 읽는다.
+- `AGENTS.md`와 `docs/index.md`를 읽는다.
 - 요청에 직접 관련된 기준 문서와 ADR만 추가로 읽는다.
 - 현재 파일 상태를 읽기 전용으로 확인한다.
 
@@ -27,13 +34,15 @@
 
 - 기준 문서를 먼저 수정한다.
 - 관련 ADR, 인덱스, 요구사항과 계획을 같은 변경에서 동기화한다.
+- 개념 문서의 OKF frontmatter와 디렉터리 인덱스를 함께 갱신한다.
+- 기능·API·데이터베이스 변경은 [명세 관리 워크플로](specification-management.md)의 기준 원본 순서를 따른다.
 - 사용자 승인 없는 가정으로 서비스 책임이나 기술을 확정하지 않는다.
 
 ## 5. 검증
 
 - `python tools/validate_harness.py`를 실행한다.
 - PR에서는 GitHub Actions의 `harness-validation` 결과를 확인한다.
-- 위 하네스 검증은 문서 구조와 내부 링크만 확인한다.
+- 위 하네스 검증은 문서 구조, 내부 링크와 OKF frontmatter를 확인한다.
 - 소스 코드나 기능 변경 후의 테스트, 빌드, 린트, 타입 검사와 정적 분석은 사용자가 현재 요청에서 명시적으로 요청한 경우에만 실행한다.
 - 검증 명령이 문서나 계획에 존재하더라도 자동 실행하지 않는다.
 - 사용자가 요청하지 않은 검증은 실행하지 않고 최종 보고에 미실행 사실을 명시한다.

@@ -1,3 +1,10 @@
+---
+type: Agent Instructions
+title: "범용 AI 개발 지침"
+description: "iRead 저장소에서 AI 에이전트가 따라야 할 범위, 절차, 검증과 문서 관리 규칙입니다."
+tags: [agents, governance, workflow, harness]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # 범용 AI 개발 지침
 
 이 파일은 특정 AI 모델이나 제품에 종속되지 않는 저장소 공통 지침이다. 모든 AI 에이전트는 별도의 모델별 지침을 만들지 않고 이 파일을 최우선 기준으로 사용한다.
@@ -12,10 +19,10 @@
 
 1. `docs/context/project-context.md`
 2. 작업과 직접 관련된 `docs/product/` 또는 `docs/architecture/` 문서
-3. `docs/decisions/README.md`에서 관련 ADR
+3. `docs/decisions/index.md`에서 관련 ADR
 4. 복잡한 작업이면 `PLANS.md`와 활성 실행 계획
 
-모든 문서를 무조건 읽지 말고 `docs/README.md`의 안내표에서 필요한 문서를 찾는다.
+모든 문서를 무조건 읽지 말고 `docs/index.md`의 안내표에서 필요한 문서를 찾는다.
 
 ## 작업 전 확인
 
@@ -29,10 +36,10 @@
 
 - 확정된 서비스명과 오케스트레이션 저장소명은 `iRead`다.
 - 이 저장소에는 서비스 구현 코드를 만들지 않는다.
-- Backend, Frontend, AI server는 각각 `iRead-backend`, `iRead-frontend`, `iRead-ai` 공개 저장소로 관리한다.
-- 서비스 저장소는 각각 `services/backend`, `services/frontend`, `services/ai`에 Git submodule로 연결한다.
+- Backend, Frontend, AI server, 아동 앱은 각각 `iRead-backend`, `iRead-frontend`, `iRead-ai`, `iRead-app` 공개 저장소로 관리한다.
+- 서비스 저장소는 각각 `services/backend`, `services/frontend`, `services/ai`, `services/app`에 Git submodule로 연결한다.
 - 오케스트레이션 저장소는 GitHub `iRead-B105/iRead`와 연결되어 있으며 `main`, `develop` 브랜치를 사용한다.
-- 네 저장소는 모두 공개 저장소이며 `main`, `develop` 브랜치를 사용하고 기본 브랜치는 `develop`이다.
+- 다섯 저장소는 모두 공개 저장소이며 `main`, `develop` 브랜치를 사용하고 기본 브랜치는 `develop`이다.
 - `main`은 PR과 승인 1명이 필요하며, `develop`은 직접 push를 허용하되 두 브랜치 모두 force push와 삭제를 금지한다.
 - 사용자가 요청하기 전에는 새로운 서비스 저장소나 submodule을 추가하지 않는다.
 
@@ -41,8 +48,9 @@
 - Backend: Spring Boot 3, Java 21, Gradle Kotlin DSL
 - Frontend: Vue 3, TypeScript, Vite, pnpm
 - AI server: FastAPI, Python 3.12, uv
+- 아동 앱: [TBD]
 - Redis: Docker Compose로 구동할 예정이나 역할은 미정
-- 주 데이터베이스는 미정이므로 선택하거나 관련 계약을 만들지 않는다.
+- 주 데이터베이스: MySQL 8.4.x LTS, 운영 토폴로지는 [TBD]
 
 ## 기준 문서
 
@@ -57,6 +65,8 @@
 - Git 브랜치, 커밋과 병합 정책: `docs/workflows/git-flow.md`
 - submodule clone, 갱신과 참조 관리: `docs/workflows/submodules.md`
 - 문서 어투와 표현 원칙: `docs/workflows/documentation-style.md`
+- 기능·API·데이터베이스 명세 관리: `docs/workflows/specification-management.md`
+- 계약 기준 원본과 이전 상태: `contracts/catalog.md`
 
 문서가 충돌하면 추측으로 정리하지 말고 사용자에게 확인한다. 확인 후 관련 문서와 ADR을 같은 변경에서 함께 갱신한다.
 
@@ -94,6 +104,8 @@
 ## 문서 작성 규칙
 
 - 문서를 작성하거나 수정할 때 `docs/workflows/documentation-style.md`를 따른다.
+- 저장소 관리 Markdown 개념 문서는 OKF v0.1 frontmatter의 `type`, `title`, `description`, `tags`, `timestamp`를 유지한다.
+- `index.md`와 `log.md`는 OKF 예약 파일이므로 일반 개념 문서 frontmatter 규칙을 적용하지 않는다.
 - 문서는 기본적으로 한국어로 작성하고 코드 식별자와 표준 기술명은 원문을 유지한다.
 - 날짜는 `YYYY-MM-DD`, 식별자는 `REQ-###`, `ADR-####`, `TASK-###` 형식을 사용한다.
 - 요구사항은 검증 가능한 문장으로 쓰고 수용 기준을 포함한다.

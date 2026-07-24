@@ -1,7 +1,14 @@
+---
+type: Workflow
+title: "submodule 운영 가이드"
+description: "서비스 저장소 submodule을 clone, 갱신하고 참조를 관리하는 절차입니다."
+tags: [workflow, git, submodule, services]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # submodule 운영 가이드
 
 - 상태: accepted
-- 최종 검토일: 2026-07-15
+- 최종 검토일: 2026-07-24
 
 ## 구성
 
@@ -10,6 +17,7 @@
 | Backend | `services/backend` | `develop` |
 | Frontend | `services/frontend` | `develop` |
 | AI server | `services/ai` | `develop` |
+| 아동 앱 | `services/app` | `develop` |
 
 오케스트레이션 저장소는 각 submodule의 특정 커밋을 기록한다. `develop` 추적 설정은 원격 변경을 조회할 기준이며, 참조 커밋은 자동으로 바뀌지 않는다.
 
@@ -37,7 +45,7 @@ git -C services/backend pull --ff-only
 git add services/backend
 ```
 
-Frontend와 AI server도 각각 `services/frontend`, `services/ai` 경로에서 같은 방식으로 갱신한다.
+Frontend, AI server, 아동 앱도 각각 `services/frontend`, `services/ai`, `services/app` 경로에서 같은 방식으로 갱신한다.
 
 submodule 커밋이 원격 저장소에 push되었는지 확인한 뒤 오케스트레이션 저장소의 참조를 push한다. 원격에 없는 커밋을 참조하면 다른 환경에서 clone할 수 없다.
 

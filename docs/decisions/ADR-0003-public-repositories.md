@@ -1,3 +1,10 @@
+---
+type: Architecture Decision
+title: "ADR-0003: 공개 저장소 운영"
+description: "iRead 저장소의 공개 범위와 브랜치 보호 정책을 정한 결정입니다."
+tags: [repository, security, git, adr]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # ADR-0003: 공개 저장소 운영
 
 - 상태: accepted

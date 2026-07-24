@@ -1,3 +1,10 @@
+---
+type: Validation Plan
+title: "문제 가설 검증 계획"
+description: "iRead가 해결하려는 문제 가설과 사용자 조사 방법을 검증하기 위한 계획입니다."
+tags: [product, research, validation]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # 문제 가설 검증 계획
 
 - 상태: proposed

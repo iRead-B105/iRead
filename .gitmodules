@@ -10,3 +10,7 @@
 	path = services/ai
 	url = https://github.com/iRead-B105/iRead-ai.git
 	branch = develop
+[submodule "services/app"]
+	path = services/app
+	url = https://github.com/iRead-B105/iRead-app.git
+	branch = develop
