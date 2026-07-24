@@ -35,6 +35,7 @@ if [[ -z "${GITLAB_PUSH_TOKEN:-}" ]]; then
   echo "GITLAB_PUSH_TOKEN is required" >&2
   exit 1
 fi
+export GITLAB_USERNAME GITLAB_PUSH_TOKEN
 
 cleanup() {
   rm -rf -- "$WORK_DIR"
@@ -42,9 +43,7 @@ cleanup() {
 trap cleanup EXIT
 
 git_auth() {
-  GITLAB_USERNAME="$GITLAB_USERNAME" \
-    GITLAB_PUSH_TOKEN="$GITLAB_PUSH_TOKEN" \
-    GIT_ASKPASS="$GITLAB_ASKPASS" \
+  GIT_ASKPASS="$GITLAB_ASKPASS" \
     GIT_TERMINAL_PROMPT=0 \
     git -c "credential.username=$GITLAB_USERNAME" "$@"
 }
