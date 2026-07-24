@@ -37,6 +37,7 @@ GITLAB_PUSH_TOKEN
 ```
 
 GitLab `main`과 `upstream/*`에 push할 수 있는 권한이 필요하다.
+동기화 스크립트는 GitLab HTTPS 인증 프롬프트에 username `oauth2`와 Repository Secret의 token을 `GIT_ASKPASS`로 전달한다. token을 URL, 로그 또는 Git 설정에 기록하지 않는다.
 
 ## 개발과 동기화
 
@@ -77,6 +78,7 @@ upstream/eyetracking/develop
 ## 장애 처리
 
 - `GITLAB_PUSH_TOKEN is required`: GitHub Actions secret 등록 여부를 확인한다.
+- `HTTP Basic: Access denied`: token 만료 여부와 `write_repository` scope를 확인한다.
 - `Requested orchestration commit is not on develop`: 검증 이후 branch 이력이 변경됐는지 확인한다.
 - push 권한 오류: GitLab token 역할과 보호 branch 허용 대상을 확인한다.
 - `Expected submodule gitlink`: 해당 서비스가 orchestration `develop`에 submodule로 병합됐는지 확인한다.
