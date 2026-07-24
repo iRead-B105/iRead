@@ -8,5 +8,6 @@
 | [ADR-0002](ADR-0002-technology-baseline.md) | 서비스별 기술 기준선 | accepted | 2026-07-15 |
 | [ADR-0003](ADR-0003-public-repositories.md) | 저장소 공개 범위와 브랜치 보호 정책 | accepted | 2026-07-15 |
 | [ADR-0004](ADR-0004-service-repository-layout.md) | 서비스 저장소명과 submodule 경로 | accepted | 2026-07-15 |
+| [ADR-0005](ADR-0005-add-child-app-repository.md) | 아동 앱 저장소와 submodule 경로 추가 | accepted | 2026-07-24 |
 
 새 기록은 [ADR 템플릿](ADR-template.md)을 복사하고 다음 번호를 사용한다.

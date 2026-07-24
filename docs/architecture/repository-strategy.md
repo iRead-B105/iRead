@@ -1,11 +1,11 @@
 # 저장소 및 submodule 전략
 
 - 상태: accepted
-- 최종 검토일: 2026-07-15
+- 최종 검토일: 2026-07-24
 
 ## 채택 방향
 
-[ADR-0001](../decisions/ADR-0001-separate-service-repositories.md)과 [ADR-0004](../decisions/ADR-0004-service-repository-layout.md)에 따라 오케스트레이션 저장소와 세 개의 서비스 저장소를 분리하고 `services/` 아래에 연결한다.
+[ADR-0001](../decisions/ADR-0001-separate-service-repositories.md), [ADR-0004](../decisions/ADR-0004-service-repository-layout.md), [ADR-0005](../decisions/ADR-0005-add-child-app-repository.md)에 따라 오케스트레이션 저장소와 네 개의 서비스 저장소를 분리하고 `services/` 아래에 연결한다.
 
 | 저장소 역할 | 내용 | 기술 스택 | 경로 / URL |
 | --- | --- | --- | --- |
@@ -13,6 +13,7 @@
 | Backend | 도메인/API 구현과 자체 테스트 | Spring Boot 3, Java 21, Gradle Kotlin DSL | `services/backend` / [iRead-backend](https://github.com/iRead-B105/iRead-backend) |
 | Frontend | UI 구현과 자체 테스트 | Vue 3, TypeScript, Vite, pnpm | `services/frontend` / [iRead-frontend](https://github.com/iRead-B105/iRead-frontend) |
 | AI server | AI 기능 구현과 자체 테스트 | FastAPI, Python 3.12, uv | `services/ai` / [iRead-ai](https://github.com/iRead-B105/iRead-ai) |
+| 아동 앱 | 아동용 애플리케이션 구현과 자체 테스트 | [TBD] | `services/app` / [iRead-app](https://github.com/iRead-B105/iRead-app) |
 
 ## 소유권 원칙
 
@@ -27,7 +28,7 @@
 - [x] 서비스명과 오케스트레이션 저장소명 `iRead` 확정
 - [x] 오케스트레이션 저장소 Git 초기화 및 원격 연결
 - [x] `main`, `develop` 브랜치 구성
-- [x] Backend, Frontend, AI server 저장소명 확정
+- [x] Backend, Frontend, AI server, 아동 앱 저장소명 확정
 - [x] submodule 디렉터리 배치 확정
 - [x] 각 저장소 생성 및 기본 브랜치 정책 확정
 - [x] submodule 연결

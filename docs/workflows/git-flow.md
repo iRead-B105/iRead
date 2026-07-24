@@ -1,8 +1,8 @@
 # Git Flow 및 커밋 정책
 
 - 상태: accepted
-- 최종 검토일: 2026-07-15
-- 적용 범위: Orchestration, Backend, Frontend, AI server 저장소
+- 최종 검토일: 2026-07-24
+- 적용 범위: Orchestration, Backend, Frontend, AI server, 아동 앱 저장소
 
 ## 1. 기본 원칙
 

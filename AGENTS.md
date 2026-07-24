@@ -29,10 +29,10 @@
 
 - 확정된 서비스명과 오케스트레이션 저장소명은 `iRead`다.
 - 이 저장소에는 서비스 구현 코드를 만들지 않는다.
-- Backend, Frontend, AI server는 각각 `iRead-backend`, `iRead-frontend`, `iRead-ai` 공개 저장소로 관리한다.
-- 서비스 저장소는 각각 `services/backend`, `services/frontend`, `services/ai`에 Git submodule로 연결한다.
+- Backend, Frontend, AI server, 아동 앱은 각각 `iRead-backend`, `iRead-frontend`, `iRead-ai`, `iRead-app` 공개 저장소로 관리한다.
+- 서비스 저장소는 각각 `services/backend`, `services/frontend`, `services/ai`, `services/app`에 Git submodule로 연결한다.
 - 오케스트레이션 저장소는 GitHub `iRead-B105/iRead`와 연결되어 있으며 `main`, `develop` 브랜치를 사용한다.
-- 네 저장소는 모두 공개 저장소이며 `main`, `develop` 브랜치를 사용하고 기본 브랜치는 `develop`이다.
+- 다섯 저장소는 모두 공개 저장소이며 `main`, `develop` 브랜치를 사용하고 기본 브랜치는 `develop`이다.
 - `main`은 PR과 승인 1명이 필요하며, `develop`은 직접 push를 허용하되 두 브랜치 모두 force push와 삭제를 금지한다.
 - 사용자가 요청하기 전에는 새로운 서비스 저장소나 submodule을 추가하지 않는다.
 
@@ -41,6 +41,7 @@
 - Backend: Spring Boot 3, Java 21, Gradle Kotlin DSL
 - Frontend: Vue 3, TypeScript, Vite, pnpm
 - AI server: FastAPI, Python 3.12, uv
+- 아동 앱: [TBD]
 - Redis: Docker Compose로 구동할 예정이나 역할은 미정
 - 주 데이터베이스는 미정이므로 선택하거나 관련 계약을 만들지 않는다.
 

@@ -1,7 +1,7 @@
 # 제품 탐색 백로그
 
 - 상태: active
-- 최종 검토일: 2026-07-16
+- 최종 검토일: 2026-07-24
 
 작업 순서는 선행 결정을 반영한다. 상태는 `todo`, `in-progress`, `blocked`, `done`을 사용한다.
 
@@ -11,7 +11,7 @@
 | TASK-002 | P0 | 핵심 사용자와 이해관계자 정의 | TASK-001 | done |
 | TASK-003 | P0 | MVP 범위와 성공 지표 정의 | TASK-001, TASK-002, 내부 기능 회의 | blocked |
 | TASK-004 | P0 | 핵심 사용자 여정과 요구사항 작성 | TASK-003 | blocked |
-| TASK-005 | P1 | Backend·Frontend·AI server 책임 경계 정의 | TASK-004 | blocked |
+| TASK-005 | P1 | Backend·Frontend·AI server·아동 앱 책임 경계 정의 | TASK-004 | blocked |
 | TASK-006 | P1 | 데이터 소유권, 주 데이터베이스, Redis 역할 결정 | TASK-005 | blocked |
 | TASK-007 | P1 | 인증·인가, 법정대리인 동의와 아동 개인정보 요구사항 정의 | TASK-002, TASK-004 | blocked |
 | TASK-008 | P1 | 서비스 간 API/이벤트 계약 초안 작성 | TASK-005, TASK-006 | blocked |

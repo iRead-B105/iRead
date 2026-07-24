@@ -4,7 +4,7 @@ iRead는 난독증 또는 읽기곤란 위험이 있는 초등 저학년 아동�
 
 이 저장소는 iRead의 제품 기획, 시스템 아키텍처, 서비스 간 계약과 주요 의사결정을 관리합니다.
 
-Backend, Frontend, AI server는 별도 저장소로 관리하고 Git submodule로 연결합니다.
+Backend, Frontend, AI server, 아동 앱은 별도 저장소로 관리하고 Git submodule로 연결합니다.
 
 ## 서비스 저장소
 
@@ -13,6 +13,7 @@ Backend, Frontend, AI server는 별도 저장소로 관리하고 Git submodule�
 | Backend | [iRead-backend](https://github.com/iRead-B105/iRead-backend) | `services/backend` |
 | Frontend | [iRead-frontend](https://github.com/iRead-B105/iRead-frontend) | `services/frontend` |
 | AI server | [iRead-ai](https://github.com/iRead-B105/iRead-ai) | `services/ai` |
+| 아동 앱 | [iRead-app](https://github.com/iRead-B105/iRead-app) | `services/app` |
 
 ## 주요 문서
 
@@ -32,6 +33,7 @@ Backend, Frontend, AI server는 별도 저장소로 관리하고 Git submodule�
 | Backend | Spring Boot 3, Java 21, Gradle Kotlin DSL |
 | Frontend | Vue 3, TypeScript, Vite, pnpm |
 | AI server | FastAPI, Python 3.12, uv |
+| 아동 앱 | [TBD] |
 | Infrastructure | Redis, Docker Compose |
 
 ## 개발 가이드
