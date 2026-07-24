@@ -1,3 +1,10 @@
+---
+type: Documentation Standard
+title: "문서 작성 원칙"
+description: "iRead 문서의 어투, 표현, OKF 구조와 검토 기준을 정의합니다."
+tags: [documentation, style, okf, standard]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # 문서 작성 원칙
 
 - 상태: accepted
@@ -20,6 +27,16 @@
 - 사실, 결정, 제안과 가정을 구분하며 가정은 `[ASSUMPTION]`, 미결 항목은 `[TBD]`, 외부 결정 대기는 `[BLOCKED]`로 표시한다.
 - 독자가 행동해야 하는 내용은 조건과 완료 기준이 드러나도록 구체적으로 작성한다.
 
+## OKF 작성 원칙
+
+- 저장소 관리 개념 문서는 Open Knowledge Format v0.1의 YAML frontmatter로 시작한다.
+- `type`, `title`, `description`, `tags`, `timestamp`를 작성하며 `timestamp`는 ISO 8601 형식을 사용한다.
+- 한 파일은 하나의 지속적인 개념을 설명한다.
+- 관련 개념은 일반 Markdown 링크로 연결한다.
+- 외부 근거를 사용하면 문서 끝의 `# Citations`에 출처를 기록한다.
+- `index.md`는 디렉터리 내용을 안내하고 `log.md`는 `YYYY-MM-DD`별 변경 이력을 기록한다.
+- OpenAPI, SQL과 같은 도메인 계약을 Markdown 본문에 복제하지 않고 기준 파일을 연결한다.
+
 ## 보고 방식
 
 - 결과를 먼저 설명하고 필요한 근거와 남은 사항을 이어서 작성한다.
@@ -33,3 +50,4 @@
 - [ ] 제목, 용어와 문장 종결이 일관적인가?
 - [ ] 사실과 미결 사항이 적절한 기준 문서에 기록되어 있는가?
 - [ ] 링크와 식별자가 최신 상태인가?
+- [ ] OKF frontmatter와 예약 파일 규칙을 지켰는가?

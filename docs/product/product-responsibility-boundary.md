@@ -1,3 +1,10 @@
+---
+type: Product Boundary
+title: "제품 용어 및 책임 경계"
+description: "진단, 선별, 훈련과 치료를 구분하고 iRead의 제품 책임 범위를 정의합니다."
+tags: [product, responsibility, terminology, safety]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # 제품 용어 및 책임 경계
 
 - 상태: proposed

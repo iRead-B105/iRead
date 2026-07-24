@@ -1,3 +1,10 @@
+---
+type: System Context
+title: "시스템 컨텍스트"
+description: "iRead의 사용자, 서비스, 외부 경계와 오케스트레이션 관계를 설명합니다."
+tags: [architecture, system-context, services]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # 시스템 컨텍스트
 
 - 상태: proposed

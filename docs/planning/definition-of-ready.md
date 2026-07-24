@@ -1,3 +1,10 @@
+---
+type: Checklist
+title: "시작 준비 기준"
+description: "제품 및 개발 작업을 시작하기 전에 요구사항과 제약이 충분한지 확인하는 체크리스트입니다."
+tags: [planning, definition-of-ready, requirements]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # 시작 준비 기준
 
 작업을 구현 단계로 옮기기 전에 모두 충족해야 한다.

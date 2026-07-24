@@ -1,3 +1,10 @@
+---
+type: Architecture Decision
+title: "ADR-0005: 아동 앱 저장소 추가"
+description: "아동용 애플리케이션 저장소와 submodule 경로를 추가한 결정입니다."
+tags: [architecture, child-app, repository, adr]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # ADR-0005: 아동 앱 저장소 추가
 
 - 상태: accepted

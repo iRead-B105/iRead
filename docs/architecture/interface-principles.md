@@ -1,3 +1,10 @@
+---
+type: Architecture Principle
+title: "인터페이스 원칙"
+description: "서비스 간 API와 이벤트 계약이 따라야 할 입력, 오류, 보안과 호환성 원칙입니다."
+tags: [architecture, interface, api, contracts]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # 인터페이스 원칙
 
 - 상태: proposed

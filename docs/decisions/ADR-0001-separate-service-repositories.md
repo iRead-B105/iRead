@@ -1,3 +1,10 @@
+---
+type: Architecture Decision
+title: "ADR-0001: 서비스 저장소 분리"
+description: "오케스트레이션 저장소와 서비스별 저장소를 분리한 결정입니다."
+tags: [architecture, repository, adr]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # ADR-0001: 서비스 저장소 분리
 
 - 상태: accepted

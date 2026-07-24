@@ -1,0 +1,3560 @@
+[
+  {
+    "feature_id": "AU-ADM-REF-01",
+    "feature_page_id": "3a7027df-9053-813a-83f3-ed9745bc1656",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a7027df-9053-810a-8f05-d87339df02cd"
+    ],
+    "operation_ids": [
+      "post_auth_admin_refresh"
+    ]
+  },
+  {
+    "feature_id": "AU-APP-OUT-01",
+    "feature_page_id": "3a7027df-9053-8142-ba04-da15113a3695",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a7027df-9053-81e6-a162-e104f77a321f"
+    ],
+    "operation_ids": [
+      "post_auth_app_logout"
+    ]
+  },
+  {
+    "feature_id": "AU-APP-REF-01",
+    "feature_page_id": "3a7027df-9053-8139-90b2-e6989c507056",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a7027df-9053-81bb-aacb-ddf25911e464"
+    ],
+    "operation_ids": [
+      "post_auth_app_refresh"
+    ]
+  },
+  {
+    "feature_id": "CU-DSP-01",
+    "feature_page_id": "3a3027df-9053-80e3-9fb1-e35dda68c2f2",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-806b-82dd-d2ddcac5e323"
+    ],
+    "operation_ids": [
+      "get_admin_training_by_studentId"
+    ]
+  },
+  {
+    "feature_id": "CU-DSP-02",
+    "feature_page_id": "3a3027df-9053-80d6-81ef-f4c50e67e4a2",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-803e-a69f-fc0114bf317b"
+    ],
+    "operation_ids": [
+      "get_admin_training_by_studentId_by_curriculumId"
+    ]
+  },
+  {
+    "feature_id": "CU-DSP-03",
+    "feature_page_id": "3a3027df-9053-80ef-b3cb-df1ce374ea47",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-8088-b76e-e9538ba18df6"
+    ],
+    "operation_ids": [
+      "get_admin_training_by_studentId_by_trainingId_expected_word"
+    ]
+  },
+  {
+    "feature_id": "CU-DSP-04",
+    "feature_page_id": "3a6027df-9053-811e-9608-c4d99b62e90a",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81e2-944b-fba2a0f3d467"
+    ],
+    "operation_ids": [
+      "get_admin_training_by_studentId_by_trainingId_detail"
+    ]
+  },
+  {
+    "feature_id": "CU-DSP-05",
+    "feature_page_id": "3a6027df-9053-814f-a6fd-ed93715b87aa",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81e2-944b-fba2a0f3d467"
+    ],
+    "operation_ids": [
+      "get_admin_training_by_studentId_by_trainingId_detail"
+    ]
+  },
+  {
+    "feature_id": "CU-SAVE-01",
+    "feature_page_id": "3a3027df-9053-8069-a13d-fb82e730f75d",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-8099-94a3-e56e34618adb"
+    ],
+    "operation_ids": [
+      "patch_admin_training_by_studentId_by_curriculumId"
+    ]
+  },
+  {
+    "feature_id": "CU-SAVE-02",
+    "feature_page_id": "3a3027df-9053-809f-a3c3-fd47395d4907",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-8079-9eb8-f404600f0bc8"
+    ],
+    "operation_ids": [
+      "post_admin_training_by_studentId_by_trainingId_expected_word"
+    ]
+  },
+  {
+    "feature_id": "CU-SAVE-03",
+    "feature_page_id": "3a3027df-9053-8041-a0ed-f20caa72eb7c",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-8017-8692-f0b03c1e3d04"
+    ],
+    "operation_ids": [
+      "delete_admin_training_by_studentId_by_trainingId_expected_word_by_wordId"
+    ]
+  },
+  {
+    "feature_id": "CU-SAVE-04",
+    "feature_page_id": "3a4027df-9053-81d9-a69f-ce4ad0492389",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81cb-afde-f7ef208a678e"
+    ],
+    "operation_ids": [
+      "patch_admin_training_by_studentId_by_curriculumId_curriculum_editor"
+    ]
+  },
+  {
+    "feature_id": "CU-SAVE-05",
+    "feature_page_id": "3a4027df-9053-81b3-b84e-e9b1592061f8",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81cb-afde-f7ef208a678e"
+    ],
+    "operation_ids": [
+      "patch_admin_training_by_studentId_by_curriculumId_curriculum_editor"
+    ]
+  },
+  {
+    "feature_id": "CU-SAVE-06",
+    "feature_page_id": "3a4027df-9053-8109-a04c-cb20663b1e0f",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81cb-afde-f7ef208a678e"
+    ],
+    "operation_ids": [
+      "patch_admin_training_by_studentId_by_curriculumId_curriculum_editor"
+    ]
+  },
+  {
+    "feature_id": "CU-SAVE-07",
+    "feature_page_id": "3a4027df-9053-8182-8f35-d6fffae568b3",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81cb-afde-f7ef208a678e"
+    ],
+    "operation_ids": [
+      "patch_admin_training_by_studentId_by_curriculumId_curriculum_editor"
+    ]
+  },
+  {
+    "feature_id": "CU-SAVE-08",
+    "feature_page_id": "3a4027df-9053-8181-a20a-e97f58df3a02",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81cb-afde-f7ef208a678e"
+    ],
+    "operation_ids": [
+      "patch_admin_training_by_studentId_by_curriculumId_curriculum_editor"
+    ]
+  },
+  {
+    "feature_id": "CU-SAVE-09",
+    "feature_page_id": "3a4027df-9053-8100-a75c-e74ba93f74be",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81cb-afde-f7ef208a678e"
+    ],
+    "operation_ids": [
+      "patch_admin_training_by_studentId_by_curriculumId_curriculum_editor"
+    ]
+  },
+  {
+    "feature_id": "CU-SAVE-10",
+    "feature_page_id": "3a4027df-9053-8138-9141-c9bd2cf088d3",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81cb-afde-f7ef208a678e"
+    ],
+    "operation_ids": [
+      "patch_admin_training_by_studentId_by_curriculumId_curriculum_editor"
+    ]
+  },
+  {
+    "feature_id": "CU-SAVE-11",
+    "feature_page_id": "3a4027df-9053-81f5-9a6c-d576742ee025",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81cb-afde-f7ef208a678e"
+    ],
+    "operation_ids": [
+      "patch_admin_training_by_studentId_by_curriculumId_curriculum_editor"
+    ]
+  },
+  {
+    "feature_id": "CU-SAVE-12",
+    "feature_page_id": "3a6027df-9053-81e6-b08d-ea44f1a17106",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81cb-afde-f7ef208a678e"
+    ],
+    "operation_ids": [
+      "patch_admin_training_by_studentId_by_curriculumId_curriculum_editor"
+    ]
+  },
+  {
+    "feature_id": "CU-SAVE-13",
+    "feature_page_id": "3a6027df-9053-8170-93a4-c0546c77deb5",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81cb-afde-f7ef208a678e"
+    ],
+    "operation_ids": [
+      "patch_admin_training_by_studentId_by_curriculumId_curriculum_editor"
+    ]
+  },
+  {
+    "feature_id": "CU-SAVE-14",
+    "feature_page_id": "3a6027df-9053-81c4-a275-ce363f004ad7",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81cb-afde-f7ef208a678e"
+    ],
+    "operation_ids": [
+      "patch_admin_training_by_studentId_by_curriculumId_curriculum_editor"
+    ]
+  },
+  {
+    "feature_id": "CU-SAVE-15",
+    "feature_page_id": "3a6027df-9053-811a-9318-eac05bc42160",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81cb-afde-f7ef208a678e"
+    ],
+    "operation_ids": [
+      "patch_admin_training_by_studentId_by_curriculumId_curriculum_editor"
+    ]
+  },
+  {
+    "feature_id": "CU-SAVE-16",
+    "feature_page_id": "3a6027df-9053-81fc-bcc4-f9167021d8d4",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81cb-afde-f7ef208a678e"
+    ],
+    "operation_ids": [
+      "patch_admin_training_by_studentId_by_curriculumId_curriculum_editor"
+    ]
+  },
+  {
+    "feature_id": "CU-SEL-01",
+    "feature_page_id": "3a4027df-9053-8172-b284-cf7c72cfccbd",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81d7-9a47-f3ac4c59bb7b"
+    ],
+    "operation_ids": [
+      "get_admin_training_by_studentId_by_curriculumId_editor_selection"
+    ]
+  },
+  {
+    "feature_id": "CU-SEL-02",
+    "feature_page_id": "3a4027df-9053-8145-85e0-f1ee6d6a6581",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81d7-9a47-f3ac4c59bb7b"
+    ],
+    "operation_ids": [
+      "get_admin_training_by_studentId_by_curriculumId_editor_selection"
+    ]
+  },
+  {
+    "feature_id": "CU-SEL-03",
+    "feature_page_id": "3a4027df-9053-8127-a351-ef771997073b",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81d7-9a47-f3ac4c59bb7b"
+    ],
+    "operation_ids": [
+      "get_admin_training_by_studentId_by_curriculumId_editor_selection"
+    ]
+  },
+  {
+    "feature_id": "CU-SEL-04",
+    "feature_page_id": "3a6027df-9053-81c5-9d3c-cc26fc554097",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81d7-9a47-f3ac4c59bb7b"
+    ],
+    "operation_ids": [
+      "get_admin_training_by_studentId_by_curriculumId_editor_selection"
+    ]
+  },
+  {
+    "feature_id": "DB-COM-01",
+    "feature_page_id": "3a6027df-9053-812e-b24f-ca96ce629891",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-819f-915f-c3b8bf8bf055"
+    ],
+    "operation_ids": [
+      "get_admin_student_actions"
+    ]
+  },
+  {
+    "feature_id": "DB-COM-02",
+    "feature_page_id": "3a6027df-9053-8151-bb20-ec4e134fedf3",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-819f-915f-c3b8bf8bf055"
+    ],
+    "operation_ids": [
+      "get_admin_student_actions"
+    ]
+  },
+  {
+    "feature_id": "DB-DSP-01",
+    "feature_page_id": "3a3027df-9053-80e8-b1fc-e655f344db56",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-80ad-aade-d9be0d509e74"
+    ],
+    "operation_ids": [
+      "get_admin_student_list"
+    ]
+  },
+  {
+    "feature_id": "DB-DSP-02",
+    "feature_page_id": "3a6027df-9053-8190-a74b-f65ab603969b",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8120-873d-e10550e8bf60"
+    ],
+    "operation_ids": [
+      "get_admin_student_list_state"
+    ]
+  },
+  {
+    "feature_id": "DB-DSP-03",
+    "feature_page_id": "3a6027df-9053-8189-8d8d-fcb6d3a58814",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8120-873d-e10550e8bf60"
+    ],
+    "operation_ids": [
+      "get_admin_student_list_state"
+    ]
+  },
+  {
+    "feature_id": "DB-FLT-01",
+    "feature_page_id": "3a6027df-9053-8131-b9dd-ecbd06d8929c",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8176-9e20-fa7f7f3dea58"
+    ],
+    "operation_ids": [
+      "get_admin_student_filter"
+    ]
+  },
+  {
+    "feature_id": "DB-FLT-02",
+    "feature_page_id": "3a6027df-9053-818f-abc1-ec9169d8be39",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8176-9e20-fa7f7f3dea58"
+    ],
+    "operation_ids": [
+      "get_admin_student_filter"
+    ]
+  },
+  {
+    "feature_id": "DB-FLT-03",
+    "feature_page_id": "3a6027df-9053-814f-b2af-e187f18c1a97",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8176-9e20-fa7f7f3dea58"
+    ],
+    "operation_ids": [
+      "get_admin_student_filter"
+    ]
+  },
+  {
+    "feature_id": "DB-SEL-01",
+    "feature_page_id": "3a4027df-9053-815c-b268-ec23c6dd42da",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81f7-92a5-d9e57a0b8850"
+    ],
+    "operation_ids": [
+      "get_admin_student_selection"
+    ]
+  },
+  {
+    "feature_id": "DB-SEL-02",
+    "feature_page_id": "3a4027df-9053-81f9-ad98-f422fb25f43a",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81f7-92a5-d9e57a0b8850"
+    ],
+    "operation_ids": [
+      "get_admin_student_selection"
+    ]
+  },
+  {
+    "feature_id": "DB-SEL-03",
+    "feature_page_id": "3a4027df-9053-81df-a871-e757f7a73c7f",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81f7-92a5-d9e57a0b8850"
+    ],
+    "operation_ids": [
+      "get_admin_student_selection"
+    ]
+  },
+  {
+    "feature_id": "DB-STAT-01",
+    "feature_page_id": "3a3027df-9053-806b-b759-fbf53666b776",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81c2-b972-d54d7016f7b4"
+    ],
+    "operation_ids": [
+      "get_admin_student_summary"
+    ]
+  },
+  {
+    "feature_id": "DB-STAT-02",
+    "feature_page_id": "3a3027df-9053-8072-8706-ee6f74e9da34",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81c2-b972-d54d7016f7b4"
+    ],
+    "operation_ids": [
+      "get_admin_student_summary"
+    ]
+  },
+  {
+    "feature_id": "GR-CHAR-01",
+    "feature_page_id": "3a3027df-9053-8016-9296-e5ab76cfafd3",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81f7-9e00-efe43504032d"
+    ],
+    "operation_ids": [
+      "patch_app_mypage_character_representative"
+    ]
+  },
+  {
+    "feature_id": "GR-CHAR-02",
+    "feature_page_id": "3a3027df-9053-801f-b854-ec98e4c982a8",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-80dd-b0d9-c46ec0572dd9"
+    ],
+    "operation_ids": [
+      "get_app_mypage_character"
+    ]
+  },
+  {
+    "feature_id": "GR-COM-01",
+    "feature_page_id": "3a3027df-9053-80d9-8e0e-ef75d9f12165",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-80e9-8623-fa163e00dd99"
+    ],
+    "operation_ids": [
+      "get_app_student_by_studentId_growth"
+    ]
+  },
+  {
+    "feature_id": "GR-COM-02",
+    "feature_page_id": "3a3027df-9053-8034-b79c-e9b154eb1170",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8124-8246-e8ae43fec5aa"
+    ],
+    "operation_ids": [
+      "get_app_mypage_growth_status"
+    ]
+  },
+  {
+    "feature_id": "GR-STAT-01",
+    "feature_page_id": "3a3027df-9053-8033-bb79-ce8dff44a9e2",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-816d-b133-e5a2da089985"
+    ],
+    "operation_ids": [
+      "get_app_mypage_growth_statistics"
+    ]
+  },
+  {
+    "feature_id": "GR-STAT-02",
+    "feature_page_id": "3a3027df-9053-8099-a704-d9d79529612a",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-816d-b133-e5a2da089985"
+    ],
+    "operation_ids": [
+      "get_app_mypage_growth_statistics"
+    ]
+  },
+  {
+    "feature_id": "GR-STAT-03",
+    "feature_page_id": "3a3027df-9053-809b-98ea-f8a218bd926f",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-816d-b133-e5a2da089985"
+    ],
+    "operation_ids": [
+      "get_app_mypage_growth_statistics"
+    ]
+  },
+  {
+    "feature_id": "GR-STAT-04",
+    "feature_page_id": "3a3027df-9053-80b3-a0a2-f1f4b0380295",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-816d-b133-e5a2da089985"
+    ],
+    "operation_ids": [
+      "get_app_mypage_growth_statistics"
+    ]
+  },
+  {
+    "feature_id": "GZ-GAZE-01",
+    "feature_page_id": "3a5027df-9053-801d-a653-c24d6fd796df",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-80ce-ae8e-e58b32c7d8d2"
+    ],
+    "operation_ids": [
+      "get_app_gaze_device_status"
+    ]
+  },
+  {
+    "feature_id": "GZ-GAZE-02",
+    "feature_page_id": "3a5027df-9053-809f-b7c6-c1feb73558ce",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a5027df-9053-80a6-b5e9-e46e1d993d3e"
+    ],
+    "operation_ids": [
+      "get_app_gaze_calibration_guide"
+    ]
+  },
+  {
+    "feature_id": "GZ-GAZE-03",
+    "feature_page_id": "3a5027df-9053-8019-8535-d694b6b44b32",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a5027df-9053-8044-9cad-e904980b8d71"
+    ],
+    "operation_ids": [
+      "patch_app_gaze_sessions_by_gazeSessionId_failed"
+    ]
+  },
+  {
+    "feature_id": "HD-01",
+    "feature_page_id": "39f027df-9053-80ae-bf59-cba95c9b464f",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8164-9e45-f7c12fad55e4"
+    ],
+    "operation_ids": [
+      "patch_app_user_session_navigation"
+    ]
+  },
+  {
+    "feature_id": "HD-02",
+    "feature_page_id": "39f027df-9053-800d-9bd3-c1e544188453",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8164-9e45-f7c12fad55e4"
+    ],
+    "operation_ids": [
+      "patch_app_user_session_navigation"
+    ]
+  },
+  {
+    "feature_id": "HD-03",
+    "feature_page_id": "3a3027df-9053-80f0-bcd1-ee1c709b1b02",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8164-9e45-f7c12fad55e4"
+    ],
+    "operation_ids": [
+      "patch_app_user_session_navigation"
+    ]
+  },
+  {
+    "feature_id": "HD-04",
+    "feature_page_id": "3a3027df-9053-8083-9acc-da8aa2441ec0",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8164-9e45-f7c12fad55e4"
+    ],
+    "operation_ids": [
+      "patch_app_user_session_navigation"
+    ]
+  },
+  {
+    "feature_id": "HM-01",
+    "feature_page_id": "39f027df-9053-805c-b93f-f0b1df1ea7d3",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8129-80a7-d8662036b275"
+    ],
+    "operation_ids": [
+      "get_app_user_home_navigation"
+    ]
+  },
+  {
+    "feature_id": "HM-02",
+    "feature_page_id": "39f027df-9053-8053-b8cf-ecd1fac8f3bf",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8129-80a7-d8662036b275"
+    ],
+    "operation_ids": [
+      "get_app_user_home_navigation"
+    ]
+  },
+  {
+    "feature_id": "HM-03",
+    "feature_page_id": "39f027df-9053-803a-a0c6-f48ff550d0e8",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8129-80a7-d8662036b275"
+    ],
+    "operation_ids": [
+      "get_app_user_home_navigation"
+    ]
+  },
+  {
+    "feature_id": "HM-04",
+    "feature_page_id": "39f027df-9053-8063-91c4-e5614478ba88",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8129-80a7-d8662036b275"
+    ],
+    "operation_ids": [
+      "get_app_user_home_navigation"
+    ]
+  },
+  {
+    "feature_id": "HM-05",
+    "feature_page_id": "3a3027df-9053-8091-a8f9-d0946d9238db",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8129-80a7-d8662036b275"
+    ],
+    "operation_ids": [
+      "get_app_user_home_navigation"
+    ]
+  },
+  {
+    "feature_id": "LG-01",
+    "feature_page_id": "3a3027df-9053-806a-9f48-d85a067e8f63",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8140-96da-c9b6ad7f8dce"
+    ],
+    "operation_ids": [
+      "post_auth_admin_login"
+    ]
+  },
+  {
+    "feature_id": "LG-02",
+    "feature_page_id": "3a3027df-9053-8096-80e4-c472f53f30e7",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8140-96da-c9b6ad7f8dce"
+    ],
+    "operation_ids": [
+      "post_auth_admin_login"
+    ]
+  },
+  {
+    "feature_id": "LG-03",
+    "feature_page_id": "3a3027df-9053-8045-8199-c34909feb0ea",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8140-96da-c9b6ad7f8dce"
+    ],
+    "operation_ids": [
+      "post_auth_admin_login"
+    ]
+  },
+  {
+    "feature_id": "LG-04",
+    "feature_page_id": "3a3027df-9053-8069-91a4-c8ac31dd0d3e",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8140-96da-c9b6ad7f8dce"
+    ],
+    "operation_ids": [
+      "post_auth_admin_login"
+    ]
+  },
+  {
+    "feature_id": "LG-05",
+    "feature_page_id": "3a3027df-9053-80aa-87be-c8a0bd4cec4d",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8140-96da-c9b6ad7f8dce"
+    ],
+    "operation_ids": [
+      "post_auth_admin_login"
+    ]
+  },
+  {
+    "feature_id": "LG-06",
+    "feature_page_id": "3a3027df-9053-80aa-916f-ee7fa492b0be",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8140-96da-c9b6ad7f8dce"
+    ],
+    "operation_ids": [
+      "post_auth_admin_login"
+    ]
+  },
+  {
+    "feature_id": "LG-07",
+    "feature_page_id": "3a3027df-9053-8012-b29f-e8306e2fe0d5",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8140-96da-c9b6ad7f8dce"
+    ],
+    "operation_ids": [
+      "post_auth_admin_login"
+    ]
+  },
+  {
+    "feature_id": "LG-13",
+    "feature_page_id": "3a6027df-9053-8132-ba2a-e8c7bce435b7",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8140-96da-c9b6ad7f8dce"
+    ],
+    "operation_ids": [
+      "post_auth_admin_login"
+    ]
+  },
+  {
+    "feature_id": "LG-ID-01",
+    "feature_page_id": "3a6027df-9053-81b6-b7c0-ed81a7e1134f",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8111-bb3e-fdd3b3a1e0ba"
+    ],
+    "operation_ids": [
+      "post_auth_admin_find_id"
+    ]
+  },
+  {
+    "feature_id": "LG-ID-02",
+    "feature_page_id": "3a6027df-9053-8129-b4f5-cd01972f2711",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8111-bb3e-fdd3b3a1e0ba"
+    ],
+    "operation_ids": [
+      "post_auth_admin_find_id"
+    ]
+  },
+  {
+    "feature_id": "LG-ID-03",
+    "feature_page_id": "3a6027df-9053-8162-bb13-f8b200c9990d",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8111-bb3e-fdd3b3a1e0ba"
+    ],
+    "operation_ids": [
+      "post_auth_admin_find_id"
+    ]
+  },
+  {
+    "feature_id": "LG-PW-01",
+    "feature_page_id": "3a6027df-9053-815e-9b6f-c5557e71cb34",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8198-b212-e6cd30a3755b"
+    ],
+    "operation_ids": [
+      "post_auth_admin_password_reset"
+    ]
+  },
+  {
+    "feature_id": "LG-PW-02",
+    "feature_page_id": "3a6027df-9053-8120-ab0f-f652477f273a",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8198-b212-e6cd30a3755b"
+    ],
+    "operation_ids": [
+      "post_auth_admin_password_reset"
+    ]
+  },
+  {
+    "feature_id": "LG-PW-03",
+    "feature_page_id": "3a6027df-9053-81f6-aac8-ddcc695a1161",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8198-b212-e6cd30a3755b"
+    ],
+    "operation_ids": [
+      "post_auth_admin_password_reset"
+    ]
+  },
+  {
+    "feature_id": "LG-PW-04",
+    "feature_page_id": "3a6027df-9053-8129-8c89-dbde649a333e",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8198-b212-e6cd30a3755b"
+    ],
+    "operation_ids": [
+      "post_auth_admin_password_reset"
+    ]
+  },
+  {
+    "feature_id": "LG-STU-01",
+    "feature_page_id": "3a3027df-9053-814d-8e6d-e8a2da811dc0",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8189-a401-dc27d8812591"
+    ],
+    "operation_ids": [
+      "post_auth_app_student_login"
+    ]
+  },
+  {
+    "feature_id": "LG-STU-02",
+    "feature_page_id": "3a3027df-9053-8073-a789-f70f07f34d48",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8189-a401-dc27d8812591"
+    ],
+    "operation_ids": [
+      "post_auth_app_student_login"
+    ]
+  },
+  {
+    "feature_id": "LG-STU-03",
+    "feature_page_id": "3a3027df-9053-8198-b448-ca24063250aa",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8189-a401-dc27d8812591"
+    ],
+    "operation_ids": [
+      "post_auth_app_student_login"
+    ]
+  },
+  {
+    "feature_id": "LG-STU-04",
+    "feature_page_id": "3a3027df-9053-81ab-81e5-d44a13d54866",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8189-a401-dc27d8812591"
+    ],
+    "operation_ids": [
+      "post_auth_app_student_login"
+    ]
+  },
+  {
+    "feature_id": "LG-STU-05",
+    "feature_page_id": "3a3027df-9053-813d-b995-dd9651e8b561",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8189-a401-dc27d8812591"
+    ],
+    "operation_ids": [
+      "post_auth_app_student_login"
+    ]
+  },
+  {
+    "feature_id": "LG-STU-06",
+    "feature_page_id": "3a3027df-9053-810e-86e4-f1f90032b7fc",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8189-a401-dc27d8812591"
+    ],
+    "operation_ids": [
+      "post_auth_app_student_login"
+    ]
+  },
+  {
+    "feature_id": "LG-STU-07",
+    "feature_page_id": "3a3027df-9053-81bc-9647-d1b34d3dcb8f",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8189-a401-dc27d8812591"
+    ],
+    "operation_ids": [
+      "post_auth_app_student_login"
+    ]
+  },
+  {
+    "feature_id": "LG-SU-01",
+    "feature_page_id": "3a4027df-9053-81bd-a867-f84066ba9b28",
+    "deprecated": false,
+    "api_page_ids": [
+      "9fd027df-9053-82c1-9b50-810e8bb3f636"
+    ],
+    "operation_ids": [
+      "post_auth_admin_sign_up"
+    ]
+  },
+  {
+    "feature_id": "LG-SU-02",
+    "feature_page_id": "3a4027df-9053-8116-8d1a-c3b723559b94",
+    "deprecated": false,
+    "api_page_ids": [
+      "9fd027df-9053-82c1-9b50-810e8bb3f636"
+    ],
+    "operation_ids": [
+      "post_auth_admin_sign_up"
+    ]
+  },
+  {
+    "feature_id": "LG-SU-03",
+    "feature_page_id": "3a3027df-9053-808e-bdbc-ec733bfce848",
+    "deprecated": false,
+    "api_page_ids": [
+      "9fd027df-9053-82c1-9b50-810e8bb3f636"
+    ],
+    "operation_ids": [
+      "post_auth_admin_sign_up"
+    ]
+  },
+  {
+    "feature_id": "LG-SU-04",
+    "feature_page_id": "3a4027df-9053-81a0-9193-ed387e8726bc",
+    "deprecated": false,
+    "api_page_ids": [
+      "9fd027df-9053-82c1-9b50-810e8bb3f636"
+    ],
+    "operation_ids": [
+      "post_auth_admin_sign_up"
+    ]
+  },
+  {
+    "feature_id": "LG-SU-05",
+    "feature_page_id": "3a4027df-9053-8196-92f4-d65610d4fdb3",
+    "deprecated": false,
+    "api_page_ids": [
+      "9fd027df-9053-82c1-9b50-810e8bb3f636"
+    ],
+    "operation_ids": [
+      "post_auth_admin_sign_up"
+    ]
+  },
+  {
+    "feature_id": "LG-TEA-01",
+    "feature_page_id": "39f027df-9053-80ea-bcfa-ef75d3bac28f",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81f1-a36a-f7a8f5b5ac4f"
+    ],
+    "operation_ids": [
+      "post_auth_app_teacher_login"
+    ]
+  },
+  {
+    "feature_id": "LG-TEA-02",
+    "feature_page_id": "3a3027df-9053-80d6-9b06-dc34300cdab2",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81f1-a36a-f7a8f5b5ac4f"
+    ],
+    "operation_ids": [
+      "post_auth_app_teacher_login"
+    ]
+  },
+  {
+    "feature_id": "LG-TEA-03",
+    "feature_page_id": "3a3027df-9053-80c0-9ed6-cd07150d25ba",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81f1-a36a-f7a8f5b5ac4f"
+    ],
+    "operation_ids": [
+      "post_auth_app_teacher_login"
+    ]
+  },
+  {
+    "feature_id": "LG-TEA-04",
+    "feature_page_id": "3a3027df-9053-80b0-a53f-db7393491f5e",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81f1-a36a-f7a8f5b5ac4f"
+    ],
+    "operation_ids": [
+      "post_auth_app_teacher_login"
+    ]
+  },
+  {
+    "feature_id": "LG-TEA-05",
+    "feature_page_id": "3a3027df-9053-80b7-aef6-f5e2173a80b2",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81f1-a36a-f7a8f5b5ac4f"
+    ],
+    "operation_ids": [
+      "post_auth_app_teacher_login"
+    ]
+  },
+  {
+    "feature_id": "LG-TEA-06",
+    "feature_page_id": "3a3027df-9053-8047-ac5d-f0b1377a0351",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81f1-a36a-f7a8f5b5ac4f"
+    ],
+    "operation_ids": [
+      "post_auth_app_teacher_login"
+    ]
+  },
+  {
+    "feature_id": "LG-TEA-07",
+    "feature_page_id": "3a3027df-9053-8056-afec-fb0c040424c6",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81f1-a36a-f7a8f5b5ac4f"
+    ],
+    "operation_ids": [
+      "post_auth_app_teacher_login"
+    ]
+  },
+  {
+    "feature_id": "MH-COM-01",
+    "feature_page_id": "3a6027df-9053-81ef-b299-fa1686b7a22d",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "MH-COM-02",
+    "feature_page_id": "3a6027df-9053-81a3-a99b-c94ce4a5e214",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "MH-COM-03",
+    "feature_page_id": "3a6027df-9053-81de-9e4d-cffbb5d2692f",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "MH-COM-04",
+    "feature_page_id": "3a5027df-9053-8022-a5b2-ef64d705e222",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "MH-COM-05",
+    "feature_page_id": "3a6027df-9053-81f4-a1b7-e3a06d706ec9",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "MH-COM-06",
+    "feature_page_id": "3a6027df-9053-8129-ba0d-cd19fa51e61d",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "MH-COM-07",
+    "feature_page_id": "3a6027df-9053-8110-a794-e927fe672784",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "MH-COM-08",
+    "feature_page_id": "3a6027df-9053-8121-b0f6-d0443881d4f3",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "MH-COM-09",
+    "feature_page_id": "3a6027df-9053-81af-8e81-f9b78719eb84",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "MH-COM-10",
+    "feature_page_id": "3a6027df-9053-81e1-b09e-cca7c8a5e4bf",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "MH-COM-11",
+    "feature_page_id": "3a6027df-9053-81e3-84f1-ed453dba5c90",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "MH-COM-12",
+    "feature_page_id": "3a6027df-9053-8191-81dd-dd4ff94a221e",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "MH-DSP-01",
+    "feature_page_id": "3a3027df-9053-80d9-9c7d-e7947f228e63",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-8019-a0dd-fc8641004f75"
+    ],
+    "operation_ids": [
+      "get_admin_student_by_studentId_training_history"
+    ]
+  },
+  {
+    "feature_id": "MH-DSP-02",
+    "feature_page_id": "3a3027df-9053-8044-8e70-dd0208c9f049",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a7027df-9053-81c2-8d40-fc53d564082a"
+    ],
+    "operation_ids": [
+      "get_admin_student_by_studentId_learning_summary"
+    ]
+  },
+  {
+    "feature_id": "MH-DSP-03",
+    "feature_page_id": "3a6027df-9053-81fc-b69d-ef213d0e85bf",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8187-839f-ccedc173f001"
+    ],
+    "operation_ids": [
+      "get_admin_student_by_studentId_learning_events"
+    ]
+  },
+  {
+    "feature_id": "MH-DSP-04",
+    "feature_page_id": "3a6027df-9053-818d-a0df-feeada4e3a56",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8187-839f-ccedc173f001"
+    ],
+    "operation_ids": [
+      "get_admin_student_by_studentId_learning_events"
+    ]
+  },
+  {
+    "feature_id": "MH-SAVE-01",
+    "feature_page_id": "3a3027df-9053-8087-a998-eb1c1378c925",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-80a0-90dc-eb81f1ba4287"
+    ],
+    "operation_ids": [
+      "patch_admin_student_by_studentId"
+    ]
+  },
+  {
+    "feature_id": "MH-SAVE-02",
+    "feature_page_id": "3a4027df-9053-8117-ade6-e3b9ca732271",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-80a0-90dc-eb81f1ba4287"
+    ],
+    "operation_ids": [
+      "patch_admin_student_by_studentId"
+    ]
+  },
+  {
+    "feature_id": "MH-SAVE-03",
+    "feature_page_id": "3a4027df-9053-8186-84af-ccbcbd6fe6bc",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-80a0-90dc-eb81f1ba4287"
+    ],
+    "operation_ids": [
+      "patch_admin_student_by_studentId"
+    ]
+  },
+  {
+    "feature_id": "MH-SAVE-04",
+    "feature_page_id": "3a4027df-9053-81a2-972a-f67f5a545cdc",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-80a0-90dc-eb81f1ba4287"
+    ],
+    "operation_ids": [
+      "patch_admin_student_by_studentId"
+    ]
+  },
+  {
+    "feature_id": "MH-SAVE-05",
+    "feature_page_id": "3a6027df-9053-81a8-a1d2-cab71264c864",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-80a0-90dc-eb81f1ba4287"
+    ],
+    "operation_ids": [
+      "patch_admin_student_by_studentId"
+    ]
+  },
+  {
+    "feature_id": "MH-SAVE-06",
+    "feature_page_id": "3a6027df-9053-8159-9bbf-dcf07d9c6646",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "MH-SAVE-07",
+    "feature_page_id": "3a6027df-9053-8154-9886-c7a492eceddc",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-80a0-90dc-eb81f1ba4287"
+    ],
+    "operation_ids": [
+      "patch_admin_student_by_studentId"
+    ]
+  },
+  {
+    "feature_id": "MH-STAT-01",
+    "feature_page_id": "3a6027df-9053-81d2-81c6-c86f59bd3d75",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81d7-ad43-d10048c7404e"
+    ],
+    "operation_ids": [
+      "get_admin_student_by_studentId_reading_accuracy_trend"
+    ]
+  },
+  {
+    "feature_id": "RP-COM-04",
+    "feature_page_id": "3a6027df-9053-810c-a1ff-d7c55046a47c",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "RP-COM-05",
+    "feature_page_id": "3a6027df-9053-81b5-a3a5-efe1fe2a775d",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "RP-COMP-01",
+    "feature_page_id": "3a3027df-9053-8047-b70d-d3040bc33620",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "RP-COMP-02",
+    "feature_page_id": "3a4027df-9053-816d-a40a-d7cb5e6ec285",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "RP-COMP-03",
+    "feature_page_id": "3a4027df-9053-81ec-b4a6-d0105a25198c",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "RP-DSP-01",
+    "feature_page_id": "3a3027df-9053-80ed-8ccb-ffd2f90cb883",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-801e-89df-cb44a0b67406"
+    ],
+    "operation_ids": [
+      "get_admin_report_by_reportId"
+    ]
+  },
+  {
+    "feature_id": "RP-DSP-02",
+    "feature_page_id": "3a3027df-9053-800b-a899-d3de4cb3a46a",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8130-8e99-df15aa032554"
+    ],
+    "operation_ids": [
+      "patch_admin_report_by_reportId_teacher_memo"
+    ]
+  },
+  {
+    "feature_id": "RP-DSP-03",
+    "feature_page_id": "3a3027df-9053-8024-93b6-c06667c72140",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-801e-89df-cb44a0b67406"
+    ],
+    "operation_ids": [
+      "get_admin_report_by_reportId"
+    ]
+  },
+  {
+    "feature_id": "RP-DSP-04",
+    "feature_page_id": "3a4027df-9053-817c-99ce-e17cb87a7ef7",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-801e-89df-cb44a0b67406"
+    ],
+    "operation_ids": [
+      "get_admin_report_by_reportId"
+    ]
+  },
+  {
+    "feature_id": "RP-DSP-05",
+    "feature_page_id": "3a4027df-9053-8132-8ef4-f869b3e596ae",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-801e-89df-cb44a0b67406"
+    ],
+    "operation_ids": [
+      "get_admin_report_by_reportId"
+    ]
+  },
+  {
+    "feature_id": "RP-DSP-06",
+    "feature_page_id": "3a6027df-9053-815f-aa05-e6d4e317225b",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "RP-DSP-07",
+    "feature_page_id": "3a6027df-9053-8103-b866-ec4c83c7af11",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-801e-89df-cb44a0b67406"
+    ],
+    "operation_ids": [
+      "get_admin_report_by_reportId"
+    ]
+  },
+  {
+    "feature_id": "RP-FDBK-01",
+    "feature_page_id": "3a5027df-9053-8043-a5ab-c0c5810a5a6c",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "RP-GAZE-01",
+    "feature_page_id": "3a5027df-9053-80f9-9340-e4a746987686",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8089-8843-ff0e3b71da4d"
+    ],
+    "operation_ids": [
+      "post_admin_report_by_reportId_gaze_analysis"
+    ]
+  },
+  {
+    "feature_id": "RP-GEN-01",
+    "feature_page_id": "3a4027df-9053-818c-94aa-eb635ea9b98c",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-80ae-95bc-fcf02c9d9773"
+    ],
+    "operation_ids": [
+      "post_admin_report"
+    ]
+  },
+  {
+    "feature_id": "RP-GEN-02",
+    "feature_page_id": "3a4027df-9053-819a-ac78-edb80fcd9d7a",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-80ae-95bc-fcf02c9d9773"
+    ],
+    "operation_ids": [
+      "post_admin_report"
+    ]
+  },
+  {
+    "feature_id": "RP-GEN-03",
+    "feature_page_id": "3a4027df-9053-8156-b40f-f2b44289fbfc",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-80ae-95bc-fcf02c9d9773"
+    ],
+    "operation_ids": [
+      "post_admin_report"
+    ]
+  },
+  {
+    "feature_id": "RP-GEN-04",
+    "feature_page_id": "3a6027df-9053-811c-aee1-f5c13cf6d0f9",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "RP-LINK-01",
+    "feature_page_id": "3a5027df-9053-801f-a49d-f7856937dbe4",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "RP-LINK-02",
+    "feature_page_id": "3a5027df-9053-805e-a40c-ea26b2a4a0e0",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "RP-LINK-03",
+    "feature_page_id": "3a6027df-9053-81a7-a423-e2a7d5c119af",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "RP-LINK-04",
+    "feature_page_id": "3a6027df-9053-8115-89bd-cc1d0c8b23d9",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "RP-LINK-05",
+    "feature_page_id": "3a6027df-9053-818f-821a-f0e836117a53",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "RP-LINK-06",
+    "feature_page_id": "3a6027df-9053-8104-b8d0-f67101526de2",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "RP-SAVE-01",
+    "feature_page_id": "3a3027df-9053-80f7-a47b-c4d22538679d",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-80ae-95bc-fcf02c9d9773"
+    ],
+    "operation_ids": [
+      "post_admin_report"
+    ]
+  },
+  {
+    "feature_id": "RP-SAVE-02",
+    "feature_page_id": "3a4027df-9053-81fa-9e26-ed5e424a67bd",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "RP-SAVE-03",
+    "feature_page_id": "3a4027df-9053-8191-ac1b-cda95d3e3476",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "RP-SEL-01",
+    "feature_page_id": "3a3027df-9053-802d-b7aa-fd8442e32a24",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-810b-8b14-c89c4cce8aa8"
+    ],
+    "operation_ids": [
+      "get_admin_report_selection"
+    ]
+  },
+  {
+    "feature_id": "RP-SEL-02",
+    "feature_page_id": "3a4027df-9053-814f-af16-d8d29c593394",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-810b-8b14-c89c4cce8aa8"
+    ],
+    "operation_ids": [
+      "get_admin_report_selection"
+    ]
+  },
+  {
+    "feature_id": "RP-SEL-03",
+    "feature_page_id": "3a4027df-9053-8138-b277-f20557b41fbc",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-810b-8b14-c89c4cce8aa8"
+    ],
+    "operation_ids": [
+      "get_admin_report_selection"
+    ]
+  },
+  {
+    "feature_id": "RP-SEL-04",
+    "feature_page_id": "3a6027df-9053-81be-bc61-c99456d8a8a1",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-810b-8b14-c89c4cce8aa8"
+    ],
+    "operation_ids": [
+      "get_admin_report_selection"
+    ]
+  },
+  {
+    "feature_id": "SB-COM-01",
+    "feature_page_id": "3a3027df-9053-8035-9636-d0f9fc87ecae",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-8038-b5c9-c4018efc7e31"
+    ],
+    "operation_ids": [
+      "post_auth_admin_logout"
+    ]
+  },
+  {
+    "feature_id": "SB-COM-02",
+    "feature_page_id": "3a3027df-9053-8097-b169-f90c961c3438",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8138-9a02-c0774dc1e399"
+    ],
+    "operation_ids": [
+      "get_admin_navigation_sidebar"
+    ]
+  },
+  {
+    "feature_id": "SB-COM-03",
+    "feature_page_id": "3a3027df-9053-8012-ac40-cfe57e21701a",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8138-9a02-c0774dc1e399"
+    ],
+    "operation_ids": [
+      "get_admin_navigation_sidebar"
+    ]
+  },
+  {
+    "feature_id": "SB-COM-04",
+    "feature_page_id": "3a3027df-9053-808e-b5e1-e09473781c76",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8138-9a02-c0774dc1e399"
+    ],
+    "operation_ids": [
+      "get_admin_navigation_sidebar"
+    ]
+  },
+  {
+    "feature_id": "SB-COM-05",
+    "feature_page_id": "3a3027df-9053-807b-96d1-c6a37589cb65",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8138-9a02-c0774dc1e399"
+    ],
+    "operation_ids": [
+      "get_admin_navigation_sidebar"
+    ]
+  },
+  {
+    "feature_id": "SB-COM-06",
+    "feature_page_id": "3a4027df-9053-8185-b40c-c186e510e3aa",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8138-9a02-c0774dc1e399"
+    ],
+    "operation_ids": [
+      "get_admin_navigation_sidebar"
+    ]
+  },
+  {
+    "feature_id": "SB-COM-07",
+    "feature_page_id": "3a4027df-9053-81ce-be71-f9571d9a318a",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8138-9a02-c0774dc1e399"
+    ],
+    "operation_ids": [
+      "get_admin_navigation_sidebar"
+    ]
+  },
+  {
+    "feature_id": "SB-COM-08",
+    "feature_page_id": "3a6027df-9053-81d7-ab00-e2b534319a31",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8138-9a02-c0774dc1e399"
+    ],
+    "operation_ids": [
+      "get_admin_navigation_sidebar"
+    ]
+  },
+  {
+    "feature_id": "SB-DSP-01",
+    "feature_page_id": "3a3027df-9053-80d9-83ae-e24033d57265",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-80ea-9fed-d80e2d892480"
+    ],
+    "operation_ids": [
+      "get_admin_teacher_info"
+    ]
+  },
+  {
+    "feature_id": "SB-DSP-02",
+    "feature_page_id": "3a4027df-9053-818d-a9c0-ccd138ba67f0",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8192-bb9f-d7cebab96054"
+    ],
+    "operation_ids": [
+      "get_admin_teacher_profile_view"
+    ]
+  },
+  {
+    "feature_id": "SB-SAVE-01",
+    "feature_page_id": "3a4027df-9053-8128-a8f4-d9aa3a1aa725",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-816b-a11b-de7d6ad251d2"
+    ],
+    "operation_ids": [
+      "patch_admin_teacher_profile_save_state"
+    ]
+  },
+  {
+    "feature_id": "SB-SAVE-02",
+    "feature_page_id": "3a4027df-9053-818b-ac95-e5e693df25a4",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-816b-a11b-de7d6ad251d2"
+    ],
+    "operation_ids": [
+      "patch_admin_teacher_profile_save_state"
+    ]
+  },
+  {
+    "feature_id": "SB-SAVE-03",
+    "feature_page_id": "3a4027df-9053-81ff-b97e-e8311dbae4f9",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-816b-a11b-de7d6ad251d2"
+    ],
+    "operation_ids": [
+      "patch_admin_teacher_profile_save_state"
+    ]
+  },
+  {
+    "feature_id": "SB-SAVE-04",
+    "feature_page_id": "3a4027df-9053-81cc-934a-f4e4e36a122b",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-816b-a11b-de7d6ad251d2"
+    ],
+    "operation_ids": [
+      "patch_admin_teacher_profile_save_state"
+    ]
+  },
+  {
+    "feature_id": "SB-SAVE-05",
+    "feature_page_id": "3a4027df-9053-81a4-95c9-c630b60cb0c9",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-816b-a11b-de7d6ad251d2"
+    ],
+    "operation_ids": [
+      "patch_admin_teacher_profile_save_state"
+    ]
+  },
+  {
+    "feature_id": "SB-SEL-01",
+    "feature_page_id": "3a4027df-9053-8150-a10b-f6ea5b5bac3d",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8100-9526-f27411a2b0be"
+    ],
+    "operation_ids": [
+      "get_admin_teacher_profile_edit"
+    ]
+  },
+  {
+    "feature_id": "SB-SEL-02",
+    "feature_page_id": "3a4027df-9053-81d0-9bf2-fbeaf9af2c26",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8100-9526-f27411a2b0be"
+    ],
+    "operation_ids": [
+      "get_admin_teacher_profile_edit"
+    ]
+  },
+  {
+    "feature_id": "SB-SEL-03",
+    "feature_page_id": "3a6027df-9053-811c-88a7-e4feb4fb4449",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8100-9526-f27411a2b0be"
+    ],
+    "operation_ids": [
+      "get_admin_teacher_profile_edit"
+    ]
+  },
+  {
+    "feature_id": "SB-SEL-04",
+    "feature_page_id": "3a6027df-9053-8139-9de1-e0a6a950298a",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8100-9526-f27411a2b0be"
+    ],
+    "operation_ids": [
+      "get_admin_teacher_profile_edit"
+    ]
+  },
+  {
+    "feature_id": "SB-SEL-05",
+    "feature_page_id": "3a6027df-9053-81e9-8bab-c8ba88316ada",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8100-9526-f27411a2b0be"
+    ],
+    "operation_ids": [
+      "get_admin_teacher_profile_edit"
+    ]
+  },
+  {
+    "feature_id": "SM-DSP-01",
+    "feature_page_id": "3a3027df-9053-8000-9ffb-d400b0f8e931",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-80b9-8ab9-d670ad9b07c9"
+    ],
+    "operation_ids": [
+      "get_admin_student_by_studentId"
+    ]
+  },
+  {
+    "feature_id": "SM-SAVE-01",
+    "feature_page_id": "3a3027df-9053-80d7-9f07-ff749158f176",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-80b7-810d-d63b56e56f32"
+    ],
+    "operation_ids": [
+      "post_admin_student"
+    ]
+  },
+  {
+    "feature_id": "SM-SAVE-02",
+    "feature_page_id": "3a3027df-9053-8073-9ed5-fdf3486a1414",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-806f-b574-e0ce6b9f6a45"
+    ],
+    "operation_ids": [
+      "delete_admin_student_by_studentId"
+    ]
+  },
+  {
+    "feature_id": "SM-SAVE-03",
+    "feature_page_id": "3a3027df-9053-8000-84cb-f21441fb694a",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-80a0-90dc-eb81f1ba4287"
+    ],
+    "operation_ids": [
+      "patch_admin_student_by_studentId"
+    ]
+  },
+  {
+    "feature_id": "SM-SAVE-04",
+    "feature_page_id": "3a4027df-9053-8116-9e79-ec50f42b028e",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8183-bf50-d761e4717afb"
+    ],
+    "operation_ids": [
+      "patch_admin_student_by_studentId_form_submit"
+    ]
+  },
+  {
+    "feature_id": "SM-SAVE-05",
+    "feature_page_id": "3a3027df-9053-80af-a698-fda19c5c80e7",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8183-bf50-d761e4717afb"
+    ],
+    "operation_ids": [
+      "patch_admin_student_by_studentId_form_submit"
+    ]
+  },
+  {
+    "feature_id": "SM-SAVE-06",
+    "feature_page_id": "3a3027df-9053-806d-987b-e2dd51541224",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8183-bf50-d761e4717afb"
+    ],
+    "operation_ids": [
+      "patch_admin_student_by_studentId_form_submit"
+    ]
+  },
+  {
+    "feature_id": "SM-SAVE-07",
+    "feature_page_id": "3a4027df-9053-8117-ab7e-cb5d60f7f7d2",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8183-bf50-d761e4717afb"
+    ],
+    "operation_ids": [
+      "patch_admin_student_by_studentId_form_submit"
+    ]
+  },
+  {
+    "feature_id": "SM-SAVE-08",
+    "feature_page_id": "3a4027df-9053-8134-95a9-c0b7e9e639e3",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8183-bf50-d761e4717afb"
+    ],
+    "operation_ids": [
+      "patch_admin_student_by_studentId_form_submit"
+    ]
+  },
+  {
+    "feature_id": "SM-SAVE-09",
+    "feature_page_id": "3a4027df-9053-81b8-9a43-dc995f01b8dd",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8183-bf50-d761e4717afb"
+    ],
+    "operation_ids": [
+      "patch_admin_student_by_studentId_form_submit"
+    ]
+  },
+  {
+    "feature_id": "SM-SAVE-10",
+    "feature_page_id": "3a4027df-9053-8160-83d6-e7b106ba0598",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8183-bf50-d761e4717afb"
+    ],
+    "operation_ids": [
+      "patch_admin_student_by_studentId_form_submit"
+    ]
+  },
+  {
+    "feature_id": "SM-SAVE-11",
+    "feature_page_id": "3a4027df-9053-81ad-97cd-e6f2497e6fea",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8183-bf50-d761e4717afb"
+    ],
+    "operation_ids": [
+      "patch_admin_student_by_studentId_form_submit"
+    ]
+  },
+  {
+    "feature_id": "SM-SAVE-12",
+    "feature_page_id": "3a4027df-9053-810e-bfc1-f9f2b38401f6",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8183-bf50-d761e4717afb"
+    ],
+    "operation_ids": [
+      "patch_admin_student_by_studentId_form_submit"
+    ]
+  },
+  {
+    "feature_id": "SM-SAVE-13",
+    "feature_page_id": "3a4027df-9053-817e-9794-d186b11c6852",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8183-bf50-d761e4717afb"
+    ],
+    "operation_ids": [
+      "patch_admin_student_by_studentId_form_submit"
+    ]
+  },
+  {
+    "feature_id": "SM-SEL-01",
+    "feature_page_id": "3a3027df-9053-807b-b5a6-f0f4525f613d",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81d1-90a9-e85b3a716e0b"
+    ],
+    "operation_ids": [
+      "get_admin_student_by_studentId_form"
+    ]
+  },
+  {
+    "feature_id": "SM-SEL-02",
+    "feature_page_id": "3a4027df-9053-818a-ad15-c670538e97a2",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81d1-90a9-e85b3a716e0b"
+    ],
+    "operation_ids": [
+      "get_admin_student_by_studentId_form"
+    ]
+  },
+  {
+    "feature_id": "SM-SEL-03",
+    "feature_page_id": "3a4027df-9053-81a4-8c0e-ebd916cdcbe4",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81d1-90a9-e85b3a716e0b"
+    ],
+    "operation_ids": [
+      "get_admin_student_by_studentId_form"
+    ]
+  },
+  {
+    "feature_id": "SM-SEL-04",
+    "feature_page_id": "3a6027df-9053-8195-a423-e0c47d553680",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81d1-90a9-e85b3a716e0b"
+    ],
+    "operation_ids": [
+      "get_admin_student_by_studentId_form"
+    ]
+  },
+  {
+    "feature_id": "ST-BRANCH-01",
+    "feature_page_id": "3a3027df-9053-8010-a94c-ffd25255b519",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8095-b6e0-cc4a2503c036"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_lines_by_lineId_branches"
+    ]
+  },
+  {
+    "feature_id": "ST-BRANCH-02",
+    "feature_page_id": "3a3027df-9053-80fe-96ca-c8c0aad5553f",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8095-b6e0-cc4a2503c036"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_lines_by_lineId_branches"
+    ]
+  },
+  {
+    "feature_id": "ST-BRANCH-03",
+    "feature_page_id": "3a3027df-9053-80c2-a65c-ecfd62a16a4c",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8095-b6e0-cc4a2503c036"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_lines_by_lineId_branches"
+    ]
+  },
+  {
+    "feature_id": "ST-BRANCH-04",
+    "feature_page_id": "3a3027df-9053-80b4-b5f1-f199d3fa45e6",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8095-b6e0-cc4a2503c036"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_lines_by_lineId_branches"
+    ]
+  },
+  {
+    "feature_id": "ST-BRANCH-05",
+    "feature_page_id": "3a3027df-9053-80e7-9434-e00344bf1154",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8095-b6e0-cc4a2503c036"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_lines_by_lineId_branches"
+    ]
+  },
+  {
+    "feature_id": "ST-DTL-01",
+    "feature_page_id": "3a3027df-9053-8082-8a53-fc9bf3113e08",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8052-809e-d05e5de42c92"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_by_storyTemplateId"
+    ]
+  },
+  {
+    "feature_id": "ST-DTL-02",
+    "feature_page_id": "3a3027df-9053-808c-ae96-ef8b95c51f59",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81e5-9326-eb66e34ba13b"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_by_storyTemplateId_detail_state"
+    ]
+  },
+  {
+    "feature_id": "ST-DTL-03",
+    "feature_page_id": "3a3027df-9053-80c4-99f0-f98bf15fa7ae",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81e5-9326-eb66e34ba13b"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_by_storyTemplateId_detail_state"
+    ]
+  },
+  {
+    "feature_id": "ST-DTL-04",
+    "feature_page_id": "3a3027df-9053-80b8-a3ff-d3514191b7c2",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8049-832f-cf2d2c2ee174"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyTemplateId_sessions"
+    ]
+  },
+  {
+    "feature_id": "ST-DTL-05",
+    "feature_page_id": "3a3027df-9053-80d4-af4d-ccc2213a3a79",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81e5-9326-eb66e34ba13b"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_by_storyTemplateId_detail_state"
+    ]
+  },
+  {
+    "feature_id": "ST-DTL-06",
+    "feature_page_id": "3a3027df-9053-80da-8053-e360a03b6fc3",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8046-a519-e863bbbfed03"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_by_storyId_resume"
+    ]
+  },
+  {
+    "feature_id": "ST-DTL-07",
+    "feature_page_id": "3a4027df-9053-8094-bb5e-cc62f0dae61e",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8046-a519-e863bbbfed03"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_by_storyId_resume"
+    ]
+  },
+  {
+    "feature_id": "ST-GAZE-01",
+    "feature_page_id": "3a5027df-9053-8014-8650-f1972ff87fd4",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a5027df-9053-8051-a2a3-e23b7781fc59"
+    ],
+    "operation_ids": [
+      "post_app_gaze_sessions"
+    ]
+  },
+  {
+    "feature_id": "ST-GAZE-02",
+    "feature_page_id": "3a5027df-9053-8090-9012-fddb0c1149b7",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8193-b8dd-e16cf514d049"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_gaze_analysis"
+    ]
+  },
+  {
+    "feature_id": "ST-GAZE-03",
+    "feature_page_id": "3a5027df-9053-80a0-8f00-d96adedd6152",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a5027df-9053-8080-b5bd-f724976c2ed1"
+    ],
+    "operation_ids": [
+      "post_app_gaze_sessions_by_gazeSessionId_analysis_results"
+    ]
+  },
+  {
+    "feature_id": "ST-GAZE-04",
+    "feature_page_id": "3a5027df-9053-804e-9701-c2fc64217b19",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a5027df-9053-80b0-845f-fe94f2ca6fea"
+    ],
+    "operation_ids": [
+      "patch_app_gaze_sessions_by_gazeSessionId_end"
+    ]
+  },
+  {
+    "feature_id": "ST-GUIDE-01",
+    "feature_page_id": "3a3027df-9053-80e9-bde7-deb58d27a12a",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8132-a298-e7d085852057"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_by_storyId_guide"
+    ]
+  },
+  {
+    "feature_id": "ST-GUIDE-02",
+    "feature_page_id": "3a3027df-9053-8013-b588-ce744c582495",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8132-a298-e7d085852057"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_by_storyId_guide"
+    ]
+  },
+  {
+    "feature_id": "ST-GUIDE-03",
+    "feature_page_id": "3a3027df-9053-80e9-90e6-f0d13267f617",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8132-a298-e7d085852057"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_by_storyId_guide"
+    ]
+  },
+  {
+    "feature_id": "ST-LIB-01",
+    "feature_page_id": "3a3027df-9053-80b5-b8ac-dd9d7b36b079",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8057-9ea8-dfce6b6f42bd"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId"
+    ]
+  },
+  {
+    "feature_id": "ST-LIB-02",
+    "feature_page_id": "3a3027df-9053-8015-8c8d-fcca1ad68f6d",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8113-85ed-f7176c1d605b"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_library"
+    ]
+  },
+  {
+    "feature_id": "ST-LIB-03",
+    "feature_page_id": "3a3027df-9053-80df-a13b-e68725ab7fd4",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8113-85ed-f7176c1d605b"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_library"
+    ]
+  },
+  {
+    "feature_id": "ST-LIB-04",
+    "feature_page_id": "3a3027df-9053-80c2-931f-cdef24c45fd7",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8113-85ed-f7176c1d605b"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_library"
+    ]
+  },
+  {
+    "feature_id": "ST-LIB-05",
+    "feature_page_id": "3a3027df-9053-8045-ac99-f86190000e88",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8113-85ed-f7176c1d605b"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_library"
+    ]
+  },
+  {
+    "feature_id": "ST-LIB-06",
+    "feature_page_id": "3a3027df-9053-8082-9e41-fcfcde30efab",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8113-85ed-f7176c1d605b"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_library"
+    ]
+  },
+  {
+    "feature_id": "ST-LIB-07",
+    "feature_page_id": "3a4027df-9053-80ce-bd08-cbad97e86106",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8057-9ea8-dfce6b6f42bd"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId"
+    ]
+  },
+  {
+    "feature_id": "ST-READ-01",
+    "feature_page_id": "3a3027df-9053-803a-80c1-ee16715e04ba",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8020-bab8-ed3764429102"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_by_storyId_lines_by_lineId"
+    ]
+  },
+  {
+    "feature_id": "ST-READ-02",
+    "feature_page_id": "3a3027df-9053-80e4-9366-e53a648ee91c",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-813c-9486-f856352f0d08"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_by_storyId_navigation"
+    ]
+  },
+  {
+    "feature_id": "ST-READ-03",
+    "feature_page_id": "3a3027df-9053-8082-8bf8-ca3397f5f1a8",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-813c-9486-f856352f0d08"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_by_storyId_navigation"
+    ]
+  },
+  {
+    "feature_id": "ST-READ-04",
+    "feature_page_id": "3a3027df-9053-80af-a969-f6aae4de9743",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-813c-9486-f856352f0d08"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_by_storyId_navigation"
+    ]
+  },
+  {
+    "feature_id": "ST-READ-05",
+    "feature_page_id": "3a3027df-9053-80db-ad2a-f14ca7c9a3be",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-813c-9486-f856352f0d08"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_by_storyId_navigation"
+    ]
+  },
+  {
+    "feature_id": "ST-READ-06",
+    "feature_page_id": "3a3027df-9053-802e-931a-ecb4c9fbd944",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-805c-9c07-ed586343aed8"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_by_storyId_lines"
+    ]
+  },
+  {
+    "feature_id": "ST-READ-07",
+    "feature_page_id": "3a3027df-9053-8006-9cce-dd6b545881c3",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-805c-9c07-ed586343aed8"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId_by_storyId_lines"
+    ]
+  },
+  {
+    "feature_id": "ST-READ-08",
+    "feature_page_id": "3a3027df-9053-807d-aa82-cc771d8f741e",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8095-b6e0-cc4a2503c036"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_lines_by_lineId_branches"
+    ]
+  },
+  {
+    "feature_id": "ST-READ-09",
+    "feature_page_id": "3a3027df-9053-80f5-944b-c3e34e688717",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8095-b6e0-cc4a2503c036"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_lines_by_lineId_branches"
+    ]
+  },
+  {
+    "feature_id": "ST-STT-01",
+    "feature_page_id": "3a3027df-9053-8061-89f5-fc6084cb3b3d",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81b9-b153-c7645fd71bbf"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_speech"
+    ]
+  },
+  {
+    "feature_id": "ST-STT-02",
+    "feature_page_id": "3a3027df-9053-80b1-900a-cc3e9eec188c",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81b9-b153-c7645fd71bbf"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_speech"
+    ]
+  },
+  {
+    "feature_id": "ST-STT-03",
+    "feature_page_id": "3a3027df-9053-80c8-a5f9-cecae03234fc",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81b9-b153-c7645fd71bbf"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_speech"
+    ]
+  },
+  {
+    "feature_id": "ST-STT-04",
+    "feature_page_id": "3a3027df-9053-80e2-b0b4-f90cf2513302",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81b9-b153-c7645fd71bbf"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_speech"
+    ]
+  },
+  {
+    "feature_id": "ST-STT-05",
+    "feature_page_id": "3a3027df-9053-80d4-b313-c0d2daa706c3",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81b9-b153-c7645fd71bbf"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_speech"
+    ]
+  },
+  {
+    "feature_id": "ST-STT-06",
+    "feature_page_id": "3a3027df-9053-80aa-ab6c-d9aa4e914adb",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81b9-b153-c7645fd71bbf"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_speech"
+    ]
+  },
+  {
+    "feature_id": "ST-STT-07",
+    "feature_page_id": "3a3027df-9053-808e-bdbc-ed9bb29423de",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81b9-b153-c7645fd71bbf"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_speech"
+    ]
+  },
+  {
+    "feature_id": "ST-STT-08",
+    "feature_page_id": "3a3027df-9053-8096-927a-e2c29a845cd4",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81b9-b153-c7645fd71bbf"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_speech"
+    ]
+  },
+  {
+    "feature_id": "ST-TTS-01",
+    "feature_page_id": "3a3027df-9053-8020-9acd-f5906745f0d3",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81df-826f-f422d6aa1691"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_tts"
+    ]
+  },
+  {
+    "feature_id": "ST-TTS-02",
+    "feature_page_id": "3a3027df-9053-8087-9e60-ead3ed94f3f6",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81df-826f-f422d6aa1691"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_tts"
+    ]
+  },
+  {
+    "feature_id": "ST-TTS-03",
+    "feature_page_id": "3a3027df-9053-809b-af34-d33a08163ac3",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81df-826f-f422d6aa1691"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_tts"
+    ]
+  },
+  {
+    "feature_id": "ST-TTS-04",
+    "feature_page_id": "3a3027df-9053-8099-aea9-fc4dbd8724a8",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81df-826f-f422d6aa1691"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_tts"
+    ]
+  },
+  {
+    "feature_id": "ST-TTS-05",
+    "feature_page_id": "3a3027df-9053-80e4-9ffa-cc5801d37f6b",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81df-826f-f422d6aa1691"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyId_tts"
+    ]
+  },
+  {
+    "feature_id": "TE-AUD-01",
+    "feature_page_id": "3a3027df-9053-80b3-99aa-e478c5c5ba86",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-803b-b423-c936f27929ff"
+    ],
+    "operation_ids": [
+      "get_app_test_by_studentId_questions_by_questionNumber"
+    ]
+  },
+  {
+    "feature_id": "TE-AUD-02",
+    "feature_page_id": "3a3027df-9053-804f-b731-fc50fbba63e5",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81d0-b656-f421dcb8290e"
+    ],
+    "operation_ids": [
+      "get_app_test_by_studentId_audio_state"
+    ]
+  },
+  {
+    "feature_id": "TE-AUD-03",
+    "feature_page_id": "3a3027df-9053-80b3-ac91-d285d176b6be",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81d0-b656-f421dcb8290e"
+    ],
+    "operation_ids": [
+      "get_app_test_by_studentId_audio_state"
+    ]
+  },
+  {
+    "feature_id": "TE-COM-01",
+    "feature_page_id": "39f027df-9053-80b2-b9a3-cb504e1c00f8",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-803b-b423-c936f27929ff"
+    ],
+    "operation_ids": [
+      "get_app_test_by_studentId_questions_by_questionNumber"
+    ]
+  },
+  {
+    "feature_id": "TE-COM-02",
+    "feature_page_id": "39f027df-9053-801e-a91f-d4547a027cb8",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-803b-b423-c936f27929ff"
+    ],
+    "operation_ids": [
+      "get_app_test_by_studentId_questions_by_questionNumber"
+    ]
+  },
+  {
+    "feature_id": "TE-COM-03",
+    "feature_page_id": "3a3027df-9053-80e4-8a03-fad5dd5fc60c",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81ce-a81f-eea129d41ef1"
+    ],
+    "operation_ids": [
+      "patch_app_test_by_studentId_question_navigation"
+    ]
+  },
+  {
+    "feature_id": "TE-COM-04",
+    "feature_page_id": "39f027df-9053-8029-b59d-f5e66c73cc9f",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81ce-a81f-eea129d41ef1"
+    ],
+    "operation_ids": [
+      "patch_app_test_by_studentId_question_navigation"
+    ]
+  },
+  {
+    "feature_id": "TE-COMP-01",
+    "feature_page_id": "3a3027df-9053-806a-aa0a-dfd62e74aabe",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8031-b477-e074a181edd4"
+    ],
+    "operation_ids": [
+      "post_app_test_by_studentId_questions_by_questionNumber_complete"
+    ]
+  },
+  {
+    "feature_id": "TE-DSP-01",
+    "feature_page_id": "39f027df-9053-808b-8557-db03c80fd13f",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-803b-b423-c936f27929ff"
+    ],
+    "operation_ids": [
+      "get_app_test_by_studentId_questions_by_questionNumber"
+    ]
+  },
+  {
+    "feature_id": "TE-DSP-02",
+    "feature_page_id": "3a3027df-9053-80d1-8511-cf1c8988bde2",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-803b-b423-c936f27929ff"
+    ],
+    "operation_ids": [
+      "get_app_test_by_studentId_questions_by_questionNumber"
+    ]
+  },
+  {
+    "feature_id": "TE-DSP-03",
+    "feature_page_id": "3a3027df-9053-80ff-9ede-e5e3b2f84dae",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-803b-b423-c936f27929ff"
+    ],
+    "operation_ids": [
+      "get_app_test_by_studentId_questions_by_questionNumber"
+    ]
+  },
+  {
+    "feature_id": "TE-DSP-04",
+    "feature_page_id": "3a3027df-9053-807f-88c2-d1f4e6fa4c23",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81f5-9245-edd340a09147"
+    ],
+    "operation_ids": [
+      "get_app_test_by_studentId_questions_display_state"
+    ]
+  },
+  {
+    "feature_id": "TE-GAZE-01",
+    "feature_page_id": "3a5027df-9053-80b8-9942-f6e376234c68",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a5027df-9053-8051-a2a3-e23b7781fc59"
+    ],
+    "operation_ids": [
+      "post_app_gaze_sessions"
+    ]
+  },
+  {
+    "feature_id": "TE-GAZE-02",
+    "feature_page_id": "3a5027df-9053-805a-8170-ed49a88f3407",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a5027df-9053-80b0-845f-fe94f2ca6fea"
+    ],
+    "operation_ids": [
+      "patch_app_gaze_sessions_by_gazeSessionId_end"
+    ]
+  },
+  {
+    "feature_id": "TE-GAZE-03",
+    "feature_page_id": "3a5027df-9053-805f-b133-ec495d4058aa",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a5027df-9053-8080-b5bd-f724976c2ed1"
+    ],
+    "operation_ids": [
+      "post_app_gaze_sessions_by_gazeSessionId_analysis_results"
+    ]
+  },
+  {
+    "feature_id": "TE-GAZE-04",
+    "feature_page_id": "3a5027df-9053-80f8-bc32-d8ca60387945",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a5027df-9053-8080-b5bd-f724976c2ed1"
+    ],
+    "operation_ids": [
+      "post_app_gaze_sessions_by_gazeSessionId_analysis_results"
+    ]
+  },
+  {
+    "feature_id": "TE-GAZE-05",
+    "feature_page_id": "3a5027df-9053-80d4-b974-f91b2f2328bf",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a5027df-9053-8080-b5bd-f724976c2ed1"
+    ],
+    "operation_ids": [
+      "post_app_gaze_sessions_by_gazeSessionId_analysis_results"
+    ]
+  },
+  {
+    "feature_id": "TE-GUIDE-01",
+    "feature_page_id": "3a2027df-9053-8032-ba62-e9d953b2b8dd",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-80a9-9f1f-c2404d3011bc"
+    ],
+    "operation_ids": [
+      "get_app_test_by_studentId_intro"
+    ]
+  },
+  {
+    "feature_id": "TE-GUIDE-02",
+    "feature_page_id": "3a2027df-9053-80b0-bdd1-c7bee68a87af",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81a7-ad55-f42d31500dab"
+    ],
+    "operation_ids": [
+      "post_app_test_by_studentId_session_reset"
+    ]
+  },
+  {
+    "feature_id": "TE-GUIDE-03",
+    "feature_page_id": "3a2027df-9053-800e-a27f-c74c8060f09b",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-80c5-9d34-c2cb8836f790"
+    ],
+    "operation_ids": [
+      "post_app_test_by_studentId_start"
+    ]
+  },
+  {
+    "feature_id": "TE-INTRO-01",
+    "feature_page_id": "3a3027df-9053-8012-8c1b-f31be475e5b6",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-80a9-9f1f-c2404d3011bc"
+    ],
+    "operation_ids": [
+      "get_app_test_by_studentId_intro"
+    ]
+  },
+  {
+    "feature_id": "TE-INTRO-02",
+    "feature_page_id": "3a3027df-9053-80bc-a8f3-f2b8cc6cebdc",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-818e-9e4e-d26cd2345cf7"
+    ],
+    "operation_ids": [
+      "get_app_test_by_studentId_intro_navigation"
+    ]
+  },
+  {
+    "feature_id": "TE-REC-01",
+    "feature_page_id": "39f027df-9053-80f6-8bf7-eaf2515ac480",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81c1-ae6b-ec3b440f3649"
+    ],
+    "operation_ids": [
+      "post_app_test_by_studentId_recording_state"
+    ]
+  },
+  {
+    "feature_id": "TE-REC-02",
+    "feature_page_id": "39f027df-9053-809c-b162-fa77e1bfaf4b",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81c1-ae6b-ec3b440f3649"
+    ],
+    "operation_ids": [
+      "post_app_test_by_studentId_recording_state"
+    ]
+  },
+  {
+    "feature_id": "TE-REC-03",
+    "feature_page_id": "39f027df-9053-8088-af5f-c7f2a0602735",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81c1-ae6b-ec3b440f3649"
+    ],
+    "operation_ids": [
+      "post_app_test_by_studentId_recording_state"
+    ]
+  },
+  {
+    "feature_id": "TE-REC-04",
+    "feature_page_id": "39f027df-9053-8085-83ab-eaa61b5fd1e5",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81c1-ae6b-ec3b440f3649"
+    ],
+    "operation_ids": [
+      "post_app_test_by_studentId_recording_state"
+    ]
+  },
+  {
+    "feature_id": "TE-REC-05",
+    "feature_page_id": "39f027df-9053-803b-91b2-de84101278e7",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81c1-ae6b-ec3b440f3649"
+    ],
+    "operation_ids": [
+      "post_app_test_by_studentId_recording_state"
+    ]
+  },
+  {
+    "feature_id": "TE-REC-06",
+    "feature_page_id": "39f027df-9053-8086-94df-c639ce44b15c",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81c1-ae6b-ec3b440f3649"
+    ],
+    "operation_ids": [
+      "post_app_test_by_studentId_recording_state"
+    ]
+  },
+  {
+    "feature_id": "TE-REC-07",
+    "feature_page_id": "39f027df-9053-805b-8e3e-e259c654ee28",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81c1-ae6b-ec3b440f3649"
+    ],
+    "operation_ids": [
+      "post_app_test_by_studentId_recording_state"
+    ]
+  },
+  {
+    "feature_id": "TE-REC-08",
+    "feature_page_id": "39f027df-9053-8030-aa4c-ff9fdf3c705a",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-803e-9056-d44e96b237e3"
+    ],
+    "operation_ids": [
+      "post_app_test_by_studentId_questions_by_questionNumber_recordings"
+    ]
+  },
+  {
+    "feature_id": "TE-SAVE-01",
+    "feature_page_id": "3a3027df-9053-809e-b332-db00e50bc86d",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8031-b477-e074a181edd4"
+    ],
+    "operation_ids": [
+      "post_app_test_by_studentId_questions_by_questionNumber_complete"
+    ]
+  },
+  {
+    "feature_id": "TE-SAVE-02",
+    "feature_page_id": "3a3027df-9053-8041-83a9-eaa540e6be53",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-814c-8252-ea0fa6cd5154"
+    ],
+    "operation_ids": [
+      "post_app_test_by_studentId_submission_status"
+    ]
+  },
+  {
+    "feature_id": "TE-SAVE-03",
+    "feature_page_id": "3a3027df-9053-80fd-8c2b-cfa37af00ba6",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-814c-8252-ea0fa6cd5154"
+    ],
+    "operation_ids": [
+      "post_app_test_by_studentId_submission_status"
+    ]
+  },
+  {
+    "feature_id": "TE-SAVE-04",
+    "feature_page_id": "3a3027df-9053-80c6-918b-d6ebac3ddfe0",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-814c-8252-ea0fa6cd5154"
+    ],
+    "operation_ids": [
+      "post_app_test_by_studentId_submission_status"
+    ]
+  },
+  {
+    "feature_id": "TE-SAVE-05",
+    "feature_page_id": "3a3027df-9053-803c-812b-f3bb56a3e51f",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-814c-8252-ea0fa6cd5154"
+    ],
+    "operation_ids": [
+      "post_app_test_by_studentId_submission_status"
+    ]
+  },
+  {
+    "feature_id": "TE-SEL-01",
+    "feature_page_id": "3a3027df-9053-80e4-9561-d1310c08e355",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-803b-b423-c936f27929ff"
+    ],
+    "operation_ids": [
+      "get_app_test_by_studentId_questions_by_questionNumber"
+    ]
+  },
+  {
+    "feature_id": "TE-SEL-02",
+    "feature_page_id": "3a3027df-9053-80a3-8627-d9a2abfd31ef",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8119-8ec9-c408e9dbda74"
+    ],
+    "operation_ids": [
+      "patch_app_test_by_studentId_selection_state"
+    ]
+  },
+  {
+    "feature_id": "TE-SEL-03",
+    "feature_page_id": "3a3027df-9053-8032-8e51-ff6ce42909ac",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8119-8ec9-c408e9dbda74"
+    ],
+    "operation_ids": [
+      "patch_app_test_by_studentId_selection_state"
+    ]
+  },
+  {
+    "feature_id": "TE-SEL-04",
+    "feature_page_id": "3a3027df-9053-806d-8630-e8d4d9a10e40",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-80bf-97ec-dab95315115c"
+    ],
+    "operation_ids": [
+      "post_app_test_by_studentId_questions_by_questionNumber_responses"
+    ]
+  },
+  {
+    "feature_id": "TH-DSP-01",
+    "feature_page_id": "3a3027df-9053-805b-9111-ce86c0cb4e2a",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-8037-9f7e-f850527de00e"
+    ],
+    "operation_ids": [
+      "get_admin_training_by_studentId_curriculum_log"
+    ]
+  },
+  {
+    "feature_id": "TH-DSP-02",
+    "feature_page_id": "3a3027df-9053-8082-8197-c6e39f28ac1a",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-80c7-97ef-dc88dad26447"
+    ],
+    "operation_ids": [
+      "get_admin_training_by_studentId_by_curriculumId_training_log"
+    ]
+  },
+  {
+    "feature_id": "TH-DSP-03",
+    "feature_page_id": "3a6027df-9053-81fb-af2e-c029a4df562e",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81cd-8fd4-d3f2dc10fe2a"
+    ],
+    "operation_ids": [
+      "get_admin_training_by_studentId_by_trainingId_result_detail"
+    ]
+  },
+  {
+    "feature_id": "TH-EXP-01",
+    "feature_page_id": "3a6027df-9053-8148-9213-ffd416511584",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8182-8e0a-e5c2b3154b0d"
+    ],
+    "operation_ids": [
+      "post_admin_training_by_studentId_by_trainingId_export"
+    ]
+  },
+  {
+    "feature_id": "TH-EXP-02",
+    "feature_page_id": "3a6027df-9053-81c0-8a29-c7ac0c589c1c",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8182-8e0a-e5c2b3154b0d"
+    ],
+    "operation_ids": [
+      "post_admin_training_by_studentId_by_trainingId_export"
+    ]
+  },
+  {
+    "feature_id": "TH-FLT-01",
+    "feature_page_id": "3a6027df-9053-819d-b0da-d7b2fb72824c",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-818a-aa1d-c1350096ba40"
+    ],
+    "operation_ids": [
+      "get_admin_training_by_studentId_history_filter"
+    ]
+  },
+  {
+    "feature_id": "TH-GAZE-01",
+    "feature_page_id": "3a5027df-9053-80db-b042-cc354ae73909",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a5027df-9053-80e8-a48a-f726aac42d2e"
+    ],
+    "operation_ids": [
+      "get_admin_training_by_studentId_by_trainingId_gaze_analysis"
+    ]
+  },
+  {
+    "feature_id": "TH-SEL-01",
+    "feature_page_id": "3a4027df-9053-81a5-ba64-c8e14ad58a5e",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8173-a701-d01f2a2df923"
+    ],
+    "operation_ids": [
+      "get_admin_training_by_studentId_history_selection"
+    ]
+  },
+  {
+    "feature_id": "TH-STAT-01",
+    "feature_page_id": "3a3027df-9053-8044-9a4b-d2a69db2193e",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-8031-8f09-ceeb2a8989d8"
+    ],
+    "operation_ids": [
+      "get_admin_training_by_studentId_by_curriculumId_statistics"
+    ]
+  },
+  {
+    "feature_id": "TI-DSP-01",
+    "feature_page_id": "3a3027df-9053-80b6-8c30-c8df40e243e8",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-801e-96c2-f710113ac385"
+    ],
+    "operation_ids": [
+      "get_admin_test_by_studentId_list"
+    ]
+  },
+  {
+    "feature_id": "TI-DSP-02",
+    "feature_page_id": "3a6027df-9053-814e-8f6f-e1a0099b9b75",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-81b9-afde-dda8a8a782aa"
+    ],
+    "operation_ids": [
+      "get_admin_test_by_studentId_by_testId_summary"
+    ]
+  },
+  {
+    "feature_id": "TI-GAZE-01",
+    "feature_page_id": "3a5027df-9053-8056-beb2-cca8fc2ba10b",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a5027df-9053-806c-ba01-fe3efbf75214"
+    ],
+    "operation_ids": [
+      "get_admin_test_by_studentId_by_testId_gaze_analysis"
+    ]
+  },
+  {
+    "feature_id": "TI-SAVE-01",
+    "feature_page_id": "3a6027df-9053-81a4-b1f6-e86502aa7266",
+    "deprecated": true,
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "TI-SEL-01",
+    "feature_page_id": "3a3027df-9053-8057-962d-eefa8b14151d",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-810a-b3dc-fdbb5542bf2b"
+    ],
+    "operation_ids": [
+      "get_admin_test_by_studentId_comparison_selection"
+    ]
+  },
+  {
+    "feature_id": "TI-SEL-02",
+    "feature_page_id": "3a3027df-9053-80f8-a993-e19bdb124f80",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-810a-b3dc-fdbb5542bf2b"
+    ],
+    "operation_ids": [
+      "get_admin_test_by_studentId_comparison_selection"
+    ]
+  },
+  {
+    "feature_id": "TI-SEL-03",
+    "feature_page_id": "3a3027df-9053-80ea-a507-f13357daa09f",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-8067-be37-ca050184ea26"
+    ],
+    "operation_ids": [
+      "get_admin_test_by_studentId_compare"
+    ]
+  },
+  {
+    "feature_id": "TI-SEL-04",
+    "feature_page_id": "3a4027df-9053-81ea-a4cb-c1f1ea3662b2",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-810a-b3dc-fdbb5542bf2b"
+    ],
+    "operation_ids": [
+      "get_admin_test_by_studentId_comparison_selection"
+    ]
+  },
+  {
+    "feature_id": "TI-STAT-01",
+    "feature_page_id": "3a3027df-9053-8019-bc52-fcf06847f62f",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8112-bc47-f9286440c334"
+    ],
+    "operation_ids": [
+      "get_admin_test_by_studentId_statistics"
+    ]
+  },
+  {
+    "feature_id": "TI-STAT-02",
+    "feature_page_id": "3a4027df-9053-819b-b5ab-e4cb8d8b3c6a",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8112-bc47-f9286440c334"
+    ],
+    "operation_ids": [
+      "get_admin_test_by_studentId_statistics"
+    ]
+  },
+  {
+    "feature_id": "TI-STAT-03",
+    "feature_page_id": "3a3027df-9053-80e0-9f9c-d3fb0e01822e",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a3027df-9053-800c-aea1-c944cedcbca0"
+    ],
+    "operation_ids": [
+      "get_admin_student_by_studentId_accuracy_trend"
+    ]
+  },
+  {
+    "feature_id": "TR-AUD-01",
+    "feature_page_id": "3a3027df-9053-80d3-8efe-cece045452fa",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-809a-85c7-ed9ed03be905"
+    ],
+    "operation_ids": [
+      "get_app_training_by_studentId_by_trainingId_questions_by_questionNumber"
+    ]
+  },
+  {
+    "feature_id": "TR-AUD-02",
+    "feature_page_id": "3a3027df-9053-80c4-87dc-c821ce65ca83",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-816a-b94b-cc55e008fdbc"
+    ],
+    "operation_ids": [
+      "get_app_training_by_studentId_by_trainingId_audio_state"
+    ]
+  },
+  {
+    "feature_id": "TR-AUD-03",
+    "feature_page_id": "3a3027df-9053-8041-847b-d4c8eceda1d9",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-816a-b94b-cc55e008fdbc"
+    ],
+    "operation_ids": [
+      "get_app_training_by_studentId_by_trainingId_audio_state"
+    ]
+  },
+  {
+    "feature_id": "TR-COM-01",
+    "feature_page_id": "3a3027df-9053-8008-bf2c-e43626665710",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-809a-85c7-ed9ed03be905"
+    ],
+    "operation_ids": [
+      "get_app_training_by_studentId_by_trainingId_questions_by_questionNumber"
+    ]
+  },
+  {
+    "feature_id": "TR-COM-02",
+    "feature_page_id": "3a3027df-9053-8023-a941-c47b1d23b3f5",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-809a-85c7-ed9ed03be905"
+    ],
+    "operation_ids": [
+      "get_app_training_by_studentId_by_trainingId_questions_by_questionNumber"
+    ]
+  },
+  {
+    "feature_id": "TR-COM-03",
+    "feature_page_id": "3a3027df-9053-805d-85a0-fb1cdfb4c856",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-818b-9ff9-e3e994c96693"
+    ],
+    "operation_ids": [
+      "patch_app_training_by_studentId_by_trainingId_question_navigation"
+    ]
+  },
+  {
+    "feature_id": "TR-COM-04",
+    "feature_page_id": "3a3027df-9053-808f-b008-f54bab8ed8cd",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-818b-9ff9-e3e994c96693"
+    ],
+    "operation_ids": [
+      "patch_app_training_by_studentId_by_trainingId_question_navigation"
+    ]
+  },
+  {
+    "feature_id": "TR-COMP-01",
+    "feature_page_id": "3a3027df-9053-80b0-a08f-dde1a6c13b89",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-806d-88af-e0e190a001bc"
+    ],
+    "operation_ids": [
+      "post_app_training_by_studentId_by_trainingId_complete"
+    ]
+  },
+  {
+    "feature_id": "TR-DSP-01",
+    "feature_page_id": "3a3027df-9053-808c-91b5-c29fcf938c95",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-809a-85c7-ed9ed03be905"
+    ],
+    "operation_ids": [
+      "get_app_training_by_studentId_by_trainingId_questions_by_questionNumber"
+    ]
+  },
+  {
+    "feature_id": "TR-DSP-02",
+    "feature_page_id": "3a3027df-9053-8052-96aa-cce7542aab86",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-809a-85c7-ed9ed03be905",
+      "3a6027df-9053-8155-a5cb-c08b969df7d7"
+    ],
+    "operation_ids": [
+      "get_app_training_by_studentId_by_trainingId_questions_by_questionNumber",
+      "get_app_training_by_studentId_by_trainingId_questions_display_state"
+    ]
+  },
+  {
+    "feature_id": "TR-DSP-03",
+    "feature_page_id": "3a3027df-9053-804a-a564-cce26dad1f68",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-809a-85c7-ed9ed03be905",
+      "3a6027df-9053-8155-a5cb-c08b969df7d7"
+    ],
+    "operation_ids": [
+      "get_app_training_by_studentId_by_trainingId_questions_by_questionNumber",
+      "get_app_training_by_studentId_by_trainingId_questions_display_state"
+    ]
+  },
+  {
+    "feature_id": "TR-DSP-04",
+    "feature_page_id": "3a3027df-9053-8049-8d39-dd6706c18b45",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8155-a5cb-c08b969df7d7"
+    ],
+    "operation_ids": [
+      "get_app_training_by_studentId_by_trainingId_questions_display_state"
+    ]
+  },
+  {
+    "feature_id": "TR-GAZE-01",
+    "feature_page_id": "3a5027df-9053-8097-8a44-fd85f3f00210",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a5027df-9053-8051-a2a3-e23b7781fc59"
+    ],
+    "operation_ids": [
+      "post_app_gaze_sessions"
+    ]
+  },
+  {
+    "feature_id": "TR-GAZE-02",
+    "feature_page_id": "3a5027df-9053-80b4-a8b3-f95ba67a0f63",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a5027df-9053-80b0-845f-fe94f2ca6fea"
+    ],
+    "operation_ids": [
+      "patch_app_gaze_sessions_by_gazeSessionId_end"
+    ]
+  },
+  {
+    "feature_id": "TR-GAZE-03",
+    "feature_page_id": "3a5027df-9053-8086-9633-ee305a01ba06",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a5027df-9053-8080-b5bd-f724976c2ed1"
+    ],
+    "operation_ids": [
+      "post_app_gaze_sessions_by_gazeSessionId_analysis_results"
+    ]
+  },
+  {
+    "feature_id": "TR-GUIDE-01",
+    "feature_page_id": "3a3027df-9053-80b5-88dc-f4227803b5f9",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8059-aaf2-e9acb1fc62d2"
+    ],
+    "operation_ids": [
+      "get_app_training_by_studentId_by_trainingId_intro"
+    ]
+  },
+  {
+    "feature_id": "TR-GUIDE-02",
+    "feature_page_id": "3a3027df-9053-8085-8ea2-e5ab6b6491cf",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8199-af99-ddb00a8c29e7"
+    ],
+    "operation_ids": [
+      "post_app_training_by_studentId_by_trainingId_session_reset"
+    ]
+  },
+  {
+    "feature_id": "TR-GUIDE-03",
+    "feature_page_id": "3a3027df-9053-806b-bc94-c619300ec8b8",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-80c0-892b-d91f3ff2e6c6"
+    ],
+    "operation_ids": [
+      "post_app_training_by_studentId_by_trainingId_start"
+    ]
+  },
+  {
+    "feature_id": "TR-INTRO-01",
+    "feature_page_id": "3a3027df-9053-8027-acd6-c1f5afa57b0e",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8059-aaf2-e9acb1fc62d2"
+    ],
+    "operation_ids": [
+      "get_app_training_by_studentId_by_trainingId_intro"
+    ]
+  },
+  {
+    "feature_id": "TR-INTRO-02",
+    "feature_page_id": "3a3027df-9053-8097-aeac-dd8e984c4089",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8150-ac18-f31803e68283"
+    ],
+    "operation_ids": [
+      "get_app_training_by_studentId_by_trainingId_intro_navigation"
+    ]
+  },
+  {
+    "feature_id": "TR-REC-01",
+    "feature_page_id": "3a3027df-9053-8066-a9a6-c0397e162773",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-818c-9318-d546a124f428"
+    ],
+    "operation_ids": [
+      "post_app_training_by_studentId_by_trainingId_recording_state"
+    ]
+  },
+  {
+    "feature_id": "TR-REC-02",
+    "feature_page_id": "3a3027df-9053-8028-a133-f595619be590",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-818c-9318-d546a124f428"
+    ],
+    "operation_ids": [
+      "post_app_training_by_studentId_by_trainingId_recording_state"
+    ]
+  },
+  {
+    "feature_id": "TR-REC-03",
+    "feature_page_id": "3a3027df-9053-808f-8044-ce174a07290e",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-818c-9318-d546a124f428"
+    ],
+    "operation_ids": [
+      "post_app_training_by_studentId_by_trainingId_recording_state"
+    ]
+  },
+  {
+    "feature_id": "TR-REC-04",
+    "feature_page_id": "3a3027df-9053-802a-9154-cb9c679115dc",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-818c-9318-d546a124f428"
+    ],
+    "operation_ids": [
+      "post_app_training_by_studentId_by_trainingId_recording_state"
+    ]
+  },
+  {
+    "feature_id": "TR-REC-05",
+    "feature_page_id": "3a3027df-9053-80aa-9772-d0c15a7719b9",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-818c-9318-d546a124f428"
+    ],
+    "operation_ids": [
+      "post_app_training_by_studentId_by_trainingId_recording_state"
+    ]
+  },
+  {
+    "feature_id": "TR-REC-06",
+    "feature_page_id": "3a3027df-9053-804e-a9a9-cc08e3ba81dd",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-818c-9318-d546a124f428"
+    ],
+    "operation_ids": [
+      "post_app_training_by_studentId_by_trainingId_recording_state"
+    ]
+  },
+  {
+    "feature_id": "TR-REC-07",
+    "feature_page_id": "3a3027df-9053-806c-a22c-e2382ae247c7",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-818c-9318-d546a124f428"
+    ],
+    "operation_ids": [
+      "post_app_training_by_studentId_by_trainingId_recording_state"
+    ]
+  },
+  {
+    "feature_id": "TR-REC-08",
+    "feature_page_id": "3a3027df-9053-80c9-8947-d291d748a3d4",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-818c-9318-d546a124f428"
+    ],
+    "operation_ids": [
+      "post_app_training_by_studentId_by_trainingId_recording_state"
+    ]
+  },
+  {
+    "feature_id": "TR-REC-09",
+    "feature_page_id": "3a3027df-9053-8068-8efa-e367b8715084",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-8052-b620-e6b308991683"
+    ],
+    "operation_ids": [
+      "post_app_training_by_studentId_by_trainingId_questions_by_questionNumber_recordings"
+    ]
+  },
+  {
+    "feature_id": "TR-SAVE-01",
+    "feature_page_id": "3a3027df-9053-80af-869c-c2ce4f91836f",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-806d-88af-e0e190a001bc"
+    ],
+    "operation_ids": [
+      "post_app_training_by_studentId_by_trainingId_complete"
+    ]
+  },
+  {
+    "feature_id": "TR-SAVE-02",
+    "feature_page_id": "3a3027df-9053-8085-9167-c304e2aee573",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8113-9407-d384d15f679d"
+    ],
+    "operation_ids": [
+      "post_app_training_by_studentId_by_trainingId_submission_status"
+    ]
+  },
+  {
+    "feature_id": "TR-SAVE-03",
+    "feature_page_id": "3a3027df-9053-80d0-bd0c-edc501d246d5",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8113-9407-d384d15f679d"
+    ],
+    "operation_ids": [
+      "post_app_training_by_studentId_by_trainingId_submission_status"
+    ]
+  },
+  {
+    "feature_id": "TR-SAVE-04",
+    "feature_page_id": "3a3027df-9053-8016-9228-c4e9f6c04256",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8113-9407-d384d15f679d"
+    ],
+    "operation_ids": [
+      "post_app_training_by_studentId_by_trainingId_submission_status"
+    ]
+  },
+  {
+    "feature_id": "TR-SAVE-05",
+    "feature_page_id": "3a3027df-9053-80e7-aecf-f797b1ed9d97",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8113-9407-d384d15f679d"
+    ],
+    "operation_ids": [
+      "post_app_training_by_studentId_by_trainingId_submission_status"
+    ]
+  },
+  {
+    "feature_id": "TR-SEL-01",
+    "feature_page_id": "3a3027df-9053-80b2-9d81-e25a570a9994",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-809a-85c7-ed9ed03be905"
+    ],
+    "operation_ids": [
+      "get_app_training_by_studentId_by_trainingId_questions_by_questionNumber"
+    ]
+  },
+  {
+    "feature_id": "TR-SEL-02",
+    "feature_page_id": "3a3027df-9053-8004-9ffe-fd8b3fe39a0d",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8133-af60-c672a7fb1f0e"
+    ],
+    "operation_ids": [
+      "patch_app_training_by_studentId_by_trainingId_selection_state"
+    ]
+  },
+  {
+    "feature_id": "TR-SEL-03",
+    "feature_page_id": "3a3027df-9053-80cb-bc4e-d391fc5ddc51",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a6027df-9053-8133-af60-c672a7fb1f0e"
+    ],
+    "operation_ids": [
+      "patch_app_training_by_studentId_by_trainingId_selection_state"
+    ]
+  },
+  {
+    "feature_id": "TR-SEL-04",
+    "feature_page_id": "3a3027df-9053-8069-90e2-fcf8771abab1",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-80db-bc36-ccaf29005b38"
+    ],
+    "operation_ids": [
+      "post_app_training_by_studentId_by_trainingId_questions_by_questionNumber_responses"
+    ]
+  },
+  {
+    "feature_id": "TR-SEL-05",
+    "feature_page_id": "3a3027df-9053-8022-826d-ec4e837e923e",
+    "deprecated": false,
+    "api_page_ids": [
+      "3a4027df-9053-80db-bc36-ccaf29005b38"
+    ],
+    "operation_ids": [
+      "post_app_training_by_studentId_by_trainingId_questions_by_questionNumber_responses"
+    ]
+  }
+]

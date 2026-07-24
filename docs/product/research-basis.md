@@ -1,3 +1,10 @@
+---
+type: Research Summary
+title: "문제 및 근거 조사"
+description: "읽기곤란 아동의 문제와 iRead 제품 가설을 뒷받침하는 조사 근거를 정리합니다."
+tags: [product, research, evidence]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # 문제 및 근거 조사
 
 - 상태: draft

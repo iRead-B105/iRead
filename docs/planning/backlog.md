@@ -1,3 +1,10 @@
+---
+type: Backlog
+title: "제품 탐색 백로그"
+description: "iRead 제품 탐색과 아키텍처 준비 작업의 우선순위, 선행 조건과 상태를 관리합니다."
+tags: [planning, backlog, product]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # 제품 탐색 백로그
 
 - 상태: active
@@ -12,7 +19,7 @@
 | TASK-003 | P0 | MVP 범위와 성공 지표 정의 | TASK-001, TASK-002, 내부 기능 회의 | blocked |
 | TASK-004 | P0 | 핵심 사용자 여정과 요구사항 작성 | TASK-003 | blocked |
 | TASK-005 | P1 | Backend·Frontend·AI server·아동 앱 책임 경계 정의 | TASK-004 | blocked |
-| TASK-006 | P1 | 데이터 소유권, 주 데이터베이스, Redis 역할 결정 | TASK-005 | blocked |
+| TASK-006 | P1 | 데이터 소유권, MySQL 운영 방식과 Redis 역할 결정 | TASK-005 | blocked |
 | TASK-007 | P1 | 인증·인가, 법정대리인 동의와 아동 개인정보 요구사항 정의 | TASK-002, TASK-004 | blocked |
 | TASK-008 | P1 | 서비스 간 API/이벤트 계약 초안 작성 | TASK-005, TASK-006 | blocked |
 | TASK-009 | P2 | 각 서비스 저장소명과 submodule 경로 결정 | 사용자 결정 | done |

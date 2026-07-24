@@ -1,3 +1,10 @@
+---
+type: Workflow
+title: "submodule 운영 가이드"
+description: "서비스 저장소 submodule을 clone, 갱신하고 참조를 관리하는 절차입니다."
+tags: [workflow, git, submodule, services]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # submodule 운영 가이드
 
 - 상태: accepted

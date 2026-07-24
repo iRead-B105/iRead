@@ -1,3 +1,10 @@
+---
+type: Product Vision
+title: "제품 비전과 범위"
+description: "iRead가 해결할 문제, 대상 사용자, 가치와 제품 범위를 정의합니다."
+tags: [product, vision, scope]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # 제품 비전과 범위
 
 - 상태: draft

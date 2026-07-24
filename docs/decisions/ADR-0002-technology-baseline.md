@@ -1,3 +1,10 @@
+---
+type: Architecture Decision
+title: "ADR-0002: 기술 기준선"
+description: "Backend, Frontend, AI server와 Redis의 초기 기술 기준선을 정한 결정입니다."
+tags: [architecture, technology, adr]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # ADR-0002: 기술 기준선
 
 - 상태: accepted

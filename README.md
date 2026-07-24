@@ -1,3 +1,10 @@
+---
+type: Repository Overview
+title: "iRead"
+description: "iRead 오케스트레이션 저장소의 목적, 서비스 구성과 주요 문서를 안내합니다."
+tags: [iread, repository, overview]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # iRead
 
 iRead는 난독증 또는 읽기곤란 위험이 있는 초등 저학년 아동을 위한 개인화 읽기 훈련 시스템입니다.
@@ -23,8 +30,10 @@ Backend, Frontend, AI server, 아동 앱은 별도 저장소로 관리하고 Git
 | 제품 목표와 범위 | [제품 비전과 범위](docs/product/vision-and-scope.md) |
 | 요구사항 | [제품 요구사항](docs/product/requirements.md) |
 | 시스템 구조 | [시스템 컨텍스트](docs/architecture/system-context.md) |
-| 주요 의사결정 | [ADR](docs/decisions/README.md) |
-| 작업 계획 | [백로그](docs/planning/backlog.md), [실행 계획](plans/README.md) |
+| 지식 번들 | [OKF 문서 인덱스](docs/index.md) |
+| 주요 의사결정 | [ADR](docs/decisions/index.md) |
+| 기능·API·DB 계약 | [계약 카탈로그](contracts/catalog.md) |
+| 작업 계획 | [백로그](docs/planning/backlog.md), [실행 계획](plans/index.md) |
 
 ## 기술 스택
 
@@ -34,6 +43,7 @@ Backend, Frontend, AI server, 아동 앱은 별도 저장소로 관리하고 Git
 | Frontend | Vue 3, TypeScript, Vite, pnpm |
 | AI server | FastAPI, Python 3.12, uv |
 | 아동 앱 | [TBD] |
+| Database | MySQL 8.4.x LTS |
 | Infrastructure | Redis, Docker Compose |
 
 ## 개발 가이드
@@ -44,7 +54,9 @@ Backend, Frontend, AI server, 아동 앱은 별도 저장소로 관리하고 Git
 - `docs/workflows/git-flow.md`: 브랜치, 커밋과 병합 정책
 - `docs/workflows/submodules.md`: submodule clone, 갱신과 참조 관리
 - `docs/workflows/documentation-style.md`: 문서 어투와 표현 원칙
+- `docs/workflows/specification-management.md`: 기능·API·MySQL 명세의 기준 원본과 변경 절차
 - `tools/validate_harness.py`: 필수 문서와 내부 Markdown 링크 검증
+- `tools/validate_contracts.py`: OpenAPI, 기능 추적과 MySQL 스키마 계약 검증
 - `.github/pull_request_template.md`: 내부 팀용 PR 작성 기준
 
 ## 하네스 검증
@@ -53,6 +65,7 @@ Python 3.12 이상에서 다음 명령을 실행합니다.
 
 ```bash
 python tools/validate_harness.py
+python tools/validate_contracts.py
 ```
 
-PR과 `main`, `develop` push에서는 GitHub Actions가 같은 검증을 실행합니다.
+검증은 필수 문서, 내부 링크와 저장소 관리 문서의 OKF frontmatter를 확인합니다. PR과 `main`, `develop` push에서는 GitHub Actions가 같은 검증을 실행합니다.

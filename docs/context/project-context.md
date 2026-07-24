@@ -1,3 +1,10 @@
+---
+type: Project Context
+title: "프로젝트 컨텍스트"
+description: "iRead의 확정 사실, 현재 범위와 미결 사항을 관리하는 기준 문서입니다."
+tags: [context, project, source-of-truth]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # 프로젝트 컨텍스트
 
 - 상태: draft
@@ -18,6 +25,8 @@
 - 핵심 사용자는 아동이며 보호자, 난독증·문해교육 전문가, 교사와 교육기관이 주요 이해관계자다.
 - 해결할 문제와 근거는 [제품 비전과 범위](../product/vision-and-scope.md)와 [문제 및 근거 조사](../product/research-basis.md)에 기록한다.
 - 기술 기준선은 [ADR-0002](../decisions/ADR-0002-technology-baseline.md)에 기록되어 있다.
+- 주 데이터베이스는 [ADR-0006](../decisions/ADR-0006-mysql-primary-database.md)에 따라 MySQL 8.4.x LTS를 사용하며 운영 토폴로지는 미정이다.
+- 문서와 명세 기준 원본은 [ADR-0007](../decisions/ADR-0007-okf-and-specification-sources.md)과 [명세 관리 워크플로](../workflows/specification-management.md)를 따른다.
 - GitHub `iRead-B105/iRead` 저장소에 `main`, `develop` 브랜치가 구성되어 있으며 기본 브랜치는 `develop`이다.
 - 다섯 저장소는 모두 공개 상태이며 서비스 저장소의 기본 브랜치도 `develop`이다.
 - 공개 범위와 보호 정책은 [ADR-0003](../decisions/ADR-0003-public-repositories.md)에 기록되어 있다.
@@ -34,7 +43,6 @@
 - 서비스 실행 코드 생성
 - Docker Compose 파일 생성
 - 패키지 및 의존성 설치
-- 데이터베이스 선정
 
 ## 미결 사항
 
@@ -42,7 +50,7 @@
 - [TBD] 각 서비스의 구체적인 책임
 - [TBD] 아동 앱의 기술 스택
 - [TBD] Redis의 책임(캐시, 세션, 큐, pub/sub 등)
-- [TBD] 주 데이터베이스와 데이터 소유권
+- [TBD] 데이터 소유권과 MySQL 운영 토폴로지
 - [TBD] 인증·인가 및 개인정보 처리 요구사항
 - [TBD] 배포 환경과 운영 제약
 - [TBD] [제품 용어 및 책임 경계](../product/product-responsibility-boundary.md)의 임시 기준을 최종 제품 범위로 채택할지 결정

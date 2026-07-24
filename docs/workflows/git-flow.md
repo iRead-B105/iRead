@@ -1,3 +1,10 @@
+---
+type: Workflow
+title: "Git Flow 및 커밋 정책"
+description: "iRead 저장소의 브랜치, 커밋, PR, 검토와 병합 정책을 정의합니다."
+tags: [workflow, git, branches, pull-request]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # Git Flow 및 커밋 정책
 
 - 상태: accepted

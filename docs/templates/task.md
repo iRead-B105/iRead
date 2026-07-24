@@ -1,4 +1,13 @@
+---
+type: Template
+title: "작업 템플릿"
+description: "목표, 제약, 수용 기준, 검증과 위험을 포함하는 작업 문서 템플릿입니다."
+tags: [template, task, planning]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # TASK-000: `<제목>`
+
+이 파일을 복사한 뒤 frontmatter의 `type`을 `Task`로 바꾸고 제목, 설명, 태그와 수정 시각을 실제 값으로 갱신한다.
 
 - 상태: todo
 - 담당: [TBD]

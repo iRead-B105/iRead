@@ -1,0 +1,1203 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "iRead Auth API",
+    "version": "0.1.0",
+    "description": "Notion API 명세에서 이전한 계약이다. x-notion-* 확장 필드는 원본 추적에 사용한다."
+  },
+  "paths": {
+    "/api/auth/admin/find-id": {
+      "post": {
+        "operationId": "post_auth_admin_find_id",
+        "summary": "아이디 찾기 결과 표시, 아이디 찾기 본인 확인 정보 입력, 교수자 아이디 찾기",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "maskedLoginId": {
+                          "type": "string",
+                          "description": "일부 문자를 마스킹한 로그인 아이디"
+                        },
+                        "verificationStatus": {
+                          "type": "string",
+                          "description": "COMPLETED"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "maskedLoginId": "tea***01",
+                    "verificationStatus": "COMPLETED"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "요청값 검증 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "리소스를 찾을 수 없음",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-notion-page-id": "3a6027df-9053-8111-bb3e-fdd3b3a1e0ba",
+        "x-notion-url": "https://app.notion.com/p/api-auth-admin-find-id-3a6027df90538111bb3efdd3b3a1e0ba",
+        "x-feature-ids": [
+          "LG-ID-03",
+          "LG-ID-02",
+          "LG-ID-01"
+        ],
+        "description": "교수자 이름과 가입 이메일이 일치하면 loginId를 마스킹하여 반환",
+        "x-notion-request-summary": "name(body)\nemail(body)",
+        "x-notion-response-summary": "maskedLoginId\nverificationStatus",
+        "x-review-status": "reviewed",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "가입 시 등록한 교수자 이름"
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "가입 시 등록한 이메일"
+                  }
+                },
+                "required": [
+                  "name",
+                  "email"
+                ]
+              },
+              "example": {
+                "name": "김교수",
+                "email": "teacher@example.com"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/admin/login": {
+      "post": {
+        "operationId": "post_auth_admin_login",
+        "summary": "교수자 비밀번호 입력값 검증, 교수자 비밀번호 입력, 교수자 로그인 실패 처리",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "teacherId": {
+                          "type": "string",
+                          "description": "DB BIGINT를 문자열로 직렬화한 교수자 ID"
+                        },
+                        "loginId": {
+                          "type": "string",
+                          "description": "교수자 로그인 아이디"
+                        },
+                        "email": {
+                          "type": "string",
+                          "description": "교수자 이메일"
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "교수자 이름"
+                        },
+                        "organization": {
+                          "type": "string",
+                          "description": "소속 기관"
+                        },
+                        "profileImage": {
+                          "type": "string",
+                          "description": "프로필 이미지 URL"
+                        },
+                        "accessToken": {
+                          "type": "string",
+                          "description": "aud=admin-app인 관리자 앱 전용 JWT"
+                        },
+                        "expiresIn": {
+                          "type": "number",
+                          "description": "access token 만료까지 남은 초"
+                        },
+                        "loginStatus": {
+                          "type": "string",
+                          "description": "COMPLETED"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "teacherId": "1001",
+                    "loginId": "teacher01",
+                    "email": "teacher@example.com",
+                    "name": "김교수",
+                    "organization": "아이리드 센터",
+                    "profileImage": "https://cdn.example.com/profile/1001.png",
+                    "accessToken": "<jwt>",
+                    "tokenType": "Bearer",
+                    "expiresIn": 900,
+                    "loginStatus": "COMPLETED"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "인증 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "요청 한도 초과",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-notion-page-id": "3a6027df-9053-8140-96da-c9b6ad7f8dce",
+        "x-notion-url": "https://app.notion.com/p/api-auth-admin-login-3a6027df9053814096dac9b6ad7f8dce",
+        "x-feature-ids": [
+          "LG-04",
+          "LG-02",
+          "LG-07",
+          "LG-03",
+          "LG-06",
+          "LG-01",
+          "LG-13",
+          "LG-05"
+        ],
+        "description": "관리자 앱 전용 인증. loginId는 email과 별도이며 토큰 audience는 admin-app",
+        "x-notion-request-summary": "loginId(body)\npassword(body)",
+        "x-notion-response-summary": "teacherId\nloginId\nemail\nname\norganization\nprofileImage\naccessToken\nexpiresIn\nloginStatus\nadminRefreshToken(cookie)",
+        "x-review-status": "reviewed",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "loginId": {
+                    "type": "string",
+                    "description": "이메일과 별도로 관리하는 교수자 로그인 아이디"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "계정 비밀번호"
+                  }
+                },
+                "required": [
+                  "loginId",
+                  "password"
+                ]
+              },
+              "example": {
+                "loginId": "teacher01",
+                "password": "********"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/admin/logout": {
+      "post": {
+        "operationId": "post_auth_admin_logout",
+        "summary": "교수자 로그아웃 처리",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bearer {adminAccessToken}"
+          },
+          {
+            "name": "admin_refresh_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "관리자 앱 전용 refresh token"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "요청 성공"
+          },
+          "401": {
+            "description": "인증 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "접근 권한 없음",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-notion-page-id": "3a3027df-9053-8038-b5c9-c4018efc7e31",
+        "x-notion-url": "https://app.notion.com/p/api-auth-admin-logout-3a3027df90538038b5c9c4018efc7e31",
+        "x-feature-ids": [
+          "SB-COM-01"
+        ],
+        "description": "관리자 앱 전용 로그아웃. admin refresh session 폐기 및 cookie 만료",
+        "x-notion-request-summary": "Authorization(header)\nadminRefreshToken(cookie)",
+        "x-notion-response-summary": "없음(204)",
+        "x-review-status": "reviewed"
+      }
+    },
+    "/api/auth/admin/password-reset": {
+      "post": {
+        "operationId": "post_auth_admin_password_reset",
+        "summary": "비밀번호 재설정 완료 처리, 비밀번호 재설정 본인 확인, 새 비밀번호 입력값 검증",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "verificationStatus": {
+                          "type": "string",
+                          "description": "COMPLETED"
+                        },
+                        "resetStatus": {
+                          "type": "string",
+                          "description": "COMPLETED"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "verificationStatus": "COMPLETED",
+                    "resetStatus": "COMPLETED"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "요청값 검증 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "리소스를 찾을 수 없음",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-notion-page-id": "3a6027df-9053-8198-b212-e6cd30a3755b",
+        "x-notion-url": "https://app.notion.com/p/api-auth-admin-password-reset-3a6027df90538198b212e6cd30a3755b",
+        "x-feature-ids": [
+          "LG-PW-04",
+          "LG-PW-02",
+          "LG-PW-03",
+          "LG-PW-01"
+        ],
+        "description": "loginId와 email 일치 확인 후 일회용 검증 코드를 사용하여 비밀번호 재설정",
+        "x-notion-request-summary": "loginId(body)\nemail(body)\nverificationCode(body)\nnewPassword(body)",
+        "x-notion-response-summary": "verificationStatus\nresetStatus",
+        "x-review-status": "reviewed",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "loginId": {
+                    "type": "string",
+                    "description": "교수자 로그인 아이디"
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "가입 시 등록한 이메일"
+                  },
+                  "verificationCode": {
+                    "type": "string",
+                    "description": "만료 시간이 있는 일회용 검증 코드"
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "description": "8자 이상의 새 비밀번호"
+                  }
+                },
+                "required": [
+                  "loginId",
+                  "email",
+                  "verificationCode",
+                  "newPassword"
+                ]
+              },
+              "example": {
+                "loginId": "teacher01",
+                "email": "teacher@example.com",
+                "verificationCode": "123456",
+                "newPassword": "********"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/admin/refresh": {
+      "post": {
+        "operationId": "post_auth_admin_refresh",
+        "summary": "관리자 앱 인증 토큰 갱신",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "name": "admin_refresh_token",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "관리자 앱 전용 refresh token. HttpOnly, Secure 설정"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string",
+                          "description": "aud=admin-app인 새 access token"
+                        },
+                        "tokenType": {
+                          "type": "string",
+                          "description": "Bearer"
+                        },
+                        "expiresIn": {
+                          "type": "number",
+                          "description": "access token 만료까지 남은 초"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "accessToken": "<jwt>",
+                    "tokenType": "Bearer",
+                    "expiresIn": 900
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "요청값 검증 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "인증 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "접근 권한 없음",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-notion-page-id": "3a7027df-9053-810a-8f05-d87339df02cd",
+        "x-notion-url": "https://app.notion.com/p/api-auth-admin-refresh-3a7027df9053810a8f05d87339df02cd",
+        "x-feature-ids": [
+          "AU-ADM-REF-01"
+        ],
+        "description": "관리자 앱 전용 토큰 갱신. refresh token rotation 적용",
+        "x-notion-request-summary": "adminRefreshToken(cookie)",
+        "x-notion-response-summary": "accessToken\nexpiresIn",
+        "x-review-status": "reviewed"
+      }
+    },
+    "/api/auth/admin/sign-up": {
+      "post": {
+        "operationId": "post_auth_admin_sign_up",
+        "summary": "교수자 회원가입 제출, 교수자 회원가입 정보 입력, 교수자 회원가입 성공 처리",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "teacherId": {
+                          "type": "string",
+                          "description": "DB BIGINT를 문자열로 직렬화한 교수자 ID"
+                        },
+                        "loginId": {
+                          "type": "string",
+                          "description": "등록된 로그인 아이디"
+                        },
+                        "email": {
+                          "type": "string",
+                          "description": "등록된 이메일"
+                        },
+                        "signUpStatus": {
+                          "type": "string",
+                          "description": "COMPLETED"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "teacherId": "1001",
+                    "loginId": "teacher01",
+                    "email": "teacher@example.com",
+                    "signUpStatus": "COMPLETED"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "요청값 검증 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "현재 상태와 요청 충돌",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-notion-page-id": "9fd027df-9053-82c1-9b50-810e8bb3f636",
+        "x-notion-url": "https://app.notion.com/p/api-auth-admin-sign-up-9fd027df905382c19b50810e8bb3f636",
+        "x-feature-ids": [
+          "LG-SU-03",
+          "LG-SU-01",
+          "LG-SU-04",
+          "LG-SU-05",
+          "LG-SU-02"
+        ],
+        "description": "loginId와 email은 각각 UNIQUE. 비밀번호는 password_hash로 저장하며 API에 반환하지 않음",
+        "x-notion-request-summary": "loginId(body)\nemail(body)\npassword(body)\nname(body)\norganization(body)\nprofileImage(body, optional)",
+        "x-notion-response-summary": "teacherId\nloginId\nemail\nsignUpStatus",
+        "x-review-status": "reviewed",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "loginId": {
+                    "type": "string",
+                    "description": "교수자가 로그인에 사용할 고유 아이디"
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "아이디 찾기·비밀번호 재설정에 사용할 고유 이메일"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "8자 이상의 비밀번호. 서버에서는 해시만 저장"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "교수자 이름"
+                  },
+                  "organization": {
+                    "type": "string",
+                    "description": "소속 기관"
+                  },
+                  "profileImage": {
+                    "type": "string",
+                    "description": "프로필 이미지 URL"
+                  }
+                },
+                "required": [
+                  "loginId",
+                  "email",
+                  "password",
+                  "name",
+                  "organization"
+                ]
+              },
+              "example": {
+                "loginId": "teacher01",
+                "email": "teacher@example.com",
+                "password": "********",
+                "name": "김교수",
+                "organization": "아이리드 센터",
+                "profileImage": "https://cdn.example.com/profile/1001.png"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/app/logout": {
+      "post": {
+        "operationId": "post_auth_app_logout",
+        "summary": "학습 앱 로그아웃 처리",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bearer learning access token 또는 teacherSessionToken"
+          },
+          {
+            "name": "learning_refresh_token",
+            "in": "cookie",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "발급된 경우 전달하는 학습 앱 전용 refresh token"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "요청 성공"
+          },
+          "400": {
+            "description": "요청값 검증 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "인증 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "접근 권한 없음",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-notion-page-id": "3a7027df-9053-81e6-a162-e104f77a321f",
+        "x-notion-url": "https://app.notion.com/p/api-auth-app-logout-3a7027df905381e6a162e104f77a321f",
+        "x-feature-ids": [
+          "AU-APP-OUT-01"
+        ],
+        "description": "학습 앱 전용 로그아웃. 학습 refresh session 폐기 및 cookie 만료",
+        "x-notion-request-summary": "Authorization(header)\nlearningRefreshToken(cookie)",
+        "x-notion-response-summary": "없음(204)",
+        "x-review-status": "reviewed"
+      }
+    },
+    "/api/auth/app/refresh": {
+      "post": {
+        "operationId": "post_auth_app_refresh",
+        "summary": "학습 앱 인증 토큰 갱신",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "name": "learning_refresh_token",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "학습 앱 전용 refresh token. HttpOnly, Secure 설정"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string",
+                          "description": "aud=learning-app인 새 access token"
+                        },
+                        "tokenType": {
+                          "type": "string",
+                          "description": "Bearer"
+                        },
+                        "expiresIn": {
+                          "type": "number",
+                          "description": "access token 만료까지 남은 초"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "accessToken": "<jwt>",
+                    "tokenType": "Bearer",
+                    "expiresIn": 900
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "요청값 검증 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "인증 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "접근 권한 없음",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-notion-page-id": "3a7027df-9053-81bb-aacb-ddf25911e464",
+        "x-notion-url": "https://app.notion.com/p/api-auth-app-refresh-3a7027df905381bbaacbddf25911e464",
+        "x-feature-ids": [
+          "AU-APP-REF-01"
+        ],
+        "description": "학습 앱 전용 토큰 갱신. refresh token rotation 적용",
+        "x-notion-request-summary": "learningRefreshToken(cookie)",
+        "x-notion-response-summary": "accessToken\nexpiresIn",
+        "x-review-status": "reviewed"
+      }
+    },
+    "/api/auth/app/student-login": {
+      "post": {
+        "operationId": "post_auth_app_student_login",
+        "summary": "연결 아동 정보 조회, 아동 이름 입력, 아동 로그인 실패 처리",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bearer {teacherSessionToken}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "studentId": {
+                          "type": "string",
+                          "description": "선택한 아동 ID"
+                        },
+                        "accessToken": {
+                          "type": "string",
+                          "description": "aud=learning-app, role=STUDENT인 학습 앱 전용 JWT"
+                        },
+                        "expiresIn": {
+                          "type": "number",
+                          "description": "access token 만료까지 남은 초"
+                        },
+                        "loginStatus": {
+                          "type": "string",
+                          "description": "COMPLETED"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "studentId": "2001",
+                    "accessToken": "<jwt>",
+                    "tokenType": "Bearer",
+                    "expiresIn": 900,
+                    "loginStatus": "COMPLETED"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "인증 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "접근 권한 없음",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "리소스를 찾을 수 없음",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-notion-page-id": "3a6027df-9053-8189-a401-dc27d8812591",
+        "x-notion-url": "https://app.notion.com/p/api-auth-app-student-login-3a6027df90538189a401dc27d8812591",
+        "x-feature-ids": [
+          "LG-STU-01",
+          "LG-STU-02",
+          "LG-STU-05",
+          "LG-STU-03",
+          "LG-STU-07",
+          "LG-STU-06",
+          "LG-STU-04"
+        ],
+        "description": "teacherSessionToken으로 연결 아동 선택. DB BIGINT ID는 API에서 string으로 직렬화",
+        "x-notion-request-summary": "Authorization(header)\nstudentId(body)",
+        "x-notion-response-summary": "studentId\naccessToken\nexpiresIn\nloginStatus\nlearningRefreshToken(cookie)",
+        "x-review-status": "reviewed",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "studentId": {
+                    "type": "string",
+                    "description": "DB BIGINT를 문자열로 전달하는 연결 아동 ID"
+                  }
+                },
+                "required": [
+                  "studentId"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/app/teacher-login": {
+      "post": {
+        "operationId": "post_auth_app_teacher_login",
+        "summary": "교수자 로그인 실패 처리, 교수자 로그인 성공 처리, 교수자 인증",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "teacherId": {
+                          "type": "string",
+                          "description": "DB BIGINT를 문자열로 직렬화한 교수자 ID"
+                        },
+                        "teacherSessionToken": {
+                          "type": "string",
+                          "description": "aud=learning-bootstrap, scope=student:select인 단기 토큰"
+                        },
+                        "linkedStudents": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "properties": {
+                              "studentId": {
+                                "type": "string",
+                                "description": "DB BIGINT를 문자열로 직렬화한 아동 ID"
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "아동 표시 이름"
+                              }
+                            }
+                          },
+                          "description": "해당 교수자에게 연결된 아동 목록"
+                        },
+                        "expiresIn": {
+                          "type": "number",
+                          "description": "아동 선택 토큰 만료까지 남은 초"
+                        },
+                        "loginStatus": {
+                          "type": "string",
+                          "description": "STUDENT_SELECTION_REQUIRED"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "teacherId": "1001",
+                    "teacherSessionToken": "<jwt>",
+                    "linkedStudents": [
+                      {
+                        "studentId": "2001",
+                        "name": "김아동"
+                      }
+                    ],
+                    "expiresIn": 300,
+                    "loginStatus": "STUDENT_SELECTION_REQUIRED"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "인증 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "요청 한도 초과",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-notion-page-id": "3a6027df-9053-81f1-a36a-f7a8f5b5ac4f",
+        "x-notion-url": "https://app.notion.com/p/api-auth-app-teacher-login-3a6027df905381f1a36af7a8f5b5ac4f",
+        "x-feature-ids": [
+          "LG-TEA-07",
+          "LG-TEA-06",
+          "LG-TEA-04",
+          "LG-TEA-03",
+          "LG-TEA-02",
+          "LG-TEA-01",
+          "LG-TEA-05"
+        ],
+        "description": "학습 앱 아동 선택 전용 인증. loginId는 email과 별도이며 토큰 audience는 learning-bootstrap",
+        "x-notion-request-summary": "loginId(body)\npassword(body)",
+        "x-notion-response-summary": "teacherId\nteacherSessionToken\nlinkedStudents\nexpiresIn\nloginStatus",
+        "x-review-status": "reviewed",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "loginId": {
+                    "type": "string",
+                    "description": "이메일과 별도로 관리하는 교수자 로그인 아이디"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "계정 비밀번호"
+                  }
+                },
+                "required": [
+                  "loginId",
+                  "password"
+                ]
+              },
+              "example": {
+                "loginId": "teacher01",
+                "password": "********"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      }
+    }
+  }
+}

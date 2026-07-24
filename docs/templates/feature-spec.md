@@ -1,4 +1,13 @@
+---
+type: Template
+title: "기능 명세 템플릿"
+description: "검증 가능한 기능 범위, 수용 기준과 서비스·데이터 영향을 작성하는 템플릿입니다."
+tags: [template, feature-spec, requirements]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # 기능 명세: `<이름>`
+
+이 파일을 복사한 뒤 frontmatter의 `type`을 `Feature Specification`으로 바꾸고 제목, 설명, 태그와 수정 시각을 실제 값으로 갱신한다.
 
 - 상태: draft
 - 담당: [TBD]

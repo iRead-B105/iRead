@@ -1,3 +1,10 @@
+---
+type: Architecture Decision
+title: "ADR-0004: 서비스 저장소 구성"
+description: "서비스 저장소명과 submodule 배치 경로를 정한 결정입니다."
+tags: [architecture, repository, submodule, adr]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # ADR-0004: 서비스 저장소 구성
 
 - 상태: accepted

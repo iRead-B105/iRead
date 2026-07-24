@@ -1,3 +1,10 @@
+---
+type: Product Requirements
+title: "제품 요구사항"
+description: "iRead 제품이 충족해야 할 검증 가능한 요구사항과 수용 기준을 관리합니다."
+tags: [product, requirements, acceptance-criteria]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # 제품 요구사항
 
 - 상태: draft

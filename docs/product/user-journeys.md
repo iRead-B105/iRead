@@ -1,3 +1,10 @@
+---
+type: User Journey
+title: "사용자 여정"
+description: "아동과 교수자 등 주요 사용자가 iRead를 이용하는 흐름과 접점을 설명합니다."
+tags: [product, users, journey]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # 사용자 여정
 
 - 상태: draft

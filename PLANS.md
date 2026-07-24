@@ -1,3 +1,10 @@
+---
+type: Planning Guide
+title: "실행 계획 작성 규칙"
+description: "여러 문서와 서비스 경계에 걸친 장기 작업의 실행 계획 작성 및 운영 규칙입니다."
+tags: [planning, execution-plan, workflow]
+timestamp: 2026-07-24T00:00:00+09:00
+---
 # 실행 계획 작성 규칙
 
 여러 문서나 서비스 경계를 함께 바꾸거나 한 세션을 넘어갈 수 있는 작업은 `plans/`에 실행 계획을 만든다. 계획은 다른 AI 에이전트가 이전 대화 없이도 이어서 수행할 수 있어야 한다.
@@ -12,6 +19,13 @@
 ## 필수 섹션
 
 ```md
+---
+type: Execution Plan
+title: "<목표>"
+description: "<완료 후 관찰 가능한 결과를 한 문장으로 작성>"
+tags: [plan, "<주제>"]
+timestamp: YYYY-MM-DDThh:mm:ss+09:00
+---
 # <목표>
 
 - 상태: draft
