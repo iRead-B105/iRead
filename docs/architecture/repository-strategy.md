@@ -12,7 +12,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 
 ## 채택 방향
 
-[ADR-0001](../decisions/ADR-0001-separate-service-repositories.md), [ADR-0004](../decisions/ADR-0004-service-repository-layout.md), [ADR-0005](../decisions/ADR-0005-add-child-app-repository.md)에 따라 오케스트레이션 저장소와 네 개의 서비스 저장소를 분리하고 `services/` 아래에 연결한다. 계약 원본은 [ADR-0007](../decisions/ADR-0007-okf-and-specification-sources.md)을 따른다.
+[ADR-0001](../decisions/ADR-0001-separate-service-repositories.md), [ADR-0004](../decisions/ADR-0004-service-repository-layout.md), [ADR-0005](../decisions/ADR-0005-add-child-app-repository.md), [ADR-0010](../decisions/ADR-0010-add-eyetracking-repository.md)에 따라 오케스트레이션 저장소와 다섯 개의 서비스 저장소를 분리하고 `services/` 아래에 연결한다. 계약 원본은 [ADR-0007](../decisions/ADR-0007-okf-and-specification-sources.md)을 따른다.
 
 | 저장소 역할 | 내용 | 기술 스택 | 경로 / URL |
 | --- | --- | --- | --- |
@@ -21,6 +21,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 | Frontend | UI 구현과 자체 테스트 | Vue 3, TypeScript, Vite, pnpm | `services/frontend` / [iRead-frontend](https://github.com/iRead-B105/iRead-frontend) |
 | AI server | AI 기능 구현과 자체 테스트 | FastAPI, Python 3.12, uv | `services/ai` / [iRead-ai](https://github.com/iRead-B105/iRead-ai) |
 | 아동 앱 | 아동용 애플리케이션 구현과 자체 테스트 | [TBD] | `services/app` / [iRead-app](https://github.com/iRead-B105/iRead-app) |
+| 시선 추적 | Tobii 기반 시선 수집·보정 프로토타입 | FastAPI, HTML/CSS/JavaScript, C++ | `services/eyetracking` / [iRead-eyetracking](https://github.com/iRead-B105/iRead-eyetracking) |
 
 ## 소유권 원칙
 
@@ -36,7 +37,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 - [x] 서비스명과 오케스트레이션 저장소명 `iRead` 확정
 - [x] 오케스트레이션 저장소 Git 초기화 및 원격 연결
 - [x] `main`, `develop` 브랜치 구성
-- [x] Backend, Frontend, AI server, 아동 앱 저장소명 확정
+- [x] Backend, Frontend, AI server, 아동 앱, 시선 추적 저장소명 확정
 - [x] submodule 디렉터리 배치 확정
 - [x] 각 저장소 생성 및 기본 브랜치 정책 확정
 - [x] submodule 연결

@@ -9,7 +9,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 
 - 상태: accepted
 - 최종 검토일: 2026-07-24
-- 적용 범위: Orchestration, Backend, Frontend, AI server, 아동 앱 저장소
+- 적용 범위: Orchestration, Backend, Frontend, AI server, 아동 앱, 시선 추적 저장소
 
 ## 1. 기본 원칙
 

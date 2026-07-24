@@ -18,6 +18,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 | Frontend | `services/frontend` | `develop` |
 | AI server | `services/ai` | `develop` |
 | 아동 앱 | `services/app` | `develop` |
+| 시선 추적 | `services/eyetracking` | `develop` |
 
 오케스트레이션 저장소는 각 submodule의 특정 커밋을 기록한다. `develop` 추적 설정은 원격 변경을 조회할 기준이며, 참조 커밋은 자동으로 바뀌지 않는다.
 
@@ -45,7 +46,7 @@ git -C services/backend pull --ff-only
 git add services/backend
 ```
 
-Frontend, AI server, 아동 앱도 각각 `services/frontend`, `services/ai`, `services/app` 경로에서 같은 방식으로 갱신한다.
+Frontend, AI server, 아동 앱, 시선 추적도 각각 `services/frontend`, `services/ai`, `services/app`, `services/eyetracking` 경로에서 같은 방식으로 갱신한다.
 
 submodule 커밋이 원격 저장소에 push되었는지 확인한 뒤 오케스트레이션 저장소의 참조를 push한다. 원격에 없는 커밋을 참조하면 다른 환경에서 clone할 수 없다.
 

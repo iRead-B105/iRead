@@ -19,6 +19,7 @@ flowchart LR
     P["아동 앱 저장소<br/>기술 스택 [TBD]"]
     B["Backend 저장소<br/>Spring Boot 3 + Java 21"]
     A["AI server 저장소<br/>FastAPI + Python 3.12"]
+    E["시선 추적 저장소<br/>FastAPI + C++ · Tobii"]
     R["Redis<br/>역할 [TBD]"]
     O["Orchestration 저장소<br/>기획 · 계약 · 결정 · 통합 구성"]
 
@@ -26,12 +27,14 @@ flowchart LR
     U -. "아동 앱 사용 흐름 [TBD]" .-> P
     F -. "API 계약 [TBD]" .-> B
     B -. "AI 호출 계약 [TBD]" .-> A
+    E -. "시선 데이터 계약 [TBD]" .-> B
     B -. "사용 목적 [TBD]" .-> R
     A -. "사용 목적 [TBD]" .-> R
     O -. "submodule / 계약" .-> F
     O -. "submodule / 계약" .-> B
     O -. "submodule / 계약" .-> A
     O -. "submodule / 계약" .-> P
+    O -. "submodule / 계약" .-> E
 ```
 
 ## 미결 경계
@@ -42,3 +45,4 @@ flowchart LR
 - Redis를 사용하는 서비스와 장애 시 동작
 - 외부 AI 모델, 스토리지, 관측 도구와 배포 환경
 - Frontend와 아동 앱의 사용자·기능 책임 경계
+- 시선 추적 프로토타입을 Frontend와 Backend에 통합할 책임 경계

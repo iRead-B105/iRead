@@ -14,3 +14,7 @@
 	path = services/app
 	url = https://github.com/iRead-B105/iRead-app.git
 	branch = develop
+[submodule "services/eyetracking"]
+	path = services/eyetracking
+	url = https://github.com/iRead-B105/iRead-eyetracking.git
+	branch = develop
