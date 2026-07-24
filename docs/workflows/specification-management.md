@@ -1,7 +1,7 @@
 ---
 type: Workflow
 title: 명세 관리 워크플로
-description: 기능, API, MySQL 스키마와 Notion 파생 문서를 일관되게 변경하는 절차입니다.
+description: 기능, API와 MySQL 스키마를 Git 기준 원본으로 일관되게 변경하고 Notion 이관 출처를 추적하는 절차입니다.
 tags: [workflow, feature-spec, openapi, mysql, notion]
 timestamp: 2026-07-24T00:00:00+09:00
 ---
@@ -14,13 +14,13 @@ timestamp: 2026-07-24T00:00:00+09:00
 
 | 대상 | 기준 원본 | 파생 또는 협업 위치 |
 | --- | --- | --- |
-| 승인된 기능 명세 | `docs/product/features/` | Notion 기능 명세 데이터베이스 |
-| HTTP API 계약 | `contracts/openapi/` | Notion API 명세 데이터베이스, 서비스 구현 코드 |
+| 승인된 기능 명세 | `docs/product/features/` | Notion 이관 스냅샷 |
+| HTTP API 계약 | `contracts/openapi/` | Notion 이관 스냅샷, 서비스 구현 코드 |
 | MySQL 실행 스키마 | `services/backend`의 migration | `contracts/database/schema.sql`, ERD |
 | 주요 기술·제품 결정 | `docs/decisions/` | 관련 컨텍스트와 Notion 설명 |
 | 계약 상태와 이전 현황 | `contracts/catalog.md` | 각 인덱스 |
 
-OpenAPI로 아직 이전하지 않은 Notion API는 전환 기간의 운영 원본이다. 불완전한 OpenAPI 파일을 기준 원본처럼 만들지 않고, 엔드포인트 단위로 요청·응답·오류·보안 계약을 검토한 뒤 이전한다.
+활성 Notion API는 저장소 OpenAPI와 해소 규칙으로 이전을 완료했다. `contracts/notion/spec-snapshot.json`은 생성 입력과 출처 추적용으로 보존하며 현재 계약으로 직접 수정하지 않는다.
 
 ## 기능 변경
 
@@ -28,7 +28,7 @@ OpenAPI로 아직 이전하지 않은 Notion API는 전환 기간의 운영 원�
 2. 사용자 결정이 필요한 제품 범위와 데이터 처리를 확인한다.
 3. 승인된 내용을 `docs/product/features/`의 기능 명세에 반영한다.
 4. 관련 요구사항, API `operationId`, 데이터 자산과 ADR을 연결한다.
-5. 저장소 기준선 변경 후 Notion의 기능 설명과 관계를 동기화한다.
+5. 저장소 기준선과 기능–API 추적 데이터를 함께 갱신한다.
 
 ## API 변경
 
@@ -37,7 +37,7 @@ OpenAPI로 아직 이전하지 않은 Notion API는 전환 기간의 운영 원�
 3. 요청·응답, 오류, 멱등성, 시간 제한과 호환성 영향을 기록한다.
 4. 기능 명세의 API 관계와 서비스 구현 영향을 확인한다.
 5. 호환성을 깨는 변경은 전환 및 롤백 계획과 ADR을 작성한다.
-6. Notion API 명세는 저장소 계약을 기준으로 동기화한다.
+6. Notion 출처는 `x-notion-*` 확장 필드와 이관 스냅샷으로 추적한다.
 
 ## 데이터베이스 변경
 
@@ -66,9 +66,9 @@ OpenAPI로 아직 이전하지 않은 Notion API는 전환 기간의 운영 원�
 
 소스 테스트·빌드·린트·정적 분석은 사용자가 현재 요청에서 명시적으로 요청한 경우에만 실행한다. 하네스 검증은 문서 구조 검사이므로 문서 변경 시 실행한다.
 
-## Notion 동기화
+## Notion 원본 재수집
 
-Notion API와 기능 명세를 저장소 산출물로 갱신할 때 다음 순서를 사용한다.
+사용자가 이관 이후의 Notion 변경을 다시 가져오도록 명시적으로 요청한 경우에만 다음 순서를 사용한다.
 
 ```bash
 python tools/export_notion_specs.py \
@@ -79,8 +79,8 @@ python tools/validate_contracts.py
 python tools/validate_harness.py
 ```
 
-- 확정된 제품 결정을 Notion에 재적용해야 할 때만 `tools/reconcile_notion_decisions.py --token-file <notion-token-file>`을 먼저 실행한다.
 - 토큰 값과 토큰 파일은 저장소에 추가하지 않는다.
 - 내보내기는 `우선순위`와 `구현여부` 속성을 읽거나 저장하지 않는다.
-- 생성된 OpenAPI를 직접 수정하지 않고 Notion 원본 또는 생성 규칙을 수정한 뒤 다시 생성한다.
+- Git에서 확정한 계약은 `contracts/api-resolutions.json`과 생성 규칙을 변경한 뒤 다시 생성한다.
+- 외부 Notion 페이지를 수정하거나 보관 처리하는 역동기화는 별도 요청과 승인 없이는 실행하지 않는다.
 - `x-review-status: needs-review`인 operation은 [검토 목록](../../contracts/review-queue.md)을 따른다.

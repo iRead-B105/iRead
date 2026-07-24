@@ -9,6 +9,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from contract_resolutions import load_resolutions, resolve_snapshot
+
 
 HTTP_METHODS = {"get", "post", "put", "patch", "delete"}
 FEATURE_DATABASE_URL = (
@@ -18,6 +20,15 @@ PREFIX_FILES = {
     "app": "app-api.yaml",
     "admin": "admin-api.yaml",
     "auth": "auth-api.yaml",
+}
+ERROR_RESPONSES = {
+    "400": ("BadRequest", "요청값 검증 실패"),
+    "401": ("Unauthorized", "인증 실패"),
+    "403": ("Forbidden", "접근 권한 없음"),
+    "404": ("NotFound", "리소스를 찾을 수 없음"),
+    "409": ("Conflict", "현재 상태와 요청 충돌"),
+    "429": ("TooManyRequests", "요청 한도 초과"),
+    "502": ("BadGateway", "외부 처리 실패"),
 }
 
 
@@ -64,6 +75,8 @@ def schema_for_type(raw_type: str, field_name: str = "") -> dict[str, Any]:
         schema = {"type": "string"}
         if qualifier in {"date", "date-time", "uuid"}:
             schema["format"] = qualifier
+        elif "|" in qualifier:
+            schema["enum"] = qualifier.split("|")
         return schema
 
     schema: dict[str, Any] = {"type": "string"}
@@ -201,6 +214,15 @@ def success_response(api: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     status = success_codes[0] if success_codes else "200"
     if status == "204":
         return status, {"description": "요청 성공"}
+    if api.get("response_media_type") and api.get("response_schema"):
+        return status, {
+            "description": "요청 성공",
+            "content": {
+                api["response_media_type"]: {
+                    "schema": api["response_schema"],
+                }
+            },
+        }
 
     fields = [
         field for field in api["response_fields"] if field["name"] != "success"
@@ -210,20 +232,31 @@ def success_response(api: dict[str, Any]) -> tuple[str, dict[str, Any]]:
         add_response_field(properties, field)
 
     if properties:
-        schema: dict[str, Any] = {
+        required_fields = list(
+            dict.fromkeys(
+                field["name"].removesuffix("[]")
+                for field in fields
+                if field.get("required") and "[]." not in field["name"]
+            )
+        )
+        data_schema: dict[str, Any] = {
             "type": "object",
-            "properties": {
-                "success": {"type": "boolean"},
-                "data": {"type": "object", "properties": properties},
-            },
-            "required": ["success", "data"],
+            "properties": properties,
+        }
+        if required_fields:
+            data_schema["required"] = required_fields
+        schema: dict[str, Any] = {
+            "allOf": [
+                {"$ref": "#/components/schemas/SuccessResponse"},
+                {
+                    "type": "object",
+                    "properties": {"data": data_schema},
+                    "required": ["data"],
+                },
+            ]
         }
     else:
-        schema = {
-            "type": "object",
-            "properties": {"success": {"type": "boolean"}},
-            "required": ["success"],
-        }
+        schema = {"$ref": "#/components/schemas/SuccessResponse"}
 
     media: dict[str, Any] = {"schema": schema}
     example = parse_example(api.get("response_example", ""))
@@ -282,22 +315,22 @@ def api_operation(
     for status in api["response_codes"]:
         if status.startswith("2"):
             continue
-        operation["responses"][status] = {
-            "description": {
-                "400": "요청값 검증 실패",
-                "401": "인증 실패",
-                "403": "접근 권한 없음",
-                "404": "리소스를 찾을 수 없음",
-                "409": "현재 상태와 요청 충돌",
-                "429": "요청 한도 초과",
-                "502": "외부 처리 실패",
-            }.get(status, "요청 실패"),
-            "content": {
-                "application/json": {
-                    "schema": {"$ref": "#/components/schemas/ErrorResponse"}
-                }
-            },
-        }
+        response_component = ERROR_RESPONSES.get(status)
+        if response_component:
+            operation["responses"][status] = {
+                "$ref": f"#/components/responses/{response_component[0]}"
+            }
+        else:
+            operation["responses"][status] = {
+                "description": "요청 실패",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorResponse"
+                        }
+                    }
+                },
+            }
 
     if api_prefix(api["path"]) != "auth":
         operation["security"] = [{"bearerAuth": []}]
@@ -334,20 +367,41 @@ def openapi_document(
                 }
             },
             "schemas": {
+                "ErrorDetail": {
+                    "type": "object",
+                    "properties": {
+                        "code": {"type": "string"},
+                        "message": {"type": "string"},
+                    },
+                    "required": ["code", "message"],
+                },
                 "ErrorResponse": {
                     "type": "object",
                     "properties": {
                         "error": {
-                            "type": "object",
-                            "properties": {
-                                "code": {"type": "string"},
-                                "message": {"type": "string"},
-                            },
-                            "required": ["code", "message"],
-                        }
+                            "$ref": "#/components/schemas/ErrorDetail"
+                        },
                     },
                     "required": ["error"],
+                },
+                "SuccessResponse": {
+                    "type": "object",
+                    "properties": {"success": {"type": "boolean"}},
+                    "required": ["success"],
+                },
+            },
+            "responses": {
+                component_name: {
+                    "description": description,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ErrorResponse"
+                            }
+                        }
+                    },
                 }
+                for component_name, description in ERROR_RESPONSES.values()
             },
         },
     }
@@ -369,6 +423,8 @@ def feature_domain(
     )
     if domains:
         return domains[0]
+    if feature.get("contract_domain"):
+        return feature["contract_domain"]
     if feature["name"].startswith("[폐기]"):
         return "deprecated"
     return "unmapped"
@@ -407,8 +463,8 @@ def write_feature_catalogs(
             "---",
             f"# 기능 카탈로그: {domain}",
             "",
-            "| 기능 ID | 기능 | 설명 | API operationId |",
-            "| --- | --- | --- | --- |",
+            "| 기능 ID | 기능 | 설명 | 책임 | API operationId |",
+            "| --- | --- | --- | --- | --- |",
         ]
         for feature in sorted(
             items, key=lambda item: (item["feature_id"], item["name"])
@@ -419,6 +475,10 @@ def write_feature_catalogs(
                 if page_id in api_by_page
             ]
             operation_text = ", ".join(f"`{value}`" for value in operations) or "-"
+            responsibility = feature.get(
+                "contract_responsibility",
+                "server" if operations else "-",
+            )
             lines.append(
                 "| "
                 + " | ".join(
@@ -426,6 +486,7 @@ def write_feature_catalogs(
                         markdown_escape(feature["feature_id"]),
                         markdown_escape(feature["name"]),
                         markdown_escape(feature["description"]),
+                        responsibility,
                         operation_text,
                     ]
                 )
@@ -465,6 +526,10 @@ def traceability(
                 "feature_id": feature["feature_id"],
                 "feature_page_id": feature["page_id"],
                 "deprecated": feature["name"].startswith("[폐기]"),
+                "responsibility": feature.get(
+                    "contract_responsibility",
+                    "server" if related else "unmapped",
+                ),
                 "api_page_ids": [api["page_id"] for api in related],
                 "operation_ids": [operation_id(api) for api in related],
             }
@@ -489,6 +554,7 @@ def review_reasons(api: dict[str, Any]) -> list[str]:
     if (
         api["response_summary"]
         and not api["response_fields"]
+        and not api.get("response_schema")
         and "204" not in success_codes
     ):
         reasons.append("응답 요약은 있으나 상세 응답 표가 없음")
@@ -677,8 +743,9 @@ def write_review_queue(apis: list[dict[str, Any]], output: Path) -> None:
             "",
             "## 별도 미결 사항",
             "",
-            "- [TBD] Backend–AI 내부 API의 실제 경로와 인증 방식",
-            "- [TBD] Backend MySQL migration 도입 시점",
+            "- Backend–AI 내부 계약은 `contracts/openapi/ai-api.yaml`에서 관리한다.",
+            "- Backend MySQL Flyway V1과 실행 검증 결과는 `contracts/database/backend-alignment.md`에서 관리한다.",
+            "- 기존 데이터가 있는 환경은 V1 직접 적용 전에 별도 baseline과 변환 migration이 필요하다.",
             "",
         ]
     )
@@ -692,6 +759,11 @@ def main() -> int:
         "--snapshot",
         type=Path,
         default=Path("contracts/notion/spec-snapshot.json"),
+    )
+    parser.add_argument(
+        "--resolutions",
+        type=Path,
+        default=Path("contracts/api-resolutions.json"),
     )
     parser.add_argument(
         "--openapi-dir", type=Path, default=Path("contracts/openapi")
@@ -714,6 +786,10 @@ def main() -> int:
     args = parser.parse_args()
 
     snapshot = json.loads(args.snapshot.read_text(encoding="utf-8"))
+    snapshot = resolve_snapshot(
+        snapshot,
+        load_resolutions(args.resolutions),
+    )
     apis = snapshot["apis"]
     features = snapshot["features"]
     feature_by_page = {feature["page_id"]: feature for feature in features}

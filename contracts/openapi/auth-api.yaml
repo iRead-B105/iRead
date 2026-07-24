@@ -20,28 +20,31 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
                     },
-                    "data": {
+                    {
                       "type": "object",
                       "properties": {
-                        "maskedLoginId": {
-                          "type": "string",
-                          "description": "일부 문자를 마스킹한 로그인 아이디"
-                        },
-                        "verificationStatus": {
-                          "type": "string",
-                          "description": "COMPLETED"
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "maskedLoginId": {
+                              "type": "string",
+                              "description": "일부 문자를 마스킹한 로그인 아이디"
+                            },
+                            "verificationStatus": {
+                              "type": "string",
+                              "description": "COMPLETED"
+                            }
+                          }
                         }
-                      }
+                      },
+                      "required": [
+                        "data"
+                      ]
                     }
-                  },
-                  "required": [
-                    "success",
-                    "data"
                   ]
                 },
                 "example": {
@@ -55,24 +58,10 @@
             }
           },
           "400": {
-            "description": "요청값 검증 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/BadRequest"
           },
           "404": {
-            "description": "리소스를 찾을 수 없음",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/NotFound"
           }
         },
         "x-notion-page-id": "3a6027df-9053-8111-bb3e-fdd3b3a1e0ba",
@@ -130,56 +119,59 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
                     },
-                    "data": {
+                    {
                       "type": "object",
                       "properties": {
-                        "teacherId": {
-                          "type": "string",
-                          "description": "DB BIGINT를 문자열로 직렬화한 교수자 ID"
-                        },
-                        "loginId": {
-                          "type": "string",
-                          "description": "교수자 로그인 아이디"
-                        },
-                        "email": {
-                          "type": "string",
-                          "description": "교수자 이메일"
-                        },
-                        "name": {
-                          "type": "string",
-                          "description": "교수자 이름"
-                        },
-                        "organization": {
-                          "type": "string",
-                          "description": "소속 기관"
-                        },
-                        "profileImage": {
-                          "type": "string",
-                          "description": "프로필 이미지 URL"
-                        },
-                        "accessToken": {
-                          "type": "string",
-                          "description": "aud=admin-app인 관리자 앱 전용 JWT"
-                        },
-                        "expiresIn": {
-                          "type": "number",
-                          "description": "access token 만료까지 남은 초"
-                        },
-                        "loginStatus": {
-                          "type": "string",
-                          "description": "COMPLETED"
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "teacherId": {
+                              "type": "string",
+                              "description": "DB BIGINT를 문자열로 직렬화한 교수자 ID"
+                            },
+                            "loginId": {
+                              "type": "string",
+                              "description": "교수자 로그인 아이디"
+                            },
+                            "email": {
+                              "type": "string",
+                              "description": "교수자 이메일"
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "교수자 이름"
+                            },
+                            "organization": {
+                              "type": "string",
+                              "description": "소속 기관"
+                            },
+                            "profileImage": {
+                              "type": "string",
+                              "description": "프로필 이미지 URL"
+                            },
+                            "accessToken": {
+                              "type": "string",
+                              "description": "aud=admin-app인 관리자 앱 전용 JWT"
+                            },
+                            "expiresIn": {
+                              "type": "number",
+                              "description": "access token 만료까지 남은 초"
+                            },
+                            "loginStatus": {
+                              "type": "string",
+                              "description": "COMPLETED"
+                            }
+                          }
                         }
-                      }
+                      },
+                      "required": [
+                        "data"
+                      ]
                     }
-                  },
-                  "required": [
-                    "success",
-                    "data"
                   ]
                 },
                 "example": {
@@ -201,24 +193,10 @@
             }
           },
           "401": {
-            "description": "인증 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Unauthorized"
           },
           "429": {
-            "description": "요청 한도 초과",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "x-notion-page-id": "3a6027df-9053-8140-96da-c9b6ad7f8dce",
@@ -299,24 +277,10 @@
             "description": "요청 성공"
           },
           "401": {
-            "description": "인증 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "description": "접근 권한 없음",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Forbidden"
           }
         },
         "x-notion-page-id": "3a3027df-9053-8038-b5c9-c4018efc7e31",
@@ -344,28 +308,31 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
                     },
-                    "data": {
+                    {
                       "type": "object",
                       "properties": {
-                        "verificationStatus": {
-                          "type": "string",
-                          "description": "COMPLETED"
-                        },
-                        "resetStatus": {
-                          "type": "string",
-                          "description": "COMPLETED"
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "verificationStatus": {
+                              "type": "string",
+                              "description": "COMPLETED"
+                            },
+                            "resetStatus": {
+                              "type": "string",
+                              "description": "COMPLETED"
+                            }
+                          }
                         }
-                      }
+                      },
+                      "required": [
+                        "data"
+                      ]
                     }
-                  },
-                  "required": [
-                    "success",
-                    "data"
                   ]
                 },
                 "example": {
@@ -379,24 +346,10 @@
             }
           },
           "400": {
-            "description": "요청값 검증 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/BadRequest"
           },
           "404": {
-            "description": "리소스를 찾을 수 없음",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/NotFound"
           }
         },
         "x-notion-page-id": "3a6027df-9053-8198-b212-e6cd30a3755b",
@@ -477,32 +430,35 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
                     },
-                    "data": {
+                    {
                       "type": "object",
                       "properties": {
-                        "accessToken": {
-                          "type": "string",
-                          "description": "aud=admin-app인 새 access token"
-                        },
-                        "tokenType": {
-                          "type": "string",
-                          "description": "Bearer"
-                        },
-                        "expiresIn": {
-                          "type": "number",
-                          "description": "access token 만료까지 남은 초"
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "accessToken": {
+                              "type": "string",
+                              "description": "aud=admin-app인 새 access token"
+                            },
+                            "tokenType": {
+                              "type": "string",
+                              "description": "Bearer"
+                            },
+                            "expiresIn": {
+                              "type": "number",
+                              "description": "access token 만료까지 남은 초"
+                            }
+                          }
                         }
-                      }
+                      },
+                      "required": [
+                        "data"
+                      ]
                     }
-                  },
-                  "required": [
-                    "success",
-                    "data"
                   ]
                 },
                 "example": {
@@ -517,34 +473,13 @@
             }
           },
           "400": {
-            "description": "요청값 검증 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "description": "인증 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "description": "접근 권한 없음",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Forbidden"
           }
         },
         "x-notion-page-id": "3a7027df-9053-810a-8f05-d87339df02cd",
@@ -572,36 +507,39 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
                     },
-                    "data": {
+                    {
                       "type": "object",
                       "properties": {
-                        "teacherId": {
-                          "type": "string",
-                          "description": "DB BIGINT를 문자열로 직렬화한 교수자 ID"
-                        },
-                        "loginId": {
-                          "type": "string",
-                          "description": "등록된 로그인 아이디"
-                        },
-                        "email": {
-                          "type": "string",
-                          "description": "등록된 이메일"
-                        },
-                        "signUpStatus": {
-                          "type": "string",
-                          "description": "COMPLETED"
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "teacherId": {
+                              "type": "string",
+                              "description": "DB BIGINT를 문자열로 직렬화한 교수자 ID"
+                            },
+                            "loginId": {
+                              "type": "string",
+                              "description": "등록된 로그인 아이디"
+                            },
+                            "email": {
+                              "type": "string",
+                              "description": "등록된 이메일"
+                            },
+                            "signUpStatus": {
+                              "type": "string",
+                              "description": "COMPLETED"
+                            }
+                          }
                         }
-                      }
+                      },
+                      "required": [
+                        "data"
+                      ]
                     }
-                  },
-                  "required": [
-                    "success",
-                    "data"
                   ]
                 },
                 "example": {
@@ -617,24 +555,10 @@
             }
           },
           "400": {
-            "description": "요청값 검증 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/BadRequest"
           },
           "409": {
-            "description": "현재 상태와 요청 충돌",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Conflict"
           }
         },
         "x-notion-page-id": "9fd027df-9053-82c1-9b50-810e8bb3f636",
@@ -735,34 +659,13 @@
             "description": "요청 성공"
           },
           "400": {
-            "description": "요청값 검증 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "description": "인증 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "description": "접근 권한 없음",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Forbidden"
           }
         },
         "x-notion-page-id": "3a7027df-9053-81e6-a162-e104f77a321f",
@@ -800,32 +703,35 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
                     },
-                    "data": {
+                    {
                       "type": "object",
                       "properties": {
-                        "accessToken": {
-                          "type": "string",
-                          "description": "aud=learning-app인 새 access token"
-                        },
-                        "tokenType": {
-                          "type": "string",
-                          "description": "Bearer"
-                        },
-                        "expiresIn": {
-                          "type": "number",
-                          "description": "access token 만료까지 남은 초"
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "accessToken": {
+                              "type": "string",
+                              "description": "aud=learning-app인 새 access token"
+                            },
+                            "tokenType": {
+                              "type": "string",
+                              "description": "Bearer"
+                            },
+                            "expiresIn": {
+                              "type": "number",
+                              "description": "access token 만료까지 남은 초"
+                            }
+                          }
                         }
-                      }
+                      },
+                      "required": [
+                        "data"
+                      ]
                     }
-                  },
-                  "required": [
-                    "success",
-                    "data"
                   ]
                 },
                 "example": {
@@ -840,34 +746,13 @@
             }
           },
           "400": {
-            "description": "요청값 검증 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "description": "인증 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "description": "접근 권한 없음",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Forbidden"
           }
         },
         "x-notion-page-id": "3a7027df-9053-81bb-aacb-ddf25911e464",
@@ -905,36 +790,39 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
                     },
-                    "data": {
+                    {
                       "type": "object",
                       "properties": {
-                        "studentId": {
-                          "type": "string",
-                          "description": "선택한 아동 ID"
-                        },
-                        "accessToken": {
-                          "type": "string",
-                          "description": "aud=learning-app, role=STUDENT인 학습 앱 전용 JWT"
-                        },
-                        "expiresIn": {
-                          "type": "number",
-                          "description": "access token 만료까지 남은 초"
-                        },
-                        "loginStatus": {
-                          "type": "string",
-                          "description": "COMPLETED"
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "studentId": {
+                              "type": "string",
+                              "description": "선택한 아동 ID"
+                            },
+                            "accessToken": {
+                              "type": "string",
+                              "description": "aud=learning-app, role=STUDENT인 학습 앱 전용 JWT"
+                            },
+                            "expiresIn": {
+                              "type": "number",
+                              "description": "access token 만료까지 남은 초"
+                            },
+                            "loginStatus": {
+                              "type": "string",
+                              "description": "COMPLETED"
+                            }
+                          }
                         }
-                      }
+                      },
+                      "required": [
+                        "data"
+                      ]
                     }
-                  },
-                  "required": [
-                    "success",
-                    "data"
                   ]
                 },
                 "example": {
@@ -951,34 +839,13 @@
             }
           },
           "401": {
-            "description": "인증 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Unauthorized"
           },
           "403": {
-            "description": "접근 권한 없음",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
-            "description": "리소스를 찾을 수 없음",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/NotFound"
           }
         },
         "x-notion-page-id": "3a6027df-9053-8189-a401-dc27d8812591",
@@ -1031,54 +898,57 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
                     },
-                    "data": {
+                    {
                       "type": "object",
                       "properties": {
-                        "teacherId": {
-                          "type": "string",
-                          "description": "DB BIGINT를 문자열로 직렬화한 교수자 ID"
-                        },
-                        "teacherSessionToken": {
-                          "type": "string",
-                          "description": "aud=learning-bootstrap, scope=student:select인 단기 토큰"
-                        },
-                        "linkedStudents": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "additionalProperties": true,
-                            "properties": {
-                              "studentId": {
-                                "type": "string",
-                                "description": "DB BIGINT를 문자열로 직렬화한 아동 ID"
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "teacherId": {
+                              "type": "string",
+                              "description": "DB BIGINT를 문자열로 직렬화한 교수자 ID"
+                            },
+                            "teacherSessionToken": {
+                              "type": "string",
+                              "description": "aud=learning-bootstrap, scope=student:select인 단기 토큰"
+                            },
+                            "linkedStudents": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": true,
+                                "properties": {
+                                  "studentId": {
+                                    "type": "string",
+                                    "description": "DB BIGINT를 문자열로 직렬화한 아동 ID"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "description": "아동 표시 이름"
+                                  }
+                                }
                               },
-                              "name": {
-                                "type": "string",
-                                "description": "아동 표시 이름"
-                              }
+                              "description": "해당 교수자에게 연결된 아동 목록"
+                            },
+                            "expiresIn": {
+                              "type": "number",
+                              "description": "아동 선택 토큰 만료까지 남은 초"
+                            },
+                            "loginStatus": {
+                              "type": "string",
+                              "description": "STUDENT_SELECTION_REQUIRED"
                             }
-                          },
-                          "description": "해당 교수자에게 연결된 아동 목록"
-                        },
-                        "expiresIn": {
-                          "type": "number",
-                          "description": "아동 선택 토큰 만료까지 남은 초"
-                        },
-                        "loginStatus": {
-                          "type": "string",
-                          "description": "STUDENT_SELECTION_REQUIRED"
+                          }
                         }
-                      }
+                      },
+                      "required": [
+                        "data"
+                      ]
                     }
-                  },
-                  "required": [
-                    "success",
-                    "data"
                   ]
                 },
                 "example": {
@@ -1100,24 +970,10 @@
             }
           },
           "401": {
-            "description": "인증 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Unauthorized"
           },
           "429": {
-            "description": "요청 한도 초과",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
+            "$ref": "#/components/responses/TooManyRequests"
           }
         },
         "x-notion-page-id": "3a6027df-9053-81f1-a36a-f7a8f5b5ac4f",
@@ -1175,28 +1031,114 @@
       }
     },
     "schemas": {
+      "ErrorDetail": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      },
       "ErrorResponse": {
         "type": "object",
         "properties": {
           "error": {
-            "type": "object",
-            "properties": {
-              "code": {
-                "type": "string"
-              },
-              "message": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "code",
-              "message"
-            ]
+            "$ref": "#/components/schemas/ErrorDetail"
           }
         },
         "required": [
           "error"
         ]
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success"
+        ]
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "요청값 검증 실패",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "인증 실패",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "접근 권한 없음",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "리소스를 찾을 수 없음",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "현재 상태와 요청 충돌",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "TooManyRequests": {
+        "description": "요청 한도 초과",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "BadGateway": {
+        "description": "외부 처리 실패",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
       }
     }
   }

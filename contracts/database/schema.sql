@@ -1,5 +1,5 @@
-﻿CREATE TABLE `training_templates` (
-	`id`	bigint	NOT NULL,
+CREATE TABLE `training_templates` (
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`curriculum_unit_id`	bigint	NOT NULL,
 	`name`	varchar(100)	NOT NULL,
 	`form`	json	NOT NULL,
@@ -7,13 +7,13 @@
 );
 
 CREATE TABLE `students` (
-	`id`	bigint	NOT NULL,
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`teacher_id`	bigint	NOT NULL	COMMENT 'foreign key',
 	`name`	varchar(10)	NOT NULL	COMMENT '실명',
 	`birthday`	date	NULL,
 	`gender`	varchar(10)	NULL	COMMENT 'Enum: boy, girl',
 	`school`	varchar(20)	NULL,
-	`guardian`	varchar(10)	NULL,
+	`guardian`	varchar(100)	NULL,
 	`guardian_contact`	varchar(20)	NULL,
 	`guardian_email`	varchar(50)	NULL,
 	`address`	varchar(100)	NULL,
@@ -23,13 +23,13 @@ CREATE TABLE `students` (
 );
 
 CREATE TABLE `curriculum_units` (
-	`id`	bigint	NOT NULL,
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`unit_name`	varchar(50)	NOT NULL	COMMENT '파닉스, 단어 etc',
-	`sequence_no`	int	NULL
+	`sequence_no`	int	NOT NULL
 );
 
 CREATE TABLE `sounds` (
-	`id`	bigint	NOT NULL,
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`question_number`	int	NOT NULL,
 	`original_file_name`	varchar(255)	NOT NULL,
 	`file_size`	bigint	NOT NULL,
@@ -39,13 +39,13 @@ CREATE TABLE `sounds` (
 );
 
 CREATE TABLE `story_templates` (
-	`id`	bigint	NOT NULL,
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`title`	varchar(50)	NOT NULL,
 	`content`	text	NOT NULL	COMMENT 'ai에게 컨텍스트주는용도(ex: 백설공주의 줄거리)'
 );
 
 CREATE TABLE `images` (
-	`id`	bigint	NOT NULL,
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`original_file_name`	varchar(255)	NOT NULL,
 	`store_file_name`	varchar(255)	NOT NULL,
 	`file_size`	bigint	NOT NULL,
@@ -54,20 +54,20 @@ CREATE TABLE `images` (
 );
 
 CREATE TABLE `word_categories` (
-	`id`	bigint	NOT NULL,
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`word_id`	bigint	NOT NULL,
 	`category_name`	varchar(50)	NOT NULL	COMMENT 'Enum: 받침없는단어, ㅆ받침단어 etc'
 );
 
-CREATE TABLE `training_datas` (
-	`id`	bigint	NOT NULL,
+CREATE TABLE `training_contents` (
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`training_id`	bigint	NOT NULL,
 	`generated_data`	json	NULL	COMMENT '훈련에서 쓰일 단어/문장(ai생성)',
 	`created_at`	timestamp	NULL
 );
 
 CREATE TABLE `stories` (
-	`id`	bigint	NOT NULL,
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`student_id`	bigint	NOT NULL,
 	`story_template_id`	bigint	NOT NULL,
 	`created_at`	timestamp	NOT NULL,
@@ -76,14 +76,14 @@ CREATE TABLE `stories` (
 	CONSTRAINT `CHK_STORIES_PROGRESS` CHECK (`progress` BETWEEN 0 AND 100)
 );
 
-CREATE TABLE `test_datas` (
-	`id`	VARCHAR(255)	NOT NULL,
+CREATE TABLE `test_questions` (
+	`id`	VARCHAR(255)	NOT NULL	PRIMARY KEY,
 	`test_id`	bigint	NOT NULL,
 	`question`	json	NULL	COMMENT '문항문제'
 );
 
 CREATE TABLE `gaze_analysis_results` (
-	`id`	bigint	NOT NULL,
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`gaze_session_id`	bigint	NOT NULL,
 	`total_visited_duration`	int	NOT NULL,
 	`total_visited_count`	int	NOT NULL,
@@ -93,7 +93,7 @@ CREATE TABLE `gaze_analysis_results` (
 );
 
 CREATE TABLE `gaze_sessions` (
-	`id`	bigint	NOT NULL,
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`student_id`	bigint	NOT NULL,
 	`test_id`	bigint	NULL,
 	`training_id`	bigint	NULL,
@@ -107,7 +107,7 @@ CREATE TABLE `gaze_sessions` (
 );
 
 CREATE TABLE `student_study_progresses` (
-	`id`	bigint	NOT NULL,
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`student_id`	bigint	NOT NULL,
 	`training_template_id`	bigint	NOT NULL,
 	`achievement`	tinyint unsigned	NOT NULL	DEFAULT 0,
@@ -116,10 +116,12 @@ CREATE TABLE `student_study_progresses` (
 );
 
 CREATE TABLE `student_word_stats` (
-	`id`	bigint	NOT NULL	COMMENT '훈련+테스트+스토리 통계테이블',
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY	COMMENT '훈련+테스트+스토리 통계테이블',
 	`student_id`	bigint	NOT NULL,
 	`word_id`	bigint	NOT NULL,
 	`word_score`	decimal(5,2)	NOT NULL	DEFAULT 0.00	COMMENT '0.0~100.0',
+	`correct_count`	int unsigned	NOT NULL	DEFAULT 0,
+	`failed_count`	int unsigned	NOT NULL	DEFAULT 0,
 	`attempt_count`	int unsigned	NOT NULL	DEFAULT 0,
 	`updated_at`	timestamp	NULL,
 	CONSTRAINT `CHK_STUDENT_WORD_STATS_SCORE`
@@ -127,23 +129,23 @@ CREATE TABLE `student_word_stats` (
 );
 
 CREATE TABLE `words` (
-	`id`	bigint	NOT NULL	COMMENT '단어는 기본형태',
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY	COMMENT '단어는 기본형태',
 	`content`	varchar(50)	NOT NULL	COMMENT 'UNIQUE',
 	`length`	int	NOT NULL
 );
 
 CREATE TABLE `reports` (
-	`id`	bigint	NOT NULL,
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`student_id`	bigint	NOT NULL,
-	`start_date`	timestamp	NOT NULL	COMMENT '기간시작일~기간종료일 에 대한 리포트',
-	`end_date`	timestamp	NOT NULL,
-	`snapshot_data`	json	NULL,
+	`start_date`	date	NOT NULL	COMMENT '기간시작일~기간종료일 에 대한 리포트',
+	`end_date`	date	NOT NULL,
+	`snapshot_data`	json	NOT NULL,
 	`teacher_memo`	text	NULL,
 	`created_at`	timestamp	NOT NULL	COMMENT '생성일'
 );
 
 CREATE TABLE `videos` (
-	`id`	bigint	NOT NULL,
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`question_number`	int	NOT NULL,
 	`original_file_name`	varchar(255)	NOT NULL,
 	`file_size`	bigint	NOT NULL,
@@ -153,10 +155,10 @@ CREATE TABLE `videos` (
 );
 
 CREATE TABLE `teachers` (
-	`id`	bigint	NOT NULL,
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`email`	varchar(50)	NOT NULL	COMMENT 'unique',
 	`password`	varchar(100)	NOT NULL,
-	`name`	varchar(10)	NULL	COMMENT '실명',
+	`name`	varchar(10)	NOT NULL	COMMENT '실명',
 	`organization`	varchar(100)	NULL,
 	`created_at`	timestamp	NOT NULL	COMMENT '생성일',
 	`gender`	varchar(10)	NULL	COMMENT 'Enum',
@@ -164,8 +166,9 @@ CREATE TABLE `teachers` (
 );
 
 CREATE TABLE `story_lines` (
-	`id`	bigint	NOT NULL,
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`story_id`	bigint	NOT NULL,
+	`previous_line_id`	bigint	NULL,
 	`image_url`	varchar(255)	NULL,
 	`requires_branch_input`	boolean	NOT NULL	COMMENT '아동의 음성 입력을 받아 AI로 다음 이야기 분기를 생성해야 하는 장면 여부',
 	`content`	text	NOT NULL,
@@ -175,9 +178,13 @@ CREATE TABLE `story_lines` (
 );
 
 CREATE TABLE `word_attempt_logs` (
-	`id`	bigint	NOT NULL,
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`student_id`	bigint	NOT NULL,
 	`word_id`	bigint	NOT NULL	COMMENT '단어는 기본형태',
+	`story_line_id`	bigint	NULL,
+	`training_id`	bigint	NULL,
+	`test_id`	bigint	NULL,
+	`use_location`	varchar(10)	NOT NULL	COMMENT 'Enum: TEST, TRAINING, STORY',
 	`surface_text`	varchar(50)	NULL	COMMENT '단어의 문장내에서의 형태(ex: 먹었다)',
 	`has_gaze_data`	boolean	NOT NULL,
 	`has_audio_data`	boolean	NOT NULL,
@@ -191,11 +198,12 @@ CREATE TABLE `word_attempt_logs` (
 	`speech_start_offset_ms`	int	NULL,
 	`speech_end_offset_ms`	int	NULL,
 	`is_correct`	boolean	NULL,
+	`total_score`	int unsigned	NOT NULL,
 	`created_at`	timestamp	NOT NULL
 );
 
 CREATE TABLE `character` (
-	`id`	bigint	NOT NULL,
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`student_id`	bigint	NOT NULL,
 	`image_url`	varchar(255)	NULL,
 	`is_representative`	boolean	NOT NULL	DEFAULT false,
@@ -203,7 +211,7 @@ CREATE TABLE `character` (
 );
 
 CREATE TABLE `trainings` (
-	`id`	bigint	NOT NULL,
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`training_template_id`	bigint	NOT NULL,
 	`daily_curriculum_id`	bigint	NOT NULL,
 	`sequence_no`	int	NOT NULL	COMMENT '커리큘럼내에서의 순서, (id, 훈련순서) uniuque',
@@ -218,15 +226,15 @@ CREATE TABLE `trainings` (
 );
 
 CREATE TABLE `daily_curriculums` (
-	`id`	bigint	NOT NULL,
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`student_id`	bigint	NOT NULL,
 	`status`	varchar(20)	NOT NULL	COMMENT 'Enum:  NOT_STARTED,  IN_PROGRESS,  COMPLETED',
 	`created_at`	timestamp	NOT NULL,
 	`completed_at`	timestamp	NULL
 );
 
-CREATE TABLE `test` (
-	`id`	bigint	NOT NULL,
+CREATE TABLE `tests` (
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
 	`student_id`	bigint	NOT NULL,
 	`created_at`	timestamp	NOT NULL,
 	`status`	varchar(20)	NULL	COMMENT 'Enum:    NOT_READY,  NOT_STARTED,  IN_PROGRESS,  COMPLETED',
@@ -234,102 +242,6 @@ CREATE TABLE `test` (
 	`accuracy`	decimal(5,2)	NULL	COMMENT '정답률',
 	CONSTRAINT `CHK_TEST_ACCURACY`
 		CHECK (`accuracy` BETWEEN 0.00 AND 100.00)
-);
-
-ALTER TABLE `training_templates` ADD CONSTRAINT `PK_TRAINING_TEMPLATES` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `students` ADD CONSTRAINT `PK_STUDENTS` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `curriculum_units` ADD CONSTRAINT `PK_CURRICULUM_UNITS` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `sounds` ADD CONSTRAINT `PK_SOUNDS` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `story_templates` ADD CONSTRAINT `PK_STORY_TEMPLATES` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `images` ADD CONSTRAINT `PK_IMAGES` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `word_categories` ADD CONSTRAINT `PK_WORD_CATEGORIES` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `training_datas` ADD CONSTRAINT `PK_TRAINING_DATAS` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `stories` ADD CONSTRAINT `PK_STORIES` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `test_datas` ADD CONSTRAINT `PK_TEST_DATAS` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `gaze_analysis_results` ADD CONSTRAINT `PK_GAZE_ANALYSIS_RESULTS` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `gaze_sessions` ADD CONSTRAINT `PK_GAZE_SESSIONS` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `student_study_progresses` ADD CONSTRAINT `PK_STUDENT_STUDY_PROGRESSES` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `student_word_stats` ADD CONSTRAINT `PK_STUDENT_WORD_STATS` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `words` ADD CONSTRAINT `PK_WORDS` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `reports` ADD CONSTRAINT `PK_REPORTS` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `videos` ADD CONSTRAINT `PK_VIDEOS` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `teachers` ADD CONSTRAINT `PK_TEACHERS` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `story_lines` ADD CONSTRAINT `PK_STORY_LINES` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `word_attempt_logs` ADD CONSTRAINT `PK_WORD_ATTEMPT_LOGS` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `character` ADD CONSTRAINT `PK_CHARACTER` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `trainings` ADD CONSTRAINT `PK_TRAININGS` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `daily_curriculums` ADD CONSTRAINT `PK_DAILY_CURRICULUMS` PRIMARY KEY (
-	`id`
-);
-
-ALTER TABLE `test` ADD CONSTRAINT `PK_TEST` PRIMARY KEY (
-	`id`
 );
 
 ALTER TABLE `teachers`
@@ -395,8 +307,8 @@ ALTER TABLE `word_categories`
 	ADD CONSTRAINT `FK_WORD_CATEGORIES_WORD`
 		FOREIGN KEY (`word_id`) REFERENCES `words` (`id`);
 
-ALTER TABLE `training_datas`
-	ADD CONSTRAINT `FK_TRAINING_DATAS_TRAINING`
+ALTER TABLE `training_contents`
+	ADD CONSTRAINT `FK_TRAINING_CONTENTS_TRAINING`
 		FOREIGN KEY (`training_id`) REFERENCES `trainings` (`id`);
 
 ALTER TABLE `stories`
@@ -405,9 +317,9 @@ ALTER TABLE `stories`
 	ADD CONSTRAINT `FK_STORIES_STORY_TEMPLATE`
 		FOREIGN KEY (`story_template_id`) REFERENCES `story_templates` (`id`);
 
-ALTER TABLE `test_datas`
-	ADD CONSTRAINT `FK_TEST_DATAS_TEST`
-		FOREIGN KEY (`test_id`) REFERENCES `test` (`id`);
+ALTER TABLE `test_questions`
+	ADD CONSTRAINT `FK_TEST_QUESTIONS_TEST`
+		FOREIGN KEY (`test_id`) REFERENCES `tests` (`id`);
 
 ALTER TABLE `gaze_analysis_results`
 	ADD CONSTRAINT `FK_GAZE_ANALYSIS_RESULTS_SESSION`
@@ -417,7 +329,7 @@ ALTER TABLE `gaze_sessions`
 	ADD CONSTRAINT `FK_GAZE_SESSIONS_STUDENT`
 		FOREIGN KEY (`student_id`) REFERENCES `students` (`id`),
 	ADD CONSTRAINT `FK_GAZE_SESSIONS_TEST`
-		FOREIGN KEY (`test_id`) REFERENCES `test` (`id`),
+		FOREIGN KEY (`test_id`) REFERENCES `tests` (`id`),
 	ADD CONSTRAINT `FK_GAZE_SESSIONS_TRAINING`
 		FOREIGN KEY (`training_id`) REFERENCES `trainings` (`id`),
 	ADD CONSTRAINT `FK_GAZE_SESSIONS_STORY`
@@ -463,6 +375,6 @@ ALTER TABLE `daily_curriculums`
 	ADD CONSTRAINT `FK_DAILY_CURRICULUMS_STUDENT`
 		FOREIGN KEY (`student_id`) REFERENCES `students` (`id`);
 
-ALTER TABLE `test`
+ALTER TABLE `tests`
 	ADD CONSTRAINT `FK_TEST_STUDENT`
 		FOREIGN KEY (`student_id`) REFERENCES `students` (`id`);
