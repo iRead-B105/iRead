@@ -25,6 +25,7 @@ description: iRead의 제품, 아키텍처, 결정, 계획과 워크플로 문�
 | AI 에이전트는 어떻게 작업하는가? | [AI 개발 워크플로](workflows/ai-development.md) | `AGENTS.md`, `PLANS.md` |
 | 브랜치와 커밋을 어떻게 관리하는가? | [Git Flow 및 커밋 정책](workflows/git-flow.md) | 저장소 전략, 관련 ADR |
 | submodule을 어떻게 받거나 갱신하는가? | [submodule 운영 가이드](workflows/submodules.md) | 저장소 전략 |
+| GitLab 단일 저장소를 어떻게 갱신하는가? | [GitLab 단일 저장소 동기화](workflows/gitlab-monorepo-sync.md) | [ADR-0009](decisions/ADR-0009-gitlab-monorepo-mirror.md) |
 | 문서는 어떤 어투로 작성하는가? | [문서 작성 원칙](workflows/documentation-style.md) | `AGENTS.md`, 문서 템플릿 |
 | 기능·API·SQL 명세는 어디서 관리하는가? | [명세 관리 워크플로](workflows/specification-management.md) | [계약 카탈로그](../contracts/catalog.md), 관련 ADR |
 
