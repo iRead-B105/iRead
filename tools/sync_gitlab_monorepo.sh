@@ -8,6 +8,8 @@ readonly ORCHESTRATION_URL="https://github.com/iRead-B105/iRead.git"
 readonly ORCHESTRATION_BRANCH="develop"
 readonly REQUESTED_ORCHESTRATION_SHA="${SYNC_ORCHESTRATION_SHA:-}"
 readonly TARGET_BRANCH="main"
+readonly SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+readonly GITLAB_ASKPASS="$SCRIPT_DIR/gitlab_askpass.sh"
 readonly WORK_DIR="$(mktemp -d)"
 readonly AGGREGATE_DIR="$WORK_DIR/aggregate"
 readonly SNAPSHOT_DIR="$WORK_DIR/orchestration-snapshot"
@@ -34,15 +36,17 @@ if [[ -z "${GITLAB_PUSH_TOKEN:-}" ]]; then
   exit 1
 fi
 
-readonly AUTH_HEADER="AUTHORIZATION: Basic $(printf '%s:%s' "$GITLAB_USERNAME" "$GITLAB_PUSH_TOKEN" | base64 | tr -d '\n')"
-
 cleanup() {
   rm -rf -- "$WORK_DIR"
 }
 trap cleanup EXIT
 
 git_auth() {
-  git -c "http.extraheader=$AUTH_HEADER" "$@"
+  GITLAB_USERNAME="$GITLAB_USERNAME" \
+    GITLAB_PUSH_TOKEN="$GITLAB_PUSH_TOKEN" \
+    GIT_ASKPASS="$GITLAB_ASKPASS" \
+    GIT_TERMINAL_PROMPT=0 \
+    git -c "credential.username=$GITLAB_USERNAME" "$@"
 }
 
 ensure_remote() {
