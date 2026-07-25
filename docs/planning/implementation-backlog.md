@@ -28,18 +28,31 @@ timestamp: 2026-07-25T00:00:00+09:00
 
 | ID | 우선순위 | 작업 | 계약·영역 | 선행 작업 | 상태 |
 | --- | --- | --- | --- | --- | --- |
-| BE-001 | P0 | Flyway V1과 엔티티 매핑 기준선 확정 | MySQL 24개 테이블, `training_contents`, `test_questions` | 없음 | in-progress |
-| BE-002 | P0 | Admin·App 인증 API를 Auth OpenAPI 10개 operation에 맞춤 | `auth-api.yaml` | BE-001 | todo |
-| BE-003 | P0 | 역할과 리소스 소유권 검증 및 민감정보 로그 차단 | 인증, 학생·보고서·훈련 접근 | BE-002 | todo |
-| BE-004 | P0 | 교수자·학생 관리 API 계약 정합화 | Admin `teacher`, `student` 12개 operation | BE-002, BE-003 | todo |
-| BE-005 | P0 | 관리자 훈련·검사 API 계약 정합화 | Admin `training`, `test` 중 시선 조회를 제외한 13개 operation | BE-001, BE-004 | todo |
-| BE-006 | P1 | 관리자 보고서·시선 결과 API 계약 정합화 | Admin `report` 4개, 검사·훈련 시선 조회 2개 operation | BE-004, BE-005 | todo |
-| BE-007 | P0 | 아동 로그인·성장·마이페이지 API 구현 | App 인증, `student`, `mypage` | BE-002, BE-003 | todo |
+| BE-001 | P0 | Flyway V1과 엔티티 매핑 기준선 확정 | MySQL 24개 테이블, `training_contents`, `test_questions` | 없음 | done |
+| BE-002 | P0 | Admin·App 인증 API를 Auth OpenAPI 10개 operation에 맞춤 | `auth-api.yaml` | BE-001 | in-progress |
+| BE-003 | P0 | 역할과 리소스 소유권 검증 및 민감정보 로그 차단 | 인증, 학생·보고서·훈련 접근 | BE-002 | in-progress |
+| BE-004 | P0 | 교수자·학생 관리 API 계약 정합화 | Admin `teacher`, `student` 12개 operation | BE-002, BE-003 | in-progress |
+| BE-005 | P0 | 관리자 훈련·검사 API 계약 정합화 | Admin `training`, `test` 중 시선 조회를 제외한 13개 operation | BE-001, BE-004 | in-progress |
+| BE-006 | P1 | 관리자 보고서·시선 결과 API 계약 정합화 | Admin `report` 4개, 검사·훈련 시선 조회 2개 operation | BE-004, BE-005 | in-progress |
+| BE-007 | P0 | 아동 로그인·성장·마이페이지 API 구현 | App 인증, `student`, `mypage` | BE-002, BE-003 | in-progress |
 | BE-008 | P0 | 아동 검사·훈련 세션 API 구현 | App `test` 8개, `training` 7개 operation | BE-001, BE-007 | todo |
-| BE-009 | P1 | 이야기·시선 세션 API 구현 | App `story` 9개, `gaze` 6개 operation | BE-007, BE-010 | todo |
-| BE-010 | P0 | AI 없는 데모용 결정적 fixture provider 구현 | 훈련 생성·평가, 이야기, STT·TTS 대체 결과 | BE-001 | todo |
-| BE-011 | P1 | 비식별 데모 seed와 파일·DB 초기화 절차 작성 | Flyway, 데모 데이터, `audio/` | BE-001 | todo |
-| BE-012 | P1 | OpenAPI 기준 오류 응답과 입력 검증 통일 | Auth·Admin·App 전체 | BE-002~BE-010 | todo |
+| BE-009 | P1 | 이야기·시선 세션 API 구현 | App `story` 9개, `gaze` 6개 operation | BE-007, BE-010 | in-progress |
+| BE-010 | P0 | AI 없는 데모용 결정적 fixture provider 구현 | 훈련 생성·평가, 이야기, STT·TTS 대체 결과 | BE-001 | in-progress |
+| BE-011 | P1 | 비식별 데모 seed와 파일·DB 초기화 절차 작성 | Flyway, 데모 데이터, `audio/` | BE-001 | in-progress |
+| BE-012 | P1 | OpenAPI 기준 오류 응답과 입력 검증 통일 | Auth·Admin·App 전체 | BE-002~BE-010 | in-progress |
+
+### 2026-07-25 Backend 구현 검토
+
+- 검토 기준: Backend `develop`의 `ea07f82`, OpenAPI 74개 operation, Flyway V1과 엔티티 매핑
+- API 경로·HTTP method가 정확히 일치하는 컨트롤러 매핑: 38/74
+  - Auth: 0/10. 기존 교수자 세션 인증이 있으나 Admin·App JWT 계약과 경로·요청 모델이 다르다.
+  - Admin: 25/31. 교수자·학생 9/12, 훈련·검사 11/13, 보고서·시선 5/6이 일치한다.
+  - App: 13/33. 이야기·시선 12/15와 마이페이지 캐릭터 조회 1개가 일치한다.
+- `BE-001`은 Flyway V1과 계약 SQL의 일치, 24개 테이블·25개 외래 키 및 필수 엔티티 매핑을 확인해 완료로 변경했다.
+- 기존 구현이 있으나 계약 전체를 충족하지 않는 작업은 `in-progress`로 변경했다. 파일이나 메서드의 존재만으로 완료 처리하지 않았다.
+- 아동 검사·훈련 컨트롤러는 아직 없으므로 `BE-008`은 `todo`를 유지한다.
+- 이번 정합화에서 공통 성공·오류 응답 envelope, 회원가입·보고서 생성·시선 세션·이야기 세션의 HTTP 상태, 보고서 메모 경로와 응답, 학생 수정의 교수자 메모, 이야기 장면 경로 변수를 계약에 맞췄다.
+- 남은 주요 차이는 Admin·App JWT 인증, 오류별 HTTP 상태와 세부 코드, 기존 조회 API의 목록 wrapper·일부 응답 필드명, 학생 요약·학습 이벤트, 훈련 상세·내보내기, 보고서 시선 반영, 성장·대표 캐릭터, 이야기 분기·STT·TTS와 App 검사·훈련 API다.
 
 ### Backend 수용 기준
 
