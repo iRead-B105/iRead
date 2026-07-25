@@ -30,7 +30,7 @@ timestamp: 2026-07-26T00:00:00+09:00
 | --- | --- | --- | --- | --- | --- |
 | BE-001 | P0 | Flyway V1과 엔티티 매핑 기준선 확정 | MySQL 24개 테이블, `training_contents`, `test_questions` | 없음 | done |
 | BE-002 | P0 | Admin·App 인증 API를 Auth OpenAPI 10개 operation에 맞춤 | `auth-api.yaml` | BE-001 | done |
-| BE-003 | P0 | 역할과 리소스 소유권 검증 및 민감정보 로그 차단 | 인증, 학생·보고서·훈련 접근 | BE-002 | in-progress |
+| BE-003 | P0 | 역할과 리소스 소유권 검증 및 민감정보 로그 차단 | 인증, 학생·보고서·훈련 접근 | BE-002 | done |
 | BE-004 | P0 | 교수자·학생 관리 API 계약 정합화 | Admin `teacher`, `student` 12개 operation | BE-002, BE-003 | in-progress |
 | BE-005 | P0 | 관리자 훈련·검사 API 계약 정합화 | Admin `training`, `test` 중 시선 조회를 제외한 13개 operation | BE-001, BE-004 | in-progress |
 | BE-006 | P1 | 관리자 보고서·시선 결과 API 계약 정합화 | Admin `report` 4개, 검사·훈련 시선 조회 2개 operation | BE-004, BE-005 | in-progress |
@@ -77,6 +77,19 @@ timestamp: 2026-07-26T00:00:00+09:00
 - `python -m unittest tools.tests.test_validate_contracts`: 1개 성공.
 - `python tools/validate_contracts.py`: 81 operations, 334 features, 26 MySQL tables, 27 foreign keys 검증 성공.
 - `python tools/validate_harness.py`: 82 Markdown files, 63 OKF concepts, 92 explicit open markers 검증 성공.
+- 별도 린트·정적 분석은 구성된 명령이 없어 실행하지 않았다.
+
+### 2026-07-26 BE-003 완료
+
+- JWT principal에서 `TEACHER` 역할은 Admin·bootstrap audience와 학생 식별자 없음, `STUDENT` 역할은 learning audience와 학생 식별자 있음을 불변식으로 검증한다.
+- 학습 App의 마이페이지·이야기·시선 API에서 토큰의 `studentId`와 경로·쿼리·요청 본문의 `studentId`가 같은지 서비스 호출 전에 검사한다.
+- Admin API는 Admin audience, 학습 App API는 learning audience로 분리하고 서로 다른 영역의 토큰 접근이 `403 Forbidden`인지 HTTP 통합 테스트로 확인했다.
+- 학생·훈련·검사·보고서·이야기·시선 서비스가 교수자와 학생 또는 하위 리소스의 연결 관계를 제한하는 저장소 조회를 사용하는지 확인했다.
+- 제품 범위에서 제거된 `/api/admin/report/shared/**` 익명 접근 허용 규칙을 삭제했다.
+- 요청 상세 로그와 Tomcat access log를 명시적으로 비활성화하고 직접 콘솔 출력 금지 회귀 테스트를 추가했다.
+- 역할·audience, 아동 리소스 접근, 보안 HTTP 응답과 로그 정책 테스트 17개를 추가했다.
+- `.\gradlew.bat test --rerun-tasks`: 85개 중 일반 테스트 84개 성공, opt-in MySQL 통합 테스트 1개 skip, 실패 0개.
+- 데이터베이스 스키마와 엔티티 매핑 변경이 없어 MySQL 통합 테스트는 별도로 실행하지 않았다.
 - 별도 린트·정적 분석은 구성된 명령이 없어 실행하지 않았다.
 
 ## Frontend TODO
