@@ -45,7 +45,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 
 ## 기술 기준선
 
-- Backend: Spring Boot 3, Java 21, Gradle Kotlin DSL
+- Backend: Spring Boot 4.0.7, Java 21, Gradle Groovy DSL
 - Frontend: Vue 3, TypeScript, Vite, pnpm
 - AI server: FastAPI, Python 3.12, uv
 - 아동 앱: [TBD]

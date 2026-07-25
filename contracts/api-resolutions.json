@@ -1,0 +1,1155 @@
+{
+  "version": 1,
+  "resolutions": [
+    {
+      "source": "GET /api/admin/navigation/sidebar",
+      "action": "client",
+      "reason": "권한과 인증 사용자 정보로 클라이언트가 메뉴를 구성한다."
+    },
+    {
+      "source": "GET /api/admin/report/selection",
+      "action": "client",
+      "reason": "학생 목록과 클라이언트의 기간 선택 상태로 처리한다."
+    },
+    {
+      "source": "GET /api/admin/student/actions",
+      "action": "client",
+      "reason": "권한과 학생 상태로 클라이언트가 사용 가능한 동작을 구성한다."
+    },
+    {
+      "source": "GET /api/admin/student/filter",
+      "action": "merge",
+      "target": "GET /api/admin/student/list",
+      "reason": "검색과 필터를 학생 목록 query parameter로 통합한다."
+    },
+    {
+      "source": "GET /api/admin/student/list-state",
+      "action": "client",
+      "reason": "학생 목록 응답과 클라이언트 페이지 상태로 처리한다."
+    },
+    {
+      "source": "GET /api/admin/student/selection",
+      "action": "client",
+      "reason": "학생 선택은 클라이언트 상태로 관리한다."
+    },
+    {
+      "source": "GET /api/admin/student/{studentId}/form",
+      "action": "merge",
+      "target": "GET /api/admin/student/{studentId}",
+      "reason": "아동 폼 초기값을 아동 상세 조회로 통합한다."
+    },
+    {
+      "source": "PATCH /api/admin/student/{studentId}/form-submit",
+      "action": "merge",
+      "target": "PATCH /api/admin/student/{studentId}",
+      "reason": "아동 폼 제출을 아동 수정 명령으로 통합한다."
+    },
+    {
+      "source": "GET /api/admin/student/{studentId}/reading-accuracy-trend",
+      "action": "merge",
+      "target": "GET /api/admin/student/{studentId}/accuracy-trend",
+      "reason": "중복된 읽기 정확도 추이 계약을 정식 정확도 추이 조회로 통합한다."
+    },
+    {
+      "source": "GET /api/admin/teacher/profile/edit",
+      "action": "merge",
+      "target": "GET /api/admin/teacher/info",
+      "reason": "프로필 수정 초기값을 교수자 정보 조회로 통합한다."
+    },
+    {
+      "source": "GET /api/admin/teacher/profile/view",
+      "action": "merge",
+      "target": "GET /api/admin/teacher/info",
+      "reason": "프로필 표시 정보를 교수자 정보 조회로 통합한다."
+    },
+    {
+      "source": "GET /api/admin/test/{studentId}/comparison-selection",
+      "action": "merge",
+      "target": "GET /api/admin/test/{studentId}/compare",
+      "reason": "비교 대상 선택을 검사 비교 query parameter로 통합한다."
+    },
+    {
+      "source": "GET /api/admin/training/{studentId}/history/filter",
+      "action": "merge",
+      "target": "GET /api/admin/student/{studentId}/training-history",
+      "reason": "기간 필터를 훈련 이력 조회 query parameter로 통합한다."
+    },
+    {
+      "source": "GET /api/admin/training/{studentId}/history/selection",
+      "action": "client",
+      "reason": "훈련 기록 선택은 클라이언트 상태로 관리한다."
+    },
+    {
+      "source": "PATCH /api/admin/training/{studentId}/{curriculumId}/curriculum-editor",
+      "action": "merge",
+      "target": "PATCH /api/admin/training/{studentId}/{curriculumId}",
+      "reason": "커리큘럼 편집 저장을 정식 커리큘럼 수정 명령으로 통합한다."
+    },
+    {
+      "source": "GET /api/admin/training/{studentId}/{curriculumId}/editor-selection",
+      "action": "merge",
+      "target": "GET /api/admin/training/{studentId}/{curriculumId}",
+      "reason": "편집 초기값을 커리큘럼 상세 조회로 통합한다."
+    },
+    {
+      "source": "GET /api/app/story/{studentId}/{storyId}/guide",
+      "action": "client",
+      "reason": "이야기 조작 안내는 아동 앱의 정적 자원과 로컬 상태로 관리한다."
+    },
+    {
+      "source": "GET /api/app/story/{studentId}/{storyId}/navigation",
+      "action": "merge",
+      "target": "GET /api/app/story/{studentId}/{storyId}/lines/{lineId}",
+      "reason": "장면 표시와 이동을 문장 단위 조회 응답으로 통합한다."
+    },
+    {
+      "source": "GET /api/app/story/{studentId}/{storyTemplateId}/detail-state",
+      "action": "merge",
+      "target": "GET /api/app/story/{studentId}/{storyTemplateId}",
+      "reason": "이야기 상세 상태를 이야기 템플릿 상세 조회로 통합한다."
+    },
+    {
+      "source": "GET /api/app/test/{studentId}/audio-state",
+      "action": "client",
+      "reason": "음성 URL은 문항 응답에서 받고 재생 횟수와 버튼 상태는 클라이언트가 관리한다."
+    },
+    {
+      "source": "GET /api/app/test/{studentId}/intro-navigation",
+      "action": "merge",
+      "target": "GET /api/app/test/{studentId}/intro",
+      "reason": "테스트 안내 이동에 필요한 정보를 intro 조회에 통합한다."
+    },
+    {
+      "source": "PATCH /api/app/test/{studentId}/question-navigation",
+      "action": "merge",
+      "target": "GET /api/app/test/{studentId}/questions/{questionNumber}",
+      "reason": "문항 이동을 문항 번호 기반 조회와 클라이언트 상태로 통합한다."
+    },
+    {
+      "source": "GET /api/app/test/{studentId}/questions/display-state",
+      "action": "merge",
+      "target": "GET /api/app/test/{studentId}/questions/{questionNumber}",
+      "reason": "문항 표시 상태를 문항 조회 응답으로 통합한다."
+    },
+    {
+      "source": "POST /api/app/test/{studentId}/recording-state",
+      "action": "merge",
+      "target": "POST /api/app/test/{studentId}/questions/{questionNumber}/recordings",
+      "reason": "녹음 서버 처리를 문항별 녹음 업로드로 통합하고 로컬 녹음 상태는 클라이언트가 관리한다."
+    },
+    {
+      "source": "PATCH /api/app/test/{studentId}/selection-state",
+      "action": "merge",
+      "target": "POST /api/app/test/{studentId}/questions/{questionNumber}/responses",
+      "reason": "선택 결과 저장을 문항별 응답 저장으로 통합한다."
+    },
+    {
+      "source": "GET /api/app/training/{studentId}/{trainingId}/audio-state",
+      "action": "client",
+      "reason": "음성 URL은 문항 응답에서 받고 재생 상태는 클라이언트가 관리한다."
+    },
+    {
+      "source": "GET /api/app/training/{studentId}/{trainingId}/intro-navigation",
+      "action": "merge",
+      "target": "GET /api/app/training/{studentId}/{trainingId}/intro",
+      "reason": "훈련 안내 이동에 필요한 정보를 intro 조회에 통합한다."
+    },
+    {
+      "source": "PATCH /api/app/training/{studentId}/{trainingId}/question-navigation",
+      "action": "merge",
+      "target": "GET /api/app/training/{studentId}/{trainingId}/questions/{questionNumber}",
+      "reason": "문항 이동을 문항 번호 기반 조회와 클라이언트 상태로 통합한다."
+    },
+    {
+      "source": "GET /api/app/training/{studentId}/{trainingId}/questions/display-state",
+      "action": "merge",
+      "target": "GET /api/app/training/{studentId}/{trainingId}/questions/{questionNumber}",
+      "reason": "문항 표시 상태를 문항 조회 응답으로 통합한다."
+    },
+    {
+      "source": "POST /api/app/training/{studentId}/{trainingId}/recording-state",
+      "action": "merge",
+      "target": "POST /api/app/training/{studentId}/{trainingId}/questions/{questionNumber}/recordings",
+      "reason": "녹음 서버 처리를 문항별 녹음 업로드로 통합하고 로컬 녹음 상태는 클라이언트가 관리한다."
+    },
+    {
+      "source": "PATCH /api/app/training/{studentId}/{trainingId}/selection-state",
+      "action": "merge",
+      "target": "POST /api/app/training/{studentId}/{trainingId}/questions/{questionNumber}/responses",
+      "reason": "선택 결과 저장을 문항별 응답 저장으로 통합한다."
+    },
+    {
+      "source": "GET /api/app/user/home-navigation",
+      "action": "client",
+      "reason": "인증 사용자 정보와 앱 상태로 홈 이동을 결정한다."
+    },
+    {
+      "source": "PATCH /api/app/user/session-navigation",
+      "action": "client",
+      "reason": "화면 이동과 이탈 확인 상태는 아동 앱이 관리한다."
+    },
+    {
+      "source": "GET /api/admin/test/{studentId}/compare",
+      "action": "update",
+      "reason": "단일 검사 요약과 복수 검사 비교를 하나의 조회 계약으로 사용한다.",
+      "changes": {
+        "note": "currentTestId는 필수이며 comparisonTestIds를 생략하면 단일 검사 상세를 반환한다. 비교 검사는 같은 교사의 같은 아동에게 속해야 한다.",
+        "request_summary": "studentId(path)\ncurrentTestId(query)\ncomparisonTestIds(query, optional)",
+        "request_parameters": [
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "currentTestId",
+            "type": "long",
+            "in": "Query",
+            "required": true,
+            "description": "기준 검사 식별자"
+          },
+          {
+            "name": "comparisonTestIds",
+            "type": "array<long>",
+            "in": "Query",
+            "required": false,
+            "description": "비교할 검사 식별자 목록"
+          }
+        ],
+        "response_summary": "currentTest\ncomparisonTests",
+        "response_fields": [
+          {
+            "name": "currentTest",
+            "type": "object",
+            "required": true,
+            "description": "기준 검사의 날짜, 정확도, 소요 시간, 시선 이탈 횟수와 문항 결과"
+          },
+          {
+            "name": "comparisonTests",
+            "type": "array<object>",
+            "required": true,
+            "description": "비교 검사 상세 목록"
+          }
+        ],
+        "response_codes": ["200", "400", "401", "403", "404"]
+      }
+    },
+    {
+      "source": "GET /api/admin/test/{studentId}/statistics",
+      "action": "merge",
+      "target": "GET /api/admin/test/{studentId}/compare",
+      "reason": "검사 통계 차트는 검사 비교 응답의 정확도와 문항 결과로 구성한다."
+    },
+    {
+      "source": "GET /api/admin/test/{studentId}/{testId}/summary",
+      "action": "merge",
+      "target": "GET /api/admin/test/{studentId}/compare",
+      "reason": "단일 검사 요약은 comparisonTestIds를 생략한 검사 비교 조회로 통합한다."
+    },
+    {
+      "source": "PATCH /api/admin/teacher/profile/save-state",
+      "action": "update",
+      "reason": "구현된 교수자 프로필 리소스 경로와 요청 DTO에 맞춘다.",
+      "changes": {
+        "path": "/api/admin/teacher/profile",
+        "note": "인증된 교수자 자신의 프로필만 수정한다. 프로필 이미지는 multipart 전용 /api/admin/teacher/profile/image에서 변경한다.",
+        "request_summary": "email(body)\nname(body)\norganization(body, optional)\ngender(body, optional)",
+        "request_parameters": [
+          {
+            "name": "email",
+            "type": "string",
+            "in": "Body",
+            "required": true,
+            "description": "교수자 이메일, 최대 50자"
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "in": "Body",
+            "required": true,
+            "description": "교수자 이름, 최대 10자"
+          },
+          {
+            "name": "organization",
+            "type": "string",
+            "in": "Body",
+            "required": false,
+            "description": "소속, 최대 100자"
+          },
+          {
+            "name": "gender",
+            "type": "string(MALE|FEMALE)",
+            "in": "Body",
+            "required": false,
+            "description": "성별"
+          }
+        ],
+        "response_summary": "name\norganization\nemail\ngender\nprofileImageUrl",
+        "response_fields": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": "교수자 이름"
+          },
+          {
+            "name": "organization",
+            "type": "string",
+            "required": false,
+            "description": "소속"
+          },
+          {
+            "name": "email",
+            "type": "string",
+            "required": true,
+            "description": "교수자 이메일"
+          },
+          {
+            "name": "gender",
+            "type": "string(MALE|FEMALE)",
+            "required": false,
+            "description": "성별"
+          },
+          {
+            "name": "profileImageUrl",
+            "type": "string",
+            "required": false,
+            "description": "외부에 노출 가능한 프로필 이미지 URL"
+          }
+        ],
+        "response_codes": ["200", "400", "401", "409"]
+      }
+    },
+    {
+      "source": "GET /api/app/mypage/growth/statistics",
+      "action": "merge",
+      "target": "GET /api/app/student/{studentId}/growth",
+      "reason": "성장 통계는 학습 진척도와 단어 누적 통계를 반환하는 성장 조회로 통합한다."
+    },
+    {
+      "source": "GET /api/app/mypage/growth/status",
+      "action": "merge",
+      "target": "GET /api/app/student/{studentId}/growth",
+      "reason": "서버 성장 데이터는 성장 조회로 통합하고 로딩 상태는 클라이언트가 관리한다."
+    },
+    {
+      "source": "PATCH /api/app/mypage/character/representative",
+      "action": "update",
+      "reason": "character.is_representative와 아동 소유권을 기준으로 대표 캐릭터를 원자적으로 변경한다.",
+      "changes": {
+        "note": "studentId에 속한 characterId만 선택할 수 있다. 같은 트랜잭션에서 기존 대표 캐릭터를 해제하고 선택한 캐릭터를 대표로 지정한다.",
+        "request_summary": "studentId(body)\ncharacterId(body)",
+        "request_parameters": [
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Body",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "characterId",
+            "type": "long",
+            "in": "Body",
+            "required": true,
+            "description": "대표로 지정할 보유 캐릭터 식별자"
+          }
+        ],
+        "response_summary": "characterId\nimageUrl\nisRepresentative",
+        "response_fields": [
+          {
+            "name": "characterId",
+            "type": "long",
+            "required": true,
+            "description": "대표 캐릭터 식별자"
+          },
+          {
+            "name": "imageUrl",
+            "type": "string",
+            "required": false,
+            "description": "캐릭터 이미지 URL"
+          },
+          {
+            "name": "isRepresentative",
+            "type": "boolean",
+            "required": true,
+            "description": "대표 캐릭터 여부"
+          }
+        ],
+        "response_codes": ["200", "400", "401", "403", "404", "409"]
+      }
+    },
+    {
+      "source": "GET /api/app/story/{studentId}/library",
+      "action": "merge",
+      "target": "GET /api/app/story/{studentId}",
+      "reason": "이야기 책장과 진행 상태를 학생 이야기·템플릿 목록 조회로 통합한다."
+    },
+    {
+      "source": "POST /api/app/gaze/sessions/{gazeSessionId}/analysis-results",
+      "action": "update",
+      "reason": "검사·훈련·이야기에서 공통으로 사용하는 시선 분석 저장 계약을 상세화한다.",
+      "changes": {
+        "note": "gazeSessionId의 content_type과 연결 자원을 검증한다. sentenceMetrics는 이야기 문장별 분석이 있을 때만 전달한다.",
+        "request_summary": "gazeSessionId(path)\nstudentId(body)\ntotalVisitedDuration(body)\ntotalVisitedCount(body)\nreverseReadCount(body)\navgVisitedDuration(body, optional)\nsentenceMetrics(body, optional)",
+        "request_parameters": [
+          {
+            "name": "gazeSessionId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "시선 세션 식별자"
+          },
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Body",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "totalVisitedDuration",
+            "type": "integer",
+            "in": "Body",
+            "required": true,
+            "description": "총 시선 체류 시간(ms)"
+          },
+          {
+            "name": "totalVisitedCount",
+            "type": "integer",
+            "in": "Body",
+            "required": true,
+            "description": "총 시선 체류 횟수"
+          },
+          {
+            "name": "reverseReadCount",
+            "type": "integer",
+            "in": "Body",
+            "required": true,
+            "description": "시선 역행 횟수"
+          },
+          {
+            "name": "avgVisitedDuration",
+            "type": "integer",
+            "in": "Body",
+            "required": false,
+            "description": "평균 시선 체류 시간(ms)"
+          },
+          {
+            "name": "sentenceMetrics",
+            "type": "array<object>",
+            "in": "Body",
+            "required": false,
+            "description": "이야기 문장 식별자별 체류 시간과 역행 횟수"
+          }
+        ],
+        "response_summary": "gazeAnalysisId\ncreatedAt",
+        "response_fields": [
+          {
+            "name": "gazeAnalysisId",
+            "type": "long",
+            "required": true,
+            "description": "시선 분석 결과 식별자"
+          },
+          {
+            "name": "createdAt",
+            "type": "string(date-time)",
+            "required": true,
+            "description": "분석 결과 생성 시각"
+          }
+        ],
+        "response_codes": ["201", "400", "401", "403", "404", "409"]
+      }
+    },
+    {
+      "source": "POST /api/app/story/{studentId}/{storyId}/gaze-analysis",
+      "action": "merge",
+      "target": "POST /api/app/gaze/sessions/{gazeSessionId}/analysis-results",
+      "reason": "이야기 시선 분석 저장을 content_type=STORY인 공통 시선 세션 결과 저장으로 통합한다."
+    },
+    {
+      "source": "GET /api/admin/training/{studentId}/{trainingId}/detail",
+      "action": "update",
+      "reason": "훈련·템플릿·생성 데이터와 결과를 하나의 상세 조회로 반환한다.",
+      "changes": {
+        "note": "trainingId가 studentId의 커리큘럼에 속하는지 검증한다. 완료 전에는 result와 accuracy가 null일 수 있다.",
+        "request_summary": "studentId(path)\ntrainingId(path)",
+        "request_parameters": [
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "trainingId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "훈련 식별자"
+          }
+        ],
+        "response_summary": "trainingId\ntrainingTemplateId\nname\nform\ngeneratedData\nstatus\nstartedAt\nfinishedAt\nresult\naccuracy",
+        "response_fields": [
+          {
+            "name": "trainingId",
+            "type": "long",
+            "required": true,
+            "description": "훈련 식별자"
+          },
+          {
+            "name": "trainingTemplateId",
+            "type": "long",
+            "required": true,
+            "description": "훈련 템플릿 식별자"
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": "훈련명"
+          },
+          {
+            "name": "form",
+            "type": "object",
+            "required": true,
+            "description": "훈련 템플릿 폼"
+          },
+          {
+            "name": "generatedData",
+            "type": "object",
+            "required": false,
+            "description": "AI가 생성한 훈련 데이터"
+          },
+          {
+            "name": "status",
+            "type": "string(NOT_READY|NOT_STARTED|IN_PROGRESS|COMPLETED)",
+            "required": true,
+            "description": "훈련 상태"
+          },
+          {
+            "name": "startedAt",
+            "type": "string(date-time)",
+            "required": false,
+            "description": "시작 시각"
+          },
+          {
+            "name": "finishedAt",
+            "type": "string(date-time)",
+            "required": false,
+            "description": "완료 시각"
+          },
+          {
+            "name": "result",
+            "type": "object",
+            "required": false,
+            "description": "문항별 훈련 결과"
+          },
+          {
+            "name": "accuracy",
+            "type": "number",
+            "required": false,
+            "description": "0~100 정확도"
+          }
+        ],
+        "response_codes": ["200", "400", "401", "403", "404"]
+      }
+    },
+    {
+      "source": "GET /api/admin/training/{studentId}/{trainingId}/result-detail",
+      "action": "merge",
+      "target": "GET /api/admin/training/{studentId}/{trainingId}/detail",
+      "reason": "훈련 결과와 시선 분석 연결 정보는 훈련 상세 조회로 통합한다."
+    },
+    {
+      "source": "POST /api/admin/training/{studentId}/{trainingId}/export",
+      "action": "update",
+      "reason": "별도 파일 보관 계약 없이 요청 시 CSV 또는 JSON을 동기식 다운로드한다.",
+      "changes": {
+        "note": "format에 따라 즉시 생성한 파일을 Content-Disposition: attachment로 반환한다. 서버 내부 파일 경로와 만료 URL은 반환하지 않는다.",
+        "request_summary": "studentId(path)\ntrainingId(path)\nformat(query)",
+        "request_parameters": [
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "trainingId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "훈련 식별자"
+          },
+          {
+            "name": "format",
+            "type": "string(CSV|JSON)",
+            "in": "Query",
+            "required": true,
+            "description": "내보내기 파일 형식"
+          }
+        ],
+        "response_summary": "binary download",
+        "response_fields": [],
+        "response_media_type": "application/octet-stream",
+        "response_schema": {
+          "type": "string",
+          "format": "binary"
+        },
+        "response_codes": ["200", "400", "401", "403", "404"]
+      }
+    },
+    {
+      "source": "POST /api/app/story/{studentId}/{storyId}/speech",
+      "action": "update",
+      "reason": "이야기 문장 음성을 multipart로 받고 STT와 읽기 정확도 결과만 반환한다.",
+      "changes": {
+        "note": "음성 원본은 EC2 내부 audio/{studentId}/story/에 저장하되 내부 경로를 응답에 노출하지 않는다. lineId가 storyId에 속하는지 검증한다.",
+        "request_summary": "studentId(path)\nstoryId(path)\nlineId(body)\naudioFile(body)",
+        "request_parameters": [
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "storyId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "이야기 식별자"
+          },
+          {
+            "name": "lineId",
+            "type": "long",
+            "in": "Body",
+            "required": true,
+            "description": "이야기 문장 식별자"
+          },
+          {
+            "name": "audioFile",
+            "type": "file",
+            "in": "Body",
+            "required": true,
+            "description": "아동이 읽은 음성 파일"
+          }
+        ],
+        "response_summary": "transcript\naccuracy\nreadingStatus",
+        "response_fields": [
+          {
+            "name": "transcript",
+            "type": "string",
+            "required": true,
+            "description": "STT 인식 문장"
+          },
+          {
+            "name": "accuracy",
+            "type": "number",
+            "required": true,
+            "description": "0~100 읽기 정확도"
+          },
+          {
+            "name": "readingStatus",
+            "type": "string(RECOGNIZED|LOW_CONFIDENCE|FAILED)",
+            "required": true,
+            "description": "음성 인식 및 검증 상태"
+          }
+        ],
+        "response_codes": ["200", "400", "401", "403", "404", "409", "422", "502"]
+      }
+    },
+    {
+      "source": "POST /api/app/story/{studentId}/{storyId}/tts",
+      "action": "update",
+      "reason": "문장 식별자로 TTS를 생성하고 외부 접근 URL과 재생 메타데이터를 반환한다.",
+      "changes": {
+        "note": "lineId가 storyId에 속하는지 검증한다. audioUrl은 서버 내부 파일 경로를 포함하지 않는 제한된 접근 URL이다.",
+        "request_summary": "studentId(path)\nstoryId(path)\nlineId(body)",
+        "request_parameters": [
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "storyId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "이야기 식별자"
+          },
+          {
+            "name": "lineId",
+            "type": "long",
+            "in": "Body",
+            "required": true,
+            "description": "TTS로 변환할 이야기 문장 식별자"
+          }
+        ],
+        "response_summary": "audioUrl\ndurationMs\nplaybackLimit",
+        "response_fields": [
+          {
+            "name": "audioUrl",
+            "type": "string",
+            "required": true,
+            "description": "외부에 노출 가능한 TTS 음성 URL"
+          },
+          {
+            "name": "durationMs",
+            "type": "integer",
+            "required": true,
+            "description": "음성 길이(ms)"
+          },
+          {
+            "name": "playbackLimit",
+            "type": "integer",
+            "required": false,
+            "description": "허용 재생 횟수, 제한이 없으면 생략"
+          }
+        ],
+        "response_codes": ["200", "400", "401", "403", "404", "409", "502"]
+      }
+    },
+    {
+      "source": "POST /api/app/test/{studentId}/submission-status",
+      "action": "update",
+      "reason": "상태형 이름을 검사 완료 명령으로 정규화한다.",
+      "changes": {
+        "path": "/api/app/test/{studentId}/complete",
+        "note": "검사 응답을 원자적으로 저장하고 status를 COMPLETED로 변경한다. 화면 이동은 응답에 포함하지 않고 클라이언트가 결정한다.",
+        "request_summary": "studentId(path)\ntestId(body)\nresponses(body)\ncompletedAt(body)",
+        "request_parameters": [
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "testId",
+            "type": "long",
+            "in": "Body",
+            "required": true,
+            "description": "검사 식별자"
+          },
+          {
+            "name": "responses",
+            "type": "array<object>",
+            "in": "Body",
+            "required": true,
+            "description": "문항별 최종 응답"
+          },
+          {
+            "name": "completedAt",
+            "type": "string(date-time)",
+            "in": "Body",
+            "required": true,
+            "description": "검사 완료 시각"
+          }
+        ],
+        "response_summary": "testId\nstatus\naccuracy\ncompletedAt",
+        "response_fields": [
+          {
+            "name": "testId",
+            "type": "long",
+            "required": true,
+            "description": "검사 식별자"
+          },
+          {
+            "name": "status",
+            "type": "string(COMPLETED)",
+            "required": true,
+            "description": "검사 완료 상태"
+          },
+          {
+            "name": "accuracy",
+            "type": "number",
+            "required": true,
+            "description": "0~100 검사 정확도"
+          },
+          {
+            "name": "completedAt",
+            "type": "string(date-time)",
+            "required": true,
+            "description": "검사 완료 시각"
+          }
+        ],
+        "response_codes": ["200", "400", "401", "403", "404", "409", "422"]
+      }
+    },
+    {
+      "source": "GET /api/admin/student/summary",
+      "action": "update",
+      "reason": "기능 카탈로그의 전체 담당 아동 수와 오늘 학습 예정 수 요구만 반영하고 목록 필터·주의 기준과 분리한다.",
+      "changes": {
+        "note": "현재 인증된 교수자가 담당하는 전체 아동 수와 오늘 생성된 일일 커리큘럼이 있는 아동 수를 집계한다. 목록 검색·필터 결과는 아동 목록 API가 담당한다.",
+        "request_summary": "",
+        "request_parameters": [],
+        "response_summary": "totalStudents\nscheduledTodayCount",
+        "response_fields": [
+          {
+            "name": "totalStudents",
+            "type": "integer",
+            "required": true,
+            "description": "현재 교수자가 담당하는 전체 아동 수"
+          },
+          {
+            "name": "scheduledTodayCount",
+            "type": "integer",
+            "required": true,
+            "description": "오늘 일일 커리큘럼이 생성된 담당 아동 수"
+          }
+        ],
+        "response_codes": ["200", "401", "403"]
+      }
+    },
+    {
+      "source": "GET /api/admin/student/{studentId}/learning-events",
+      "action": "update",
+      "reason": "승인된 MVP 고정 규칙으로 확인 필요 상태와 다음 권장 훈련을 설명 가능하게 산정한다.",
+      "changes": {
+        "note": "주의 표시는 진단이 아닌 교수자 확인 신호다. 최근 6주 완료 학습이 3건 이상이고 평균 정확도가 70% 미만이면 LOW_ACCURACY, 최근 30일의 최신 시선 분석이 실패했으면 GAZE_ANALYSIS_FAILED, 학습 이력이 있으나 최근 학습 후 14일 이상 지났으면 INACTIVE를 반환한다. 이력이 없는 신규 아동은 NO_HISTORY이며 주의 대상으로 집계하지 않는다. 권장 훈련은 최근 6주 평균 정확도가 가장 낮은 커리큘럼 영역의 미완료 다음 순번 훈련을 선택한다. 평균이 같으면 완료 시도 수가 많은 영역, curriculum_units.sequence_no, id 순으로 결정한다. 정확도 자료가 없으면 현재 단계의 미완료 다음 훈련을 사용하고 후보가 없으면 권장 훈련 필드는 null이다. MVP 권장량은 10분·2회이며 설정값으로 조정한다.",
+        "request_summary": "studentId(path)\neventId(query)",
+        "request_parameters": [
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "eventId",
+            "type": "long",
+            "in": "Query",
+            "required": true,
+            "description": "상세 조회할 학습 이벤트 식별자"
+          }
+        ],
+        "response_summary": "eventId\neventType\noccurredAt\nsourceId\naccuracy\nretryCount\nproblemSegments\nattentionRequired\nattentionReasons\nrecommendedTrainingTemplateId\nrecommendedCurriculumUnitId\nrecommendedCurriculumUnitName\nrecommendationReason\nrecommendedMinutes\nrecommendedRepeatCount",
+        "response_fields": [
+          {
+            "name": "eventId",
+            "type": "long",
+            "required": true,
+            "description": "학습 이벤트 식별자"
+          },
+          {
+            "name": "eventType",
+            "type": "string(TEST|TRAINING|STORY|GAZE)",
+            "required": true,
+            "description": "학습 이벤트 유형"
+          },
+          {
+            "name": "occurredAt",
+            "type": "string(date-time)",
+            "required": true,
+            "description": "이벤트 발생 시각"
+          },
+          {
+            "name": "sourceId",
+            "type": "long",
+            "required": true,
+            "description": "검사·훈련·이야기·시선 세션 원본 식별자"
+          },
+          {
+            "name": "accuracy",
+            "type": "number",
+            "required": false,
+            "description": "0~100 정확도. 산정할 수 없으면 null"
+          },
+          {
+            "name": "retryCount",
+            "type": "integer",
+            "required": true,
+            "description": "이벤트의 재시도 횟수"
+          },
+          {
+            "name": "problemSegments",
+            "type": "array<string>",
+            "required": true,
+            "description": "교수자가 확인할 문제 구간 설명"
+          },
+          {
+            "name": "attentionRequired",
+            "type": "boolean",
+            "required": true,
+            "description": "현재 주의 사유가 하나 이상인지 여부"
+          },
+          {
+            "name": "attentionReasons",
+            "type": "array<string>",
+            "required": true,
+            "description": "LOW_ACCURACY, GAZE_ANALYSIS_FAILED, INACTIVE 또는 NO_HISTORY"
+          },
+          {
+            "name": "recommendedTrainingTemplateId",
+            "type": "long",
+            "required": false,
+            "description": "권장 훈련 템플릿 식별자. 후보가 없으면 null"
+          },
+          {
+            "name": "recommendedCurriculumUnitId",
+            "type": "long",
+            "required": false,
+            "description": "권장 커리큘럼 영역 식별자"
+          },
+          {
+            "name": "recommendedCurriculumUnitName",
+            "type": "string",
+            "required": false,
+            "description": "권장 커리큘럼 영역 이름"
+          },
+          {
+            "name": "recommendationReason",
+            "type": "string",
+            "required": false,
+            "description": "추천 근거 설명"
+          },
+          {
+            "name": "recommendedMinutes",
+            "type": "integer",
+            "required": false,
+            "description": "MVP 권장 학습 시간 10분"
+          },
+          {
+            "name": "recommendedRepeatCount",
+            "type": "integer",
+            "required": false,
+            "description": "MVP 권장 반복 횟수 2회"
+          }
+        ],
+        "response_codes": ["200", "400", "401", "403", "404"]
+      }
+    },
+    {
+      "source": "GET /api/admin/student/{studentId}/learning-summary",
+      "action": "update",
+      "reason": "학습 이벤트와 동일한 승인 규칙으로 확인 필요 건수를 집계한다.",
+      "changes": {
+        "note": "learning-events와 동일한 LOW_ACCURACY, GAZE_ANALYSIS_FAILED, INACTIVE 규칙을 적용한다. attentionRequiredCount는 현재 유효한 주의 사유 수이며 NO_HISTORY는 집계하지 않는다.",
+        "request_summary": "studentId(path)",
+        "request_parameters": [
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "아동 식별자"
+          }
+        ],
+        "response_summary": "studentId\ncurrentStage\nlastLearningAt\nattentionRequiredCount\nattentionReasons",
+        "response_fields": [
+          {
+            "name": "studentId",
+            "type": "long",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "currentStage",
+            "type": "string",
+            "required": false,
+            "description": "현재 커리큘럼 단계. 이력이 없으면 null"
+          },
+          {
+            "name": "lastLearningAt",
+            "type": "string(date-time)",
+            "required": false,
+            "description": "최근 학습 시각. 이력이 없으면 null"
+          },
+          {
+            "name": "attentionRequiredCount",
+            "type": "integer",
+            "required": true,
+            "description": "현재 유효한 주의 사유 수"
+          },
+          {
+            "name": "attentionReasons",
+            "type": "array<string>",
+            "required": true,
+            "description": "LOW_ACCURACY, GAZE_ANALYSIS_FAILED 또는 INACTIVE"
+          }
+        ],
+        "response_codes": ["200", "401", "403", "404"]
+      }
+    },
+    {
+      "source": "POST /api/app/test/{studentId}/session-reset",
+      "action": "update",
+      "reason": "기능 원문의 현재 문항·응답·진행 상태 초기화 요구를 별도 세션 명령으로 유지한다.",
+      "changes": {
+        "note": "지정한 미완료 검사의 현재 문항, 응답과 진행 상태를 초기화하고 NOT_STARTED로 되돌린다. 완료된 검사의 결과는 보존하며 재설정 요청에 409를 반환한다.",
+        "request_summary": "studentId(path)\ntestId(body)",
+        "request_parameters": [
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "testId",
+            "type": "long",
+            "in": "Body",
+            "required": true,
+            "description": "초기화할 검사 식별자"
+          }
+        ],
+        "response_summary": "testId\nsessionState\nresetAt",
+        "response_fields": [
+          {
+            "name": "testId",
+            "type": "long",
+            "required": true,
+            "description": "초기화한 검사 식별자"
+          },
+          {
+            "name": "sessionState",
+            "type": "string(NOT_STARTED)",
+            "required": true,
+            "description": "초기화 후 검사 상태"
+          },
+          {
+            "name": "resetAt",
+            "type": "string(date-time)",
+            "required": true,
+            "description": "서버 초기화 시각"
+          }
+        ],
+        "response_codes": ["200", "400", "401", "403", "404", "409"]
+      }
+    },
+    {
+      "source": "POST /api/app/training/{studentId}/{trainingId}/session-reset",
+      "action": "update",
+      "reason": "기능 원문의 이전 문항 위치·응답·진행 상태 초기화 요구를 별도 세션 명령으로 유지한다.",
+      "changes": {
+        "note": "지정한 미완료 훈련의 문항 위치, 응답, 결과, 정확도와 시작·완료 시각을 초기화하고 NOT_STARTED로 되돌린다. 생성된 훈련 문항은 유지한다. 완료된 훈련은 보존하며 409를 반환한다.",
+        "request_summary": "studentId(path)\ntrainingId(path)",
+        "request_parameters": [
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "trainingId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "초기화할 훈련 식별자"
+          }
+        ],
+        "response_summary": "trainingId\nsessionState\nresetAt",
+        "response_fields": [
+          {
+            "name": "trainingId",
+            "type": "long",
+            "required": true,
+            "description": "초기화한 훈련 식별자"
+          },
+          {
+            "name": "sessionState",
+            "type": "string(NOT_STARTED)",
+            "required": true,
+            "description": "초기화 후 훈련 상태"
+          },
+          {
+            "name": "resetAt",
+            "type": "string(date-time)",
+            "required": true,
+            "description": "서버 초기화 시각"
+          }
+        ],
+        "response_codes": ["200", "400", "401", "403", "404", "409"]
+      }
+    },
+    {
+      "source": "POST /api/app/training/{studentId}/{trainingId}/complete",
+      "action": "update",
+      "reason": "Backend 구현과 같이 원시 결과를 AI 평가한 뒤 서버가 정확도와 완료 상태를 결정한다.",
+      "changes": {
+        "note": "클라이언트는 정확도나 상태를 입력하지 않는다. Backend가 AI 평가 결과를 검증하고 훈련 결과·정확도·완료 시각을 한 트랜잭션으로 저장한다.",
+        "request_summary": "studentId(path)\ntrainingId(path)\nresult(body)\ncompletedAt(body)",
+        "request_parameters": [
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "trainingId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "훈련 식별자"
+          },
+          {
+            "name": "result",
+            "type": "object",
+            "in": "Body",
+            "required": true,
+            "description": "클라이언트가 수집한 원시 훈련 결과"
+          },
+          {
+            "name": "completedAt",
+            "type": "string(date-time)",
+            "in": "Body",
+            "required": true,
+            "description": "훈련 완료 시각"
+          }
+        ],
+        "response_summary": "trainingId\nstatus\naccuracy\ncompletedAt",
+        "response_fields": [
+          {
+            "name": "trainingId",
+            "type": "long",
+            "required": true,
+            "description": "훈련 식별자"
+          },
+          {
+            "name": "status",
+            "type": "string(COMPLETED)",
+            "required": true,
+            "description": "훈련 완료 상태"
+          },
+          {
+            "name": "accuracy",
+            "type": "number",
+            "required": true,
+            "description": "AI가 평가한 0~100 정확도"
+          },
+          {
+            "name": "completedAt",
+            "type": "string(date-time)",
+            "required": true,
+            "description": "훈련 완료 시각"
+          }
+        ],
+        "response_codes": ["200", "400", "401", "403", "404", "409", "422", "502"]
+      }
+    },
+    {
+      "source": "POST /api/app/training/{studentId}/{trainingId}/submission-status",
+      "action": "merge",
+      "target": "POST /api/app/training/{studentId}/{trainingId}/complete",
+      "reason": "훈련 제출·저장 상태를 정식 훈련 완료 명령으로 통합하고 화면 이동은 클라이언트가 처리한다."
+    }
+  ]
+}

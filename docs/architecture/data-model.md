@@ -12,13 +12,14 @@ timestamp: 2026-07-24T00:00:00+09:00
 
 ## 결정
 
-주 데이터베이스는 [ADR-0006](../decisions/ADR-0006-mysql-primary-database.md)에 따라 MySQL 8.4.x LTS를 사용한다. 운영 토폴로지는 `[TBD]`다.
+주 데이터베이스는 [ADR-0006](../decisions/ADR-0006-mysql-primary-database.md)에 따라 MySQL 8.4.x LTS를 사용한다. [ADR-0008](../decisions/ADR-0008-demo-data-and-runtime-policy.md)에 따라 데모에서는 로컬 또는 Docker MySQL을 사용하고 운영 토폴로지와 백업·복구 인프라는 구성하지 않는다.
 
 ## 기준 원본과 스냅샷
 
 - Backend 구현 전: [`contracts/database/schema.sql`](../../contracts/database/schema.sql)을 검토용 스키마 기준선으로 사용한다.
 - Backend 구현 후: `services/backend`의 migration이 실행 가능한 기준 원본이다.
 - ERD와 `schema.sql`은 migration 결과에서 생성하거나 동일 변경에서 동기화한다.
+- [MySQL ERD](../../contracts/database/erd.md)는 `python tools/generate_erd.py`로 `schema.sql`에서 생성한다.
 - API를 맞추기 위해 불필요한 컬럼을 추가하지 않고 기존 데이터 모델로 충족 가능한지 먼저 확인한다.
 
 ## 현재 이야기 진행 모델
@@ -47,4 +48,6 @@ timestamp: 2026-07-24T00:00:00+09:00
 
 ## 음성 데이터
 
-음성 원본은 EC2 내부 `audio/{studentId}/{dataType}/` 구조에 저장한다. MySQL에는 내부 파일 경로를 API로 노출하지 않으며, 필요한 분석 결과와 메타데이터만 저장한다. 보관 기간과 삭제 정책은 `[TBD]`다.
+음성 원본은 제한된 데모 환경의 `audio/{studentId}/{dataType}/` 구조에 저장한다. MySQL에는 내부 파일 경로를 API로 노출하지 않으며, 필요한 분석 결과와 메타데이터만 저장한다.
+
+[ADR-0008](../decisions/ADR-0008-demo-data-and-runtime-policy.md)에 따라 음성 원본과 보고서의 장기 보관은 연구·분석 목적, 보관 기간, 접근 주체와 삭제 방법을 명시한 별도 동의를 받은 데이터에만 허용한다. 동의 철회 또는 명시한 기간 종료 시 원본과 연결 가능한 파생 데이터를 삭제한다.

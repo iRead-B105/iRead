@@ -36,11 +36,11 @@ timestamp: 2026-07-24T00:00:00+09:00
 - `index.md`와 `log.md`는 OKF 예약 파일로 사용한다.
 - 기능 명세의 승인 기준선은 `docs/product/features/`에 저장한다.
 - 서비스 간 HTTP API 계약의 목표 기준 원본은 `contracts/openapi/`의 OpenAPI 문서다.
-- MySQL 실행 스키마의 기준 원본은 Backend migration이며, `contracts/database/schema.sql`은 검토용 스냅샷이다.
-- Notion은 초안 작성과 탐색에 사용한다. 저장소 기준선으로 이전된 명세는 저장소에서 먼저 변경한 뒤 Notion을 동기화한다.
+- MySQL 실행 스키마의 기준 원본은 Backend migration이며, `contracts/database/schema.sql`은 migration과 동일하게 검증하는 계약 스냅샷이다.
+- Notion은 최초 이관 출처와 탐색 자료로 사용한다. 저장소 기준선으로 이전된 명세는 Git에서만 변경하며 외부 Notion에 필수 역동기화하지 않는다.
 - Notion의 활성 API는 OpenAPI로 내보내며 `x-notion-*` 확장 필드로 원본과 기능 관계를 추적한다.
-- 의미 검토가 남은 operation은 `x-review-status: needs-review`로 표시하고 Notion 원본과 함께 검토한다.
-- Backend–AI 내부 API는 실제 경로와 인증 방식이 확정되기 전까지 `[TBD]`로 유지한다.
+- 의미 검토가 남은 operation은 `x-review-status: needs-review`로 표시하고 이관 스냅샷 및 제품 결정과 함께 검토한다.
+- Backend–AI 내부 API는 `contracts/openapi/ai-api.yaml`에서 실제 경로, `X-API-Key` 인증, 멱등성과 처리 제한을 관리한다.
 
 ## 영향
 
@@ -52,8 +52,8 @@ timestamp: 2026-07-24T00:00:00+09:00
 
 ### 부정적 영향과 트레이드오프
 
-- Notion과 생성된 OpenAPI·기능 카탈로그의 동기화 도구를 유지해야 한다.
-- 저장소와 Notion 동기화 절차가 필요하다.
+- Notion에서 이후 변경한 내용은 별도 재수집 요청이 없으면 Git 계약에 자동 반영되지 않는다.
+- 외부 Notion 역동기화가 필요해지면 별도 승인과 변경 범위 검토가 필요하다.
 - OKF v0.1이 초안이므로 규격 변경을 추적해야 한다.
 
 ## 검증 및 재검토 조건

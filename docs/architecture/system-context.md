@@ -17,7 +17,7 @@ flowchart LR
     U["아동 학습자 · 보호자<br/>전문가 · 교육기관"]
     F["Frontend 저장소<br/>Vue 3 + TypeScript"]
     P["아동 앱 저장소<br/>기술 스택 [TBD]"]
-    B["Backend 저장소<br/>Spring Boot 3 + Java 21"]
+    B["Backend 저장소<br/>Spring Boot 4.0.7 + Java 21"]
     A["AI server 저장소<br/>FastAPI + Python 3.12"]
     E["시선 추적 저장소<br/>FastAPI + C++ · Tobii"]
     R["Redis<br/>역할 [TBD]"]
@@ -25,8 +25,9 @@ flowchart LR
 
     U -. "사용 흐름 [TBD]" .-> F
     U -. "아동 앱 사용 흐름 [TBD]" .-> P
-    F -. "API 계약 [TBD]" .-> B
-    B -. "AI 호출 계약 [TBD]" .-> A
+    F -. "Admin–Backend OpenAPI" .-> B
+    P -. "App–Backend OpenAPI" .-> B
+    B -. "Backend–AI OpenAPI" .-> A
     E -. "시선 데이터 계약 [TBD]" .-> B
     B -. "사용 목적 [TBD]" .-> R
     A -. "사용 목적 [TBD]" .-> R

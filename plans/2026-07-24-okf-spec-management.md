@@ -43,5 +43,5 @@ timestamp: 2026-07-24T00:00:00+09:00
 
 ## 남은 위험
 
-- 기존 Notion API 전체의 OpenAPI 이전은 `[TBD]`다.
-- Backend migration 도입 시점은 `[TBD]`다.
+- Notion API의 저장소 OpenAPI 이전과 Backend Flyway V1 도입은 후속 계획에서 완료했다.
+- Notion은 이관 출처로 보존하며 별도 요청 없이 Git 계약을 역동기화하지 않는다.

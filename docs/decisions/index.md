@@ -11,6 +11,7 @@
 | [ADR-0005](ADR-0005-add-child-app-repository.md) | 아동 앱 저장소와 submodule 경로 추가 | accepted | 2026-07-24 |
 | [ADR-0006](ADR-0006-mysql-primary-database.md) | 주 데이터베이스로 MySQL 채택 | accepted | 2026-07-24 |
 | [ADR-0007](ADR-0007-okf-and-specification-sources.md) | OKF 문서 체계와 명세 기준 원본 | accepted | 2026-07-24 |
+| [ADR-0008](ADR-0008-demo-data-and-runtime-policy.md) | 데모 데이터 보관과 실행 환경 정책 | accepted | 2026-07-24 |
 | [ADR-0009](ADR-0009-gitlab-monorepo-mirror.md) | GitLab 단일 저장소 미러 | accepted | 2026-07-25 |
 | [ADR-0010](ADR-0010-add-eyetracking-repository.md) | 시선 추적 저장소와 submodule 경로 추가 | accepted | 2026-07-25 |
 

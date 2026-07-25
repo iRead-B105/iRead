@@ -7,16 +7,29 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+from contract_resolutions import load_resolutions, resolve_snapshot
+from generate_erd import render_erd
+
 
 ROOT = Path(__file__).resolve().parents[1]
 OPENAPI_FILES = (
     ROOT / "contracts/openapi/app-api.yaml",
     ROOT / "contracts/openapi/admin-api.yaml",
     ROOT / "contracts/openapi/auth-api.yaml",
+    ROOT / "contracts/openapi/ai-api.yaml",
 )
+NOTION_OPENAPI_FILES = set(OPENAPI_FILES[:3])
+AI_OPENAPI = ROOT / "contracts/openapi/ai-api.yaml"
 SNAPSHOT = ROOT / "contracts/notion/spec-snapshot.json"
+RESOLUTIONS = ROOT / "contracts/api-resolutions.json"
 TRACEABILITY = ROOT / "contracts/traceability.json"
 SCHEMA = ROOT / "contracts/database/schema.sql"
+ERD = ROOT / "contracts/database/erd.md"
+FLYWAY_BASELINE = (
+    ROOT
+    / "services/backend/src/main/resources/db/migration/V1__baseline_schema.sql"
+)
+BACKEND_JAVA = ROOT / "services/backend/src/main/java"
 HTTP_METHODS = {"get", "post", "put", "patch", "delete"}
 OBSOLETE_PATHS = {
     "/api/app/story/{studentId}/{storyId}/branch-state",
@@ -67,6 +80,34 @@ def validate_openapi(
 
         if document.get("openapi") != "3.1.0":
             errors.append(f"{path.relative_to(ROOT)}: openapi must be 3.1.0")
+        if path in NOTION_OPENAPI_FILES:
+            components = document.get("components", {})
+            schema_names = set(components.get("schemas", {}))
+            required_schemas = {
+                "ErrorDetail",
+                "ErrorResponse",
+                "SuccessResponse",
+            }
+            if not required_schemas.issubset(schema_names):
+                errors.append(
+                    f"{path.relative_to(ROOT)}: missing common schemas "
+                    f"{sorted(required_schemas - schema_names)}"
+                )
+            required_responses = {
+                "BadRequest",
+                "Unauthorized",
+                "Forbidden",
+                "NotFound",
+                "Conflict",
+                "TooManyRequests",
+                "BadGateway",
+            }
+            response_names = set(components.get("responses", {}))
+            if not required_responses.issubset(response_names):
+                errors.append(
+                    f"{path.relative_to(ROOT)}: missing common responses "
+                    f"{sorted(required_responses - response_names)}"
+                )
         paths = document.get("paths", {})
         path_count += len(paths)
         for route, path_item in paths.items():
@@ -82,24 +123,25 @@ def validate_openapi(
                     errors.append(f"{method.upper()} {route}: missing operationId")
                 operation_ids.append(operation_id)
 
-                notion_page_id = operation.get("x-notion-page-id", "")
-                if not notion_page_id:
-                    errors.append(
-                        f"{operation_id}: missing x-notion-page-id"
-                    )
-                notion_page_ids.append(notion_page_id)
+                if path in NOTION_OPENAPI_FILES:
+                    notion_page_id = operation.get("x-notion-page-id", "")
+                    if not notion_page_id:
+                        errors.append(
+                            f"{operation_id}: missing x-notion-page-id"
+                        )
+                    notion_page_ids.append(notion_page_id)
 
-                status = operation.get("x-review-status", "")
-                if status not in {"reviewed", "needs-review"}:
-                    errors.append(f"{operation_id}: invalid x-review-status")
-                review_counts[status] += 1
+                    status = operation.get("x-review-status", "")
+                    if status not in {"reviewed", "needs-review"}:
+                        errors.append(f"{operation_id}: invalid x-review-status")
+                    review_counts[status] += 1
 
-                related = operation.get("x-feature-ids", [])
-                unknown = sorted(set(related) - feature_ids)
-                if unknown:
-                    errors.append(
-                        f"{operation_id}: unknown feature IDs {unknown}"
-                    )
+                    related = operation.get("x-feature-ids", [])
+                    unknown = sorted(set(related) - feature_ids)
+                    if unknown:
+                        errors.append(
+                            f"{operation_id}: unknown feature IDs {unknown}"
+                        )
 
                 path_parameters = {
                     parameter.get("name")
@@ -177,10 +219,70 @@ def validate_traceability(
             errors.append(
                 f"{row['feature_id']}: deprecated feature linked to active API"
             )
-        if not row["deprecated"] and not row["operation_ids"]:
+        responsibility = row.get("responsibility")
+        if responsibility not in {"server", "client", "unmapped"}:
+            errors.append(
+                f"{row['feature_id']}: invalid responsibility {responsibility}"
+            )
+        if (
+            not row["deprecated"]
+            and not row["operation_ids"]
+            and responsibility != "client"
+        ):
             errors.append(
                 f"{row['feature_id']}: active feature has no API operation"
             )
+        if responsibility == "client" and row["operation_ids"]:
+            errors.append(
+                f"{row['feature_id']}: client feature has server API operation"
+            )
+    return errors
+
+
+def validate_ai_contract() -> list[str]:
+    errors: list[str] = []
+    document = json.loads(AI_OPENAPI.read_text(encoding="utf-8"))
+    expected_paths = {
+        "/api/v1/trainings/generate",
+        "/api/v1/trainings/evaluate",
+        "/api/v1/story/generate",
+        "/api/v1/story/continue",
+        "/api/v1/speech/transcribe",
+        "/api/v1/speech/synthesize",
+        "/api/v1/gaze/analyze",
+    }
+    actual_paths = set(document.get("paths", {}))
+    if actual_paths != expected_paths:
+        errors.append(
+            "Backend-AI path mismatch: "
+            f"missing={sorted(expected_paths - actual_paths)}, "
+            f"extra={sorted(actual_paths - expected_paths)}"
+        )
+
+    api_key = (
+        document.get("components", {})
+        .get("securitySchemes", {})
+        .get("apiKeyAuth", {})
+    )
+    if api_key != {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+    }:
+        errors.append("Backend-AI X-API-Key security scheme is invalid")
+
+    for route, path_item in document.get("paths", {}).items():
+        operation = path_item.get("post", {})
+        if operation.get("security") != [{"apiKeyAuth": []}]:
+            errors.append(f"POST {route}: apiKeyAuth is required")
+        parameters = operation.get("parameters", [])
+        if {"$ref": "#/components/parameters/IdempotencyKey"} not in parameters:
+            errors.append(f"POST {route}: Idempotency-Key is required")
+        timeout = operation.get("x-timeout-ms")
+        if not isinstance(timeout, int) or timeout <= 0:
+            errors.append(f"POST {route}: positive x-timeout-ms is required")
+        if not operation.get("x-retry-policy"):
+            errors.append(f"POST {route}: x-retry-policy is required")
     return errors
 
 
@@ -220,12 +322,23 @@ def validate_schema() -> tuple[list[str], dict[str, int]]:
             "primary_keys": 0,
         }
     sql = SCHEMA.read_text(encoding="utf-8-sig")
+    expected_erd = render_erd(sql)
+    if not ERD.is_file():
+        errors.append("missing generated database ERD")
+    elif ERD.read_text(encoding="utf-8") != expected_erd:
+        errors.append(
+            "database ERD is out of date; run python tools/generate_erd.py"
+        )
+    if not FLYWAY_BASELINE.is_file():
+        errors.append("missing backend Flyway V1 baseline")
+    elif FLYWAY_BASELINE.read_text(encoding="utf-8-sig") != sql:
+        errors.append("backend Flyway V1 baseline differs from schema contract")
     tables = re.findall(r"CREATE TABLE `([^`]+)` \((.*?)\);", sql, re.DOTALL)
     primary_keys = re.findall(
-        r"ALTER TABLE `([^`]+)` ADD CONSTRAINT `([^`]+)` PRIMARY KEY "
-        r"\(\s*`([^`]+)`\s*\);",
+        r"`id`\s+(?:bigint|VARCHAR\(255\))\s+NOT NULL"
+        r"(?:\s+AUTO_INCREMENT)?\s+PRIMARY KEY",
         sql,
-        re.DOTALL,
+        re.IGNORECASE,
     )
     foreign_keys = re.findall(r"\bFOREIGN KEY\s*\(", sql, re.IGNORECASE)
     unique_constraints = re.findall(
@@ -239,6 +352,20 @@ def validate_schema() -> tuple[list[str], dict[str, int]]:
     table_names = {name for name, _ in tables}
     if "story_choices" in table_names:
         errors.append("obsolete story_choices table remains")
+    if "test" in table_names or "tests" not in table_names:
+        errors.append("test table must use the backend-compatible name tests")
+    legacy_data_tables = {"training_datas", "test_datas"} & table_names
+    if legacy_data_tables:
+        errors.append(
+            f"legacy data table names remain: {sorted(legacy_data_tables)}"
+        )
+    for required_table in ("training_contents", "test_questions"):
+        if required_table not in table_names:
+            errors.append(f"required table is missing: {required_table}")
+    for table_name, definition in tables:
+        id_column = re.search(r"`id`\s+bigint\s+NOT NULL([^\n]*)", definition)
+        if id_column and "AUTO_INCREMENT" not in id_column.group(1):
+            errors.append(f"{table_name}.id must be AUTO_INCREMENT")
     story = dict(tables).get("stories", "")
     story_lines = dict(tables).get("story_lines", "")
     if "CHK_STORIES_PROGRESS" not in story:
@@ -259,10 +386,21 @@ def validate_schema() -> tuple[list[str], dict[str, int]]:
         if identifier in sql:
             errors.append(f"legacy schema identifier remains: {identifier}")
     required_fragments = (
+        "CREATE TABLE `tests`",
+        "`training_id`\tbigint\tNOT NULL",
+        "`progress`\ttinyint unsigned\tNOT NULL",
+        "`previous_line_id`\tbigint\tNULL",
+        "`requires_branch_input`\tboolean\tNOT NULL",
         "`student_word_stats`",
         "`student_id`\tbigint\tNOT NULL",
         "`word_id`\tbigint\tNOT NULL",
+        "`correct_count`\tint unsigned\tNOT NULL",
+        "`failed_count`\tint unsigned\tNOT NULL",
+        "`use_location`\tvarchar(10)\tNOT NULL",
+        "`total_score`\tint unsigned\tNOT NULL",
         "`is_representative`\tboolean\tNOT NULL",
+        "`start_date`\tdate\tNOT NULL",
+        "`end_date`\tdate\tNOT NULL",
         "UK_STUDENT_WORD_STATS",
         "UK_STORY_LINES_SEQUENCE",
         "FK_STORIES_STUDENT",
@@ -274,6 +412,33 @@ def validate_schema() -> tuple[list[str], dict[str, int]]:
     for fragment in required_fragments:
         if fragment not in sql:
             errors.append(f"required schema contract is missing: {fragment}")
+    obsolete_backend_files = (
+        BACKEND_JAVA
+        / "com/iread/backend/story/domain/StoryChoiceEntity.java",
+        BACKEND_JAVA
+        / "com/iread/backend/story/repository/StoryChoiceRepository.java",
+    )
+    for path in obsolete_backend_files:
+        if path.exists():
+            errors.append(f"obsolete Backend story choice model remains: {path}")
+    backend_sources = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in BACKEND_JAVA.rglob("*.java")
+    )
+    backend_required_fragments = (
+        '@Table(name = "tests")',
+        '@Table(name = "training_contents")',
+        '@JoinColumn(name = "training_id"',
+        '@Column(name = "requires_branch_input"',
+        '@Column(name = "is_representative"',
+        "private int progress;",
+    )
+    for fragment in backend_required_fragments:
+        if fragment not in backend_sources:
+            errors.append(f"Backend schema alignment is missing: {fragment}")
+    for fragment in ('@Table(name = "story_choices")', '@JoinColumn(name = "train_id"'):
+        if fragment in backend_sources:
+            errors.append(f"obsolete Backend schema mapping remains: {fragment}")
     if len(foreign_keys) < 20:
         errors.append(
             f"schema has too few foreign keys: {len(foreign_keys)}"
@@ -293,7 +458,7 @@ def validate_schema() -> tuple[list[str], dict[str, int]]:
 def main() -> int:
     missing = [
         path.relative_to(ROOT)
-        for path in (SNAPSHOT, TRACEABILITY)
+        for path in (SNAPSHOT, RESOLUTIONS, TRACEABILITY)
         if not path.is_file()
     ]
     if missing:
@@ -302,12 +467,21 @@ def main() -> int:
             print(f"  - {path}")
         return 1
 
-    snapshot = json.loads(SNAPSHOT.read_text(encoding="utf-8"))
+    raw_snapshot = json.loads(SNAPSHOT.read_text(encoding="utf-8"))
+    try:
+        snapshot = resolve_snapshot(
+            raw_snapshot,
+            load_resolutions(RESOLUTIONS),
+        )
+    except (KeyError, TypeError, ValueError) as error:
+        print(f"Invalid contract resolutions: {error}")
+        return 1
     traceability = json.loads(TRACEABILITY.read_text(encoding="utf-8"))
 
-    errors = validate_snapshot(snapshot)
+    errors = validate_snapshot(raw_snapshot)
     openapi_errors, openapi_stats = validate_openapi(snapshot, traceability)
     errors.extend(openapi_errors)
+    errors.extend(validate_ai_contract())
     errors.extend(validate_traceability(snapshot, traceability))
     schema_errors, schema_stats = validate_schema()
     errors.extend(schema_errors)

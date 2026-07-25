@@ -40,7 +40,7 @@ Backend, Frontend, AI server, 아동 앱, 시선 추적 프로토타입은 별�
 
 | 영역 | 기준선 |
 | --- | --- |
-| Backend | Spring Boot 3, Java 21, Gradle Kotlin DSL |
+| Backend | Spring Boot 4.0.7, Java 21, Gradle Groovy DSL |
 | Frontend | Vue 3, TypeScript, Vite, pnpm |
 | AI server | FastAPI, Python 3.12, uv |
 | 아동 앱 | [TBD] |

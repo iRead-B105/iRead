@@ -11,17 +11,17 @@ timestamp: 2026-07-24T00:00:00+09:00
 
 | 계약 | 기준 원본 | 소유자 | 상태 | 파생 위치 |
 | --- | --- | --- | --- | --- |
-| 승인 기능 명세 | `docs/product/features/` | Orchestration | 전환 중 | Notion 기능 명세 |
-| App–Backend API | `contracts/openapi/app-api.yaml` | Orchestration | 이전 완료, 일부 검토 필요 | Notion API 명세, Backend·App |
-| Admin–Backend API | `contracts/openapi/admin-api.yaml` | Orchestration | 이전 완료, 일부 검토 필요 | Notion API 명세, Backend·Frontend |
-| 공통 인증 API | `contracts/openapi/auth-api.yaml` | Orchestration | 이전 완료, 일부 검토 필요 | Notion API 명세, Backend·소비 앱 |
-| Backend–AI API | `contracts/openapi/ai-api.yaml` | Orchestration | [TBD] OpenAPI 이전 | Notion API 명세, Backend·AI |
-| MySQL 실행 스키마 | `services/backend` migration | Backend | [TBD] migration 도입 | `contracts/database/schema.sql`, ERD |
+| 승인 기능 명세 | `docs/product/features/` | Orchestration | 이전 완료 | Notion 이관 스냅샷 |
+| App–Backend API | `contracts/openapi/app-api.yaml` | Orchestration | 이전·검토 완료 | Notion 이관 스냅샷, Backend·App |
+| Admin–Backend API | `contracts/openapi/admin-api.yaml` | Orchestration | 이전·검토 완료 | Notion 이관 스냅샷, Backend·Frontend |
+| 공통 인증 API | `contracts/openapi/auth-api.yaml` | Orchestration | 이전·검토 완료 | Notion 이관 스냅샷, Backend·소비 앱 |
+| Backend–AI API | `contracts/openapi/ai-api.yaml` | Orchestration | 기준 계약 작성 및 이야기 계약 정합화 완료 | Backend·AI |
+| MySQL 실행 스키마 | `services/backend` Flyway migration | Backend | V1 도입 및 MySQL 8.4 실행 검증 완료 | `contracts/database/schema.sql`, `contracts/database/erd.md` |
 
 ## 전환 원칙
 
-- 생성된 OpenAPI는 계약 기준선이며 `x-review-status: needs-review`인 operation은 의미 검토가 끝날 때까지 변경 시 Notion 원본도 함께 확인한다.
-- [API 계약 검토 목록](review-queue.md)의 항목을 완료하면 Notion의 검수 표시와 OpenAPI를 함께 갱신한다.
-- Backend–AI API는 실제 경로와 인증 방식이 확정되기 전까지 빈 계약을 만들지 않는다.
-- MySQL migration 도입 전에는 스키마 스냅샷의 변경 사유와 문법 검증 결과를 함께 기록한다.
+- 생성된 OpenAPI와 해소 규칙은 계약 기준선이며 Notion 스냅샷은 이관 당시 출처 확인에만 사용한다.
+- Git 계약 변경은 외부 Notion에 자동 또는 필수 역동기화하지 않는다.
+- Backend–AI API는 `X-API-Key`, `Idempotency-Key`와 계약별 처리 제한을 포함해 변경한다.
+- MySQL migration 변경 시 스키마 계약의 변경 사유와 MySQL 8.4 실행 결과를 함께 기록한다.
 - 세부 절차는 [명세 관리 워크플로](../docs/workflows/specification-management.md)를 따른다.

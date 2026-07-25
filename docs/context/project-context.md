@@ -25,7 +25,8 @@ timestamp: 2026-07-24T00:00:00+09:00
 - 핵심 사용자는 아동이며 보호자, 난독증·문해교육 전문가, 교사와 교육기관이 주요 이해관계자다.
 - 해결할 문제와 근거는 [제품 비전과 범위](../product/vision-and-scope.md)와 [문제 및 근거 조사](../product/research-basis.md)에 기록한다.
 - 기술 기준선은 [ADR-0002](../decisions/ADR-0002-technology-baseline.md)에 기록되어 있다.
-- 주 데이터베이스는 [ADR-0006](../decisions/ADR-0006-mysql-primary-database.md)에 따라 MySQL 8.4.x LTS를 사용하며 운영 토폴로지는 미정이다.
+- 주 데이터베이스는 [ADR-0006](../decisions/ADR-0006-mysql-primary-database.md)에 따라 MySQL 8.4.x LTS를 사용한다.
+- 현재 산출물은 실제 운영하지 않는 데모 버전이며, 데이터 보관, 로컬·Docker MySQL과 API 보안 범위는 [ADR-0008](../decisions/ADR-0008-demo-data-and-runtime-policy.md)을 따른다.
 - 문서와 명세 기준 원본은 [ADR-0007](../decisions/ADR-0007-okf-and-specification-sources.md)과 [명세 관리 워크플로](../workflows/specification-management.md)를 따른다.
 - GitHub `iRead-B105/iRead` 저장소에 `main`, `develop` 브랜치가 구성되어 있으며 기본 브랜치는 `develop`이다.
 - 여섯 저장소는 모두 공개 상태이며 서비스 저장소의 기본 브랜치도 `develop`이다.
@@ -51,11 +52,11 @@ timestamp: 2026-07-24T00:00:00+09:00
 - [TBD] 각 서비스의 구체적인 책임
 - [TBD] 아동 앱의 기술 스택
 - [TBD] Redis의 책임(캐시, 세션, 큐, pub/sub 등)
-- [TBD] 데이터 소유권과 MySQL 운영 토폴로지
-- [TBD] 인증·인가 및 개인정보 처리 요구사항
-- [TBD] 배포 환경과 운영 제약
+- [TBD] 서비스별 데이터 소유권
+- [TBD] 운영 전환 시 MySQL 토폴로지, 백업·복구와 배포 제약
+- [TBD] 운영 전환 시 인증·인가, 감사와 개인정보 처리 요구사항
 - [TBD] [제품 용어 및 책임 경계](../product/product-responsibility-boundary.md)의 임시 기준을 최종 제품 범위로 채택할지 결정
-- [TBD] 아동의 시선·음성 데이터 수집 목적, 법정대리인 동의와 보관·삭제 기준
+- [TBD] 아동의 시선·음성 데이터 수집 항목과 별도 동의서에 명시할 데이터셋별 보관 기간
 
 ## 갱신 원칙
 

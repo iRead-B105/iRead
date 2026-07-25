@@ -17,7 +17,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 | 저장소 역할 | 내용 | 기술 스택 | 경로 / URL |
 | --- | --- | --- | --- |
 | Orchestration | 공통 문서, 계약, ADR, 통합 구성 | Markdown, Docker Compose 예정 | 현재 디렉터리 |
-| Backend | 도메인/API 구현과 자체 테스트 | Spring Boot 3, Java 21, Gradle Kotlin DSL | `services/backend` / [iRead-backend](https://github.com/iRead-B105/iRead-backend) |
+| Backend | 도메인/API 구현과 자체 테스트 | Spring Boot 4.0.7, Java 21, Gradle Groovy DSL | `services/backend` / [iRead-backend](https://github.com/iRead-B105/iRead-backend) |
 | Frontend | UI 구현과 자체 테스트 | Vue 3, TypeScript, Vite, pnpm | `services/frontend` / [iRead-frontend](https://github.com/iRead-B105/iRead-frontend) |
 | AI server | AI 기능 구현과 자체 테스트 | FastAPI, Python 3.12, uv | `services/ai` / [iRead-ai](https://github.com/iRead-B105/iRead-ai) |
 | 아동 앱 | 아동용 애플리케이션 구현과 자체 테스트 | [TBD] | `services/app` / [iRead-app](https://github.com/iRead-B105/iRead-app) |

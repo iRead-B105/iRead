@@ -1,0 +1,372 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "iRead Backend–AI Internal API",
+    "version": "0.1.0",
+    "description": "Backend가 AI server를 호출하는 내부 HTTP 계약이다. 모든 요청은 X-API-Key와 Idempotency-Key를 사용하며 외부 클라이언트에 노출하지 않는다."
+  },
+  "paths": {
+    "/api/v1/trainings/generate": {
+      "post": {
+        "operationId": "generateTraining",
+        "summary": "개인화 훈련 데이터 생성",
+        "tags": ["training"],
+        "security": [{"apiKeyAuth": []}],
+        "parameters": [{"$ref": "#/components/parameters/IdempotencyKey"}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TrainingGenerateRequest"}}}},
+        "responses": {
+          "200": {"description": "훈련 데이터 생성 성공", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TrainingGenerateResponse"}}}},
+          "400": {"$ref": "#/components/responses/BadRequest"},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "409": {"$ref": "#/components/responses/Conflict"},
+          "422": {"$ref": "#/components/responses/Unprocessable"},
+          "502": {"$ref": "#/components/responses/UpstreamFailure"},
+          "504": {"$ref": "#/components/responses/Timeout"}
+        },
+        "x-timeout-ms": 30000,
+        "x-retry-policy": "연결 실패와 502·503·504에 한해 같은 Idempotency-Key로 최대 1회 재시도"
+      }
+    },
+    "/api/v1/trainings/evaluate": {
+      "post": {
+        "operationId": "evaluateTraining",
+        "summary": "훈련 결과 정확도 평가",
+        "tags": ["training"],
+        "security": [{"apiKeyAuth": []}],
+        "parameters": [{"$ref": "#/components/parameters/IdempotencyKey"}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TrainingEvaluateRequest"}}}},
+        "responses": {
+          "200": {"description": "훈련 평가 성공", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TrainingEvaluateResponse"}}}},
+          "400": {"$ref": "#/components/responses/BadRequest"},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "409": {"$ref": "#/components/responses/Conflict"},
+          "422": {"$ref": "#/components/responses/Unprocessable"},
+          "502": {"$ref": "#/components/responses/UpstreamFailure"},
+          "504": {"$ref": "#/components/responses/Timeout"}
+        },
+        "x-timeout-ms": 30000,
+        "x-retry-policy": "연결 실패와 502·503·504에 한해 같은 Idempotency-Key로 최대 1회 재시도"
+      }
+    },
+    "/api/v1/story/generate": {
+      "post": {
+        "operationId": "generateStory",
+        "summary": "이야기 첫 장면 생성",
+        "tags": ["story"],
+        "security": [{"apiKeyAuth": []}],
+        "parameters": [{"$ref": "#/components/parameters/IdempotencyKey"}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/StoryGenerateRequest"}}}},
+        "responses": {
+          "200": {"description": "이야기 생성 성공", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/StoryGenerateResponse"}}}},
+          "400": {"$ref": "#/components/responses/BadRequest"},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "409": {"$ref": "#/components/responses/Conflict"},
+          "422": {"$ref": "#/components/responses/Unprocessable"},
+          "502": {"$ref": "#/components/responses/UpstreamFailure"},
+          "504": {"$ref": "#/components/responses/Timeout"}
+        },
+        "x-timeout-ms": 30000,
+        "x-retry-policy": "연결 실패와 502·503·504에 한해 같은 Idempotency-Key로 최대 1회 재시도"
+      }
+    },
+    "/api/v1/story/continue": {
+      "post": {
+        "operationId": "continueStory",
+        "summary": "음성 분기 의도와 진행률 기반 다음 이야기 생성",
+        "tags": ["story"],
+        "security": [{"apiKeyAuth": []}],
+        "parameters": [{"$ref": "#/components/parameters/IdempotencyKey"}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/StoryContinueRequest"}}}},
+        "responses": {
+          "200": {"description": "다음 이야기 생성 성공", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/StoryGenerateResponse"}}}},
+          "400": {"$ref": "#/components/responses/BadRequest"},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "409": {"$ref": "#/components/responses/Conflict"},
+          "422": {"$ref": "#/components/responses/Unprocessable"},
+          "502": {"$ref": "#/components/responses/UpstreamFailure"},
+          "504": {"$ref": "#/components/responses/Timeout"}
+        },
+        "x-timeout-ms": 30000,
+        "x-retry-policy": "연결 실패와 502·503·504에 한해 같은 Idempotency-Key로 최대 1회 재시도"
+      }
+    },
+    "/api/v1/speech/transcribe": {
+      "post": {
+        "operationId": "transcribeSpeech",
+        "summary": "아동 음성 STT 처리",
+        "tags": ["speech"],
+        "security": [{"apiKeyAuth": []}],
+        "parameters": [{"$ref": "#/components/parameters/IdempotencyKey"}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["requestId", "studentId", "audioFile"],
+                "properties": {
+                  "requestId": {"type": "string"},
+                  "studentId": {"type": "integer", "format": "int64", "minimum": 1},
+                  "expectedText": {"type": "string"},
+                  "audioFile": {"type": "string", "format": "binary"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "음성 인식 성공", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SpeechTranscriptionResponse"}}}},
+          "400": {"$ref": "#/components/responses/BadRequest"},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "409": {"$ref": "#/components/responses/Conflict"},
+          "422": {"$ref": "#/components/responses/Unprocessable"},
+          "502": {"$ref": "#/components/responses/UpstreamFailure"},
+          "504": {"$ref": "#/components/responses/Timeout"}
+        },
+        "x-timeout-ms": 30000,
+        "x-retry-policy": "연결 실패와 502·503·504에 한해 같은 Idempotency-Key로 최대 1회 재시도"
+      }
+    },
+    "/api/v1/speech/synthesize": {
+      "post": {
+        "operationId": "synthesizeSpeech",
+        "summary": "이야기 본문 TTS 생성",
+        "tags": ["speech"],
+        "security": [{"apiKeyAuth": []}],
+        "parameters": [{"$ref": "#/components/parameters/IdempotencyKey"}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SpeechSynthesisRequest"}}}},
+        "responses": {
+          "200": {
+            "description": "TTS 음성 생성 성공",
+            "headers": {
+              "X-Request-Id": {"schema": {"type": "string"}},
+              "X-Audio-Duration-Ms": {"schema": {"type": "integer"}}
+            },
+            "content": {"audio/mpeg": {"schema": {"type": "string", "format": "binary"}}}
+          },
+          "400": {"$ref": "#/components/responses/BadRequest"},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "409": {"$ref": "#/components/responses/Conflict"},
+          "422": {"$ref": "#/components/responses/Unprocessable"},
+          "502": {"$ref": "#/components/responses/UpstreamFailure"},
+          "504": {"$ref": "#/components/responses/Timeout"}
+        },
+        "x-timeout-ms": 30000,
+        "x-retry-policy": "연결 실패와 502·503·504에 한해 같은 Idempotency-Key로 최대 1회 재시도"
+      }
+    },
+    "/api/v1/gaze/analyze": {
+      "post": {
+        "operationId": "analyzeGaze",
+        "summary": "시선 샘플 분석",
+        "tags": ["gaze"],
+        "security": [{"apiKeyAuth": []}],
+        "parameters": [{"$ref": "#/components/parameters/IdempotencyKey"}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/GazeAnalysisRequest"}}}},
+        "responses": {
+          "200": {"description": "시선 분석 성공", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/GazeAnalysisResponse"}}}},
+          "400": {"$ref": "#/components/responses/BadRequest"},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "409": {"$ref": "#/components/responses/Conflict"},
+          "422": {"$ref": "#/components/responses/Unprocessable"},
+          "502": {"$ref": "#/components/responses/UpstreamFailure"},
+          "504": {"$ref": "#/components/responses/Timeout"}
+        },
+        "x-timeout-ms": 30000,
+        "x-retry-policy": "연결 실패와 502·503·504에 한해 같은 Idempotency-Key로 최대 1회 재시도"
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {"type": "apiKey", "in": "header", "name": "X-API-Key"}
+    },
+    "parameters": {
+      "IdempotencyKey": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": true,
+        "schema": {"type": "string", "minLength": 1, "maxLength": 128}
+      }
+    },
+    "responses": {
+      "BadRequest": {"description": "요청 형식 오류", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}},
+      "Unauthorized": {"description": "내부 API 키 인증 실패", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}},
+      "Conflict": {"description": "같은 멱등성 키의 요청 내용 충돌", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}},
+      "Unprocessable": {"description": "AI 입력값 의미 검증 실패", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}},
+      "UpstreamFailure": {"description": "AI 모델 또는 외부 처리 실패", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}},
+      "Timeout": {"description": "AI 처리 제한 시간 초과", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ErrorResponse"}}}}
+    },
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["code", "message", "requestId"],
+        "properties": {
+          "code": {"type": "string"},
+          "message": {"type": "string"},
+          "requestId": {"type": "string"},
+          "retryable": {"type": "boolean"}
+        }
+      },
+      "TrainingGenerateRequest": {
+        "type": "object",
+        "required": ["requestId", "trainingId", "studentId", "trainingTemplateId", "schemaVersion", "inputData"],
+        "properties": {
+          "requestId": {"type": "string"},
+          "trainingId": {"type": "integer", "format": "int64", "minimum": 1},
+          "studentId": {"type": "integer", "format": "int64", "minimum": 1},
+          "trainingTemplateId": {"type": "integer", "format": "int64", "minimum": 1},
+          "schemaVersion": {"type": "integer", "minimum": 1},
+          "inputData": {"type": "object", "additionalProperties": true}
+        }
+      },
+      "TrainingGenerateResponse": {
+        "type": "object",
+        "required": ["requestId", "schemaVersion", "generatedData"],
+        "properties": {
+          "requestId": {"type": "string"},
+          "schemaVersion": {"type": "integer", "minimum": 1},
+          "generatedData": {"type": "object", "additionalProperties": true}
+        }
+      },
+      "TrainingEvaluateRequest": {
+        "type": "object",
+        "required": ["requestId", "trainingId", "studentId", "trainingTemplateId", "schemaVersion", "result"],
+        "properties": {
+          "requestId": {"type": "string"},
+          "trainingId": {"type": "integer", "format": "int64", "minimum": 1},
+          "studentId": {"type": "integer", "format": "int64", "minimum": 1},
+          "trainingTemplateId": {"type": "integer", "format": "int64", "minimum": 1},
+          "schemaVersion": {"type": "integer", "minimum": 1},
+          "result": {"type": "object", "additionalProperties": true}
+        }
+      },
+      "TrainingEvaluateResponse": {
+        "type": "object",
+        "required": ["requestId", "schemaVersion", "accuracy"],
+        "properties": {
+          "requestId": {"type": "string"},
+          "schemaVersion": {"type": "integer", "minimum": 1},
+          "accuracy": {"type": "number", "minimum": 0, "maximum": 100}
+        }
+      },
+      "StoryTemplate": {
+        "type": "object",
+        "required": ["storyTemplateId", "title", "context"],
+        "properties": {
+          "storyTemplateId": {"type": "integer", "format": "int64", "minimum": 1},
+          "title": {"type": "string"},
+          "context": {"type": "string"}
+        }
+      },
+      "StoryHistoryLine": {
+        "type": "object",
+        "required": ["storyLineId", "content", "requiresBranchInput"],
+        "properties": {
+          "storyLineId": {"type": "integer", "format": "int64", "minimum": 1},
+          "content": {"type": "string"},
+          "requiresBranchInput": {"type": "boolean"}
+        }
+      },
+      "GeneratedStoryLine": {
+        "type": "object",
+        "required": ["content", "requiresBranchInput"],
+        "properties": {
+          "content": {"type": "string"},
+          "requiresBranchInput": {"type": "boolean"}
+        }
+      },
+      "StoryGenerateRequest": {
+        "type": "object",
+        "required": ["requestId", "storyId", "studentId", "schemaVersion", "currentProgress", "storyTemplate"],
+        "properties": {
+          "requestId": {"type": "string"},
+          "storyId": {"type": "integer", "format": "int64", "minimum": 1},
+          "studentId": {"type": "integer", "format": "int64", "minimum": 1},
+          "schemaVersion": {"type": "integer", "minimum": 1},
+          "currentProgress": {"type": "integer", "minimum": 0, "maximum": 100},
+          "storyTemplate": {"$ref": "#/components/schemas/StoryTemplate"}
+        }
+      },
+      "StoryContinueRequest": {
+        "allOf": [
+          {"$ref": "#/components/schemas/StoryGenerateRequest"},
+          {
+            "type": "object",
+            "required": ["currentStoryLineId", "branchIntent", "history"],
+            "properties": {
+              "currentStoryLineId": {"type": "integer", "format": "int64", "minimum": 1},
+              "branchIntent": {"type": "string", "minLength": 1},
+              "history": {"type": "array", "items": {"$ref": "#/components/schemas/StoryHistoryLine"}}
+            }
+          }
+        ]
+      },
+      "StoryGenerateResponse": {
+        "type": "object",
+        "required": ["requestId", "schemaVersion", "nextProgress", "completed", "lines"],
+        "properties": {
+          "requestId": {"type": "string"},
+          "schemaVersion": {"type": "integer", "minimum": 1},
+          "nextProgress": {"type": "integer", "minimum": 0, "maximum": 100},
+          "completed": {"type": "boolean"},
+          "lines": {"type": "array", "items": {"$ref": "#/components/schemas/GeneratedStoryLine"}}
+        }
+      },
+      "SpeechTranscriptionResponse": {
+        "type": "object",
+        "required": ["requestId", "transcript", "confidence", "durationMs"],
+        "properties": {
+          "requestId": {"type": "string"},
+          "transcript": {"type": "string"},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+          "durationMs": {"type": "integer", "minimum": 0}
+        }
+      },
+      "SpeechSynthesisRequest": {
+        "type": "object",
+        "required": ["requestId", "text"],
+        "properties": {
+          "requestId": {"type": "string"},
+          "text": {"type": "string", "minLength": 1},
+          "voice": {"type": "string"}
+        }
+      },
+      "GazeAnalysisRequest": {
+        "type": "object",
+        "required": ["requestId", "studentId", "contentType", "contentId", "samples"],
+        "properties": {
+          "requestId": {"type": "string"},
+          "studentId": {"type": "integer", "format": "int64", "minimum": 1},
+          "contentType": {"type": "string", "enum": ["TEST", "TRAINING", "STORY"]},
+          "contentId": {"type": "integer", "format": "int64", "minimum": 1},
+          "samples": {"type": "array", "items": {"type": "object", "additionalProperties": true}}
+        }
+      },
+      "GazeAnalysisResponse": {
+        "type": "object",
+        "required": ["requestId", "totalVisitedDuration", "totalVisitedCount", "reverseReadCount", "sentenceMetrics"],
+        "properties": {
+          "requestId": {"type": "string"},
+          "totalVisitedDuration": {"type": "integer", "minimum": 0},
+          "totalVisitedCount": {"type": "integer", "minimum": 0},
+          "reverseReadCount": {"type": "integer", "minimum": 0},
+          "avgVisitedDuration": {"type": "integer", "minimum": 0},
+          "sentenceMetrics": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["contentItemId", "visitedDuration", "visitedCount", "reverseReadCount"],
+              "properties": {
+                "contentItemId": {"type": "integer", "format": "int64"},
+                "visitedDuration": {"type": "integer", "minimum": 0},
+                "visitedCount": {"type": "integer", "minimum": 0},
+                "reverseReadCount": {"type": "integer", "minimum": 0}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
