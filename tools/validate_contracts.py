@@ -25,9 +25,8 @@ RESOLUTIONS = ROOT / "contracts/api-resolutions.json"
 TRACEABILITY = ROOT / "contracts/traceability.json"
 SCHEMA = ROOT / "contracts/database/schema.sql"
 ERD = ROOT / "contracts/database/erd.md"
-FLYWAY_BASELINE = (
-    ROOT
-    / "services/backend/src/main/resources/db/migration/V1__baseline_schema.sql"
+FLYWAY_MIGRATIONS = (
+    ROOT / "services/backend/src/main/resources/db/migration"
 )
 BACKEND_JAVA = ROOT / "services/backend/src/main/java"
 HTTP_METHODS = {"get", "post", "put", "patch", "delete"}
@@ -329,17 +328,31 @@ def validate_schema() -> tuple[list[str], dict[str, int]]:
         errors.append(
             "database ERD is out of date; run python tools/generate_erd.py"
         )
-    if not FLYWAY_BASELINE.is_file():
+    flyway_baseline = FLYWAY_MIGRATIONS / "V1__baseline_schema.sql"
+    if not flyway_baseline.is_file():
         errors.append("missing backend Flyway V1 baseline")
-    elif FLYWAY_BASELINE.read_text(encoding="utf-8-sig") != sql:
-        errors.append("backend Flyway V1 baseline differs from schema contract")
+    else:
+        baseline_sql = flyway_baseline.read_text(encoding="utf-8-sig")
+        baseline_tables = set(re.findall(r"CREATE TABLE `([^`]+)`", baseline_sql))
+        current_tables = set(re.findall(r"CREATE TABLE `([^`]+)`", sql))
+        missing_baseline_tables = baseline_tables - current_tables
+        if missing_baseline_tables:
+            errors.append(
+                "schema contract is missing Flyway V1 tables: "
+                f"{sorted(missing_baseline_tables)}"
+            )
+    migration_files = sorted(FLYWAY_MIGRATIONS.glob("V*__*.sql"))
+    migration_versions = [
+        re.match(r"V(\d+)__", path.name).group(1)
+        for path in migration_files
+        if re.match(r"V(\d+)__", path.name)
+    ]
+    if len(migration_versions) != len(set(migration_versions)):
+        errors.append("duplicate backend Flyway migration version")
+    if not (FLYWAY_MIGRATIONS / "V2__auth_jwt_contract.sql").is_file():
+        errors.append("missing backend Flyway V2 auth migration")
     tables = re.findall(r"CREATE TABLE `([^`]+)` \((.*?)\);", sql, re.DOTALL)
-    primary_keys = re.findall(
-        r"`id`\s+(?:bigint|VARCHAR\(255\))\s+NOT NULL"
-        r"(?:\s+AUTO_INCREMENT)?\s+PRIMARY KEY",
-        sql,
-        re.IGNORECASE,
-    )
+    primary_keys = re.findall(r"\bPRIMARY KEY\b", sql, re.IGNORECASE)
     foreign_keys = re.findall(r"\bFOREIGN KEY\s*\(", sql, re.IGNORECASE)
     unique_constraints = re.findall(
         r"\bCONSTRAINT\s+`[^`]+`\s+UNIQUE\s*\(", sql, re.IGNORECASE
@@ -362,6 +375,12 @@ def validate_schema() -> tuple[list[str], dict[str, int]]:
     for required_table in ("training_contents", "test_questions"):
         if required_table not in table_names:
             errors.append(f"required table is missing: {required_table}")
+    for required_table in (
+        "auth_refresh_sessions",
+        "auth_revoked_access_tokens",
+    ):
+        if required_table not in table_names:
+            errors.append(f"required auth table is missing: {required_table}")
     for table_name, definition in tables:
         id_column = re.search(r"`id`\s+bigint\s+NOT NULL([^\n]*)", definition)
         if id_column and "AUTO_INCREMENT" not in id_column.group(1):
@@ -408,6 +427,9 @@ def validate_schema() -> tuple[list[str], dict[str, int]]:
         "FK_REPORTS_STUDENT",
         "CHK_GAZE_SESSIONS_CONTENT",
         "CHK_REPORTS_PERIOD",
+        "`login_id`\tvarchar(50)\tNOT NULL",
+        "UK_TEACHERS_LOGIN_ID",
+        "UK_AUTH_REFRESH_SESSIONS_TOKEN_HASH",
     )
     for fragment in required_fragments:
         if fragment not in sql:

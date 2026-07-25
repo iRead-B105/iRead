@@ -744,7 +744,7 @@ def write_review_queue(apis: list[dict[str, Any]], output: Path) -> None:
             "## 별도 미결 사항",
             "",
             "- Backend–AI 내부 계약은 `contracts/openapi/ai-api.yaml`에서 관리한다.",
-            "- Backend MySQL Flyway V1과 실행 검증 결과는 `contracts/database/backend-alignment.md`에서 관리한다.",
+            "- Backend MySQL Flyway 누적 migration과 실행 검증 결과는 `contracts/database/backend-alignment.md`에서 관리한다.",
             "- 기존 데이터가 있는 환경은 V1 직접 적용 전에 별도 baseline과 변환 migration이 필요하다.",
             "",
         ]

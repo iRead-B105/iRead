@@ -52,4 +52,5 @@ timestamp: 2026-07-26T00:00:00+09:00
 - 기존 교수자의 초기 `login_id`는 고유성이 보장된 현재 이메일로 채운 뒤 `NOT NULL`, `UNIQUE`를 적용한다.
 - refresh token 원문은 저장하지 않고 SHA-256 해시만 저장한다.
 - 실행 migration은 Backend `V2__auth_jwt_contract.sql`, 누적 검토용 DDL은 `schema.sql`이다.
-- MySQL 8.4 적용 검증은 실행하지 않았다. 소스 검증은 사용자가 명시적으로 요청한 경우에만 수행한다.
+- MySQL 8.4.10의 빈 임시 DB에서 Flyway V1·V2를 순서대로 적용해 26개 애플리케이션 테이블과 migration history 2건을 확인했다.
+- V2 적용 후 Hibernate JPA schema validation과 Backend 전체 테스트가 성공했다.
