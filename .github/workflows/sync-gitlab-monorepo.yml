@@ -35,6 +35,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+          submodules: recursive
           ref: >-
             ${{ github.event_name == 'workflow_run' &&
                 github.event.workflow_run.head_sha || 'develop' }}
