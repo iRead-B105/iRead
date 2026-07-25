@@ -7,13 +7,12 @@ readonly GITLAB_USERNAME="${GITLAB_USERNAME:-oauth2}"
 readonly ORCHESTRATION_URL="https://github.com/iRead-B105/iRead.git"
 readonly ORCHESTRATION_BRANCH="develop"
 readonly REQUESTED_ORCHESTRATION_SHA="${SYNC_ORCHESTRATION_SHA:-}"
+readonly REBUILD_HISTORY="${REBUILD_GITLAB_HISTORY:-false}"
 readonly TARGET_BRANCH="main"
 readonly SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 readonly GITLAB_ASKPASS="$SCRIPT_DIR/gitlab_askpass.sh"
 readonly WORK_DIR="$(mktemp -d)"
 readonly AGGREGATE_DIR="$WORK_DIR/aggregate"
-readonly SNAPSHOT_DIR="$WORK_DIR/orchestration-snapshot"
-readonly MANIFEST=".gitlab-source-revisions.json"
 
 declare -ar SERVICE_NAMES=(backend frontend ai app eyetracking)
 declare -Ar SERVICE_URLS=(
@@ -64,7 +63,7 @@ fetch_source() {
   local url="$2"
 
   ensure_remote "$name" "$url"
-  git -C "$AGGREGATE_DIR" fetch --force --no-tags "$name" \
+  git -C "$AGGREGATE_DIR" fetch --force --prune --no-tags "$name" \
     "+refs/heads/*:refs/remotes/source/$name/heads/*" \
     "+refs/tags/*:refs/tags/upstream/$name/*"
 }
@@ -72,13 +71,22 @@ fetch_source() {
 push_source_refs() {
   local name="$1"
 
-  git_auth -C "$AGGREGATE_DIR" push origin \
+  git_auth -C "$AGGREGATE_DIR" push --prune origin \
     "refs/remotes/source/$name/heads/*:refs/heads/upstream/$name/*"
 
   if git -C "$AGGREGATE_DIR" for-each-ref \
     --format='%(refname)' "refs/tags/upstream/$name/" | grep -q .; then
-    git_auth -C "$AGGREGATE_DIR" push origin \
+    git_auth -C "$AGGREGATE_DIR" push --prune origin \
       "refs/tags/upstream/$name/*:refs/tags/upstream/$name/*"
+  fi
+}
+
+fetch_notes_if_present() {
+  local ref="$1"
+
+  if git_auth -C "$AGGREGATE_DIR" ls-remote \
+    --exit-code origin "$ref" >/dev/null 2>&1; then
+    git_auth -C "$AGGREGATE_DIR" fetch origin "+$ref:$ref"
   fi
 }
 
@@ -95,163 +103,21 @@ gitlink_sha() {
   awk '{print $3}' <<<"$entry"
 }
 
-manifest_value() {
-  local key="$1"
-
-  python3 - "$AGGREGATE_DIR/$MANIFEST" "$key" <<'PY'
-import json
-import pathlib
-import sys
-
-path = pathlib.Path(sys.argv[1])
-parts = sys.argv[2].split(".")
-data = json.loads(path.read_text(encoding="utf-8"))
-for part in parts:
-    data = data[part]
-print(data)
-PY
-}
-
-write_manifest() {
-  local orchestration_sha="$1"
-  local backend_sha="$2"
-  local frontend_sha="$3"
-  local ai_sha="$4"
-  local app_sha="$5"
-  local eyetracking_sha="$6"
-
-  python3 - "$AGGREGATE_DIR/$MANIFEST" \
-    "$orchestration_sha" \
-    "$backend_sha" \
-    "$frontend_sha" \
-    "$ai_sha" \
-    "$app_sha" \
-    "$eyetracking_sha" <<'PY'
-import json
-import pathlib
-import sys
-
-path = pathlib.Path(sys.argv[1])
-names = ("backend", "frontend", "ai", "app", "eyetracking")
-commits = sys.argv[3:8]
-data = {
-    "schemaVersion": 1,
-    "orchestration": {
-        "repository": "https://github.com/iRead-B105/iRead.git",
-        "ref": "develop",
-        "commit": sys.argv[2],
-    },
-    "services": {
-        name: {
-            "repository": f"https://github.com/iRead-B105/iRead-{name}.git",
-            "path": f"services/{name}",
-            "commit": commit,
-        }
-        for name, commit in zip(names, commits, strict=True)
-    },
-}
-path.write_text(
-    json.dumps(data, ensure_ascii=False, indent=2) + "\n",
-    encoding="utf-8",
-)
-PY
-}
-
-commit_if_needed() {
-  local message="$1"
-
-  git -C "$AGGREGATE_DIR" add --all
-  if ! git -C "$AGGREGATE_DIR" diff --cached --quiet; then
-    git -C "$AGGREGATE_DIR" commit -m "$message"
-  fi
-}
-
-sync_orchestration_snapshot() {
-  local orchestration_sha="$1"
-
-  rm -rf -- "$SNAPSHOT_DIR"
-  mkdir -p "$SNAPSHOT_DIR"
-  git -C "$AGGREGATE_DIR" archive "$orchestration_sha" \
-    | tar -x -C "$SNAPSHOT_DIR"
-  rsync -a --delete \
-    --exclude='/.git/' \
-    --exclude='/.gitmodules' \
-    --exclude="/$MANIFEST" \
-    --exclude='/services/' \
-    "$SNAPSHOT_DIR/" "$AGGREGATE_DIR/"
-}
-
-assert_fast_forward() {
-  local name="$1"
-  local previous_sha="$2"
-  local next_sha="$3"
-
-  if ! git -C "$AGGREGATE_DIR" merge-base \
-    --is-ancestor "$previous_sha" "$next_sha"; then
-    echo "$name moved non-fast-forward: $previous_sha -> $next_sha" >&2
-    exit 1
-  fi
-}
-
-merge_service() {
-  local name="$1"
-  local path="$2"
-  local previous_sha="$3"
-  local next_sha="$4"
-
-  if [[ "$previous_sha" == "$next_sha" ]]; then
-    return
-  fi
-  assert_fast_forward "$name" "$previous_sha" "$next_sha"
-  git -C "$AGGREGATE_DIR" merge \
-    --strategy=ours \
-    --no-ff \
-    "$next_sha" \
-    -m "chore(mirror): $name $next_sha 이력 연결"
-
-  rm -rf -- "$AGGREGATE_DIR/$path"
-  mkdir -p "$AGGREGATE_DIR/$path"
-  git -C "$AGGREGATE_DIR" archive "$next_sha" \
-    | tar -x -C "$AGGREGATE_DIR/$path"
-  commit_if_needed "chore(mirror): $name $next_sha 파일 반영"
-}
-
-bootstrap_monorepo() {
-  local orchestration_sha="$1"
-  shift
-  local service_shas=("$@")
-
-  git -C "$AGGREGATE_DIR" merge \
-    --strategy=ours \
-    --allow-unrelated-histories \
-    --no-ff \
-    "$orchestration_sha" \
-    -m "chore(mirror): orchestration 이력 연결"
-
-  sync_orchestration_snapshot "$orchestration_sha"
-  commit_if_needed "chore(mirror): orchestration 루트 구조 반영"
-
-  local index
-  for index in "${!SERVICE_NAMES[@]}"; do
-    local name="${SERVICE_NAMES[$index]}"
-    local path="${SERVICE_PATHS[$name]}"
-    local sha="${service_shas[$index]}"
-    git -C "$AGGREGATE_DIR" subtree add \
-      --prefix="$path" \
-      "$sha" \
-      -m "chore(mirror): $name 이력 편입"
-  done
-}
-
 git_auth clone \
   --branch "$TARGET_BRANCH" \
   --single-branch \
   "$GITLAB_REPOSITORY_URL" \
   "$AGGREGATE_DIR"
 git -C "$AGGREGATE_DIR" remote set-url origin "$GITLAB_REPOSITORY_URL"
-git -C "$AGGREGATE_DIR" config user.name "iRead GitLab Mirror"
+git -C "$AGGREGATE_DIR" config user.name "iRead GitLab Projection"
 git -C "$AGGREGATE_DIR" config user.email \
-  "iread-gitlab-mirror@users.noreply.github.com"
+  "iread-gitlab-projection@users.noreply.github.com"
+readonly ORIGINAL_MAIN_SHA="$(
+  git -C "$AGGREGATE_DIR" rev-parse "$TARGET_BRANCH"
+)"
+
+fetch_notes_if_present refs/notes/iread-source-state
+fetch_notes_if_present refs/notes/iread-source-map
 
 fetch_source orchestration "$ORCHESTRATION_URL"
 for name in "${SERVICE_NAMES[@]}"; do
@@ -289,41 +155,48 @@ for name in "${SERVICE_NAMES[@]}"; do
   )")
 done
 
-if [[ ! -f "$AGGREGATE_DIR/$MANIFEST" ]]; then
-  bootstrap_monorepo "$ORCHESTRATION_SHA" "${SERVICE_SHAS[@]}"
-else
-  readonly PREVIOUS_ORCHESTRATION_SHA="$(
-    manifest_value orchestration.commit
-  )"
-  if [[ "$PREVIOUS_ORCHESTRATION_SHA" != "$ORCHESTRATION_SHA" ]]; then
-    assert_fast_forward \
-      orchestration \
-      "$PREVIOUS_ORCHESTRATION_SHA" \
-      "$ORCHESTRATION_SHA"
-  fi
-
-  for index in "${!SERVICE_NAMES[@]}"; do
-    name="${SERVICE_NAMES[$index]}"
-    merge_service \
-      "$name" \
-      "${SERVICE_PATHS[$name]}" \
-      "$(manifest_value "services.$name.commit")" \
-      "${SERVICE_SHAS[$index]}"
-  done
-
-  if [[ "$PREVIOUS_ORCHESTRATION_SHA" != "$ORCHESTRATION_SHA" ]]; then
-    git -C "$AGGREGATE_DIR" merge \
-      --strategy=ours \
-      --no-ff \
-      "$ORCHESTRATION_SHA" \
-      -m "chore(mirror): orchestration $ORCHESTRATION_SHA 이력 연결"
-  fi
-
-  sync_orchestration_snapshot "$ORCHESTRATION_SHA"
+declare -a PROJECT_ARGS=(
+  --repo "$AGGREGATE_DIR"
+  --orchestration "$ORCHESTRATION_SHA"
+)
+for index in "${!SERVICE_NAMES[@]}"; do
+  PROJECT_ARGS+=(
+    "--${SERVICE_NAMES[$index]}"
+    "${SERVICE_SHAS[$index]}"
+  )
+done
+if [[ "$REBUILD_HISTORY" == "true" ]]; then
+  PROJECT_ARGS+=(--rebuild)
 fi
 
-write_manifest "$ORCHESTRATION_SHA" "${SERVICE_SHAS[@]}"
-commit_if_needed \
-  "chore(mirror): orchestration 통합 상태 $ORCHESTRATION_SHA 반영"
+set +e
+python3 "$SCRIPT_DIR/project_gitlab_history.py" "${PROJECT_ARGS[@]}"
+readonly projection_status=$?
+set -e
+if [[ $projection_status -eq 3 ]]; then
+  echo "Projection migration is pending; leaving GitLab main unchanged."
+  exit 0
+fi
+if [[ $projection_status -ne 0 ]]; then
+  exit "$projection_status"
+fi
 
-git_auth -C "$AGGREGATE_DIR" push origin "$TARGET_BRANCH:$TARGET_BRANCH"
+declare -a PUSH_ARGS=(
+  --atomic
+  origin
+  "HEAD:refs/heads/$TARGET_BRANCH"
+  "+refs/notes/iread-source-state:refs/notes/iread-source-state"
+  "+refs/notes/iread-source-map:refs/notes/iread-source-map"
+)
+if [[ "$REBUILD_HISTORY" == "true" ]]; then
+  PUSH_ARGS=(
+    --atomic
+    "--force-with-lease=refs/heads/$TARGET_BRANCH:$ORIGINAL_MAIN_SHA"
+    origin
+    "HEAD:refs/heads/$TARGET_BRANCH"
+    "+refs/notes/iread-source-state:refs/notes/iread-source-state"
+    "+refs/notes/iread-source-map:refs/notes/iread-source-map"
+  )
+fi
+
+git_auth -C "$AGGREGATE_DIR" push "${PUSH_ARGS[@]}"
