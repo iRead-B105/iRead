@@ -3,12 +3,12 @@ type: Implementation Backlog
 title: "Backend·Frontend 구현 백로그"
 description: "AI server를 제외한 Backend와 교수자 Frontend·아동 App 구현 작업, 우선순위와 의존성을 관리합니다."
 tags: [planning, implementation, backend, frontend, app, demo]
-timestamp: 2026-07-25T00:00:00+09:00
+timestamp: 2026-07-26T00:00:00+09:00
 ---
 # Backend·Frontend 구현 백로그
 
 - 상태: active
-- 최종 검토일: 2026-07-25
+- 최종 검토일: 2026-07-26
 - 적용 범위: `services/backend`, `services/frontend`, `services/app`
 - 계약 기준: [OpenAPI](../../contracts/openapi/index.md), [MySQL 스키마](../../contracts/database/index.md), [기능 카탈로그](../product/features/catalog/index.md)
 
@@ -29,7 +29,7 @@ timestamp: 2026-07-25T00:00:00+09:00
 | ID | 우선순위 | 작업 | 계약·영역 | 선행 작업 | 상태 |
 | --- | --- | --- | --- | --- | --- |
 | BE-001 | P0 | Flyway V1과 엔티티 매핑 기준선 확정 | MySQL 24개 테이블, `training_contents`, `test_questions` | 없음 | done |
-| BE-002 | P0 | Admin·App 인증 API를 Auth OpenAPI 10개 operation에 맞춤 | `auth-api.yaml` | BE-001 | in-progress |
+| BE-002 | P0 | Admin·App 인증 API를 Auth OpenAPI 10개 operation에 맞춤 | `auth-api.yaml` | BE-001 | done |
 | BE-003 | P0 | 역할과 리소스 소유권 검증 및 민감정보 로그 차단 | 인증, 학생·보고서·훈련 접근 | BE-002 | in-progress |
 | BE-004 | P0 | 교수자·학생 관리 API 계약 정합화 | Admin `teacher`, `student` 12개 operation | BE-002, BE-003 | in-progress |
 | BE-005 | P0 | 관리자 훈련·검사 API 계약 정합화 | Admin `training`, `test` 중 시선 조회를 제외한 13개 operation | BE-001, BE-004 | in-progress |
@@ -61,7 +61,23 @@ timestamp: 2026-07-25T00:00:00+09:00
 - 토큰, 비밀번호, 이름, 연락처, 음성 파일 경로·URL과 요청 본문을 로그에 기록하지 않는다.
 - 빈 MySQL에서 Flyway V1과 비식별 seed로 동일한 데모 상태를 만들 수 있다.
 - `demo` profile은 `services/ai` 실행 없이 동일 입력에 동일한 결과를 반환한다.
-- 작업별 테스트·빌드 실행은 사용자가 명시적으로 요청한 경우에만 수행하고 결과를 기록한다.
+- 작업별 관련 테스트 코드를 추가·수정하고 테스트 성공을 확인한 뒤 결과를 기록한다.
+
+### 2026-07-26 BE-002 완료
+
+- Auth OpenAPI의 Admin 6개·App 4개 operation을 구현하고 기존 HTTP session 인증을 audience 분리 JWT 인증으로 교체했다.
+- Access token은 Admin 15분, 학습 App 15분, 아동 선택용 bootstrap token 5분으로 발급하며 refresh token은 14일 동안 유효하다.
+- Refresh token 원문은 HttpOnly cookie로만 전달하고 MySQL에는 SHA-256 해시를 저장하며 rotation 시 이전 세션을 폐기한다.
+- 로그아웃한 access token은 `jti` 기반 폐기 목록으로 남은 유효 시간 동안 재사용을 차단한다.
+- MVP demo 비밀번호 재설정은 `AUTH_DEMO_VERIFICATION_CODE` 환경변수를 사용하며 외부 메일 발송은 범위에서 제외한다.
+- `teachers.login_id`, `auth_refresh_sessions`, `auth_revoked_access_tokens`를 Flyway V2와 계약 SQL·ERD에 동기화했다.
+- 인증 서비스·JWT·refresh rotation 테스트 12개를 추가하고 Backend 전체 테스트를 실행했다.
+- `.\gradlew.bat test --rerun-tasks`: 68개 중 일반 테스트 67개 성공, opt-in MySQL 통합 테스트 1개 skip, 실패 0개.
+- MySQL 8.4.10에서 `MySqlFlywayIntegrationTest`를 별도 실행해 Flyway V1·V2, 26개 애플리케이션 테이블과 JPA mapping validation 성공을 확인했다.
+- `python -m unittest tools.tests.test_validate_contracts`: 1개 성공.
+- `python tools/validate_contracts.py`: 81 operations, 334 features, 26 MySQL tables, 27 foreign keys 검증 성공.
+- `python tools/validate_harness.py`: 82 Markdown files, 63 OKF concepts, 92 explicit open markers 검증 성공.
+- 별도 린트·정적 분석은 구성된 명령이 없어 실행하지 않았다.
 
 ## Frontend TODO
 
@@ -89,7 +105,7 @@ timestamp: 2026-07-25T00:00:00+09:00
 - 교수자 Frontend와 아동 App의 토큰·환경변수·API URL을 소스에 하드코딩하지 않는다.
 - 아동 App은 마이크·시선 장치 권한 거부와 장치 미지원 상태를 사용자에게 설명한다.
 - `services/ai` 없이 Backend `demo` profile만으로 핵심 시나리오를 시연할 수 있다.
-- 작업별 테스트·빌드 실행은 사용자가 명시적으로 요청한 경우에만 수행하고 결과를 기록한다.
+- 작업별 관련 테스트 코드를 추가·수정하고 테스트 성공을 확인한 뒤 결과를 기록한다.
 
 ## 구현 순서
 
@@ -105,5 +121,6 @@ timestamp: 2026-07-25T00:00:00+09:00
 - 이 문서는 서비스 간 우선순위, 의존성과 상태의 기준 문서다.
 - 세부 구현이 한 번에 검토하기 어려우면 [작업 템플릿](../templates/task.md)으로 별도 계획을 작성하거나 해당 서비스 저장소의 GitHub Issue에 연결한다.
 - 상태를 변경할 때 구현 PR 또는 커밋, 검증 결과와 남은 차단 요인을 함께 기록한다.
+- 구현과 필수 테스트가 모두 완료되고 테스트 결과가 기록된 뒤에만 상태를 `done`으로 변경한다.
 - OpenAPI나 MySQL 계약 변경이 필요하면 구현에서 임의로 우회하지 않고 iRead 계약을 먼저 수정한다.
 - 제품 탐색과 MVP 결정은 [제품 탐색 백로그](backlog.md)에서 별도로 관리한다.

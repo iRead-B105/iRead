@@ -360,7 +360,8 @@
           "LG-PW-03",
           "LG-PW-01"
         ],
-        "description": "loginId와 email 일치 확인 후 일회용 검증 코드를 사용하여 비밀번호 재설정",
+        "description": "loginId와 email 일치 확인 후 MVP demo 환경변수로 설정한 검증 코드를 사용하여 비밀번호 재설정. 외부 메일 발송과 운영용 일회용 코드 수명 주기 관리는 데모 범위에서 제외",
+        "x-demo-implementation": "AUTH_DEMO_VERIFICATION_CODE 환경변수와 상수 시간 비교를 사용하며 코드는 저장소와 로그에 기록하지 않음",
         "x-notion-request-summary": "loginId(body)\nemail(body)\nverificationCode(body)\nnewPassword(body)",
         "x-notion-response-summary": "verificationStatus\nresetStatus",
         "x-review-status": "reviewed",
@@ -381,7 +382,7 @@
                   },
                   "verificationCode": {
                     "type": "string",
-                    "description": "만료 시간이 있는 일회용 검증 코드"
+                    "description": "MVP demo 환경변수로 설정한 검증 코드"
                   },
                   "newPassword": {
                     "type": "string",

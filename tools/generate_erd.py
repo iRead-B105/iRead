@@ -103,7 +103,7 @@ def render_erd(sql: str) -> str:
         "# MySQL ERD",
         "",
         "- 상태: generated",
-        "- 기준 원본: [Backend Flyway V1](../../services/backend/src/main/resources/db/migration/V1__baseline_schema.sql)",
+        "- 기준 원본: [Backend Flyway migrations](../../services/backend/src/main/resources/db/migration/)",
         "- 검토용 미러: [schema.sql](schema.sql)",
         "- 생성 명령: `python tools/generate_erd.py`",
         "",

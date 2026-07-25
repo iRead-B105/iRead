@@ -8,7 +8,7 @@ timestamp: 2026-07-25T00:00:00+09:00
 # MySQL ERD
 
 - 상태: generated
-- 기준 원본: [Backend Flyway V1](../../services/backend/src/main/resources/db/migration/V1__baseline_schema.sql)
+- 기준 원본: [Backend Flyway migrations](../../services/backend/src/main/resources/db/migration/)
 - 검토용 미러: [schema.sql](schema.sql)
 - 생성 명령: `python tools/generate_erd.py`
 
@@ -152,6 +152,7 @@ erDiagram
     }
     teachers {
         BIGINT id PK "required"
+        VARCHAR_50 login_id "required"
         VARCHAR_50 email "required"
         VARCHAR_100 password "required"
         VARCHAR_10 name "required"
@@ -159,6 +160,21 @@ erDiagram
         TIMESTAMP created_at "required"
         VARCHAR_10 gender "nullable"
         VARCHAR_255 image_url "nullable"
+    }
+    auth_refresh_sessions {
+        BIGINT id PK "required"
+        BIGINT teacher_id FK "required"
+        BIGINT student_id FK "nullable"
+        VARCHAR_30 audience "required"
+        CHAR_64 token_hash "required"
+        TIMESTAMP expires_at "required"
+        TIMESTAMP revoked_at "nullable"
+        TIMESTAMP created_at "required"
+    }
+    auth_revoked_access_tokens {
+        CHAR_36 token_id PK "required"
+        TIMESTAMP expires_at "required"
+        TIMESTAMP revoked_at "required"
     }
     story_lines {
         BIGINT id PK "required"
@@ -230,6 +246,8 @@ erDiagram
         DECIMAL_5_2 accuracy "nullable"
     }
     teachers ||--o{ students : "teacher_id"
+    teachers ||--o{ auth_refresh_sessions : "teacher_id"
+    students o|--o{ auth_refresh_sessions : "student_id"
     curriculum_units ||--o{ training_templates : "curriculum_unit_id"
     words ||--o{ word_categories : "word_id"
     trainings ||--o{ training_contents : "training_id"

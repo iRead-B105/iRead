@@ -156,6 +156,7 @@ CREATE TABLE `videos` (
 
 CREATE TABLE `teachers` (
 	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
+	`login_id`	varchar(50)	NOT NULL	COMMENT 'unique',
 	`email`	varchar(50)	NOT NULL	COMMENT 'unique',
 	`password`	varchar(100)	NOT NULL,
 	`name`	varchar(10)	NOT NULL	COMMENT '실명',
@@ -163,6 +164,23 @@ CREATE TABLE `teachers` (
 	`created_at`	timestamp	NOT NULL	COMMENT '생성일',
 	`gender`	varchar(10)	NULL	COMMENT 'Enum',
 	`image_url`	varchar(255)	NULL
+);
+
+CREATE TABLE `auth_refresh_sessions` (
+	`id`	bigint	NOT NULL	AUTO_INCREMENT	PRIMARY KEY,
+	`teacher_id`	bigint	NOT NULL,
+	`student_id`	bigint	NULL,
+	`audience`	varchar(30)	NOT NULL	COMMENT 'ADMIN or LEARNING',
+	`token_hash`	char(64)	NOT NULL,
+	`expires_at`	timestamp	NOT NULL,
+	`revoked_at`	timestamp	NULL,
+	`created_at`	timestamp	NOT NULL
+);
+
+CREATE TABLE `auth_revoked_access_tokens` (
+	`token_id`	char(36)	NOT NULL	PRIMARY KEY,
+	`expires_at`	timestamp	NOT NULL,
+	`revoked_at`	timestamp	NOT NULL
 );
 
 CREATE TABLE `story_lines` (
@@ -245,7 +263,11 @@ CREATE TABLE `tests` (
 );
 
 ALTER TABLE `teachers`
+	ADD CONSTRAINT `UK_TEACHERS_LOGIN_ID` UNIQUE (`login_id`),
 	ADD CONSTRAINT `UK_TEACHERS_EMAIL` UNIQUE (`email`);
+
+ALTER TABLE `auth_refresh_sessions`
+	ADD CONSTRAINT `UK_AUTH_REFRESH_SESSIONS_TOKEN_HASH` UNIQUE (`token_hash`);
 
 ALTER TABLE `words`
 	ADD CONSTRAINT `UK_WORDS_CONTENT` UNIQUE (`content`);
@@ -298,6 +320,12 @@ ALTER TABLE `gaze_sessions`
 ALTER TABLE `students`
 	ADD CONSTRAINT `FK_STUDENTS_TEACHER`
 		FOREIGN KEY (`teacher_id`) REFERENCES `teachers` (`id`);
+
+ALTER TABLE `auth_refresh_sessions`
+	ADD CONSTRAINT `FK_AUTH_REFRESH_SESSIONS_TEACHER`
+		FOREIGN KEY (`teacher_id`) REFERENCES `teachers` (`id`),
+	ADD CONSTRAINT `FK_AUTH_REFRESH_SESSIONS_STUDENT`
+		FOREIGN KEY (`student_id`) REFERENCES `students` (`id`);
 
 ALTER TABLE `training_templates`
 	ADD CONSTRAINT `FK_TRAINING_TEMPLATES_CURRICULUM_UNIT`
