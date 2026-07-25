@@ -56,7 +56,8 @@ GitLab `main`의 `services/*`는 mirror 결과이므로 직접 수정하지 않�
 ## 이력 보존
 
 - GitLab `main`에는 GitHub 작업 commit을 monorepo 경로로 1:1 투영한다.
-- 투영 commit은 원본의 메시지, 작성자와 작성 시각을 유지한다.
+- 투영 commit은 원본의 메시지, 작성자 이름과 작성 시각을 유지한다.
+- `156529176+2hnK@users.noreply.github.com` 작성자 이메일은 GitLab 프로필 연결을 위해 `kimgh921@gmail.com`으로 투영한다.
 - `.gitmodules`나 gitlink만 바꿔 GitLab 파일 차이가 없는 원본 commit도 빈 projection commit으로 보존한다.
 - 파일 경로와 부모가 달라지므로 투영 commit SHA는 원본과 다르다.
 - `chore(mirror)` 전용 commit은 생성하지 않는다.

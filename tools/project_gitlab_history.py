@@ -18,6 +18,9 @@ from pathlib import Path
 STATE_NOTES_REF = "iread-source-state"
 MAP_NOTES_REF = "iread-source-map"
 SERVICE_ORDER = ("backend", "frontend", "ai", "app", "eyetracking")
+AUTHOR_EMAIL_ALIASES = {
+    "156529176+2hnk@users.noreply.github.com": "kimgh921@gmail.com",
+}
 
 
 @dataclass(frozen=True)
@@ -232,6 +235,10 @@ def metadata(repo: Path, commit: str) -> CommitMetadata:
     return CommitMetadata(*parts)
 
 
+def projected_author_email(source_email: str) -> str:
+    return AUTHOR_EMAIL_ALIASES.get(source_email.casefold(), source_email)
+
+
 def commit_projection(
     repo: Path,
     source: Source,
@@ -249,7 +256,9 @@ def commit_projection(
     commit_env.update(
         {
             "GIT_AUTHOR_NAME": source_metadata.author_name,
-            "GIT_AUTHOR_EMAIL": source_metadata.author_email,
+            "GIT_AUTHOR_EMAIL": projected_author_email(
+                source_metadata.author_email
+            ),
             "GIT_AUTHOR_DATE": source_metadata.author_date,
             "GIT_COMMITTER_NAME": source_metadata.committer_name,
             "GIT_COMMITTER_EMAIL": source_metadata.committer_email,
