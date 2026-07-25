@@ -3,13 +3,13 @@ type: Contract Alignment
 title: "Backend 엔티티와 MySQL 계약 정합화"
 description: "Backend 최신 엔티티와 검토용 MySQL 스키마의 차이, migration 적용 순서와 결정 항목을 정리합니다."
 tags: [contracts, backend, mysql, migration, alignment]
-timestamp: 2026-07-24T00:00:00+09:00
+timestamp: 2026-07-26T00:00:00+09:00
 ---
 # Backend 엔티티와 MySQL 계약 정합화
 
 - 상태: active
 - 비교 기준: Backend `origin/develop` `7d0e441`, `contracts/database/schema.sql`
-- 최종 검토일: 2026-07-24
+- 최종 검토일: 2026-07-26
 
 ## 결론
 
@@ -44,3 +44,12 @@ timestamp: 2026-07-24T00:00:00+09:00
 - 이번 V1은 신규·빈 데이터베이스 기준이다.
 - 확인 당시 Docker의 `iread-mysql` 컨테이너와 관련 볼륨은 없었고, 호스트 MySQL에도 `iread` 스키마가 없어 변환할 로컬 개발 데이터가 없었다.
 - 다른 환경에 기존 스키마나 `story_choices` 데이터가 있다면 V1을 직접 적용하지 않고 별도의 baseline 및 데이터 변환 migration을 먼저 작성해야 한다.
+
+## V2 인증 계약 정합화
+
+- 변경 이유: Auth OpenAPI의 이메일과 분리된 `loginId`, Admin·학습 앱 refresh token rotation과 로그아웃 access token 폐기를 구현한다.
+- `teachers.login_id`, `auth_refresh_sessions`, `auth_revoked_access_tokens`를 추가한다.
+- 기존 교수자의 초기 `login_id`는 고유성이 보장된 현재 이메일로 채운 뒤 `NOT NULL`, `UNIQUE`를 적용한다.
+- refresh token 원문은 저장하지 않고 SHA-256 해시만 저장한다.
+- 실행 migration은 Backend `V2__auth_jwt_contract.sql`, 누적 검토용 DDL은 `schema.sql`이다.
+- MySQL 8.4 적용 검증은 실행하지 않았다. 소스 검증은 사용자가 명시적으로 요청한 경우에만 수행한다.

@@ -29,7 +29,7 @@ timestamp: 2026-07-25T00:00:00+09:00
 | ID | 우선순위 | 작업 | 계약·영역 | 선행 작업 | 상태 |
 | --- | --- | --- | --- | --- | --- |
 | BE-001 | P0 | Flyway V1과 엔티티 매핑 기준선 확정 | MySQL 24개 테이블, `training_contents`, `test_questions` | 없음 | done |
-| BE-002 | P0 | Admin·App 인증 API를 Auth OpenAPI 10개 operation에 맞춤 | `auth-api.yaml` | BE-001 | in-progress |
+| BE-002 | P0 | Admin·App 인증 API를 Auth OpenAPI 10개 operation에 맞춤 | `auth-api.yaml` | BE-001 | done |
 | BE-003 | P0 | 역할과 리소스 소유권 검증 및 민감정보 로그 차단 | 인증, 학생·보고서·훈련 접근 | BE-002 | in-progress |
 | BE-004 | P0 | 교수자·학생 관리 API 계약 정합화 | Admin `teacher`, `student` 12개 operation | BE-002, BE-003 | in-progress |
 | BE-005 | P0 | 관리자 훈련·검사 API 계약 정합화 | Admin `training`, `test` 중 시선 조회를 제외한 13개 operation | BE-001, BE-004 | in-progress |
@@ -62,6 +62,16 @@ timestamp: 2026-07-25T00:00:00+09:00
 - 빈 MySQL에서 Flyway V1과 비식별 seed로 동일한 데모 상태를 만들 수 있다.
 - `demo` profile은 `services/ai` 실행 없이 동일 입력에 동일한 결과를 반환한다.
 - 작업별 테스트·빌드 실행은 사용자가 명시적으로 요청한 경우에만 수행하고 결과를 기록한다.
+
+### 2026-07-26 BE-002 완료
+
+- Auth OpenAPI의 Admin 6개·App 4개 operation을 구현하고 기존 HTTP session 인증을 audience 분리 JWT 인증으로 교체했다.
+- Access token은 Admin 15분, 학습 App 15분, 아동 선택용 bootstrap token 5분으로 발급하며 refresh token은 14일 동안 유효하다.
+- Refresh token 원문은 HttpOnly cookie로만 전달하고 MySQL에는 SHA-256 해시를 저장하며 rotation 시 이전 세션을 폐기한다.
+- 로그아웃한 access token은 `jti` 기반 폐기 목록으로 남은 유효 시간 동안 재사용을 차단한다.
+- MVP demo 비밀번호 재설정은 `AUTH_DEMO_VERIFICATION_CODE` 환경변수를 사용하며 외부 메일 발송은 범위에서 제외한다.
+- `teachers.login_id`, `auth_refresh_sessions`, `auth_revoked_access_tokens`를 Flyway V2와 계약 SQL·ERD에 동기화했다.
+- 하네스 검증은 성공했다. 테스트·빌드·린트·정적 분석은 사용자 요청이 없어 실행하지 않았다.
 
 ## Frontend TODO
 

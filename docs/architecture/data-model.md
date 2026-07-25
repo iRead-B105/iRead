@@ -46,6 +46,14 @@ timestamp: 2026-07-24T00:00:00+09:00
 - 보고서 교수자 의견은 `reports.teacher_memo`를 사용하고 생성 시각은 `reports.created_at`을 사용한다.
 - 대표 캐릭터 선택을 위해 `character.is_representative`를 사용한다.
 
+## 인증 세션
+
+- 교수자 로그인 아이디는 `teachers.login_id`에 이메일과 별도로 저장하고 각각 `UNIQUE`로 보호한다.
+- Admin·학습 앱 refresh token 원문은 HttpOnly cookie로만 전달하며 MySQL에는 SHA-256 해시만 저장한다.
+- `auth_refresh_sessions`는 audience, 만료 시각과 폐기 시각을 저장하고 token rotation 시 기존 세션을 폐기한다.
+- 로그아웃한 access token의 `jti`와 만료 시각은 `auth_revoked_access_tokens`에 보관해 남은 유효 시간 동안 재사용을 차단한다.
+- Redis는 MVP 데모 인증의 선행 조건으로 사용하지 않는다. 운영 확장 시 인증 세션 저장소와 폐기 전파 방식을 재검토한다.
+
 ## 음성 데이터
 
 음성 원본은 제한된 데모 환경의 `audio/{studentId}/{dataType}/` 구조에 저장한다. MySQL에는 내부 파일 경로를 API로 노출하지 않으며, 필요한 분석 결과와 메타데이터만 저장한다.
