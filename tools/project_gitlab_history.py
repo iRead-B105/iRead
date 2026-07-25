@@ -243,8 +243,6 @@ def commit_projection(
         replace_service_snapshot(repo, source_commit, source.path)
 
     run(repo, "add", "--all")
-    if run(repo, "diff", "--cached", "--quiet", check=False).returncode == 0:
-        return None
 
     source_metadata = metadata(repo, source_commit)
     commit_env = os.environ.copy()
@@ -261,6 +259,7 @@ def commit_projection(
     run(
         repo,
         "commit",
+        "--allow-empty",
         "--no-gpg-sign",
         "--cleanup=verbatim",
         "--file=-",
