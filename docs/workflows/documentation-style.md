@@ -3,7 +3,7 @@ type: Documentation Standard
 title: "문서 작성 원칙"
 description: "iRead 문서의 어투, 표현, OKF 구조와 검토 기준을 정의합니다."
 tags: [documentation, style, okf, standard]
-timestamp: 2026-07-24T00:00:00+09:00
+timestamp: 2026-07-25T00:00:00+09:00
 ---
 # 문서 작성 원칙
 
@@ -30,6 +30,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 ## OKF 작성 원칙
 
 - 저장소 관리 개념 문서는 Open Knowledge Format v0.1의 YAML frontmatter로 시작한다.
+- 루트 `README.md`는 사람을 위한 프로젝트 소개 문서이므로 OKF 개념 문서에서 제외하고 YAML frontmatter를 사용하지 않는다.
 - `type`, `title`, `description`, `tags`, `timestamp`를 작성하며 `timestamp`는 ISO 8601 형식을 사용한다.
 - 한 파일은 하나의 지속적인 개념을 설명한다.
 - 관련 개념은 일반 Markdown 링크로 연결한다.
