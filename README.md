@@ -1,73 +1,78 @@
----
-type: Repository Overview
-title: "iRead"
-description: "iRead 오케스트레이션 저장소의 목적, 서비스 구성과 주요 문서를 안내합니다."
-tags: [iread, repository, overview]
-timestamp: 2026-07-24T00:00:00+09:00
----
 # iRead
 
 iRead는 난독증 또는 읽기곤란 위험이 있는 초등 저학년 아동을 위한 개인화 읽기 훈련 시스템입니다.
 
-이 저장소는 iRead의 제품 기획, 시스템 아키텍처, 서비스 간 계약과 주요 의사결정을 관리합니다.
+아동이 자신의 읽기 특성과 변화 속도에 맞춰 꾸준히 훈련할 수 있도록 돕고, 보호자와 전문가는 훈련 과정과 변화를 함께 살펴볼 수 있도록 하는 것을 목표로 합니다. 현재는 실제 운영을 목적으로 하지 않는 데모 버전을 개발하고 있습니다.
 
-Backend, Frontend, AI server, 아동 앱, 시선 추적 프로토타입은 별도 저장소로 관리하고 Git submodule로 연결합니다.
+> iRead는 의료적 진단이나 전문가의 판단을 대체하지 않습니다. 아동의 안전과 존엄성, 개인정보 보호를 우선하며 전문가의 읽기 교육과 지원을 보조하는 도구를 지향합니다.
 
-## 서비스 저장소
+## 이 저장소의 역할
 
-| 영역 | 저장소 | 경로 |
+이 저장소는 여러 iRead 서비스가 하나의 제품으로 일관되게 개발되도록 조율하는 오케스트레이션 저장소입니다.
+
+제품 요구사항, 시스템 구조, 서비스 간 API·데이터 계약, 주요 기술 결정과 공통 작업 방식을 이곳에서 관리합니다. 실제 서비스 코드는 독립된 저장소에서 개발하며 `services/` 아래에 Git submodule로 연결합니다.
+
+| 영역 | 역할 | 저장소 |
 | --- | --- | --- |
-| Backend | [iRead-backend](https://github.com/iRead-B105/iRead-backend) | `services/backend` |
-| Frontend | [iRead-frontend](https://github.com/iRead-B105/iRead-frontend) | `services/frontend` |
-| AI server | [iRead-ai](https://github.com/iRead-B105/iRead-ai) | `services/ai` |
-| 아동 앱 | [iRead-app](https://github.com/iRead-B105/iRead-app) | `services/app` |
-| 시선 추적 | [iRead-eyetracking](https://github.com/iRead-B105/iRead-eyetracking) | `services/eyetracking` |
+| Backend | 도메인, API와 데이터베이스 | [iRead-backend](https://github.com/iRead-B105/iRead-backend) |
+| Frontend | 웹 사용자 인터페이스 | [iRead-frontend](https://github.com/iRead-B105/iRead-frontend) |
+| 아동 앱 | 아동용 읽기 훈련 애플리케이션 | [iRead-app](https://github.com/iRead-B105/iRead-app) |
+| AI server | AI 기능 서비스 | [iRead-ai](https://github.com/iRead-B105/iRead-ai) |
+| 시선 추적 | Tobii 기반 시선 수집·보정 프로토타입 | [iRead-eyetracking](https://github.com/iRead-B105/iRead-eyetracking) |
 
-## 주요 문서
+## 저장소 받기
 
-| 목적 | 문서 |
+서비스 저장소까지 한 번에 받으려면 `--recurse-submodules` 옵션을 사용합니다.
+
+```bash
+git clone --recurse-submodules https://github.com/iRead-B105/iRead.git
+cd iRead
+```
+
+이미 이 저장소만 clone했다면 submodule을 별도로 초기화합니다.
+
+```bash
+git submodule update --init --recursive
+```
+
+각 서비스의 실행 방법과 개발 환경은 해당 서비스 디렉터리의 README를 확인해 주세요.
+
+## 프로젝트 문서
+
+| 알고 싶은 내용 | 문서 |
 | --- | --- |
-| 프로젝트 현황 | [프로젝트 컨텍스트](docs/context/project-context.md) |
-| 제품 목표와 범위 | [제품 비전과 범위](docs/product/vision-and-scope.md) |
-| 요구사항 | [제품 요구사항](docs/product/requirements.md) |
-| 시스템 구조 | [시스템 컨텍스트](docs/architecture/system-context.md) |
-| 지식 번들 | [OKF 문서 인덱스](docs/index.md) |
-| 주요 의사결정 | [ADR](docs/decisions/index.md) |
-| 기능·API·DB 계약 | [계약 카탈로그](contracts/catalog.md) |
-| 작업 계획 | [백로그](docs/planning/backlog.md), [실행 계획](plans/index.md) |
+| 제품 목표와 대상 사용자 | [제품 비전과 범위](docs/product/vision-and-scope.md) |
+| 기능 요구사항 | [제품 요구사항](docs/product/requirements.md) |
+| 전체 시스템 구성 | [시스템 컨텍스트](docs/architecture/system-context.md) |
+| 기능·API·데이터베이스 명세 | [계약 카탈로그](contracts/catalog.md) |
+| 주요 기술 결정과 배경 | [ADR 목록](docs/decisions/index.md) |
+| Backend·Frontend 작업 목록 | [구현 백로그](docs/planning/implementation-backlog.md) |
+| 전체 문서 탐색 | [문서 인덱스](docs/index.md) |
 
-## 기술 스택
+## 기술 구성
 
-| 영역 | 기준선 |
+| 영역 | 기술 |
 | --- | --- |
-| Backend | Spring Boot 4.0.7, Java 21, Gradle Groovy DSL |
+| Backend | Spring Boot 4.0.7, Java 21, Gradle |
 | Frontend | Vue 3, TypeScript, Vite, pnpm |
 | AI server | FastAPI, Python 3.12, uv |
-| 아동 앱 | [TBD] |
-| 시선 추적 | FastAPI, HTML/CSS/JavaScript, C++, Tobii Game Integration SDK |
-| Database | MySQL 8.4.x LTS |
+| Database | MySQL 8.4 LTS |
 | Infrastructure | Redis, Docker Compose |
+| 시선 추적 | FastAPI, JavaScript, C++, Tobii Game Integration SDK |
 
-## 개발 가이드
+아동 앱의 기술 스택과 일부 인프라 역할은 제품 범위에 맞춰 확정할 예정입니다.
 
-- `AGENTS.md`: AI 모델이나 도구에 관계없이 사용하는 단일 범용 지침
-- `PLANS.md`: 긴 작업의 실행 계획 작성 규약
-- `docs/workflows/ai-development.md`: 탐색부터 컨텍스트 갱신까지의 작업 루프
-- `docs/workflows/git-flow.md`: 브랜치, 커밋과 병합 정책
-- `docs/workflows/submodules.md`: submodule clone, 갱신과 참조 관리
-- `docs/workflows/documentation-style.md`: 문서 어투와 표현 원칙
-- `docs/workflows/specification-management.md`: 기능·API·MySQL 명세의 기준 원본과 변경 절차
-- `tools/validate_harness.py`: 필수 문서와 내부 Markdown 링크 검증
-- `tools/validate_contracts.py`: OpenAPI, 기능 추적과 MySQL 스키마 계약 검증
-- `.github/pull_request_template.md`: 내부 팀용 PR 작성 기준
+## 함께 개발하기
 
-## 하네스 검증
+- 서비스 구현은 해당 `services/*` 저장소에서 작업합니다.
+- 공통 요구사항, API·데이터 계약과 주요 결정은 이 저장소에서 관리합니다.
+- 브랜치와 커밋은 [Git 작업 방식](docs/workflows/git-flow.md)을 따릅니다.
+- submodule 갱신 방법은 [submodule 운영 가이드](docs/workflows/submodules.md)를 확인합니다.
+- AI 에이전트는 [AGENTS.md](AGENTS.md)의 저장소 지침을 따릅니다.
 
-Python 3.12 이상에서 다음 명령을 실행합니다.
+문서와 서비스 간 계약을 변경했다면 다음 검사를 실행합니다.
 
 ```bash
 python tools/validate_harness.py
 python tools/validate_contracts.py
 ```
-
-검증은 필수 문서, 내부 링크와 저장소 관리 문서의 OKF frontmatter를 확인합니다. PR과 `main`, `develop` push에서는 GitHub Actions가 같은 검증을 실행합니다.

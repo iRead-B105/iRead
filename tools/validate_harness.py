@@ -75,7 +75,6 @@ ISO_8601_PATTERN = re.compile(
 DATE_HEADING_PATTERN = re.compile(r"^## \d{4}-\d{2}-\d{2}\s*$", re.MULTILINE)
 OKF_REQUIRED_FIELDS = ("type", "title", "description", "tags", "timestamp")
 OKF_ROOT_CONCEPTS = (
-    ROOT / "README.md",
     ROOT / "AGENTS.md",
     ROOT / "PLANS.md",
 )
