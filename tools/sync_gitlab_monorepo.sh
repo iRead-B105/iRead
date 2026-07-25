@@ -293,11 +293,6 @@ else
       orchestration \
       "$PREVIOUS_ORCHESTRATION_SHA" \
       "$ORCHESTRATION_SHA"
-    git -C "$AGGREGATE_DIR" merge \
-      --strategy=ours \
-      --no-ff \
-      "$ORCHESTRATION_SHA" \
-      -m "chore(mirror): orchestration $ORCHESTRATION_SHA 이력 연결"
   fi
 
   for index in "${!SERVICE_NAMES[@]}"; do
@@ -308,6 +303,14 @@ else
       "$(manifest_value "services.$name.commit")" \
       "${SERVICE_SHAS[$index]}"
   done
+
+  if [[ "$PREVIOUS_ORCHESTRATION_SHA" != "$ORCHESTRATION_SHA" ]]; then
+    git -C "$AGGREGATE_DIR" merge \
+      --strategy=ours \
+      --no-ff \
+      "$ORCHESTRATION_SHA" \
+      -m "chore(mirror): orchestration $ORCHESTRATION_SHA 이력 연결"
+  fi
 
   sync_orchestration_snapshot "$ORCHESTRATION_SHA"
 fi
