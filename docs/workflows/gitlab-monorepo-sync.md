@@ -26,7 +26,7 @@ S15P11B105/
     └── eyetracking/
 ```
 
-GitLab에는 `.gitmodules`와 gitlink를 복사하지 않는다. 각 `services/*`에는 orchestration `develop`이 가리키는 실제 서비스 commit의 파일을 subtree로 넣는다.
+GitLab에는 `.gitmodules`와 gitlink를 복사하지 않는다. 각 `services/*`에는 orchestration `develop`이 가리키는 실제 서비스 commit의 파일을 넣는다.
 
 ## 사전 설정
 
@@ -55,11 +55,14 @@ GitLab `main`의 `services/*`는 mirror 결과이므로 직접 수정하지 않�
 
 ## 이력 보존
 
-- 서비스 commit을 squash하지 않고 GitLab `main`의 merge parent로 연결한다.
-- 연결한 commit의 파일 스냅샷을 해당 `services/*` 경로에 반영한다.
+- GitLab `main`에는 GitHub 작업 commit을 monorepo 경로로 1:1 투영한다.
+- 투영 commit은 원본의 메시지, 작성자와 작성 시각을 유지한다.
+- 파일 경로와 부모가 달라지므로 투영 commit SHA는 원본과 다르다.
+- `chore(mirror)` 전용 commit은 생성하지 않는다.
 - 원본 branch는 `upstream/<repository>/<branch>`로 보존한다.
 - 원본 tag는 `upstream/<repository>/<tag>`로 보존한다.
-- 동기화 상태는 GitLab 루트 `.gitlab-source-revisions.json`에서 확인한다.
+- 원본 SHA와 투영 SHA의 대응은 `refs/notes/iread-source-map`에 기록한다.
+- 동기화 상태는 `refs/notes/iread-source-state`에 기록한다.
 - 원본 commit이 non-fast-forward로 이동하면 자동 반영하지 않고 workflow를 실패시킨다.
 
 예시는 다음과 같다.
@@ -73,9 +76,11 @@ upstream/app/develop
 upstream/eyetracking/develop
 ```
 
-## 첫 실행
+## 이력 재구성
 
-첫 실행은 기존 GitLab의 `iRead-*` 루트 디렉터리를 orchestration 루트와 `services/*` 구조로 전환하는 일반 commit을 만든다. 기존 GitLab commit을 force push로 덮어쓰지 않는다. 이후 실행부터 manifest의 commit과 최신 gitlink를 비교해 변경된 서비스만 이력을 연결하고 파일 스냅샷을 갱신한다.
+기존 mirror 이력에서 projection 이력으로 전환할 때만 GitHub Actions의 수동 실행에서 `rebuild_history`를 활성화한다. 이 실행은 현재 GitLab `main`을 원본 작업 commit의 1:1 projection 이력으로 교체한다. 일반 자동·예약·수동 실행은 force push하지 않고 기존 projection 이력에 새 작업 commit만 fast-forward로 추가한다.
+
+projection 상태 note가 없는 동안 일반 실행은 GitLab `main`을 변경하지 않고 성공 종료한다. 따라서 이력 교체는 `rebuild_history`를 명시한 수동 실행에서만 발생한다.
 
 ## 장애 처리
 
@@ -85,4 +90,5 @@ upstream/eyetracking/develop
 - push 권한 오류: GitLab token 역할과 보호 branch 허용 대상을 확인한다.
 - `Expected submodule gitlink`: 해당 서비스가 orchestration `develop`에 submodule로 병합됐는지 확인한다.
 - `moved non-fast-forward`: upstream force push 또는 gitlink 되돌림을 확인하고 자동 동기화를 재개하기 전에 이력을 검토한다.
+- `Projection state is absent`: 수동 실행에서 `rebuild_history`를 활성화해 최초 projection 이력을 생성한다.
 - GitLab `main` 직접 변경: 원본 GitHub 저장소로 옮기고 orchestration gitlink를 갱신한다.
