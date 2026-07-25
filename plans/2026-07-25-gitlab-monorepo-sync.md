@@ -7,7 +7,7 @@ timestamp: 2026-07-25T00:00:00+09:00
 ---
 # GitLab 단일 저장소 동기화 도입
 
-- 상태: active
+- 상태: completed
 - 작성일: 2026-07-25
 - 수정일: 2026-07-25
 
@@ -18,14 +18,14 @@ GitHub의 독립 저장소와 submodule 개발 방식을 유지하면서 GitLab 
 ## 구현
 
 - [x] `iRead-eyetracking`을 `services/eyetracking` submodule로 등록한다.
-- [x] squash 없는 subtree 동기화 스크립트를 작성한다.
+- [x] 서비스 원본 commit을 merge parent로 연결하고 파일 스냅샷을 동기화하는 스크립트를 작성한다.
 - [x] 원본 branch와 tag를 `upstream/*`에 보존한다.
 - [x] 기존 GitLab 구조를 일반 commit으로 전환하는 bootstrap을 제공한다.
 - [x] `develop` push, 6시간 주기와 수동 실행 workflow를 추가한다.
 - [x] 기존 `Harness Validation` 성공 commit을 자동 동기화의 시작 조건으로 연결한다.
 - [x] 운영 절차와 실패 조건을 문서화한다.
-- [ ] GitHub Actions secret `GITLAB_PUSH_TOKEN`을 등록한다.
-- [ ] workflow를 수동 실행하고 GitLab `main`, branch, tag와 manifest를 확인한다.
+- [x] GitHub Actions secret `GITLAB_PUSH_TOKEN`을 등록한다.
+- [x] workflow를 실행하고 GitLab `main`, branch, tag와 manifest를 확인한다.
 
 ## 완료 조건
 
@@ -35,6 +35,6 @@ GitHub의 독립 저장소와 submodule 개발 방식을 유지하면서 GitLab 
 - manifest commit이 orchestration gitlink와 일치한다.
 - 후속 orchestration `develop` push가 fast-forward 증분 동기화된다.
 
-## 현재 차단 사항
+## 완료 결과
 
-GitHub Actions secret은 저장소 외부 비밀값이므로 사용자가 GitHub 설정에서 직접 등록해야 한다. Secret과 GitLab push 권한을 확인하기 전에는 실제 동기화를 실행하지 않는다.
+Repository Secret과 GitLab push 권한을 확인했고, orchestration과 다섯 서비스의 초기 통합 동기화를 완료했다. 후속 서비스 갱신은 원본 commit을 merge parent로 연결한 뒤 파일 스냅샷을 갱신한다.

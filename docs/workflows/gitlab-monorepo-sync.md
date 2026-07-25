@@ -49,12 +49,14 @@ GitLab `main`과 `upstream/*`에 push할 수 있는 권한이 필요하다.
 6. 수동 실행이 필요하면 GitHub Actions에서 `Run workflow`를 사용한다.
 
 서비스 저장소에 push한 것만으로 GitLab 통합 코드가 바뀌지 않는다. orchestration gitlink를 갱신해야 해당 조합이 GitLab `main`에 반영된다.
+GitLab `main`의 `services/*`는 mirror 결과이므로 직접 수정하지 않는다. 직접 수정한 파일은 다음 동기화에서 GitHub 서비스 commit의 스냅샷으로 교체된다.
 
 `Contract Validation`은 계약 관련 파일이 바뀐 push와 PR에서 기존 경로 필터에 따라 별도로 실행한다. GitLab 동기화 workflow는 기존 검증 workflow를 수정하거나 중복 등록하지 않는다.
 
 ## 이력 보존
 
-- subtree 반영에 `--squash`를 사용하지 않는다.
+- 서비스 commit을 squash하지 않고 GitLab `main`의 merge parent로 연결한다.
+- 연결한 commit의 파일 스냅샷을 해당 `services/*` 경로에 반영한다.
 - 원본 branch는 `upstream/<repository>/<branch>`로 보존한다.
 - 원본 tag는 `upstream/<repository>/<tag>`로 보존한다.
 - 동기화 상태는 GitLab 루트 `.gitlab-source-revisions.json`에서 확인한다.
@@ -73,7 +75,7 @@ upstream/eyetracking/develop
 
 ## 첫 실행
 
-첫 실행은 기존 GitLab의 `iRead-*` 루트 디렉터리를 orchestration 루트와 `services/*` 구조로 전환하는 일반 commit을 만든다. 기존 GitLab commit을 force push로 덮어쓰지 않는다. 이후 실행부터 manifest의 commit과 최신 gitlink를 비교해 변경된 서비스만 subtree merge한다.
+첫 실행은 기존 GitLab의 `iRead-*` 루트 디렉터리를 orchestration 루트와 `services/*` 구조로 전환하는 일반 commit을 만든다. 기존 GitLab commit을 force push로 덮어쓰지 않는다. 이후 실행부터 manifest의 commit과 최신 gitlink를 비교해 변경된 서비스만 이력을 연결하고 파일 스냅샷을 갱신한다.
 
 ## 장애 처리
 
@@ -83,4 +85,4 @@ upstream/eyetracking/develop
 - push 권한 오류: GitLab token 역할과 보호 branch 허용 대상을 확인한다.
 - `Expected submodule gitlink`: 해당 서비스가 orchestration `develop`에 submodule로 병합됐는지 확인한다.
 - `moved non-fast-forward`: upstream force push 또는 gitlink 되돌림을 확인하고 자동 동기화를 재개하기 전에 이력을 검토한다.
-- subtree 충돌: GitLab `main`에 직접 변경이 들어갔는지 확인하고 직접 변경을 원본 GitHub 저장소로 옮긴다.
+- GitLab `main` 직접 변경: 원본 GitHub 저장소로 옮기고 orchestration gitlink를 갱신한다.

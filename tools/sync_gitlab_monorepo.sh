@@ -193,7 +193,7 @@ assert_fast_forward() {
   fi
 }
 
-merge_subtree() {
+merge_service() {
   local name="$1"
   local path="$2"
   local previous_sha="$3"
@@ -203,10 +203,17 @@ merge_subtree() {
     return
   fi
   assert_fast_forward "$name" "$previous_sha" "$next_sha"
-  git -C "$AGGREGATE_DIR" subtree merge \
-    --prefix="$path" \
+  git -C "$AGGREGATE_DIR" merge \
+    --strategy=ours \
+    --no-ff \
     "$next_sha" \
-    -m "chore(mirror): $name $next_sha 반영"
+    -m "chore(mirror): $name $next_sha 이력 연결"
+
+  rm -rf -- "$AGGREGATE_DIR/$path"
+  mkdir -p "$AGGREGATE_DIR/$path"
+  git -C "$AGGREGATE_DIR" archive "$next_sha" \
+    | tar -x -C "$AGGREGATE_DIR/$path"
+  commit_if_needed "chore(mirror): $name $next_sha 파일 반영"
 }
 
 bootstrap_monorepo() {
@@ -297,7 +304,7 @@ else
 
   for index in "${!SERVICE_NAMES[@]}"; do
     name="${SERVICE_NAMES[$index]}"
-    merge_subtree \
+    merge_service \
       "$name" \
       "${SERVICE_PATHS[$name]}" \
       "$(manifest_value "services.$name.commit")" \
