@@ -42,16 +42,15 @@ GitLab `main`과 `upstream/*`에 push할 수 있는 권한이 필요하다.
 ## 개발과 동기화
 
 1. 서비스 저장소의 작업 브랜치를 해당 서비스 `develop`에 병합한다.
-2. `Submodule Pointer Update`가 5분 주기로 새 commit을 감지한다.
-3. orchestration의 submodule gitlink를 갱신하는 `develop` 대상 PR을 자동 생성한다.
+2. 서비스 담당자가 orchestration에서 해당 submodule gitlink를 갱신한다.
+3. 포인터 변경 브랜치를 push하고 orchestration `develop` 대상 PR을 생성한다.
 4. 필수 리뷰 인원 0명 정책에 따라 서비스 조합을 확인한 뒤 PR을 병합한다.
 5. `Harness Validation`이 포인터 commit을 검증한다.
 6. 검증이 성공하면 `GitLab Monorepo Sync`가 같은 commit을 자동으로 동기화한다.
-7. 즉시 포인터를 확인하려면 `Submodule Pointer Update`를 수동 실행하고,
-   GitLab 재동기화가 필요하면 `GitLab Monorepo Sync`를 수동 실행한다.
+7. GitLab 재동기화가 필요하면 `GitLab Monorepo Sync`를 수동 실행한다.
 
 서비스 저장소에 push한 것만으로 GitLab 통합 코드가 바뀌지 않는다.
-자동 생성된 포인터 PR을 orchestration `develop`에 병합해야 해당 조합이
+포인터 PR을 orchestration `develop`에 병합해야 해당 조합이
 GitLab `main`에 반영된다.
 GitLab `main`의 `services/*`는 mirror 결과이므로 직접 수정하지 않는다. 직접 수정한 파일은 다음 동기화에서 GitHub 서비스 commit의 스냅샷으로 교체된다.
 
@@ -97,8 +96,6 @@ projection 상태 note가 없는 동안 일반 실행은 GitLab `main`을 변경
 - `Expected submodule gitlink`: 해당 서비스가 orchestration `develop`에 submodule로 병합됐는지 확인한다.
 - `moved non-fast-forward`: upstream force push 또는 gitlink 되돌림을 확인하고 자동 동기화를 재개하기 전에 이력을 검토한다.
 - `Projection state is absent`: 수동 실행에서 `rebuild_history`를 활성화해 최초 projection 이력을 생성한다.
-- 포인터 PR 미생성: `Submodule Pointer Update` 실행 결과와 Actions의
-  `contents: write`, `pull-requests: write` 허용 여부를 확인한다.
-- `Refusing non-fast-forward update`: 서비스 `develop`의 force push 또는
-  포인터 되돌림 여부를 확인하고 자동화를 재실행하기 전에 이력을 검토한다.
+- 포인터 PR 누락: 서비스 `develop`을 병합한 담당자가 orchestration
+  submodule 참조 갱신과 PR 생성을 완료했는지 확인한다.
 - GitLab `main` 직접 변경: 원본 GitHub 저장소로 옮기고 orchestration gitlink를 갱신한다.

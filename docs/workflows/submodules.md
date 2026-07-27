@@ -38,33 +38,33 @@ git submodule update --init --recursive
 
 ## 참조 커밋 갱신
 
-`Submodule Pointer Update`는 5분 주기로 각 서비스의 `develop`과
-orchestration의 gitlink를 비교한다. 새 fast-forward commit이 있으면
-`automation/submodule-pointer-update` 브랜치에 포인터를 갱신하고
-orchestration `develop` 대상 PR을 자동 생성한다.
-
-포인터 PR에는 변경 전후 commit이 표시된다. 필수 리뷰 인원은 0명이므로
-서비스 조합을 확인한 뒤 별도 승인 없이 병합할 수 있다. 포인터 PR을 병합하면
-`Harness Validation`이 실행되고, 검증 성공 후 GitLab `main` 동기화가
-자동으로 이어진다. 예약 실행이 지연될 수 있으므로 즉시 확인해야 할 때는
-GitHub Actions에서 `Submodule Pointer Update`를 수동 실행한다.
-
-자동화는 다음 조건에서 PR을 생성하지 않고 실패한다.
-
-- 새 commit이 서비스 원격 저장소에 존재하지 않는다.
-- 기존 포인터에서 새 `develop` commit으로의 이동이 fast-forward가 아니다.
-- submodule이 초기화되지 않았거나 gitlink 형식이 아니다.
-
-자동화가 실패했을 때만 갱신할 서비스의 `develop`을 fast-forward한 뒤
-오케스트레이션 저장소에서 변경된 참조를 수동으로 커밋한다.
+서비스 저장소의 작업 브랜치를 `develop`에 병합한 담당자가 orchestration
+포인터 갱신 PR까지 생성한다. 다음은 Frontend 갱신 예시다.
 
 ```bash
-git -C services/backend switch develop
-git -C services/backend pull --ff-only
-git add services/backend
+git switch develop
+git pull --ff-only origin develop
+git submodule update --init --recursive
+
+git switch -c chore/update-frontend-pointer
+git -C services/frontend fetch origin develop
+git -C services/frontend switch --detach origin/develop
+
+git add services/frontend
+git diff --cached --submodule=log
+git commit -m "chore(submodule): frontend develop 참조 갱신"
+git push -u origin chore/update-frontend-pointer
 ```
 
-Frontend, AI server, 아동 앱, 시선 추적도 각각 `services/frontend`, `services/ai`, `services/app`, `services/eyetracking` 경로에서 같은 방식으로 갱신한다.
+GitHub에서 `chore/update-frontend-pointer`를 orchestration `develop`에
+병합하는 PR을 생성한다. 필수 리뷰 인원은 0명이므로 변경 전후 commit과
+서비스 조합을 확인한 뒤 병합할 수 있다. 포인터 PR이 병합되면
+`Harness Validation`이 실행되고, 검증 성공 후 GitLab `main` 동기화가
+자동으로 이어진다.
+
+Backend, AI server, 아동 앱, 시선 추적도 각각 `services/backend`,
+`services/ai`, `services/app`, `services/eyetracking` 경로와 서비스 이름에
+맞는 브랜치·commit 메시지를 사용해 같은 방식으로 갱신한다.
 
 submodule 커밋이 원격 저장소에 push되었는지 확인한 뒤 오케스트레이션 저장소의 참조를 push한다. 원격에 없는 커밋을 참조하면 다른 환경에서 clone할 수 없다.
 
