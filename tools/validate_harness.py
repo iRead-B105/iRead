@@ -14,7 +14,6 @@ REQUIRED_FILES = (
     ".gitattributes",
     ".gitmodules",
     ".github/pull_request_template.md",
-    ".github/workflows/update-submodule-pointers.yml",
     ".github/workflows/validate-harness.yml",
     "README.md",
     "AGENTS.md",
@@ -27,9 +26,7 @@ REQUIRED_FILES = (
     "docs/workflows/git-flow.md",
     "contracts/catalog.md",
     "tools/validate_harness.py",
-    "tools/update_submodule_pointers.py",
     "tools/tests/test_validate_harness.py",
-    "tools/tests/test_update_submodule_pointers.py",
 )
 
 LINK_PATTERN = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
