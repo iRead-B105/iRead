@@ -12,6 +12,7 @@ sys.path.insert(0, str(TOOLS))
 
 from validate_harness import (
     adr_index_errors,
+    broken_links,
     record_document_errors,
     repository_markdown_files,
 )
@@ -43,6 +44,24 @@ class HarnessValidationTest(unittest.TestCase):
             self.assertIn("docs/tracked.md", relative)
             self.assertIn("new.md", relative)
             self.assertNotIn(".cache/README.md", relative)
+
+    def test_links_into_unchecked_out_submodules_are_valid(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "contracts/database/erd.md"
+            source.parent.mkdir(parents=True)
+            source.write_text(
+                "[migration](../../services/backend/src/main/resources/db/migration/)\n",
+                encoding="utf-8",
+            )
+            (root / ".gitmodules").write_text(
+                '[submodule "services/backend"]\n'
+                "\tpath = services/backend\n"
+                "\turl = https://example.com/backend.git\n",
+                encoding="utf-8",
+            )
+
+            self.assertEqual([], broken_links([source], root))
 
     def test_frontmatter_is_required_only_for_record_documents(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

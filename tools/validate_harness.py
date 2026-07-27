@@ -30,6 +30,7 @@ REQUIRED_FILES = (
 )
 
 LINK_PATTERN = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
+SUBMODULE_PATH_PATTERN = re.compile(r"^\s*path\s*=\s*(.+?)\s*$", re.MULTILINE)
 ISO_8601_PATTERN = re.compile(
     r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})$"
 )
@@ -65,8 +66,21 @@ def repository_markdown_files(root: Path = ROOT) -> list[Path]:
     )
 
 
+def submodule_directories(root: Path = ROOT) -> list[Path]:
+    gitmodules = root / ".gitmodules"
+    if not gitmodules.is_file():
+        return []
+
+    text = gitmodules.read_text(encoding="utf-8")
+    return [
+        (root / match).resolve()
+        for match in SUBMODULE_PATH_PATTERN.findall(text)
+    ]
+
+
 def broken_links(files: list[Path], root: Path = ROOT) -> list[str]:
     errors: list[str] = []
+    submodules = submodule_directories(root)
     for source in files:
         text = source.read_text(encoding="utf-8")
         for raw_target in LINK_PATTERN.findall(text):
@@ -74,7 +88,11 @@ def broken_links(files: list[Path], root: Path = ROOT) -> list[str]:
             if not target or target.startswith(("http://", "https://", "mailto:")):
                 continue
             resolved = (source.parent / unquote(target)).resolve()
-            if not resolved.exists():
+            inside_submodule = any(
+                resolved == directory or directory in resolved.parents
+                for directory in submodules
+            )
+            if not resolved.exists() and not inside_submodule:
                 errors.append(
                     f"{source.relative_to(root)} -> {raw_target} (target not found)"
                 )
