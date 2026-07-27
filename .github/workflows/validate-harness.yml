@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - ".github/pull_request_template.md"
+      - ".github/workflows/update-submodule-pointers.yml"
       - ".github/workflows/validate-harness.yml"
       - ".gitmodules"
       - "AGENTS.md"
@@ -12,14 +13,22 @@ on:
       - "contracts/**/*.md"
       - "docs/**"
       - "plans/**"
+      - "services/ai"
+      - "services/app"
+      - "services/backend"
+      - "services/eyetracking"
+      - "services/frontend"
       - "tools/validate_harness.py"
+      - "tools/update_submodule_pointers.py"
       - "tools/tests/test_validate_harness.py"
+      - "tools/tests/test_update_submodule_pointers.py"
   push:
     branches:
       - main
       - develop
     paths:
       - ".github/pull_request_template.md"
+      - ".github/workflows/update-submodule-pointers.yml"
       - ".github/workflows/validate-harness.yml"
       - ".gitmodules"
       - "AGENTS.md"
@@ -28,8 +37,15 @@ on:
       - "contracts/**/*.md"
       - "docs/**"
       - "plans/**"
+      - "services/ai"
+      - "services/app"
+      - "services/backend"
+      - "services/eyetracking"
+      - "services/frontend"
       - "tools/validate_harness.py"
+      - "tools/update_submodule_pointers.py"
       - "tools/tests/test_validate_harness.py"
+      - "tools/tests/test_update_submodule_pointers.py"
   workflow_dispatch:
 
 permissions:
@@ -56,8 +72,11 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Test harness validator
-        run: python -m unittest tools.tests.test_validate_harness
+      - name: Test harness tools
+        run: >-
+          python -m unittest
+          tools.tests.test_validate_harness
+          tools.tests.test_update_submodule_pointers
 
       - name: Validate harness
         run: python tools/validate_harness.py
