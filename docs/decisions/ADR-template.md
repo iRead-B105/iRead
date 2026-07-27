@@ -1,13 +1,9 @@
 ---
 type: Template
-title: "ADR 템플릿"
-description: "새로운 아키텍처 결정 기록을 작성할 때 사용하는 OKF 호환 템플릿입니다."
-tags: [template, architecture, adr]
-timestamp: 2026-07-24T00:00:00+09:00
 ---
 # ADR-0000: `<결정 제목>`
 
-이 파일을 복사한 뒤 frontmatter의 `type`을 `Architecture Decision`으로 바꾸고 제목, 설명, 태그와 수정 시각을 실제 값으로 갱신한다.
+이 파일을 복사한 뒤 frontmatter의 `type`을 `Architecture Decision`으로 바꾸고 ID와 제목을 갱신한다.
 
 - 상태: proposed
 - 결정일: YYYY-MM-DD

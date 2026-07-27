@@ -2,6 +2,7 @@
 
 ## 2026-07-27
 
+* **정책 경량화**: [ADR-0012](decisions/ADR-0012-lightweight-harness-policy.md)에 따라 위험 기반 계획·검증, 기록 문서 중심 메타데이터와 Git 추적 파일 기반 하네스 검증을 채택했다.
 * **결정**: [확정 ERD를 단일 V1 기준선으로 채택](decisions/ADR-0011-adopt-approved-erd-baseline.md)하고 기존 미적용 스키마 초안을 대체했다.
 * **정합화**: MySQL 계약, Flyway V1, 확정 ERD 이미지와 생성 ERD를 23개 테이블·31개 외래 키 기준으로 동기화했다.
 * **상태 변경**: 새 ERD와 Backend 엔티티의 차이가 남아 `BE-001`을 `in-progress`로 변경했다.
