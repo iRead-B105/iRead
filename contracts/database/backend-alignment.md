@@ -83,6 +83,6 @@ timestamp: 2026-07-27T00:00:00+09:00
 - `python -m unittest tools.tests.test_validate_contracts`: 3개 성공
 - `python tools/generate_erd.py --check`: 성공
 - `python tools/validate_contracts.py`: 80 operations, 334 features, 23 MySQL tables, 31 foreign keys 검증 성공
-- `python tools/validate_harness.py`: 83 Markdown files, 63 OKF concepts, 92 explicit open markers 검증 성공
+- `python tools/validate_harness.py`: 82 Markdown files, 63 OKF concepts, 92 explicit open markers 검증 성공
 - `.\gradlew.bat test --rerun-tasks`: Java 21 toolchain이 없어 테스트 태스크 시작 전 중단
 - MySQL 실행 검증: 현재 환경에 Docker와 MySQL 클라이언트가 없어 미실행
