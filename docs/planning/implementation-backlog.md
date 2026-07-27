@@ -109,13 +109,13 @@ timestamp: 2026-07-27T00:00:00+09:00
 - `services/frontend` 변경은 롤백했고, 이후 작업은 Backend와 루트의 Backend submodule 포인터·현황 문서로 제한했다.
 - `BE-004`: 교수자 정보와 학생 관리 12개 operation의 경로, 소유권, 목록 검색·나이·최근 학습 필터, 요약, 정확도·읽기 속도 추이, 훈련 이력 기간 필터, 학습 요약과 추천 규칙을 구현했다.
 - 학생 등록·상세는 기존 `birthday`, `guardian`, `guardianContact`, `imageUrl`과 OpenAPI의 `birthDate`, `guardianName`, `guardianPhone`, `profileImage`를 함께 처리한다. 상세의 `studentCode`는 서버의 `studentId` 문자열로 반환하고 배열형 주소 입력도 기존 문자열 컬럼에 호환 저장한다.
-- `[BLOCKED]` `get_admin_student_by_studentId_learning_events`는 `eventId` 하나로 `TEST|TRAINING|STORY|GAZE`를 구분하도록 정의되어 있으나 각 원본 테이블 ID가 겹칠 수 있다. 현재는 완료 훈련 이벤트만 안전하게 조회하며, `eventType` query 추가 또는 통합 학습 이벤트 식별자 도입 결정 전에는 `BE-004`를 `done`으로 변경하지 않는다.
+- `[BLOCKED]` `get_admin_student_by_studentId_learning_events`는 `eventId` 하나로 `TEST|TRAINING|STORY|GAZE`를 구분하도록 정의되어 있으나 각 원본 테이블 ID가 겹칠 수 있다. Backend에는 선택 입력 `eventType`으로 네 유형을 모두 조회하고 생략 시 기존 훈련 조회를 유지하는 호환 구현을 추가했다. `eventType`을 정식 계약으로 확정하거나 통합 학습 이벤트 식별자를 도입하기 전에는 `BE-004`를 `done`으로 변경하지 않는다.
 - `BE-005`: 관리자 훈련·검사 목록 wrapper와 응답 필드, 커리큘럼 상세·수정, 훈련 상세, JSON·CSV 동기 다운로드, 검사 비교 계약을 구현했다.
 - `BE-006`: 보고서 목록·생성·상세·메모·시선 분석 반영과 검사·훈련 시선 결과 조회 계약을 구현했다. 제거된 `student_word_stats` 대신 `word_attempt_logs`를 보고서 기간별로 집계한다.
 - `BE-012`: 관리자 범위의 `400`, `401`, `403`, `404`, `409`, `500` 오류 응답과 입력 검증을 통일했다. Auth·App 전체 범위가 남아 있어 작업 상태는 `in-progress`를 유지한다.
 - 확정 ERD의 검사 커리큘럼, 보고서 기간 timestamp, 시선 원시 데이터, 훈련 정확도, 캐릭터와 이야기 장면 관계를 Backend 엔티티에 반영했다. 엔티티가 생성하는 모든 테이블의 컬럼 집합을 Flyway V1과 비교하는 회귀 테스트를 추가했다.
 - Admin OpenAPI 31개 operation의 경로·HTTP method 회귀 테스트를 추가했다.
-- `.\gradlew.bat test --rerun-tasks`: 114개 중 일반 테스트 113개 성공, opt-in MySQL 통합 테스트 1개 skip, 실패 0개.
+- `.\gradlew.bat test --rerun-tasks`: 115개 중 일반 테스트 114개 성공, opt-in MySQL 통합 테스트 1개 skip, 실패 0개.
 - `python tools/validate_contracts.py`: 80 operations, 334 features, 73 reviewed, 23 MySQL tables, 31 foreign keys 검증 성공.
 - `python tools/validate_harness.py`: 82 Markdown files와 31 record docs 검증 성공.
 - MySQL 8.4 실행 검증은 Docker와 MySQL 클라이언트가 없어 미실행했다. H2의 MySQL mode는 V1의 다중 `ADD CONSTRAINT` 문법을 지원하지 않아 대체할 수 없었다.
