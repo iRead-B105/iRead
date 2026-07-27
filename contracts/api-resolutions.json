@@ -1339,6 +1339,403 @@
       }
     },
     {
+      "source": "GET /api/app/training/{studentId}/{trainingId}/intro",
+      "action": "update",
+      "reason": "확정 ERD의 trainings.id를 훈련 세션 식별자로 사용하고 별도 훈련 이력 식별자를 제거한다.",
+      "changes": {
+        "note": "trainingId는 trainings.id다. 훈련 문항은 training_datas.generated_data에서 조회하며 학생 소유 관계를 검증한다.",
+        "request_summary": "studentId(path)\ntrainingId(path)",
+        "request_parameters": [
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "trainingId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "trainings.id"
+          }
+        ],
+        "response_summary": "trainingId\ntrainingTemplateId\ndailyCurriculumId\nsequenceNo\nstatus\ntrainingName\ngeneratedData\nstartedAt\nfinishedAt",
+        "response_fields": [
+          {
+            "name": "trainingId",
+            "type": "long",
+            "required": true,
+            "description": "trainings.id"
+          },
+          {
+            "name": "trainingTemplateId",
+            "type": "long",
+            "required": true,
+            "description": "훈련 템플릿 식별자"
+          },
+          {
+            "name": "dailyCurriculumId",
+            "type": "long",
+            "required": true,
+            "description": "일일 커리큘럼 식별자"
+          },
+          {
+            "name": "sequenceNo",
+            "type": "integer",
+            "required": true,
+            "description": "커리큘럼 내 훈련 순서"
+          },
+          {
+            "name": "status",
+            "type": "string(NOT_READY|NOT_STARTED|IN_PROGRESS|COMPLETED)",
+            "required": true,
+            "description": "trainings.status"
+          },
+          {
+            "name": "trainingName",
+            "type": "string",
+            "required": true,
+            "description": "훈련 템플릿 이름"
+          },
+          {
+            "name": "generatedData",
+            "type": "object",
+            "required": false,
+            "description": "training_datas.generated_data"
+          },
+          {
+            "name": "startedAt",
+            "type": "string(date-time)",
+            "required": false,
+            "description": "훈련 시작 시각"
+          },
+          {
+            "name": "finishedAt",
+            "type": "string(date-time)",
+            "required": false,
+            "description": "훈련 완료 시각"
+          }
+        ],
+        "response_codes": ["200", "400", "401", "403", "404"]
+      }
+    },
+    {
+      "source": "GET /api/app/training/{studentId}/{trainingId}/questions/{questionNumber}",
+      "action": "update",
+      "reason": "훈련 문항을 training_datas.generated_data의 questions 배열에서 조회한다.",
+      "changes": {
+        "note": "questionNumber는 1부터 시작하며 training_datas.generated_data.questions 범위를 벗어나면 404를 반환한다.",
+        "request_summary": "studentId(path)\ntrainingId(path)\nquestionNumber(path)",
+        "request_parameters": [
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "trainingId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "trainings.id"
+          },
+          {
+            "name": "questionNumber",
+            "type": "integer",
+            "in": "Path",
+            "required": true,
+            "description": "1부터 시작하는 문항 번호"
+          }
+        ],
+        "response_summary": "trainingId\nquestionNumber\ntotalQuestions\nquestion",
+        "response_fields": [
+          {
+            "name": "trainingId",
+            "type": "long",
+            "required": true,
+            "description": "trainings.id"
+          },
+          {
+            "name": "questionNumber",
+            "type": "integer",
+            "required": true,
+            "description": "현재 문항 번호"
+          },
+          {
+            "name": "totalQuestions",
+            "type": "integer",
+            "required": true,
+            "description": "전체 문항 수"
+          },
+          {
+            "name": "question",
+            "type": "object",
+            "required": true,
+            "description": "generated_data.questions의 현재 문항"
+          }
+        ],
+        "response_codes": ["200", "400", "401", "403", "404"]
+      }
+    },
+    {
+      "source": "POST /api/app/training/{studentId}/{trainingId}/questions/{questionNumber}/recordings",
+      "action": "update",
+      "reason": "녹음 분석 결과를 확정 ERD의 word_attempt_logs에 저장한다.",
+      "changes": {
+        "note": "음성 원본 경로는 응답하지 않는다. recognizedText와 음성 구간·점수를 word_attempt_logs에 저장하고 training_id로 훈련에 연결한다.",
+        "request_summary": "studentId(path)\ntrainingId(path)\nquestionNumber(path)\nwordId(body)\nrecognizedText(body)\nspeechStartOffsetMs(body, optional)\nspeechEndOffsetMs(body, optional)\nisCorrect(body, optional)\ntotalScore(body)",
+        "request_parameters": [
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "trainingId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "trainings.id"
+          },
+          {
+            "name": "questionNumber",
+            "type": "integer",
+            "in": "Path",
+            "required": true,
+            "description": "문항 번호"
+          },
+          {
+            "name": "wordId",
+            "type": "long",
+            "in": "Body",
+            "required": true,
+            "description": "words.id"
+          },
+          {
+            "name": "recognizedText",
+            "type": "string",
+            "in": "Body",
+            "required": true,
+            "description": "STT 인식 결과"
+          },
+          {
+            "name": "speechStartOffsetMs",
+            "type": "integer",
+            "in": "Body",
+            "required": false,
+            "description": "음성 시작 오프셋(ms)"
+          },
+          {
+            "name": "speechEndOffsetMs",
+            "type": "integer",
+            "in": "Body",
+            "required": false,
+            "description": "음성 종료 오프셋(ms)"
+          },
+          {
+            "name": "isCorrect",
+            "type": "boolean",
+            "in": "Body",
+            "required": false,
+            "description": "정답 여부"
+          },
+          {
+            "name": "totalScore",
+            "type": "integer",
+            "in": "Body",
+            "required": true,
+            "description": "0~1000 단어 점수"
+          }
+        ],
+        "response_summary": "attemptId\ntrainingId\nwordId\nrecognizedText\ntotalScore\ncreatedAt",
+        "response_fields": [
+          {
+            "name": "attemptId",
+            "type": "long",
+            "required": true,
+            "description": "word_attempt_logs.id"
+          },
+          {
+            "name": "trainingId",
+            "type": "long",
+            "required": true,
+            "description": "trainings.id"
+          },
+          {
+            "name": "wordId",
+            "type": "long",
+            "required": true,
+            "description": "words.id"
+          },
+          {
+            "name": "recognizedText",
+            "type": "string",
+            "required": true,
+            "description": "STT 인식 결과"
+          },
+          {
+            "name": "totalScore",
+            "type": "integer",
+            "required": true,
+            "description": "0~1000 단어 점수"
+          },
+          {
+            "name": "createdAt",
+            "type": "string(date-time)",
+            "required": true,
+            "description": "시도 저장 시각"
+          }
+        ],
+        "response_codes": ["201", "400", "401", "403", "404", "409", "422"]
+      }
+    },
+    {
+      "source": "POST /api/app/training/{studentId}/{trainingId}/questions/{questionNumber}/responses",
+      "action": "update",
+      "reason": "선택 응답을 확정 ERD의 word_attempt_logs에 저장한다.",
+      "changes": {
+        "note": "선택한 words.id를 word_attempt_logs에 저장하고 training_id로 훈련에 연결한다.",
+        "request_summary": "studentId(path)\ntrainingId(path)\nquestionNumber(path)\nwordId(body)\nisCorrect(body)\ntotalScore(body)",
+        "request_parameters": [
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "trainingId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "trainings.id"
+          },
+          {
+            "name": "questionNumber",
+            "type": "integer",
+            "in": "Path",
+            "required": true,
+            "description": "문항 번호"
+          },
+          {
+            "name": "wordId",
+            "type": "long",
+            "in": "Body",
+            "required": true,
+            "description": "선택한 words.id"
+          },
+          {
+            "name": "isCorrect",
+            "type": "boolean",
+            "in": "Body",
+            "required": true,
+            "description": "정답 여부"
+          },
+          {
+            "name": "totalScore",
+            "type": "integer",
+            "in": "Body",
+            "required": true,
+            "description": "0~1000 단어 점수"
+          }
+        ],
+        "response_summary": "attemptId\ntrainingId\nwordId\nisCorrect\ntotalScore\ncreatedAt",
+        "response_fields": [
+          {
+            "name": "attemptId",
+            "type": "long",
+            "required": true,
+            "description": "word_attempt_logs.id"
+          },
+          {
+            "name": "trainingId",
+            "type": "long",
+            "required": true,
+            "description": "trainings.id"
+          },
+          {
+            "name": "wordId",
+            "type": "long",
+            "required": true,
+            "description": "words.id"
+          },
+          {
+            "name": "isCorrect",
+            "type": "boolean",
+            "required": true,
+            "description": "정답 여부"
+          },
+          {
+            "name": "totalScore",
+            "type": "integer",
+            "required": true,
+            "description": "0~1000 단어 점수"
+          },
+          {
+            "name": "createdAt",
+            "type": "string(date-time)",
+            "required": true,
+            "description": "시도 저장 시각"
+          }
+        ],
+        "response_codes": ["201", "400", "401", "403", "404", "409", "422"]
+      }
+    },
+    {
+      "source": "POST /api/app/training/{studentId}/{trainingId}/start",
+      "action": "update",
+      "reason": "trainings.id 자체를 훈련 세션 식별자로 사용한다.",
+      "changes": {
+        "note": "NOT_STARTED 상태의 trainings 행을 IN_PROGRESS로 변경하고 started_at을 서버 시각으로 저장한다.",
+        "request_summary": "studentId(path)\ntrainingId(path)",
+        "request_parameters": [
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "trainingId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "trainings.id"
+          }
+        ],
+        "response_summary": "trainingId\nstartedAt\nstatus",
+        "response_fields": [
+          {
+            "name": "trainingId",
+            "type": "long",
+            "required": true,
+            "description": "trainings.id"
+          },
+          {
+            "name": "startedAt",
+            "type": "string(date-time)",
+            "required": true,
+            "description": "훈련 시작 시각"
+          },
+          {
+            "name": "status",
+            "type": "string(IN_PROGRESS)",
+            "required": true,
+            "description": "훈련 상태"
+          }
+        ],
+        "response_codes": ["200", "400", "401", "403", "404", "409"]
+      }
+    },
+    {
       "source": "POST /api/app/training/{studentId}/{trainingId}/session-reset",
       "action": "update",
       "reason": "기능 원문의 이전 문항 위치·응답·진행 상태 초기화 요구를 별도 세션 명령으로 유지한다.",

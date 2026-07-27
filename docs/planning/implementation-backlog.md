@@ -35,7 +35,7 @@ timestamp: 2026-07-27T00:00:00+09:00
 | BE-005 | P0 | 관리자 훈련·검사 API 계약 정합화 | Admin `training`, `test` 중 시선 조회를 제외한 13개 operation | BE-001, BE-004 | done |
 | BE-006 | P1 | 관리자 보고서·시선 결과 API 계약 정합화 | Admin `report` 4개, 검사·훈련 시선 조회 2개 operation | BE-004, BE-005 | done |
 | BE-007 | P0 | 아동 로그인·성장·마이페이지 API 구현 | App 인증, `student`, `mypage` | BE-002, BE-003 | done |
-| BE-008 | P0 | 아동 검사·훈련 세션 API 구현 | App `test` 8개, `training` 7개 operation | BE-001, BE-007 | todo |
+| BE-008 | P0 | 아동 검사·훈련 세션 API 구현 | App `test` 8개, `training` 7개 operation | BE-001, BE-007 | in-progress |
 | BE-009 | P1 | 이야기·시선 세션 API 구현 | App `story` 9개, `gaze` 6개 operation | BE-007, BE-010 | in-progress |
 | BE-010 | P0 | AI 없는 데모용 결정적 fixture provider 구현 | 훈련 생성·평가, 이야기, STT·TTS 대체 결과 | BE-001 | in-progress |
 | BE-011 | P1 | 비식별 데모 seed와 파일·DB 초기화 절차 작성 | Flyway, 데모 데이터, `audio/` | BE-001 | in-progress |
@@ -133,6 +133,17 @@ timestamp: 2026-07-27T00:00:00+09:00
 - `python tools/validate_contracts.py`: 80 operations, 334 features, 73 reviewed, 23 MySQL tables, 31 foreign keys 검증 성공.
 - `python tools/validate_harness.py`: 82 Markdown files와 31 record docs 검증 성공.
 - DB 스키마 변경이 없어 MySQL 통합 테스트는 다시 실행하지 않았다.
+
+### 2026-07-27 BE-008 훈련 세션 구현
+
+- App 훈련 7개 operation을 별도 이력 식별자 없이 `trainings.id`를 세션 식별자로 사용하는 ERD 중심 계약으로 정리했다.
+- 안내·문항은 `training_datas.generated_data`를 조회하고, 선택·녹음 응답은 `word_attempt_logs.training_id`에 저장한다.
+- 시작·초기화·완료는 `trainings.status`, `started_at`, `finished_at`, `result`, `accuracy`를 갱신하며 학습 토큰과 학생·훈련 소유권을 검증한다.
+- 검사 세션 8개 operation이 남아 있으므로 `BE-008`은 `in-progress`를 유지한다.
+- `.\gradlew.bat test --rerun-tasks`: 129개 중 일반 테스트 128개 성공, opt-in MySQL 통합 테스트 1개 skip, 실패 0개.
+- `python tools/validate_contracts.py`: 80 operations, 334 features, 73 reviewed, 23 MySQL tables, 31 foreign keys 검증 성공.
+- `python tools/validate_harness.py`: 82 Markdown files와 31 record docs 검증 성공.
+- DB 스키마 변경은 없으며 기존 ERD의 `trainings`, `training_datas`, `word_attempt_logs`만 사용한다.
 
 ## Frontend TODO
 
