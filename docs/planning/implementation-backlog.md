@@ -102,7 +102,7 @@ timestamp: 2026-07-27T00:00:00+09:00
 - 음성 분기 API는 최종 STT 텍스트를 `story_choices`에 한 건 저장하고 다음 장면·대사·진행률과 함께 반영한다. 같은 분기 대사의 재시도는 최초 결과를 `200 OK`로 반환한다.
 - Backend 엔티티 정합화와 MySQL 8.4 실행 검증이 완료되기 전에는 `BE-001`을 `done`으로 변경하지 않는다.
 - 계약 검증은 23개 테이블·31개 외래 키 기준으로 성공했고 문서 하네스도 성공했다.
-- Backend 테스트는 Java 21 toolchain 부재로 테스트 태스크 시작 전에 중단됐고, MySQL 실행 검증은 Docker·MySQL 클라이언트 부재로 미실행했다.
+- Backend 테스트는 Java 21에서 88개 중 일반 테스트 87개가 성공했고 opt-in MySQL 통합 테스트 1개가 skip됐다. MySQL 실행 검증은 Docker·MySQL 클라이언트 부재로 미실행했다.
 
 ## Frontend TODO
 
