@@ -8,7 +8,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 # submodule 운영 가이드
 
 - 상태: accepted
-- 최종 검토일: 2026-07-24
+- 최종 검토일: 2026-07-27
 
 ## 구성
 
@@ -38,7 +38,25 @@ git submodule update --init --recursive
 
 ## 참조 커밋 갱신
 
-갱신할 서비스의 `develop`을 fast-forward한 뒤 오케스트레이션 저장소에서 변경된 참조를 커밋한다.
+`Submodule Pointer Update`는 5분 주기로 각 서비스의 `develop`과
+orchestration의 gitlink를 비교한다. 새 fast-forward commit이 있으면
+`automation/submodule-pointer-update` 브랜치에 포인터를 갱신하고
+orchestration `develop` 대상 PR을 자동 생성한다.
+
+포인터 PR에는 변경 전후 commit이 표시된다. 필수 리뷰 인원은 0명이므로
+서비스 조합을 확인한 뒤 별도 승인 없이 병합할 수 있다. 포인터 PR을 병합하면
+`Harness Validation`이 실행되고, 검증 성공 후 GitLab `main` 동기화가
+자동으로 이어진다. 예약 실행이 지연될 수 있으므로 즉시 확인해야 할 때는
+GitHub Actions에서 `Submodule Pointer Update`를 수동 실행한다.
+
+자동화는 다음 조건에서 PR을 생성하지 않고 실패한다.
+
+- 새 commit이 서비스 원격 저장소에 존재하지 않는다.
+- 기존 포인터에서 새 `develop` commit으로의 이동이 fast-forward가 아니다.
+- submodule이 초기화되지 않았거나 gitlink 형식이 아니다.
+
+자동화가 실패했을 때만 갱신할 서비스의 `develop`을 fast-forward한 뒤
+오케스트레이션 저장소에서 변경된 참조를 수동으로 커밋한다.
 
 ```bash
 git -C services/backend switch develop
