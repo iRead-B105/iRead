@@ -1,13 +1,9 @@
 ---
 type: Template
-title: "기능 명세 템플릿"
-description: "검증 가능한 기능 범위, 수용 기준과 서비스·데이터 영향을 작성하는 템플릿입니다."
-tags: [template, feature-spec, requirements]
-timestamp: 2026-07-24T00:00:00+09:00
 ---
 # 기능 명세: `<이름>`
 
-이 파일을 복사한 뒤 frontmatter의 `type`을 `Feature Specification`으로 바꾸고 제목, 설명, 태그와 수정 시각을 실제 값으로 갱신한다.
+이 파일을 복사한 뒤 frontmatter의 `type`을 `Feature Specification`으로 바꾸고 제목을 갱신한다.
 
 - 상태: draft
 - 담당: [TBD]
@@ -60,8 +56,9 @@ timestamp: 2026-07-24T00:00:00+09:00
 
 ## 검증
 
-- 검증 후보:
-- 실행 승인: 소스 테스트·빌드·린트·정적 분석은 사용자 명시적 요청 필요
+- 수용 기준 검증:
+- 동작 변경 또는 검증 공백이 있을 때 추가·수정할 테스트:
+- 실행할 테스트·빌드·린트:
 
 ## 배포와 롤백
 

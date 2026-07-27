@@ -11,6 +11,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 - 결정일: 2026-07-24
 - 결정자: 사용자
 - 대체 대상: [저장소 전략](../architecture/repository-strategy.md)의 계약 원본 미결 항목
+- 부분 대체됨: [ADR-0012](ADR-0012-lightweight-harness-policy.md)가 일반 문서의 OKF 적용 범위와 하네스 운영 방식을 대체한다.
 
 ## 배경
 

@@ -2,10 +2,34 @@ name: Harness Validation
 
 on:
   pull_request:
+    paths:
+      - ".github/pull_request_template.md"
+      - ".github/workflows/validate-harness.yml"
+      - ".gitmodules"
+      - "AGENTS.md"
+      - "PLANS.md"
+      - "README.md"
+      - "contracts/**/*.md"
+      - "docs/**"
+      - "plans/**"
+      - "tools/validate_harness.py"
+      - "tools/tests/test_validate_harness.py"
   push:
     branches:
       - main
       - develop
+    paths:
+      - ".github/pull_request_template.md"
+      - ".github/workflows/validate-harness.yml"
+      - ".gitmodules"
+      - "AGENTS.md"
+      - "PLANS.md"
+      - "README.md"
+      - "contracts/**/*.md"
+      - "docs/**"
+      - "plans/**"
+      - "tools/validate_harness.py"
+      - "tools/tests/test_validate_harness.py"
   workflow_dispatch:
 
 permissions:
@@ -26,12 +50,14 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           persist-credentials: false
-          submodules: recursive
 
       - name: Set up Python 3.12
         uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.12"
+
+      - name: Test harness validator
+        run: python -m unittest tools.tests.test_validate_harness
 
       - name: Validate harness
         run: python tools/validate_harness.py
