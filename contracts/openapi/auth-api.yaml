@@ -769,7 +769,7 @@
     "/api/auth/app/student-login": {
       "post": {
         "operationId": "post_auth_app_student_login",
-        "summary": "연결 아동 정보 조회, 아동 이름 입력, 아동 로그인 실패 처리",
+        "summary": "아동 선택값 검증, 연결 아동 식별, 아동 로그인 처리",
         "tags": [
           "auth"
         ],
@@ -851,8 +851,6 @@
         "x-notion-page-id": "3a6027df-9053-8189-a401-dc27d8812591",
         "x-notion-url": "https://app.notion.com/p/api-auth-app-student-login-3a6027df90538189a401dc27d8812591",
         "x-feature-ids": [
-          "LG-STU-01",
-          "LG-STU-02",
           "LG-STU-05",
           "LG-STU-03",
           "LG-STU-07",
@@ -929,8 +927,18 @@
                                   "name": {
                                     "type": "string",
                                     "description": "아동 표시 이름"
+                                  },
+                                  "profileImage": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "description": "아동 프로필 이미지 URL. 등록된 이미지가 없으면 null"
                                   }
-                                }
+                                },
+                                "required": [
+                                  "studentId",
+                                  "name",
+                                  "profileImage"
+                                ]
                               },
                               "description": "해당 교수자에게 연결된 아동 목록"
                             },
@@ -959,7 +967,8 @@
                     "linkedStudents": [
                       {
                         "studentId": "2001",
-                        "name": "김아동"
+                        "name": "김아동",
+                        "profileImage": "https://cdn.example.com/students/2001.png"
                       }
                     ],
                     "expiresIn": 300,
@@ -985,7 +994,8 @@
           "LG-TEA-03",
           "LG-TEA-02",
           "LG-TEA-01",
-          "LG-TEA-05"
+          "LG-TEA-05",
+          "LG-STU-01"
         ],
         "description": "학습 앱 아동 선택 전용 인증. loginId는 email과 별도이며 토큰 audience는 learning-bootstrap",
         "x-notion-request-summary": "loginId(body)\npassword(body)",
