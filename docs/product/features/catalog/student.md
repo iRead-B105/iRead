@@ -3,7 +3,7 @@ type: Feature Catalog
 title: "기능 카탈로그: student"
 description: "student 도메인의 기능 식별자, 설명과 API 관계를 정리합니다."
 tags: [feature, catalog, student]
-timestamp: 2026-07-25T01:00:44+09:00
+timestamp: 2026-07-27T12:19:48+09:00
 ---
 # 기능 카탈로그: student
 
@@ -22,12 +22,12 @@ timestamp: 2026-07-25T01:00:44+09:00
 | DB-SEL-03 | 아동 선택 실패 처리 | 아동을 선택할 수 없으면 오류를 표시하고 다시 선택할 수 있도록 한다. | client | - |
 | DB-STAT-01 | 전체 아동 수 표시 | 현재 교수자가 담당하는 전체 아동 수를 표시한다. | server | `get_admin_student_summary` |
 | DB-STAT-02 | 오늘 학습 예정 수 표시 | 오늘 학습 일정이 예약된 아동 수를 표시한다. | server | `get_admin_student_summary` |
-| GR-COM-01 | 성장 정보 조회 | 아동의 영역별 성장 정보와 획득 캐릭터 정보를 조회한다. | server | `get_app_student_by_studentId_growth` |
-| GR-COM-02 | 성장 정보 조회 상태 표시 | 조회 중, 조회 실패, 데이터 없음 상태를 화면에 표시한다. | server | `get_app_student_by_studentId_growth` |
-| GR-STAT-01 | 성장 영역 카드 표시 | 음운 인식, 파닉스, 단어, 유창성, 긴글 영역을 카드 형태로 표시한다. | server | `get_app_student_by_studentId_growth` |
-| GR-STAT-02 | 영역별 성취 현황 표시 | 소리 조각, 완성 객차, 획득 열매 등 영역별 성취 수치를 표시한다. | server | `get_app_student_by_studentId_growth` |
-| GR-STAT-03 | 영역별 성장 콘텐츠 표시 | 영역의 학습 성과를 꽃, 기차, 나무 등의 시각적 콘텐츠로 표시한다. | server | `get_app_student_by_studentId_growth` |
-| GR-STAT-04 | 영역별 성장률 표시 | 각 학습 영역의 성장률을 백분율과 진행 막대로 표시한다. | server | `get_app_student_by_studentId_growth` |
+| GR-COM-01 | 성장 정보 조회 | 완료된 훈련 횟수를 학습자·훈련 템플릿별로 실시간 집계하여 조회한다. | server | `get_app_student_by_studentId_growth` |
+| GR-COM-02 | 성장 정보 조회 상태 표시 | 조회 중, 조회 실패와 데이터 없음 상태를 클라이언트에서 표시한다. | client | - |
+| GR-STAT-01 | 훈련 템플릿별 성장 카드 표시 | 훈련 템플릿 이름과 완료 횟수를 성장 카드에 표시한다. | server | `get_app_student_by_studentId_growth` |
+| GR-STAT-02 | 훈련 완료 횟수 표시 | 같은 훈련 템플릿을 완료할 때마다 1회씩 증가한 완료 횟수를 표시한다. | server | `get_app_student_by_studentId_growth` |
+| GR-STAT-03 | 꽃 성장 콘텐츠 표시 | 훈련 완료 0회부터 5회까지 매회 꽃을 한 단계씩 성장시키고 5회 이상이면 만개 상태로 표시한다. | client | - |
+| GR-STAT-04 | 성장 단계 표시 | 클라이언트가 min(completedCount, 5)로 현재 성장 단계를 계산한다. | client | - |
 | MH-DSP-01 | 학습 기록 표시 | 선택한 아동의 학습 날짜, 학습 종류, 분류와 성취도를 표시한다. | server | `get_admin_student_by_studentId_training_history` |
 | MH-DSP-02 | 학습 상태 요약 표시 | 선택한 아동의 현재 단계, 최근 학습일과 확인이 필요한 학습 이벤트 수를 표시한다. | server | `get_admin_student_by_studentId_learning_summary` |
 | MH-DSP-03 | 다음 권장 훈련 표시 | 아동의 최근 결과를 바탕으로 다음 권장 훈련과 권장 시간·횟수를 표시한다. | server | `get_admin_student_by_studentId_learning_events` |

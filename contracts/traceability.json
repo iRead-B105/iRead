@@ -467,13 +467,9 @@
     "feature_id": "GR-CHAR-01",
     "feature_page_id": "3a3027df-9053-8016-9296-e5ab76cfafd3",
     "deprecated": false,
-    "responsibility": "server",
-    "api_page_ids": [
-      "3a6027df-9053-81f7-9e00-efe43504032d"
-    ],
-    "operation_ids": [
-      "patch_app_mypage_character_representative"
-    ]
+    "responsibility": "client",
+    "api_page_ids": [],
+    "operation_ids": []
   },
   {
     "feature_id": "GR-CHAR-02",
@@ -503,13 +499,9 @@
     "feature_id": "GR-COM-02",
     "feature_page_id": "3a3027df-9053-8034-b79c-e9b154eb1170",
     "deprecated": false,
-    "responsibility": "server",
-    "api_page_ids": [
-      "3a4027df-9053-80e9-8623-fa163e00dd99"
-    ],
-    "operation_ids": [
-      "get_app_student_by_studentId_growth"
-    ]
+    "responsibility": "client",
+    "api_page_ids": [],
+    "operation_ids": []
   },
   {
     "feature_id": "GR-STAT-01",
@@ -539,25 +531,17 @@
     "feature_id": "GR-STAT-03",
     "feature_page_id": "3a3027df-9053-809b-98ea-f8a218bd926f",
     "deprecated": false,
-    "responsibility": "server",
-    "api_page_ids": [
-      "3a4027df-9053-80e9-8623-fa163e00dd99"
-    ],
-    "operation_ids": [
-      "get_app_student_by_studentId_growth"
-    ]
+    "responsibility": "client",
+    "api_page_ids": [],
+    "operation_ids": []
   },
   {
     "feature_id": "GR-STAT-04",
     "feature_page_id": "3a3027df-9053-80b3-a0a2-f1f4b0380295",
     "deprecated": false,
-    "responsibility": "server",
-    "api_page_ids": [
-      "3a4027df-9053-80e9-8623-fa163e00dd99"
-    ],
-    "operation_ids": [
-      "get_app_student_by_studentId_growth"
-    ]
+    "responsibility": "client",
+    "api_page_ids": [],
+    "operation_ids": []
   },
   {
     "feature_id": "GZ-GAZE-01",

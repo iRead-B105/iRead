@@ -1,5 +1,49 @@
 {
   "version": 1,
+  "feature_resolutions": [
+    {
+      "feature_id": "GR-CHAR-01",
+      "description": "서버에 대표 상태를 저장하지 않으며 필요한 표시 상태는 클라이언트에서 관리한다."
+    },
+    {
+      "feature_id": "GR-COM-01",
+      "description": "완료된 훈련 횟수를 학습자·훈련 템플릿별로 실시간 집계하여 조회한다."
+    },
+    {
+      "feature_id": "GR-COM-02",
+      "description": "조회 중, 조회 실패와 데이터 없음 상태를 클라이언트에서 표시한다.",
+      "responsibility": "client",
+      "clear_api_links": true
+    },
+    {
+      "feature_id": "GR-STAT-01",
+      "name": "훈련 템플릿별 성장 카드 표시",
+      "description": "훈련 템플릿 이름과 완료 횟수를 성장 카드에 표시한다."
+    },
+    {
+      "feature_id": "GR-STAT-02",
+      "name": "훈련 완료 횟수 표시",
+      "description": "같은 훈련 템플릿을 완료할 때마다 1회씩 증가한 완료 횟수를 표시한다."
+    },
+    {
+      "feature_id": "GR-STAT-03",
+      "name": "꽃 성장 콘텐츠 표시",
+      "description": "훈련 완료 0회부터 5회까지 매회 꽃을 한 단계씩 성장시키고 5회 이상이면 만개 상태로 표시한다.",
+      "responsibility": "client",
+      "clear_api_links": true
+    },
+    {
+      "feature_id": "GR-STAT-04",
+      "name": "성장 단계 표시",
+      "description": "클라이언트가 min(completedCount, 5)로 현재 성장 단계를 계산한다.",
+      "responsibility": "client",
+      "clear_api_links": true
+    },
+    {
+      "feature_id": "ST-BRANCH-05",
+      "description": "최종 STT 텍스트와 AI 생성 장면을 저장한다. 같은 분기 대사의 재시도에는 최초 저장 결과를 변경하지 않고 반환한다."
+    }
+  ],
   "resolutions": [
     {
       "source": "GET /api/admin/navigation/sidebar",
@@ -326,59 +370,227 @@
       "source": "GET /api/app/mypage/growth/statistics",
       "action": "merge",
       "target": "GET /api/app/student/{studentId}/growth",
-      "reason": "성장 통계는 학습 진척도와 단어 누적 통계를 반환하는 성장 조회로 통합한다."
+      "reason": "성장 통계는 학생·훈련 템플릿별 완료 횟수를 반환하는 성장 조회로 통합한다."
     },
     {
       "source": "GET /api/app/mypage/growth/status",
       "action": "merge",
       "target": "GET /api/app/student/{studentId}/growth",
-      "reason": "서버 성장 데이터는 성장 조회로 통합하고 로딩 상태는 클라이언트가 관리한다."
+      "reason": "서버는 훈련 완료 횟수를 반환하고 꽃 성장 단계와 로딩 상태는 클라이언트가 관리한다."
     },
     {
       "source": "PATCH /api/app/mypage/character/representative",
+      "action": "client",
+      "reason": "확정 ERD에 대표 캐릭터 상태가 없으므로 서버 API를 제거하고 관련 화면 상태는 클라이언트에서 관리한다."
+    },
+    {
+      "source": "GET /api/app/mypage/character",
       "action": "update",
-      "reason": "character.is_representative와 아동 소유권을 기준으로 대표 캐릭터를 원자적으로 변경한다.",
+      "reason": "확정 ERD의 character 컬럼과 이야기 소유 관계를 응답에 반영한다.",
       "changes": {
-        "note": "studentId에 속한 characterId만 선택할 수 있다. 같은 트랜잭션에서 기존 대표 캐릭터를 해제하고 선택한 캐릭터를 대표로 지정한다.",
-        "request_summary": "studentId(body)\ncharacterId(body)",
-        "request_parameters": [
-          {
-            "name": "studentId",
-            "type": "long",
-            "in": "Body",
-            "required": true,
-            "description": "아동 식별자"
-          },
-          {
-            "name": "characterId",
-            "type": "long",
-            "in": "Body",
-            "required": true,
-            "description": "대표로 지정할 보유 캐릭터 식별자"
-          }
-        ],
-        "response_summary": "characterId\nimageUrl\nisRepresentative",
+        "note": "학습 토큰의 studentId에 속한 캐릭터만 조회한다. 대표 캐릭터 상태는 저장하거나 반환하지 않는다.",
+        "response_summary": "characters[] {\n  characterId\n  storyId\n  imageUrl\n  name\n  createdAt\n}",
         "response_fields": [
           {
-            "name": "characterId",
+            "name": "characters[].characterId",
             "type": "long",
             "required": true,
-            "description": "대표 캐릭터 식별자"
+            "description": "캐릭터 식별자"
           },
           {
-            "name": "imageUrl",
+            "name": "characters[].storyId",
+            "type": "long",
+            "required": true,
+            "description": "캐릭터가 속한 이야기 식별자"
+          },
+          {
+            "name": "characters[].imageUrl",
             "type": "string",
             "required": false,
             "description": "캐릭터 이미지 URL"
           },
           {
-            "name": "isRepresentative",
-            "type": "boolean",
+            "name": "characters[].name",
+            "type": "string",
+            "required": false,
+            "description": "캐릭터 이름"
+          },
+          {
+            "name": "characters[].createdAt",
+            "type": "string(date-time)",
             "required": true,
-            "description": "대표 캐릭터 여부"
+            "description": "캐릭터 생성 시각"
           }
         ],
-        "response_codes": ["200", "400", "401", "403", "404", "409"]
+        "response_example": ""
+      }
+    },
+    {
+      "source": "GET /api/app/student/{studentId}/growth",
+      "action": "update",
+      "reason": "성장 정보는 완료된 훈련을 학생·훈련 템플릿별로 실시간 집계한 횟수를 반환한다.",
+      "changes": {
+        "note": "daily_curriculums와 trainings를 조인하여 해당 학생의 status=COMPLETED 훈련 행을 training_template_id별로 COUNT한다. 동일 템플릿을 다시 완료하면 완료 건마다 1회로 계산한다. 클라이언트는 min(completedCount, 5)를 성장 단계로 사용하며 0회는 초기 상태, 1~4회는 매회 한 단계 성장, 5회 이상은 만개로 표시한다.",
+        "response_summary": "trainingProgress[] {\n  trainingTemplateId\n  trainingTemplateName\n  completedCount\n}",
+        "response_fields": [
+          {
+            "name": "trainingProgress[].trainingTemplateId",
+            "type": "long",
+            "required": true,
+            "description": "훈련 템플릿 식별자"
+          },
+          {
+            "name": "trainingProgress[].trainingTemplateName",
+            "type": "string",
+            "required": true,
+            "description": "훈련 템플릿 이름"
+          },
+          {
+            "name": "trainingProgress[].completedCount",
+            "type": "integer",
+            "required": true,
+            "description": "완료된 훈련 횟수"
+          }
+        ],
+        "response_example": ""
+      }
+    },
+    {
+      "source": "GET /api/app/story/{studentId}/{storyId}/lines/{lineId}",
+      "action": "update",
+      "reason": "이야기 조회 응답을 stories, story_scenes, story_lines 관계에 맞춘다.",
+      "changes": {
+        "note": "story_lines.scene_id로 story_scenes를 조회하고 장면의 story_id와 image_url을 반환한다. requiresBranchInput은 물리 컬럼 story_lines.has_choices 값이며 true이면 아동의 음성 분기 입력을 받는다.",
+        "response_summary": "lineId\nsceneId\nstoryId\nimageUrl\nrequiresBranchInput\nlineText\nsceneOrder\nlineOrder\ncreatedAt\nreadAt",
+        "response_fields": [
+          {
+            "name": "lineId",
+            "type": "long",
+            "required": true,
+            "description": "이야기 대사 식별자"
+          },
+          {
+            "name": "sceneId",
+            "type": "long",
+            "required": true,
+            "description": "이야기 장면 식별자"
+          },
+          {
+            "name": "storyId",
+            "type": "long",
+            "required": true,
+            "description": "이야기 식별자"
+          },
+          {
+            "name": "imageUrl",
+            "type": "string",
+            "required": false,
+            "description": "장면 이미지 URL"
+          },
+          {
+            "name": "requiresBranchInput",
+            "type": "boolean",
+            "required": true,
+            "description": "아동 음성 분기 입력 필요 여부"
+          },
+          {
+            "name": "lineText",
+            "type": "string",
+            "required": true,
+            "description": "대사 내용"
+          },
+          {
+            "name": "sceneOrder",
+            "type": "integer",
+            "required": true,
+            "description": "이야기 내 장면 순서"
+          },
+          {
+            "name": "lineOrder",
+            "type": "integer",
+            "required": true,
+            "description": "장면 내 대사 순서"
+          },
+          {
+            "name": "createdAt",
+            "type": "string(date-time)",
+            "required": true,
+            "description": "생성 시각"
+          },
+          {
+            "name": "readAt",
+            "type": "string(date-time)",
+            "required": false,
+            "description": "읽은 시각"
+          }
+        ],
+        "response_example": ""
+      }
+    },
+    {
+      "source": "POST /api/app/story/{studentId}/{storyId}/lines/{lineId}/branches",
+      "action": "update",
+      "reason": "음성 분기 입력의 최종 STT 텍스트와 AI 생성 결과를 확정 ERD의 선택·장면·대사 구조에 저장한다.",
+      "changes": {
+        "note": "audioFile을 STT로 변환하고 복원한 최종 텍스트를 AI 다음 이야기 생성에 반영한다. AI 생성 성공 후 story_choices.content, 다음 story_scenes와 story_lines, stories.progress를 하나의 DB 트랜잭션으로 저장한다. story_choices는 story_line_id별 한 건만 허용한다. 같은 story_line_id로 재시도하면 AI를 다시 호출하거나 결과를 덮어쓰지 않고 최초 저장 결과를 200 OK로 반환한다. UNIQUE 경합이 발생한 요청도 최초 저장 결과를 다시 조회해 반환한다.",
+        "response_summary": "choiceId\ntranscript\nnextSceneId\nnextLineId\ngeneratedContent\nimageUrl\nprogress\nstatus\nreplayed",
+        "response_fields": [
+          {
+            "name": "choiceId",
+            "type": "long",
+            "required": true,
+            "description": "저장된 분기 선택 식별자"
+          },
+          {
+            "name": "transcript",
+            "type": "string",
+            "required": true,
+            "description": "STT로 복원해 저장한 최종 선택 텍스트"
+          },
+          {
+            "name": "nextSceneId",
+            "type": "long",
+            "required": true,
+            "description": "생성되어 저장된 다음 장면 식별자"
+          },
+          {
+            "name": "nextLineId",
+            "type": "long",
+            "required": true,
+            "description": "다음 장면의 첫 대사 식별자"
+          },
+          {
+            "name": "generatedContent",
+            "type": "string",
+            "required": true,
+            "description": "AI가 생성한 다음 이야기 내용"
+          },
+          {
+            "name": "imageUrl",
+            "type": "string",
+            "required": false,
+            "description": "생성 장면 이미지 URL"
+          },
+          {
+            "name": "progress",
+            "type": "integer",
+            "required": true,
+            "description": "저장된 다음 이야기 진행률 0~100"
+          },
+          {
+            "name": "status",
+            "type": "string(IN_PROGRESS|COMPLETED)",
+            "required": true,
+            "description": "이야기 상태"
+          },
+          {
+            "name": "replayed",
+            "type": "boolean",
+            "required": true,
+            "description": "기존에 확정된 분기 결과를 재사용했는지 여부"
+          }
+        ],
+        "response_example": ""
       }
     },
     {
@@ -1131,9 +1343,9 @@
           },
           {
             "name": "accuracy",
-            "type": "number",
+            "type": "integer",
             "required": true,
-            "description": "AI가 평가한 0~100 정확도"
+            "description": "AI가 평가한 0~1000 훈련 정확도"
           },
           {
             "name": "completedAt",
@@ -1142,6 +1354,7 @@
             "description": "훈련 완료 시각"
           }
         ],
+        "response_example": "",
         "response_codes": ["200", "400", "401", "403", "404", "409", "422", "502"]
       }
     },

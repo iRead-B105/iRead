@@ -47,13 +47,22 @@ FOREIGN_KEY_PATTERN = re.compile(
     r"\(`(?P<parent_column>[^`]+)`\)",
     re.IGNORECASE,
 )
+PRIMARY_KEY_PATTERN = re.compile(
+    r"PRIMARY KEY\s*\(\s*`(?P<column>[^`]+)`\s*\)",
+    re.IGNORECASE,
+)
 
 
 def parse_schema(sql: str) -> tuple[dict[str, list[Column]], list[ForeignKey]]:
     tables: dict[str, list[Column]] = {}
     for match in CREATE_TABLE_PATTERN.finditer(sql):
         columns: list[Column] = []
-        for line in match.group("body").splitlines():
+        body = match.group("body")
+        primary_key_columns = {
+            primary_key.group("column")
+            for primary_key in PRIMARY_KEY_PATTERN.finditer(body)
+        }
+        for line in body.splitlines():
             column_match = COLUMN_PATTERN.match(line.rstrip(","))
             if not column_match:
                 continue
@@ -62,7 +71,10 @@ def parse_schema(sql: str) -> tuple[dict[str, list[Column]], list[ForeignKey]]:
                     name=column_match.group("name"),
                     data_type=column_match.group("type"),
                     nullable=column_match.group("nullability").upper() == "NULL",
-                    primary_key="PRIMARY KEY" in column_match.group("rest").upper(),
+                    primary_key=(
+                        "PRIMARY KEY" in column_match.group("rest").upper()
+                        or column_match.group("name") in primary_key_columns
+                    ),
                 )
             )
         tables[match.group("table")] = columns
@@ -105,6 +117,7 @@ def render_erd(sql: str) -> str:
         "- 상태: generated",
         "- 기준 원본: [Backend Flyway migrations](../../services/backend/src/main/resources/db/migration/)",
         "- 검토용 미러: [schema.sql](schema.sql)",
+        "- 확정 설계 이미지: [erd.png](erd.png)",
         "- 생성 명령: `python tools/generate_erd.py`",
         "",
         "이 파일은 `contracts/database/schema.sql`의 테이블과 외래 키에서 자동 생성한다. 직접 수정하지 않고 스키마를 변경한 뒤 생성 명령을 다시 실행한다.",

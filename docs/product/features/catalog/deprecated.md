@@ -3,7 +3,7 @@ type: Feature Catalog
 title: "기능 카탈로그: deprecated"
 description: "deprecated 도메인의 기능 식별자, 설명과 API 관계를 정리합니다."
 tags: [feature, catalog, deprecated]
-timestamp: 2026-07-25T01:00:44+09:00
+timestamp: 2026-07-27T12:19:48+09:00
 ---
 # 기능 카탈로그: deprecated
 

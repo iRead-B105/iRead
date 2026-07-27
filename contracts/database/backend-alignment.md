@@ -1,56 +1,88 @@
 ---
 type: Contract Alignment
 title: "Backend 엔티티와 MySQL 계약 정합화"
-description: "Backend 최신 엔티티와 검토용 MySQL 스키마의 차이, migration 적용 순서와 결정 항목을 정리합니다."
-tags: [contracts, backend, mysql, migration, alignment]
-timestamp: 2026-07-26T00:00:00+09:00
+description: "2026-07-27 확정 ERD와 Backend 엔티티의 차이, V1 적용 경계와 후속 정합화 범위를 정리합니다."
+tags: [contracts, backend, mysql, migration, alignment, erd]
+timestamp: 2026-07-27T00:00:00+09:00
 ---
 # Backend 엔티티와 MySQL 계약 정합화
 
 - 상태: active
-- 비교 기준: Backend `origin/develop` `7d0e441`, `contracts/database/schema.sql`
-- 최종 검토일: 2026-07-26
+- 비교 기준: 2026-07-27 확정 ERD, `contracts/database/schema.sql`, 현재 Backend 작업 트리
+- 최종 검토일: 2026-07-27
 
 ## 결론
 
-[ADR-0007](../../docs/decisions/ADR-0007-okf-and-specification-sources.md)에 따라 승인된 계약을 기준으로 Backend 엔티티를 정합화하고, 동일 DDL을 Flyway `V1__baseline_schema.sql`로 관리한다. 계약 검증기는 두 파일이 다르면 실패한다.
+사용자가 확정한 23개 테이블 ERD를 현재 MySQL 계약으로 채택했다. 실행 가능한 DDL은 Flyway `V1__baseline_schema.sql`에 반영하고 `contracts/database/schema.sql`과 동일하게 유지한다.
 
-## 확인된 차이
+기존 Backend 엔티티는 이전 V1을 기준으로 작성되어 있으므로 현재 계약과 다시 정합화해야 한다. 이 문서는 계약 교체 결과를 기록하며 Backend 구현 완료를 선언하지 않는다.
 
-| 영역 | MySQL 계약 | Backend 최신 구현 | 처리 방향 |
-| --- | --- | --- | --- |
-| 기본 키 | `bigint` 기본 키 | `GenerationType.IDENTITY` | migration의 식별자 기본 키에 `AUTO_INCREMENT` 적용 |
-| 검사 테이블 | `test` | `tests` | 예약어 충돌을 피하도록 `tests`로 통일 |
-| 생성 콘텐츠 테이블 | `training_datas`, `test_datas` | 의미가 불명확한 복수형 | 실제 저장 내용에 맞춰 `training_contents`, `test_questions`로 통일 |
-| 훈련 생성 데이터 FK | `training_id` | `train_id` | `training_id`로 통일 |
-| 이야기 진행률 | `stories.progress` | 필드 없음 | Backend 엔티티에 0~100 진행률 추가 |
-| 이야기 분기 표시 | `requires_branch_input` | `has_choices` | 음성 분기 의미인 `requires_branch_input`으로 통일 |
-| 이야기 선택 저장 | 저장하지 않음 | `story_choices` 저장 | 로컬 데이터가 없음을 확인하고 엔티티와 저장소 제거 |
-| 대표 캐릭터 | `is_representative` | 필드 없음 | Backend 엔티티와 대표 변경 로직 추가 |
-| 단어 누적 통계 | `word_score`, `attempt_count` | 성공·실패·시도 횟수 | 점수 계산 기준과 보고서 소비 필드를 함께 정합화 |
-| 단어 시도 로그 | 기본 시선·음성 필드 | `use_location`, 연결 자원, `total_score` 추가 | Backend가 사용하는 필드를 migration에 포함 |
-| 보고서 기간 | `timestamp` | `LocalDate` | `DATE`로 통일 |
+## 확정된 물리 명칭
 
-## 적용 결과
+- `training_datas`
+- `train_id`
+- `test_datas`
+- `tests`
+- `story_lines.has_choices`
+- `teachers.email`
+- `auth_refresh_sessions`
 
-1. 식별자 기본 키를 `AUTO_INCREMENT PRIMARY KEY`로 정의하고 `tests`, `training_contents`, `test_questions`, `training_id`, `DATE` 등 물리 명칭과 타입을 Backend에 맞췄다.
-2. `stories.progress`, `story_lines.requires_branch_input`, 대표 캐릭터와 단어 시도 로그 필드를 Backend에 반영했다.
-3. Backend에 Flyway를 추가하고 `spring.jpa.hibernate.ddl-auto=validate`로 자동 DDL 생성을 막았다.
-4. 빈 MySQL 8.4.10에서 V1을 실행해 테이블 24개, 외래 키 25개, UNIQUE 8개, CHECK 7개를 확인했다.
-5. 이야기 분기 입력은 계약대로 저장하지 않으며 `story_choices` 엔티티와 저장소를 제거했다.
+`training_contents`, `training_id`로의 물리 FK 변경, `test_questions`, `requires_branch_input`, `teachers.login_id`, `auth_revoked_access_tokens`는 사용하지 않는다.
+
+## 이전 기준선에서 변경된 구조
+
+| 영역 | 확정 계약 | Backend 정합화 방향 |
+| --- | --- | --- |
+| 이야기 계층 | `stories → story_scenes → story_lines → story_choices` | 장면과 선택지 엔티티·저장소·서비스 흐름을 복원하거나 추가 |
+| 이야기 대사 FK | `story_lines.scene_id` | 기존 `story_id`, `previous_line_id`, 대사별 이미지 매핑 제거 |
+| 캐릭터 | 학생과 이야기 FK, 이름·이미지 | `is_representative` 기반 구현과 대표 캐릭터 변경 API 제거 |
+| 검사 커리큘럼 | `test_curriculums` 추가 | 학생별 검사 커리큘럼과 순서 기반 검사 엔티티 추가 |
+| 검사 | `test_curriculum_id`, `training_template_id`, 세션 시각과 순서 | 기존 학생 직접 FK 기반 검사 엔티티 교체 |
+| 검사 생성 데이터 | `id bigint`, `generated_data`, `created_at` | 기존 질문 ID·질문 JSON 매핑 교체 |
+| 시선 세션 | 조건부 대상 FK와 `data` JSON | 원시 시선 데이터 컬럼 및 조건부 관계 반영 |
+| 보고서 | 기간 `timestamp`, nullable `snapshot_data` | `LocalDate` 및 필수 snapshot 매핑 교체 |
+| 누적 통계 | 별도 누적 통계 테이블 없음 | `student_word_stats`, `student_study_progresses` 매핑 제거 |
+| 훈련 점수 | `accuracy` 0~1000 | 기존 0~100 소수 정밀도 매핑 교체 |
+
+- 확정 ERD에 대표 캐릭터 상태가 없으므로 대표 캐릭터 변경 API를 제거하고 관련 표시 상태는 클라이언트 책임으로 변경했다.
+- `story_choices.content`에는 음성 입력을 STT로 복원한 최종 텍스트를 저장한다. `story_line_id`를 UNIQUE로 보호하고 STT 중간 실패는 저장하지 않는다. 같은 분기 대사의 재시도는 최초 저장 결과를 반환한다.
+- 성장 정보는 별도 컬럼 없이 완료된 `trainings` 행을 학생·훈련 템플릿별로 실시간 집계한다. 클라이언트는 `min(completedCount, 5)`로 성장 단계를 계산하며 5회에 만개 상태가 된다.
+
+## V1 변환 규칙
+
+- ERDCloud COMMENT의 `AUTO_INCREMENT`, `UNIQUE`, `DEFAULT`, `CHECK`는 실행 DDL의 실제 속성·제약조건으로 변환했다.
+- 관계선은 31개 외래 키로 변환했다.
+- FK에 복사된 `AUTO_INCREMENT` 메모는 적용하지 않았다.
+- `test_curriculums.id`, `test_datas.id`는 확정 ERD에 자동 증가 표시가 없으므로 일반 `bigint` PK로 유지했다.
+- `gaze_analysis_results.gaze_session_id`는 시선 세션당 분석 결과 하나를 보장하도록 UNIQUE로 보호했다.
+- `story_choices.story_line_id`는 분기 대사당 최종 선택 하나를 보장하도록 UNIQUE로 보호했다.
 
 ## 적용 경계
 
 - 이번 V1은 신규·빈 데이터베이스 기준이다.
-- 확인 당시 Docker의 `iread-mysql` 컨테이너와 관련 볼륨은 없었고, 호스트 MySQL에도 `iread` 스키마가 없어 변환할 로컬 개발 데이터가 없었다.
-- 다른 환경에 기존 스키마나 `story_choices` 데이터가 있다면 V1을 직접 적용하지 않고 별도의 baseline 및 데이터 변환 migration을 먼저 작성해야 한다.
+- 아직 실제 DB에 적용하지 않았으므로 V2를 만들지 않고 V1을 교체했다.
+- Backend 엔티티와 저장소 정합화가 끝나기 전에는 Hibernate schema validation이 실패할 수 있다.
+- 다른 환경에 기존 스키마나 데이터가 있으면 V1을 직접 적용하지 않고 별도 baseline 및 데이터 변환 migration을 작성해야 한다.
 
-## V2 인증 계약 정합화
+## 인증 계약
 
-- 변경 이유: Auth OpenAPI의 이메일과 분리된 `loginId`, Admin·학습 앱 refresh token rotation과 로그아웃 access token 폐기를 구현한다.
-- `teachers.login_id`, `auth_refresh_sessions`, `auth_revoked_access_tokens`를 추가한다.
-- 기존 교수자의 초기 `login_id`는 고유성이 보장된 현재 이메일로 채운 뒤 `NOT NULL`, `UNIQUE`를 적용한다.
+- 교사 로그인 식별자는 `teachers.email` 하나다.
+- `auth_refresh_sessions`만 사용하고 access token 폐기 테이블은 사용하지 않는다.
+- Admin 세션은 `student_id`가 NULL이고 학습 세션은 학생에 연결한다.
 - refresh token 원문은 저장하지 않고 SHA-256 해시만 저장한다.
-- 실행 migration은 Backend `V2__auth_jwt_contract.sql`, 누적 검토용 DDL은 `schema.sql`이다.
-- MySQL 8.4.10의 빈 임시 DB에서 Flyway V1·V2를 순서대로 적용해 26개 애플리케이션 테이블과 migration history 2건을 확인했다.
-- V2 적용 후 Hibernate JPA schema validation과 Backend 전체 테스트가 성공했다.
+
+## 후속 검증
+
+- 빈 MySQL 8.4에서 V1 전체 실행
+- 23개 테이블, 31개 외래 키, UNIQUE와 CHECK 제약 확인
+- Backend 엔티티 정합화 후 Hibernate schema validation
+- 관련 Backend 전체 테스트
+
+## 2026-07-27 검증 결과
+
+- `python -m unittest tools.tests.test_validate_contracts`: 3개 성공
+- `python tools/generate_erd.py --check`: 성공
+- `python tools/validate_contracts.py`: 80 operations, 334 features, 23 MySQL tables, 31 foreign keys 검증 성공
+- `python tools/validate_harness.py`: 82 Markdown files, 63 OKF concepts, 92 explicit open markers 검증 성공
+- `.\gradlew.bat test --rerun-tasks`: Java 21에서 88개 중 일반 테스트 87개 성공, opt-in MySQL 통합 테스트 1개 skip, 실패 0개
+- MySQL 실행 검증: 현재 환경에 Docker와 MySQL 클라이언트가 없어 미실행

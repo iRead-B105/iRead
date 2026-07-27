@@ -3,11 +3,11 @@ type: Contract Review Queue
 title: "API 계약 검토 목록"
 description: "Notion에서 OpenAPI로 이전했지만 추가 의미 검토가 필요한 API를 정리합니다."
 tags: [contracts, openapi, review]
-timestamp: 2026-07-25T01:00:44+09:00
+timestamp: 2026-07-27T12:19:48+09:00
 ---
 # API 계약 검토 목록
 
-활성 API 74건 가운데 0건에 추가 검토 표시가 남아 있다.
+활성 API 73건 가운데 0건에 추가 검토 표시가 남아 있다.
 
 권장 처리는 기존 ERD와 정식 도메인 API를 우선하고, 화면 이동·선택·재생 상태는 클라이언트 책임으로 분리한 결과다.
 

@@ -16,6 +16,8 @@ def load_resolutions(path: Path) -> dict[str, Any]:
         raise ValueError("api resolution version must be 1")
     if not isinstance(document.get("resolutions"), list):
         raise ValueError("api resolutions must be a list")
+    if not isinstance(document.get("feature_resolutions", []), list):
+        raise ValueError("feature resolutions must be a list")
     return document
 
 
@@ -105,5 +107,57 @@ def resolve_snapshot(
 
         apis.remove(source)
         del api_by_key[source_key]
+
+    feature_by_id = {feature["feature_id"]: feature for feature in features}
+    active_api_by_page = {api["page_id"]: api for api in apis}
+    handled_features: set[str] = set()
+    for resolution in resolution_document.get("feature_resolutions", []):
+        feature_id = resolution.get("feature_id", "")
+        if feature_id in handled_features:
+            raise ValueError(f"duplicate feature resolution: {feature_id}")
+        handled_features.add(feature_id)
+        if feature_id not in feature_by_id:
+            raise ValueError(
+                f"feature resolution source does not exist: {feature_id}"
+            )
+
+        allowed = {
+            "feature_id",
+            "name",
+            "description",
+            "responsibility",
+            "clear_api_links",
+        }
+        unsupported = set(resolution).difference(allowed)
+        if unsupported:
+            raise ValueError(
+                f"feature resolution has unsupported fields: {sorted(unsupported)}"
+            )
+
+        feature = feature_by_id[feature_id]
+        if "name" in resolution:
+            feature["name"] = resolution["name"]
+        if "description" in resolution:
+            feature["description"] = resolution["description"]
+        if "responsibility" in resolution:
+            responsibility = resolution["responsibility"]
+            if responsibility not in {"client", "server", "unmapped"}:
+                raise ValueError(
+                    f"unsupported feature responsibility: {responsibility}"
+                )
+            feature["contract_responsibility"] = responsibility
+        if resolution.get("clear_api_links"):
+            if "contract_domain" not in feature:
+                linked_api = next(
+                    (
+                        active_api_by_page[page_id]
+                        for page_id in feature["api_page_ids"]
+                        if page_id in active_api_by_page
+                    ),
+                    None,
+                )
+                if linked_api is not None:
+                    feature["contract_domain"] = linked_api["domain"]
+            feature["api_page_ids"] = []
 
     return resolved

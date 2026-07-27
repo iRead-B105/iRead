@@ -3,7 +3,7 @@ type: Contract Catalog
 title: iRead 계약 카탈로그
 description: 기능, API와 데이터베이스 명세의 기준 원본, 소유자와 이전 상태를 정리합니다.
 tags: [contracts, features, openapi, mysql, traceability]
-timestamp: 2026-07-24T00:00:00+09:00
+timestamp: 2026-07-27T00:00:00+09:00
 ---
 # iRead 계약 카탈로그
 
@@ -16,7 +16,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 | Admin–Backend API | `contracts/openapi/admin-api.yaml` | Orchestration | 이전·검토 완료 | Notion 이관 스냅샷, Backend·Frontend |
 | 공통 인증 API | `contracts/openapi/auth-api.yaml` | Orchestration | 이전·검토 완료 | Notion 이관 스냅샷, Backend·소비 앱 |
 | Backend–AI API | `contracts/openapi/ai-api.yaml` | Orchestration | 기준 계약 작성 및 이야기 계약 정합화 완료 | Backend·AI |
-| MySQL 실행 스키마 | `services/backend` Flyway migration | Backend | V1·V2 도입 및 MySQL 8.4.10 실행 검증 완료 | `contracts/database/schema.sql`, `contracts/database/erd.md` |
+| MySQL 실행 스키마 | `services/backend` Flyway migration | Backend | 2026-07-27 확정 ERD로 V1 교체, Backend 정합화·실행 검증 필요 | `contracts/database/schema.sql`, `contracts/database/erd.png`, `contracts/database/erd.md` |
 
 ## 전환 원칙
 

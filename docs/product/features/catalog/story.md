@@ -3,7 +3,7 @@ type: Feature Catalog
 title: "기능 카탈로그: story"
 description: "story 도메인의 기능 식별자, 설명과 API 관계를 정리합니다."
 tags: [feature, catalog, story]
-timestamp: 2026-07-25T01:00:44+09:00
+timestamp: 2026-07-27T12:19:48+09:00
 ---
 # 기능 카탈로그: story
 
@@ -13,7 +13,7 @@ timestamp: 2026-07-25T01:00:44+09:00
 | ST-BRANCH-02 | 이야기 분기 질문 표시 | 현재 장면과 AI가 이어갈 이야기에 필요한 분기 질문을 표시한다. 미리 정의된 선택지 카드는 사용하지 않는다. | server | `post_app_story_by_studentId_by_storyId_lines_by_lineId_branches` |
 | ST-BRANCH-03 | 이야기 분기 음성 STT 처리 | 아동의 음성을 업로드하고 STT로 분기 의도를 나타내는 텍스트를 추출한다. | server | `post_app_story_by_studentId_by_storyId_lines_by_lineId_branches` |
 | ST-BRANCH-04 | 진행률 기반 AI 이야기 분기 생성 요청 | Backend가 stories.progress와 STT 텍스트를 AI 요청에 포함하여 현재 진행률에 적합한 다음 이야기 내용을 생성한다. | server | `post_app_story_by_studentId_by_storyId_lines_by_lineId_branches` |
-| ST-BRANCH-05 | AI 생성 분기 장면 저장 및 이동 | AI가 반환한 다음 장면을 story_lines에 저장하고 검증된 다음 진행률을 stories.progress에 반영한 뒤 생성 장면으로 이동한다. | server | `post_app_story_by_studentId_by_storyId_lines_by_lineId_branches` |
+| ST-BRANCH-05 | AI 생성 분기 장면 저장 및 이동 | 최종 STT 텍스트와 AI 생성 장면을 저장한다. 같은 분기 대사의 재시도에는 최초 저장 결과를 변경하지 않고 반환한다. | server | `post_app_story_by_studentId_by_storyId_lines_by_lineId_branches` |
 | ST-DTL-01 | 이야기 상세 정보 조회 | 선택한 이야기의 표지, 제목, 설명, 예상 시간, 장면 수와 등장인물을 조회한다. | server | `get_app_story_by_studentId_by_storyTemplateId` |
 | ST-DTL-02 | 이야기 상세 정보 표시 | 조회한 이야기 정보를 상세 화면에 표시한다. | server | `get_app_story_by_studentId_by_storyTemplateId` |
 | ST-DTL-03 | 이야기 책장 화면 이동 | 책장으로 버튼을 선택하면 이야기 목록 화면으로 이동한다. | server | `get_app_story_by_studentId_by_storyTemplateId` |
