@@ -28,7 +28,7 @@ timestamp: 2026-07-27T00:00:00+09:00
 
 | ID | 우선순위 | 작업 | 계약·영역 | 선행 작업 | 상태 |
 | --- | --- | --- | --- | --- | --- |
-| BE-001 | P0 | 확정 ERD 기준 Flyway V1과 엔티티 재정합화 | MySQL 23개 테이블, `training_datas`, `test_datas`, `test_curriculums`, 이야기 장면·선택 | 없음 | in-progress |
+| BE-001 | P0 | 확정 ERD 기준 Flyway V1과 엔티티 재정합화 | MySQL 23개 테이블, `training_datas`, `test_datas`, `test_curriculums`, 이야기 장면·선택 | 없음 | done |
 | BE-002 | P0 | Admin·App 인증 API를 Auth OpenAPI 10개 operation에 맞춤 | `auth-api.yaml` | BE-001 | done |
 | BE-003 | P0 | 역할과 리소스 소유권 검증 및 민감정보 로그 차단 | 인증, 학생·보고서·훈련 접근 | BE-002 | done |
 | BE-004 | P0 | 교수자·학생 관리 API 계약 정합화 | Admin `teacher`, `student` 12개 operation | BE-002, BE-003 | done |
@@ -100,9 +100,10 @@ timestamp: 2026-07-27T00:00:00+09:00
 - 대표 캐릭터 변경 API를 제거하고 관련 표시 상태를 클라이언트 책임으로 변경했다.
 - 성장 API는 완료된 훈련을 학생·훈련 템플릿별로 실시간 집계한 `completedCount`를 반환하고, 클라이언트는 매회 한 단계씩 성장시켜 5회에 만개하도록 변경했다.
 - 음성 분기 API는 최종 STT 텍스트를 `story_choices`에 한 건 저장하고 다음 장면·대사·진행률과 함께 반영한다. 같은 분기 대사의 재시도는 최초 결과를 `200 OK`로 반환한다.
-- Backend 엔티티 정합화와 MySQL 8.4 실행 검증이 완료되기 전에는 `BE-001`을 `done`으로 변경하지 않는다.
+- Backend 엔티티 정합화와 MySQL 8.4.10 실행 검증을 완료해 `BE-001`을 `done`으로 변경했다.
 - 계약 검증은 23개 테이블·31개 외래 키 기준으로 성공했고 문서 하네스도 성공했다.
-- Backend 테스트는 Java 21에서 88개 중 일반 테스트 87개가 성공했고 opt-in MySQL 통합 테스트 1개가 skip됐다. MySQL 실행 검증은 Docker·MySQL 클라이언트 부재로 미실행했다.
+- 공식 MySQL 8.4.10 ZIP의 일회성 서버에서 빈 테스트 DB를 생성하고 Flyway V1 전체 적용과 Hibernate schema validation을 완료했다.
+- MySQL 통합 테스트는 애플리케이션 테이블 23개, 외래 키 31개, UNIQUE 11개, CHECK 7개와 핵심 물리 명칭을 검증한다.
 
 ### 2026-07-27 교수자 앱 Backend 순차 구현
 
@@ -116,10 +117,10 @@ timestamp: 2026-07-27T00:00:00+09:00
 - `BE-012`: 관리자 범위의 `400`, `401`, `403`, `404`, `409`, `500` 오류 응답과 입력 검증을 통일했다. Auth·App 전체 범위가 남아 있어 작업 상태는 `in-progress`를 유지한다.
 - 확정 ERD의 검사 커리큘럼, 보고서 기간 timestamp, 시선 원시 데이터, 훈련 정확도, 캐릭터와 이야기 장면 관계를 Backend 엔티티에 반영했다. 엔티티가 생성하는 모든 테이블의 컬럼 집합을 Flyway V1과 비교하는 회귀 테스트를 추가했다.
 - Admin OpenAPI 31개 operation의 경로·HTTP method 회귀 테스트를 추가했다.
-- `.\gradlew.bat test --rerun-tasks`: 119개 중 일반 테스트 118개 성공, opt-in MySQL 통합 테스트 1개 skip, 실패 0개.
+- MySQL 통합 검증을 활성화한 `.\gradlew.bat test --rerun-tasks`: 119개 전체 성공, skip·실패 0개.
 - `python tools/validate_contracts.py`: 80 operations, 334 features, 73 reviewed, 23 MySQL tables, 31 foreign keys 검증 성공.
 - `python tools/validate_harness.py`: 82 Markdown files와 31 record docs 검증 성공.
-- MySQL 8.4 실행 검증은 Docker와 MySQL 클라이언트가 없어 미실행했다. H2의 MySQL mode는 V1의 다중 `ADD CONSTRAINT` 문법을 지원하지 않아 대체할 수 없었다.
+- 공식 MySQL 8.4.10 ZIP을 임시 런타임으로 사용해 빈 DB Flyway 적용, 23개 애플리케이션 테이블·31개 외래 키와 Hibernate 엔티티 매핑을 검증했다.
 
 ## Frontend TODO
 
