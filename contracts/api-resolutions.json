@@ -463,6 +463,8 @@
       "reason": "확정 ERD의 character 컬럼과 이야기 소유 관계를 응답에 반영한다.",
       "changes": {
         "note": "학습 토큰의 studentId에 속한 캐릭터만 조회한다. 대표 캐릭터 상태는 저장하거나 반환하지 않는다.",
+        "request_summary": "",
+        "request_parameters": [],
         "response_summary": "characters[] {\n  characterId\n  storyId\n  imageUrl\n  name\n  createdAt\n}",
         "response_fields": [
           {
@@ -496,7 +498,8 @@
             "description": "캐릭터 생성 시각"
           }
         ],
-        "response_example": ""
+        "response_example": "",
+        "response_codes": ["200", "401", "403", "404"]
       }
     },
     {
@@ -505,6 +508,16 @@
       "reason": "성장 정보는 완료된 훈련을 학생·훈련 템플릿별로 실시간 집계한 횟수를 반환한다.",
       "changes": {
         "note": "daily_curriculums와 trainings를 조인하여 해당 학생의 status=COMPLETED 훈련 행을 training_template_id별로 COUNT한다. 동일 템플릿을 다시 완료하면 완료 건마다 1회로 계산한다. 클라이언트는 min(completedCount, 5)를 성장 단계로 사용하며 0회는 초기 상태, 1~4회는 매회 한 단계 성장, 5회 이상은 만개로 표시한다.",
+        "request_summary": "studentId(path)",
+        "request_parameters": [
+          {
+            "name": "studentId",
+            "type": "integer",
+            "in": "Path",
+            "required": true,
+            "description": "아동 식별자"
+          }
+        ],
         "response_summary": "trainingProgress[] {\n  trainingTemplateId\n  trainingTemplateName\n  completedCount\n}",
         "response_fields": [
           {
@@ -526,7 +539,8 @@
             "description": "완료된 훈련 횟수"
           }
         ],
-        "response_example": ""
+        "response_example": "",
+        "response_codes": ["200", "400", "401", "403", "404"]
       }
     },
     {

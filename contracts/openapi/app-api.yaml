@@ -733,17 +733,7 @@
         "tags": [
           "mypage"
         ],
-        "parameters": [
-          {
-            "name": "studentCode",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "학습자코드"
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "요청 성공",
@@ -803,11 +793,11 @@
               }
             }
           },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
@@ -819,7 +809,6 @@
           "GR-CHAR-02"
         ],
         "description": "학습 토큰의 studentId에 속한 캐릭터만 조회한다. 대표 캐릭터 상태는 저장하거나 반환하지 않는다.",
-        "x-notion-request-summary": "학습자코드",
         "x-notion-response-summary": "characters[] {\n  characterId\n  storyId\n  imageUrl\n  name\n  createdAt\n}",
         "x-review-status": "reviewed",
         "security": [
@@ -2113,9 +2102,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "studentId 식별자"
+            "description": "아동 식별자"
           }
         ],
         "responses": {
@@ -2173,6 +2163,9 @@
           },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"

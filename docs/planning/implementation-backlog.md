@@ -34,7 +34,7 @@ timestamp: 2026-07-27T00:00:00+09:00
 | BE-004 | P0 | 교수자·학생 관리 API 계약 정합화 | Admin `teacher`, `student` 12개 operation | BE-002, BE-003 | done |
 | BE-005 | P0 | 관리자 훈련·검사 API 계약 정합화 | Admin `training`, `test` 중 시선 조회를 제외한 13개 operation | BE-001, BE-004 | done |
 | BE-006 | P1 | 관리자 보고서·시선 결과 API 계약 정합화 | Admin `report` 4개, 검사·훈련 시선 조회 2개 operation | BE-004, BE-005 | done |
-| BE-007 | P0 | 아동 로그인·성장·마이페이지 API 구현 | App 인증, `student`, `mypage` | BE-002, BE-003 | in-progress |
+| BE-007 | P0 | 아동 로그인·성장·마이페이지 API 구현 | App 인증, `student`, `mypage` | BE-002, BE-003 | done |
 | BE-008 | P0 | 아동 검사·훈련 세션 API 구현 | App `test` 8개, `training` 7개 operation | BE-001, BE-007 | todo |
 | BE-009 | P1 | 이야기·시선 세션 API 구현 | App `story` 9개, `gaze` 6개 operation | BE-007, BE-010 | in-progress |
 | BE-010 | P0 | AI 없는 데모용 결정적 fixture provider 구현 | 훈련 생성·평가, 이야기, STT·TTS 대체 결과 | BE-001 | in-progress |
@@ -121,6 +121,18 @@ timestamp: 2026-07-27T00:00:00+09:00
 - `python tools/validate_contracts.py`: 80 operations, 334 features, 73 reviewed, 23 MySQL tables, 31 foreign keys 검증 성공.
 - `python tools/validate_harness.py`: 82 Markdown files와 31 record docs 검증 성공.
 - 공식 MySQL 8.4.10 ZIP을 임시 런타임으로 사용해 빈 DB Flyway 적용, 23개 애플리케이션 테이블·31개 외래 키와 Hibernate 엔티티 매핑을 검증했다.
+
+### 2026-07-27 BE-007 완료
+
+- App 인증 4개 operation은 `BE-002`에서 완료한 learning audience JWT와 refresh rotation을 사용한다.
+- 캐릭터 목록은 query parameter 없이 학습 토큰의 `studentId`를 사용하며 `characterId`, `storyId`, `imageUrl`, `name`, `createdAt`을 `characters` 목록으로 반환한다.
+- 잘못된 캐릭터 `EntityGraph("image")`를 실제 연관관계인 `story`로 수정하고 영속성 통합 테스트로 조회를 검증했다.
+- 성장 조회는 완료된 `trainings`를 학생·훈련 템플릿별로 집계해 `trainingTemplateId`, `trainingTemplateName`, `completedCount`를 반환한다.
+- 학습 토큰과 성장 조회 경로의 학생이 다르면 서비스 호출 전에 `403 Forbidden`으로 차단하며, 교수자 소유 관계가 없으면 `404 Not Found`로 처리한다.
+- `.\gradlew.bat test --rerun-tasks`: 126개 중 일반 테스트 125개 성공, opt-in MySQL 통합 테스트 1개 skip, 실패 0개.
+- `python tools/validate_contracts.py`: 80 operations, 334 features, 73 reviewed, 23 MySQL tables, 31 foreign keys 검증 성공.
+- `python tools/validate_harness.py`: 82 Markdown files와 31 record docs 검증 성공.
+- DB 스키마 변경이 없어 MySQL 통합 테스트는 다시 실행하지 않았다.
 
 ## Frontend TODO
 
