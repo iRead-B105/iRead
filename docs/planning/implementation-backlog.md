@@ -116,7 +116,7 @@ timestamp: 2026-07-27T00:00:00+09:00
 | FE-004 | `services/frontend` | P0 | 훈련 교안·이력·통계와 검사 비교 화면 구현 | Admin `training`, `test` | FE-003, BE-005 | todo |
 | FE-005 | `services/frontend` | P1 | 보고서·시선 결과·교수자 프로필 화면 구현 | Admin `report`, gaze, `teacher` | FE-003, FE-004, BE-006 | todo |
 | FE-006 | `services/app` | P0 | 아동 App 기술 스택 확정과 애플리케이션 기반 구성 | 라우팅, 상태, API client, 미디어 권한 | 없음 | todo |
-| FE-007 | `services/app` | P0 | 교수자·아동 로그인과 홈·성장·캐릭터 화면 구현 | Auth App, App `student`, `mypage` | FE-006, BE-007 | todo |
+| FE-007 | `services/app` | P0 | 교수자 로그인·연결 아동 프로필 선택과 홈·성장·캐릭터 화면 구현 | Auth App, App `student`, `mypage` | FE-006, BE-007 | todo |
 | FE-008 | `services/app` | P0 | 검사·훈련 안내, 문항, 녹음·응답과 완료 흐름 구현 | App `test`, `training` | FE-007, BE-008 | todo |
 | FE-009 | `services/app` | P1 | 이야기 책장·읽기·분기·음성 재생 흐름 구현 | App `story` | FE-007, BE-009, BE-010 | todo |
 | FE-010 | `services/app` | P1 | 시선 장치 안내, 세션 시작·종료·실패 흐름 구현 | App `gaze` | FE-006, BE-009 | todo |
