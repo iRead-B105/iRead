@@ -14,5 +14,6 @@
 | [ADR-0008](ADR-0008-demo-data-and-runtime-policy.md) | 데모 데이터 보관과 실행 환경 정책 | accepted | 2026-07-24 |
 | [ADR-0009](ADR-0009-gitlab-monorepo-mirror.md) | GitLab 단일 저장소 미러 | accepted | 2026-07-25 |
 | [ADR-0010](ADR-0010-add-eyetracking-repository.md) | 시선 추적 저장소와 submodule 경로 추가 | accepted | 2026-07-25 |
+| [ADR-0011](ADR-0011-adopt-approved-erd-baseline.md) | 확정 ERD를 단일 V1 기준선으로 채택 | accepted | 2026-07-27 |
 
 새 기록은 [ADR 템플릿](ADR-template.md)을 복사하고 다음 번호를 사용한다.

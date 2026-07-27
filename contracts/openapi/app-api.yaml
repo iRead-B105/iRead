@@ -760,23 +760,36 @@
                         "data": {
                           "type": "object",
                           "properties": {
-                            "characterImages": {
+                            "characters": {
                               "type": "array",
                               "items": {
                                 "type": "object",
-                                "additionalProperties": true,
                                 "properties": {
+                                  "characterId": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "캐릭터 식별자"
+                                  },
+                                  "storyId": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "캐릭터가 속한 이야기 식별자"
+                                  },
                                   "imageUrl": {
                                     "type": "string",
-                                    "description": "이미지url"
+                                    "description": "캐릭터 이미지 URL"
                                   },
-                                  "imageName": {
+                                  "name": {
                                     "type": "string",
-                                    "description": "이미지명"
+                                    "description": "캐릭터 이름"
+                                  },
+                                  "createdAt": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "description": "캐릭터 생성 시각"
                                   }
                                 }
-                              },
-                              "description": "캐릭터이미지"
+                              }
                             }
                           }
                         }
@@ -786,17 +799,6 @@
                       ]
                     }
                   ]
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "characterImages": [
-                      {
-                        "imageUrl": "https://example.com/resource",
-                        "imageName": "string"
-                      }
-                    ]
-                  }
                 }
               }
             }
@@ -816,134 +818,10 @@
         "x-feature-ids": [
           "GR-CHAR-02"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
+        "description": "학습 토큰의 studentId에 속한 캐릭터만 조회한다. 대표 캐릭터 상태는 저장하거나 반환하지 않는다.",
         "x-notion-request-summary": "학습자코드",
-        "x-notion-response-summary": "캐릭터이미지[] {\n  이미지url\n  이미지명\n}",
+        "x-notion-response-summary": "characters[] {\n  characterId\n  storyId\n  imageUrl\n  name\n  createdAt\n}",
         "x-review-status": "reviewed",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/api/app/mypage/character/representative": {
-      "patch": {
-        "operationId": "patch_app_mypage_character_representative",
-        "summary": "대표 캐릭터 표시",
-        "tags": [
-          "mypage"
-        ],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "요청 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/SuccessResponse"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "characterId": {
-                              "type": "integer",
-                              "format": "int64",
-                              "description": "대표 캐릭터 식별자"
-                            },
-                            "imageUrl": {
-                              "type": "string",
-                              "description": "캐릭터 이미지 URL"
-                            },
-                            "isRepresentative": {
-                              "type": "boolean",
-                              "description": "대표 캐릭터 여부"
-                            }
-                          },
-                          "required": [
-                            "characterId",
-                            "isRepresentative"
-                          ]
-                        }
-                      },
-                      "required": [
-                        "data"
-                      ]
-                    }
-                  ]
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "representativeCharacter": "string",
-                    "acquiredCharacters": [
-                      {}
-                    ]
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          }
-        },
-        "x-notion-page-id": "3a6027df-9053-81f7-9e00-efe43504032d",
-        "x-notion-url": "https://app.notion.com/p/api-app-mypage-character-representative-3a6027df905381f79e00efe43504032d",
-        "x-feature-ids": [
-          "GR-CHAR-01"
-        ],
-        "description": "studentId에 속한 characterId만 선택할 수 있다. 같은 트랜잭션에서 기존 대표 캐릭터를 해제하고 선택한 캐릭터를 대표로 지정한다.",
-        "x-notion-request-summary": "studentId(body)\ncharacterId(body)",
-        "x-notion-response-summary": "characterId\nimageUrl\nisRepresentative",
-        "x-review-status": "reviewed",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "studentId": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "아동 식별자"
-                  },
-                  "characterId": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "대표로 지정할 보유 캐릭터 식별자"
-                  }
-                },
-                "required": [
-                  "studentId",
-                  "characterId"
-                ]
-              },
-              "example": {
-                "studentId": "1001",
-                "characterId": "1001"
-              }
-            }
-          }
-        },
         "security": [
           {
             "bearerAuth": []
@@ -1283,44 +1161,63 @@
                           "type": "object",
                           "properties": {
                             "lineId": {
-                              "type": "string",
-                              "description": "스토리대사id"
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "이야기 대사 식별자"
                             },
-                            "previousLineId": {
-                              "type": "string",
-                              "description": "이전스토리대사id"
+                            "sceneId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "이야기 장면 식별자"
                             },
                             "storyId": {
-                              "type": "string",
-                              "description": "스토리id"
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "이야기 식별자"
                             },
                             "imageUrl": {
                               "type": "string",
-                              "description": "사진url"
+                              "description": "장면 이미지 URL"
                             },
                             "requiresBranchInput": {
                               "type": "boolean",
-                              "description": "아동 음성 입력으로 AI 다음 분기를 생성해야 하는 장면 여부"
+                              "description": "아동 음성 분기 입력 필요 여부"
                             },
                             "lineText": {
                               "type": "string",
-                              "description": "대사"
+                              "description": "대사 내용"
+                            },
+                            "sceneOrder": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "이야기 내 장면 순서"
                             },
                             "lineOrder": {
-                              "type": "string",
-                              "description": "대사순서"
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "장면 내 대사 순서"
                             },
                             "createdAt": {
                               "type": "string",
                               "format": "date-time",
-                              "description": "생성일"
+                              "description": "생성 시각"
                             },
                             "readAt": {
                               "type": "string",
                               "format": "date-time",
-                              "description": "읽은일자"
+                              "description": "읽은 시각"
                             }
-                          }
+                          },
+                          "required": [
+                            "lineId",
+                            "sceneId",
+                            "storyId",
+                            "requiresBranchInput",
+                            "lineText",
+                            "sceneOrder",
+                            "lineOrder",
+                            "createdAt"
+                          ]
                         }
                       },
                       "required": [
@@ -1328,20 +1225,6 @@
                       ]
                     }
                   ]
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "lineId": "1001",
-                    "previousLineId": "1001",
-                    "storyId": "1001",
-                    "imageUrl": "https://example.com/resource",
-                    "requiresBranchInput": true,
-                    "lineText": "string",
-                    "lineOrder": 1,
-                    "createdAt": "2026-07-24T12:00:00+09:00",
-                    "readAt": null
-                  }
                 }
               }
             }
@@ -1365,9 +1248,9 @@
           "ST-READ-03",
           "ST-READ-02"
         ],
-        "description": "requiresBranchInput은 story_lines.requires_branch_input 값이며 true이면 선택지 카드 대신 아동의 음성을 받아 AI 다음 이야기 분기를 생성한다.",
+        "description": "story_lines.scene_id로 story_scenes를 조회하고 장면의 story_id와 image_url을 반환한다. requiresBranchInput은 물리 컬럼 story_lines.has_choices 값이며 true이면 아동의 음성 분기 입력을 받는다.",
         "x-notion-request-summary": "studentId(path)\nstoryId(path)\nlineId(path)",
-        "x-notion-response-summary": "스토리대사id\n이전스토리대사id\n스토리id\n사진url\n음성분기입력필요여부\n대사\n대사순서\n생성일\n읽은일자",
+        "x-notion-response-summary": "lineId\nsceneId\nstoryId\nimageUrl\nrequiresBranchInput\nlineText\nsceneOrder\nlineOrder\ncreatedAt\nreadAt",
         "x-review-status": "reviewed",
         "security": [
           {
@@ -1428,13 +1311,24 @@
                         "data": {
                           "type": "object",
                           "properties": {
+                            "choiceId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "저장된 분기 선택 식별자"
+                            },
                             "transcript": {
                               "type": "string",
-                              "description": "STT로 추출한 아동의 분기 의도"
+                              "description": "STT로 복원해 저장한 최종 선택 텍스트"
+                            },
+                            "nextSceneId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "생성되어 저장된 다음 장면 식별자"
                             },
                             "nextLineId": {
-                              "type": "string",
-                              "description": "생성되어 저장된 다음 장면 식별자"
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "다음 장면의 첫 대사 식별자"
                             },
                             "generatedContent": {
                               "type": "string",
@@ -1442,17 +1336,36 @@
                             },
                             "imageUrl": {
                               "type": "string",
-                              "description": "null 가능. 생성 장면 이미지 URL"
+                              "description": "생성 장면 이미지 URL"
                             },
                             "progress": {
-                              "type": "number",
-                              "description": "저장된 다음 이야기 진행률(0~100)"
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "저장된 다음 이야기 진행률 0~100"
                             },
                             "status": {
                               "type": "string",
-                              "description": "IN_PROGRESS 또는 COMPLETED"
+                              "enum": [
+                                "in_progress",
+                                "completed"
+                              ],
+                              "description": "이야기 상태"
+                            },
+                            "replayed": {
+                              "type": "boolean",
+                              "description": "기존에 확정된 분기 결과를 재사용했는지 여부"
                             }
-                          }
+                          },
+                          "required": [
+                            "choiceId",
+                            "transcript",
+                            "nextSceneId",
+                            "nextLineId",
+                            "generatedContent",
+                            "progress",
+                            "status",
+                            "replayed"
+                          ]
                         }
                       },
                       "required": [
@@ -1460,17 +1373,6 @@
                       ]
                     }
                   ]
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "transcript": "용이 친구가 되었으면 좋겠어요",
-                    "nextLineId": "3002",
-                    "generatedContent": "용은 아이의 손을 잡고 숲길을 걸었습니다.",
-                    "imageUrl": null,
-                    "progress": 60,
-                    "status": "IN_PROGRESS"
-                  }
                 }
               }
             }
@@ -1502,9 +1404,9 @@
           "ST-READ-08",
           "ST-READ-09"
         ],
-        "description": "Backend가 stories.progress를 조회하여 AI 생성 요청의 currentProgress로 전달하며 클라이언트는 진행률을 입력하지 않는다. AI의 nextProgress는 현재값 이상 100 이하로 검증하고 100이면 stories.status를 COMPLETED로 변경한다. 생성된 story_lines 저장과 진행률 갱신은 단일 트랜잭션으로 처리한다. 음성은 EC2 내부 audio/{studentId}/story/ 구조에 저장하고 내부 경로를 응답에 노출하지 않는다. 선택지와 분기 선택 상태는 저장하지 않는다.",
+        "description": "audioFile을 STT로 변환하고 복원한 최종 텍스트를 AI 다음 이야기 생성에 반영한다. AI 생성 성공 후 story_choices.content, 다음 story_scenes와 story_lines, stories.progress를 하나의 DB 트랜잭션으로 저장한다. story_choices는 story_line_id별 한 건만 허용한다. 같은 story_line_id로 재시도하면 AI를 다시 호출하거나 결과를 덮어쓰지 않고 최초 저장 결과를 200 OK로 반환한다. UNIQUE 경합이 발생한 요청도 최초 저장 결과를 다시 조회해 반환한다.",
         "x-notion-request-summary": "studentId(path)\nstoryId(path)\nlineId(path)\naudioFile(body)",
-        "x-notion-response-summary": "transcript\nnextLineId\ngeneratedContent\nimageUrl\nprogress\nstatus",
+        "x-notion-response-summary": "choiceId\ntranscript\nnextSceneId\nnextLineId\ngeneratedContent\nimageUrl\nprogress\nstatus\nreplayed",
         "x-review-status": "reviewed",
         "requestBody": {
           "required": true,
@@ -2201,7 +2103,7 @@
     "/api/app/student/{studentId}/growth": {
       "get": {
         "operationId": "get_app_student_by_studentId_growth",
-        "summary": "성장 정보 조회, 영역별 성장 콘텐츠 표시, 영역별 성취 현황 표시",
+        "summary": "성장 정보 조회, 꽃 성장 콘텐츠 표시, 훈련 완료 횟수 표시",
         "tags": [
           "student"
         ],
@@ -2232,66 +2134,27 @@
                         "data": {
                           "type": "object",
                           "properties": {
-                            "progress": {
+                            "trainingProgress": {
                               "type": "array",
                               "items": {
                                 "type": "object",
-                                "additionalProperties": true,
                                 "properties": {
-                                  "progressId": {
-                                    "type": "string",
-                                    "description": "진행도id"
-                                  },
-                                  "studentId": {
-                                    "type": "string",
-                                    "description": "학습자id"
-                                  },
                                   "trainingTemplateId": {
-                                    "type": "string",
-                                    "description": "훈련템플릿id"
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "훈련 템플릿 식별자"
                                   },
-                                  "trainingAchievementRate": {
-                                    "type": "number",
-                                    "description": "훈련성취율"
+                                  "trainingTemplateName": {
+                                    "type": "string",
+                                    "description": "훈련 템플릿 이름"
+                                  },
+                                  "completedCount": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "완료된 훈련 횟수"
                                   }
                                 }
-                              },
-                              "description": "진행도"
-                            },
-                            "cumulativeStatistics": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "additionalProperties": true,
-                                "properties": {
-                                  "cumulativeStatisticsId": {
-                                    "type": "string",
-                                    "description": "누적통계id"
-                                  },
-                                  "wordId": {
-                                    "type": "string",
-                                    "description": "단어id"
-                                  },
-                                  "studentId": {
-                                    "type": "string",
-                                    "description": "학습자id"
-                                  },
-                                  "wordMasteryRate": {
-                                    "type": "number",
-                                    "description": "단어 능숙률"
-                                  },
-                                  "totalAttemptCount": {
-                                    "type": "number",
-                                    "description": "누적시도횟수"
-                                  },
-                                  "lastAttemptDate": {
-                                    "type": "string",
-                                    "format": "date",
-                                    "description": "최근시도일자"
-                                  }
-                                }
-                              },
-                              "description": "누적통계"
+                              }
                             }
                           }
                         }
@@ -2301,29 +2164,6 @@
                       ]
                     }
                   ]
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "progress": [
-                      {
-                        "progressId": "1001",
-                        "studentId": "1001",
-                        "trainingTemplateId": "1001",
-                        "trainingAchievementRate": 85.5
-                      }
-                    ],
-                    "cumulativeStatistics": [
-                      {
-                        "cumulativeStatisticsId": "1001",
-                        "wordId": "1001",
-                        "studentId": "1001",
-                        "wordMasteryRate": 85.5,
-                        "totalAttemptCount": 1,
-                        "lastAttemptDate": "2026-07-24"
-                      }
-                    ]
-                  }
                 }
               }
             }
@@ -2348,9 +2188,9 @@
           "GR-STAT-01",
           "GR-COM-02"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
+        "description": "daily_curriculums와 trainings를 조인하여 해당 학생의 status=COMPLETED 훈련 행을 training_template_id별로 COUNT한다. 동일 템플릿을 다시 완료하면 완료 건마다 1회로 계산한다. 클라이언트는 min(completedCount, 5)를 성장 단계로 사용하며 0회는 초기 상태, 1~4회는 매회 한 단계 성장, 5회 이상은 만개로 표시한다.",
         "x-notion-request-summary": "studentId(path)",
-        "x-notion-response-summary": "진행도[] {\n  진행도id\n  학습자id\n  훈련템플릿id\n  훈련성취율\n}\n누적통계[] {\n  누적통계id\n  단어id\n  학습자id\n  단어 능숙률\n  누적시도횟수\n  최근시도일자\n}",
+        "x-notion-response-summary": "trainingProgress[] {\n  trainingTemplateId\n  trainingTemplateName\n  completedCount\n}",
         "x-review-status": "reviewed",
         "security": [
           {
@@ -3464,8 +3304,9 @@
                               "description": "훈련 완료 상태"
                             },
                             "accuracy": {
-                              "type": "number",
-                              "description": "AI가 평가한 0~100 정확도"
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "AI가 평가한 0~1000 훈련 정확도"
                             },
                             "completedAt": {
                               "type": "string",
@@ -3486,18 +3327,6 @@
                       ]
                     }
                   ]
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "trainingHistoryId": "1001",
-                    "endedAt": "2026-07-24T12:00:00+09:00",
-                    "trainingStatus": "COMPLETED",
-                    "trainingResult": {},
-                    "accuracyRate": 85.5,
-                    "progressId": "1001",
-                    "trainingAchievementRate": 85.5
-                  }
                 }
               }
             }

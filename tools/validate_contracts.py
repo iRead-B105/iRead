@@ -335,11 +335,9 @@ def validate_schema() -> tuple[list[str], dict[str, int]]:
         baseline_sql = flyway_baseline.read_text(encoding="utf-8-sig")
         baseline_tables = set(re.findall(r"CREATE TABLE `([^`]+)`", baseline_sql))
         current_tables = set(re.findall(r"CREATE TABLE `([^`]+)`", sql))
-        missing_baseline_tables = baseline_tables - current_tables
-        if missing_baseline_tables:
+        if baseline_sql != sql:
             errors.append(
-                "schema contract is missing Flyway V1 tables: "
-                f"{sorted(missing_baseline_tables)}"
+                "schema contract must exactly match the single Flyway V1 baseline"
             )
     migration_files = sorted(FLYWAY_MIGRATIONS.glob("V*__*.sql"))
     migration_versions = [
@@ -349,8 +347,8 @@ def validate_schema() -> tuple[list[str], dict[str, int]]:
     ]
     if len(migration_versions) != len(set(migration_versions)):
         errors.append("duplicate backend Flyway migration version")
-    if not (FLYWAY_MIGRATIONS / "V2__auth_jwt_contract.sql").is_file():
-        errors.append("missing backend Flyway V2 auth migration")
+    if [path.name for path in migration_files] != ["V1__baseline_schema.sql"]:
+        errors.append("backend Flyway must use a single V1 baseline before DB rollout")
     tables = re.findall(r"CREATE TABLE `([^`]+)` \((.*?)\);", sql, re.DOTALL)
     primary_keys = re.findall(r"\bPRIMARY KEY\b", sql, re.IGNORECASE)
     foreign_keys = re.findall(r"\bFOREIGN KEY\s*\(", sql, re.IGNORECASE)
@@ -363,41 +361,48 @@ def validate_schema() -> tuple[list[str], dict[str, int]]:
             f"{len(tables)}/{len(primary_keys)}"
         )
     table_names = {name for name, _ in tables}
-    if "story_choices" in table_names:
-        errors.append("obsolete story_choices table remains")
     if "test" in table_names or "tests" not in table_names:
         errors.append("test table must use the backend-compatible name tests")
-    legacy_data_tables = {"training_datas", "test_datas"} & table_names
-    if legacy_data_tables:
+    renamed_data_tables = {"training_contents", "test_questions"} & table_names
+    if renamed_data_tables:
         errors.append(
-            f"legacy data table names remain: {sorted(legacy_data_tables)}"
+            f"renamed data table names remain: {sorted(renamed_data_tables)}"
         )
-    for required_table in ("training_contents", "test_questions"):
-        if required_table not in table_names:
-            errors.append(f"required table is missing: {required_table}")
     for required_table in (
-        "auth_refresh_sessions",
-        "auth_revoked_access_tokens",
+        "training_datas",
+        "test_datas",
+        "test_curriculums",
+        "story_scenes",
+        "story_choices",
     ):
         if required_table not in table_names:
-            errors.append(f"required auth table is missing: {required_table}")
+            errors.append(f"required table is missing: {required_table}")
+    if "auth_refresh_sessions" not in table_names:
+        errors.append("required auth table is missing: auth_refresh_sessions")
+    if "auth_revoked_access_tokens" in table_names:
+        errors.append("unused auth_revoked_access_tokens table remains")
+    application_assigned_ids = {"test_curriculums", "test_datas"}
     for table_name, definition in tables:
         id_column = re.search(r"`id`\s+bigint\s+NOT NULL([^\n]*)", definition)
-        if id_column and "AUTO_INCREMENT" not in id_column.group(1):
+        if (
+            id_column
+            and table_name not in application_assigned_ids
+            and "AUTO_INCREMENT" not in id_column.group(1)
+        ):
             errors.append(f"{table_name}.id must be AUTO_INCREMENT")
     story = dict(tables).get("stories", "")
     story_lines = dict(tables).get("story_lines", "")
     if "CHK_STORIES_PROGRESS" not in story:
         errors.append("stories progress check is missing")
-    if "requires_branch_input" not in story_lines:
-        errors.append("story_lines.requires_branch_input is missing")
+    if "has_choices" not in story_lines:
+        errors.append("story_lines.has_choices is missing")
     if re.search(r"\blong\b", sql, re.IGNORECASE) or "timestmap" in sql.lower():
         errors.append("legacy invalid MySQL type remains")
     forbidden_identifiers = (
         "achivement",
         "created__at",
         "story_templates_id",
-        "`train_id`",
+        "`login_id`",
         "`Field`",
         "`Field2`",
     )
@@ -406,66 +411,56 @@ def validate_schema() -> tuple[list[str], dict[str, int]]:
             errors.append(f"legacy schema identifier remains: {identifier}")
     required_fragments = (
         "CREATE TABLE `tests`",
-        "`training_id`\tbigint\tNOT NULL",
-        "`progress`\ttinyint unsigned\tNOT NULL",
-        "`previous_line_id`\tbigint\tNULL",
-        "`requires_branch_input`\tboolean\tNOT NULL",
-        "`student_word_stats`",
-        "`student_id`\tbigint\tNOT NULL",
-        "`word_id`\tbigint\tNOT NULL",
-        "`correct_count`\tint unsigned\tNOT NULL",
-        "`failed_count`\tint unsigned\tNOT NULL",
-        "`use_location`\tvarchar(10)\tNOT NULL",
-        "`total_score`\tint unsigned\tNOT NULL",
-        "`is_representative`\tboolean\tNOT NULL",
-        "`start_date`\tdate\tNOT NULL",
-        "`end_date`\tdate\tNOT NULL",
-        "UK_STUDENT_WORD_STATS",
+        "CREATE TABLE `test_curriculums`",
+        "CREATE TABLE `story_scenes`",
+        "CREATE TABLE `story_choices`",
+        "`train_id` bigint NOT NULL",
+        "`progress` tinyint unsigned NOT NULL",
+        "`scene_id` bigint NOT NULL",
+        "`has_choices` boolean NOT NULL",
+        "`use_location` varchar(10) NOT NULL",
+        "`data` json NULL",
+        "`start_date` timestamp NOT NULL",
+        "`end_date` timestamp NOT NULL",
         "UK_STORY_LINES_SEQUENCE",
+        "UK_STORY_CHOICES_STORY_LINE",
+        "UK_TESTS_SEQUENCE",
         "FK_STORIES_STUDENT",
         "FK_STORIES_STORY_TEMPLATE",
+        "FK_STORY_SCENES_STORY",
+        "FK_STORY_LINES_SCENE",
+        "FK_STORY_CHOICES_STORY_LINE",
+        "FK_TESTS_TEST_CURRICULUM",
+        "FK_TESTS_TRAINING_TEMPLATE",
+        "FK_TEST_CURRICULUMS_STUDENT",
+        "FK_TEST_DATAS_TEST",
         "FK_REPORTS_STUDENT",
+        "CHK_AUTH_REFRESH_SESSIONS_AUDIENCE",
         "CHK_GAZE_SESSIONS_CONTENT",
+        "CHK_WORD_ATTEMPT_LOGS_LOCATION",
         "CHK_REPORTS_PERIOD",
-        "`login_id`\tvarchar(50)\tNOT NULL",
-        "UK_TEACHERS_LOGIN_ID",
+        "UK_TEACHERS_EMAIL",
         "UK_AUTH_REFRESH_SESSIONS_TOKEN_HASH",
     )
     for fragment in required_fragments:
         if fragment not in sql:
             errors.append(f"required schema contract is missing: {fragment}")
-    obsolete_backend_files = (
-        BACKEND_JAVA
-        / "com/iread/backend/story/domain/StoryChoiceEntity.java",
-        BACKEND_JAVA
-        / "com/iread/backend/story/repository/StoryChoiceRepository.java",
-    )
-    for path in obsolete_backend_files:
-        if path.exists():
-            errors.append(f"obsolete Backend story choice model remains: {path}")
-    backend_sources = "\n".join(
-        path.read_text(encoding="utf-8")
-        for path in BACKEND_JAVA.rglob("*.java")
-    )
-    backend_required_fragments = (
-        '@Table(name = "tests")',
-        '@Table(name = "training_contents")',
-        '@JoinColumn(name = "training_id"',
-        '@Column(name = "requires_branch_input"',
-        '@Column(name = "is_representative"',
-        "private int progress;",
-    )
-    for fragment in backend_required_fragments:
-        if fragment not in backend_sources:
-            errors.append(f"Backend schema alignment is missing: {fragment}")
-    for fragment in ('@Table(name = "story_choices")', '@JoinColumn(name = "train_id"'):
-        if fragment in backend_sources:
-            errors.append(f"obsolete Backend schema mapping remains: {fragment}")
-    if len(foreign_keys) < 20:
+    removed_tables = {
+        "student_study_progresses",
+        "student_word_stats",
+        "sounds",
+        "images",
+        "videos",
+    } & table_names
+    if removed_tables:
+        errors.append(
+            f"tables removed by the approved ERD remain: {sorted(removed_tables)}"
+        )
+    if len(foreign_keys) < 31:
         errors.append(
             f"schema has too few foreign keys: {len(foreign_keys)}"
         )
-    if len(unique_constraints) < 8:
+    if len(unique_constraints) < 11:
         errors.append(
             f"schema has too few unique constraints: {len(unique_constraints)}"
         )

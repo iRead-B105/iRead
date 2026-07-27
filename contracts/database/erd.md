@@ -10,6 +10,7 @@ timestamp: 2026-07-25T00:00:00+09:00
 - 상태: generated
 - 기준 원본: [Backend Flyway migrations](../../services/backend/src/main/resources/db/migration/)
 - 검토용 미러: [schema.sql](schema.sql)
+- 확정 설계 이미지: [erd.png](erd.png)
 - 생성 명령: `python tools/generate_erd.py`
 
 이 파일은 `contracts/database/schema.sql`의 테이블과 외래 키에서 자동 생성한다. 직접 수정하지 않고 스키마를 변경한 뒤 생성 명령을 다시 실행한다.
@@ -30,7 +31,7 @@ erDiagram
         DATE birthday "nullable"
         VARCHAR_10 gender "nullable"
         VARCHAR_20 school "nullable"
-        VARCHAR_100 guardian "nullable"
+        VARCHAR_10 guardian "nullable"
         VARCHAR_20 guardian_contact "nullable"
         VARCHAR_50 guardian_email "nullable"
         VARCHAR_100 address "nullable"
@@ -38,31 +39,32 @@ erDiagram
         VARCHAR_255 image_url "nullable"
         TEXT teacher_memo "nullable"
     }
+    auth_refresh_sessions {
+        BIGINT id PK "required"
+        BIGINT teacher_id FK "required"
+        BIGINT student_id FK "nullable"
+        VARCHAR_30 audience "required"
+        CHAR_64 token_hash "required"
+        TIMESTAMP expires_at "required"
+        TIMESTAMP revoked_at "nullable"
+        TIMESTAMP created_at "required"
+    }
     curriculum_units {
         BIGINT id PK "required"
         VARCHAR_50 unit_name "required"
-        INT sequence_no "required"
-    }
-    sounds {
-        BIGINT id PK "required"
-        INT question_number "required"
-        VARCHAR_255 original_file_name "required"
-        BIGINT file_size "required"
-        TIMESTAMP created_at "required"
-        VARCHAR_255 store_file_name "required"
-        VARCHAR_255 url "required"
+        INT sequence_no "nullable"
     }
     story_templates {
         BIGINT id PK "required"
         VARCHAR_50 title "required"
         TEXT content "required"
+        VARCHAR_255 image_url "nullable"
     }
-    images {
-        BIGINT id PK "required"
-        VARCHAR_255 original_file_name "required"
-        VARCHAR_255 store_file_name "required"
-        BIGINT file_size "required"
-        VARCHAR_255 url "required"
+    story_scenes {
+        BIGINT scene_id PK "required"
+        BIGINT story_id FK "required"
+        VARCHAR_255 image_url "nullable"
+        INT sequence_no "required"
         TIMESTAMP created_at "required"
     }
     word_categories {
@@ -70,9 +72,9 @@ erDiagram
         BIGINT word_id FK "required"
         VARCHAR_50 category_name "required"
     }
-    training_contents {
+    training_datas {
         BIGINT id PK "required"
-        BIGINT training_id FK "required"
+        BIGINT train_id FK "required"
         JSON generated_data "nullable"
         TIMESTAMP created_at "nullable"
     }
@@ -83,11 +85,6 @@ erDiagram
         TIMESTAMP created_at "required"
         VARCHAR_30 status "required"
         TINYINT_UNSIGNED progress "required"
-    }
-    test_questions {
-        VARCHAR_255 id PK "required"
-        BIGINT test_id FK "required"
-        JSON question "nullable"
     }
     gaze_analysis_results {
         BIGINT id PK "required"
@@ -107,25 +104,10 @@ erDiagram
         VARCHAR_20 content_type "required"
         TIMESTAMP started_at "required"
         TIMESTAMP ended_at "nullable"
+        JSON data "nullable"
         VARCHAR_20 status "required"
         VARCHAR_20 calibration_status "required"
         TIMESTAMP created_at "required"
-    }
-    student_study_progresses {
-        BIGINT id PK "required"
-        BIGINT student_id FK "required"
-        BIGINT training_template_id FK "required"
-        TINYINT_UNSIGNED achievement "required"
-    }
-    student_word_stats {
-        BIGINT id PK "required"
-        BIGINT student_id FK "required"
-        BIGINT word_id FK "required"
-        DECIMAL_5_2 word_score "required"
-        INT_UNSIGNED correct_count "required"
-        INT_UNSIGNED failed_count "required"
-        INT_UNSIGNED attempt_count "required"
-        TIMESTAMP updated_at "nullable"
     }
     words {
         BIGINT id PK "required"
@@ -135,24 +117,14 @@ erDiagram
     reports {
         BIGINT id PK "required"
         BIGINT student_id FK "required"
-        DATE start_date "required"
-        DATE end_date "required"
-        JSON snapshot_data "required"
+        TIMESTAMP start_date "required"
+        TIMESTAMP end_date "required"
+        JSON snapshot_data "nullable"
         TEXT teacher_memo "nullable"
         TIMESTAMP created_at "required"
     }
-    videos {
-        BIGINT id PK "required"
-        INT question_number "required"
-        VARCHAR_255 original_file_name "required"
-        BIGINT file_size "required"
-        TIMESTAMP created_at "required"
-        VARCHAR_255 store_file_name "required"
-        VARCHAR_255 url "required"
-    }
     teachers {
         BIGINT id PK "required"
-        VARCHAR_50 login_id "required"
         VARCHAR_50 email "required"
         VARCHAR_100 password "required"
         VARCHAR_10 name "required"
@@ -161,27 +133,10 @@ erDiagram
         VARCHAR_10 gender "nullable"
         VARCHAR_255 image_url "nullable"
     }
-    auth_refresh_sessions {
-        BIGINT id PK "required"
-        BIGINT teacher_id FK "required"
-        BIGINT student_id FK "nullable"
-        VARCHAR_30 audience "required"
-        CHAR_64 token_hash "required"
-        TIMESTAMP expires_at "required"
-        TIMESTAMP revoked_at "nullable"
-        TIMESTAMP created_at "required"
-    }
-    auth_revoked_access_tokens {
-        CHAR_36 token_id PK "required"
-        TIMESTAMP expires_at "required"
-        TIMESTAMP revoked_at "required"
-    }
     story_lines {
         BIGINT id PK "required"
-        BIGINT story_id FK "required"
-        BIGINT previous_line_id "nullable"
-        VARCHAR_255 image_url "nullable"
-        BOOLEAN requires_branch_input "required"
+        BIGINT scene_id FK "required"
+        BOOLEAN has_choices "required"
         TEXT content "required"
         INT sequence_no "required"
         TIMESTAMP created_at "required"
@@ -191,9 +146,9 @@ erDiagram
         BIGINT id PK "required"
         BIGINT student_id FK "required"
         BIGINT word_id FK "required"
-        BIGINT story_line_id "nullable"
-        BIGINT training_id "nullable"
-        BIGINT test_id "nullable"
+        BIGINT story_line_id FK "nullable"
+        BIGINT training_id FK "nullable"
+        BIGINT test_id FK "nullable"
         VARCHAR_10 use_location "required"
         VARCHAR_50 surface_text "nullable"
         BOOLEAN has_gaze_data "required"
@@ -208,14 +163,21 @@ erDiagram
         INT speech_start_offset_ms "nullable"
         INT speech_end_offset_ms "nullable"
         BOOLEAN is_correct "nullable"
-        INT_UNSIGNED total_score "required"
-        TIMESTAMP created_at "required"
+        TIMESTAMP created_at "nullable"
+        INT total_score "nullable"
     }
     character {
         BIGINT id PK "required"
         BIGINT student_id FK "required"
+        BIGINT story_id FK "required"
         VARCHAR_255 image_url "nullable"
-        BOOLEAN is_representative "required"
+        TIMESTAMP created_at "required"
+        VARCHAR_50 name "nullable"
+    }
+    story_choices {
+        BIGINT id PK "required"
+        BIGINT story_line_id FK "required"
+        TEXT content "required"
         TIMESTAMP created_at "required"
     }
     trainings {
@@ -228,7 +190,7 @@ erDiagram
         TIMESTAMP finished_at "nullable"
         VARCHAR_20 status "required"
         JSON result "nullable"
-        DECIMAL_5_2 accuracy "nullable"
+        INT accuracy "nullable"
     }
     daily_curriculums {
         BIGINT id PK "required"
@@ -239,37 +201,58 @@ erDiagram
     }
     tests {
         BIGINT id PK "required"
-        BIGINT student_id FK "required"
-        TIMESTAMP created_at "required"
+        BIGINT test_curriculum_id FK "required"
+        BIGINT training_template_id FK "required"
         VARCHAR_20 status "nullable"
         JSON result "nullable"
-        DECIMAL_5_2 accuracy "nullable"
+        DECIMAL accuracy "nullable"
+        TIMESTAMP created_at "required"
+        TIMESTAMP started_at "nullable"
+        TIMESTAMP finished_at "nullable"
+        INT sequence_no "required"
+    }
+    test_curriculums {
+        BIGINT id PK "required"
+        BIGINT student_id FK "required"
+        VARCHAR_20 status "required"
+        TIMESTAMP created_at "nullable"
+        TIMESTAMP completed_at "nullable"
+    }
+    test_datas {
+        BIGINT id PK "required"
+        BIGINT test_id FK "required"
+        JSON generated_data "nullable"
+        TIMESTAMP created_at "nullable"
     }
     teachers ||--o{ students : "teacher_id"
     teachers ||--o{ auth_refresh_sessions : "teacher_id"
     students o|--o{ auth_refresh_sessions : "student_id"
     curriculum_units ||--o{ training_templates : "curriculum_unit_id"
+    stories ||--o{ story_scenes : "story_id"
     words ||--o{ word_categories : "word_id"
-    trainings ||--o{ training_contents : "training_id"
+    trainings ||--o{ training_datas : "train_id"
     students ||--o{ stories : "student_id"
     story_templates ||--o{ stories : "story_template_id"
-    tests ||--o{ test_questions : "test_id"
     gaze_sessions ||--o{ gaze_analysis_results : "gaze_session_id"
     students ||--o{ gaze_sessions : "student_id"
     tests o|--o{ gaze_sessions : "test_id"
     trainings o|--o{ gaze_sessions : "training_id"
     stories o|--o{ gaze_sessions : "story_id"
-    students ||--o{ student_study_progresses : "student_id"
-    training_templates ||--o{ student_study_progresses : "training_template_id"
-    students ||--o{ student_word_stats : "student_id"
-    words ||--o{ student_word_stats : "word_id"
     students ||--o{ reports : "student_id"
-    stories ||--o{ story_lines : "story_id"
+    story_scenes ||--o{ story_lines : "scene_id"
     students ||--o{ word_attempt_logs : "student_id"
     words ||--o{ word_attempt_logs : "word_id"
+    story_lines o|--o{ word_attempt_logs : "story_line_id"
+    trainings o|--o{ word_attempt_logs : "training_id"
+    tests o|--o{ word_attempt_logs : "test_id"
     students ||--o{ character : "student_id"
+    stories ||--o{ character : "story_id"
+    story_lines ||--o{ story_choices : "story_line_id"
     training_templates ||--o{ trainings : "training_template_id"
     daily_curriculums ||--o{ trainings : "daily_curriculum_id"
     students ||--o{ daily_curriculums : "student_id"
-    students ||--o{ tests : "student_id"
+    test_curriculums ||--o{ tests : "test_curriculum_id"
+    training_templates ||--o{ tests : "training_template_id"
+    students ||--o{ test_curriculums : "student_id"
+    tests ||--o{ test_datas : "test_id"
 ```

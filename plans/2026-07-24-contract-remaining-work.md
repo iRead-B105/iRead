@@ -24,7 +24,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 - Backend–AI 내부 API 7건을 별도 OpenAPI 계약으로 관리한다.
 - MySQL 8.4.x LTS 스키마는 테이블 24개와 외래 키 25개를 포함한다.
 - Backend는 계약 스키마와 동일한 Flyway V1을 사용하며 Hibernate는 스키마를 검증만 한다.
-- 생성 콘텐츠 테이블은 의미에 맞는 `training_contents`, `test_questions` 명칭을 사용한다.
+- 생성 콘텐츠 테이블은 기존 SQL 물리 명칭인 `training_datas`, `test_datas`를 사용한다.
 - App·Admin·Auth OpenAPI의 성공·오류 응답은 공통 `components`를 사용한다.
 - MySQL ERD는 스키마 계약에서 Mermaid 문서로 자동 생성한다.
 - 별도 이야기 진행률·완료 API는 음성 분기 생성 API로 통합했다.
@@ -54,7 +54,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 
 ## 선택 작업
 
-- [x] SQL 테이블 명칭을 `training_contents`, `test_questions`로 개선한다.
+- [x] SQL 생성 콘텐츠 테이블 명칭은 `training_datas`, `test_datas`로 유지한다.
 - [x] OpenAPI 공통 성공·오류 스키마와 오류 응답을 `components`로 추출한다.
 - [x] `schema.sql`에서 Mermaid ERD 문서를 자동 생성한다.
 - [ ] 명시적으로 요청된 Notion 원본 변경의 재수집과 API 호환성 검사를 자동화한다.
@@ -97,6 +97,11 @@ timestamp: 2026-07-24T00:00:00+09:00
 - 2026-07-24: Notion은 이관 출처로만 보존하고 Git 계약을 외부 Notion에 역동기화하지 않기로 확정했다.
 - 2026-07-24: 데모 전용 범위를 확정하고 별도 동의 데이터의 장기 보관, 로컬·Docker MySQL과 기본 API 보안 기준을 ADR-0008로 기록했다.
 - 2026-07-25: 생성 콘텐츠 테이블을 `training_contents`, `test_questions`로 정리하고 Flyway·엔티티·계약 SQL을 동기화했다.
+- 2026-07-27: 위 명칭 변경은 ADR-0011로 대체했으며 확정 ERD의 `training_datas`, `test_datas`, `train_id`를 다시 기준으로 채택했다.
+- 2026-07-27: DB 적용 전 사용자 결정에 따라 생성 콘텐츠 테이블과 FK를 `training_datas`, `test_datas`, `train_id`로 되돌려 유지했다.
+- 2026-07-27: 인증 스키마를 단일 V1에 통합하고 refresh session만 저장하며 access token 폐기 테이블은 사용하지 않기로 확정했다.
+- 2026-07-27: 교수자 로그인 식별자를 별도 `login_id` 없이 `teachers.email` 하나로 통일했다.
+- 2026-07-27: 이야기 분기 여부의 DB 물리 컬럼은 기존 SQL 명칭인 `story_lines.has_choices`를 유지하고 API 의미는 `requiresBranchInput`으로 분리했다.
 - 2026-07-25: App·Admin·Auth OpenAPI의 성공·오류 응답을 공통 `components`로 추출했다.
 - 2026-07-25: MySQL 스키마의 테이블 24개와 외래 키 25개를 Mermaid ERD로 자동 생성하는 도구와 문서를 추가했다.
 
