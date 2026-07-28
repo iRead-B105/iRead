@@ -15,8 +15,8 @@ iRead는 난독증 또는 읽기곤란 위험이 있는 초등 저학년 아동�
 | 영역 | 역할 | 저장소 |
 | --- | --- | --- |
 | Backend | 도메인, API와 데이터베이스 | [iRead-backend](https://github.com/iRead-B105/iRead-backend) |
-| Frontend | 웹 사용자 인터페이스 | [iRead-frontend](https://github.com/iRead-B105/iRead-frontend) |
-| 아동 앱 | 아동용 읽기 훈련 애플리케이션 | [iRead-app](https://github.com/iRead-B105/iRead-app) |
+| Frontend | 웹 사용자 인터페이스 | [iRead-frontend-web](https://github.com/iRead-B105/iRead-frontend-web) |
+| 아동 앱 | 아동용 읽기 훈련 애플리케이션 | [iRead-frontend-app](https://github.com/iRead-B105/iRead-frontend-app) |
 | AI server | AI 기능 서비스 | [iRead-ai](https://github.com/iRead-B105/iRead-ai) |
 | 시선 추적 | Tobii 기반 시선 수집·보정 프로토타입 | [iRead-eyetracking](https://github.com/iRead-B105/iRead-eyetracking) |
 

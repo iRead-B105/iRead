@@ -4,7 +4,7 @@
 	branch = develop
 [submodule "services/frontend"]
 	path = services/frontend
-	url = https://github.com/iRead-B105/iRead-frontend.git
+	url = https://github.com/iRead-B105/iRead-frontend-web.git
 	branch = develop
 [submodule "services/ai"]
 	path = services/ai
@@ -12,7 +12,7 @@
 	branch = develop
 [submodule "services/app"]
 	path = services/app
-	url = https://github.com/iRead-B105/iRead-app.git
+	url = https://github.com/iRead-B105/iRead-frontend-app.git
 	branch = develop
 [submodule "services/eyetracking"]
 	path = services/eyetracking
