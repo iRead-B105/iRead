@@ -19,7 +19,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 | 서비스 | 저장소 | submodule 경로 |
 | --- | --- | --- |
 | Backend | `iRead-B105/iRead-backend` | `services/backend` |
-| Frontend | `iRead-B105/iRead-frontend` | `services/frontend` |
+| Frontend | `iRead-B105/iRead-frontend-web` | `services/frontend` |
 | AI server | `iRead-B105/iRead-ai` | `services/ai` |
 
 - 세 submodule은 원격 `develop`을 갱신 기준으로 사용한다.

@@ -16,7 +16,7 @@ iRead 오케스트레이션과 서비스 저장소의 공개 범위 및 공개 �
 
 ## 결정
 
-- `iRead`, `iRead-backend`, `iRead-frontend`, `iRead-ai`를 공개 저장소로 운영한다.
+- `iRead`, `iRead-backend`, `iRead-frontend-web`, `iRead-ai`를 공개 저장소로 운영한다.
 - 각 저장소는 `main`, `develop`을 사용하고 기본 브랜치는 `develop`으로 지정한다.
 - `main`은 PR과 승인 1명을 요구하며 force push와 삭제를 금지한다.
 - `develop`은 작은 변경의 직접 push를 허용하되 force push와 삭제를 금지한다.
