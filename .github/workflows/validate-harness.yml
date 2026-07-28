@@ -12,6 +12,11 @@ on:
       - "contracts/**/*.md"
       - "docs/**"
       - "plans/**"
+      - "services/ai"
+      - "services/app"
+      - "services/backend"
+      - "services/eyetracking"
+      - "services/frontend"
       - "tools/validate_harness.py"
       - "tools/tests/test_validate_harness.py"
   push:
@@ -28,6 +33,11 @@ on:
       - "contracts/**/*.md"
       - "docs/**"
       - "plans/**"
+      - "services/ai"
+      - "services/app"
+      - "services/backend"
+      - "services/eyetracking"
+      - "services/frontend"
       - "tools/validate_harness.py"
       - "tools/tests/test_validate_harness.py"
   workflow_dispatch:
