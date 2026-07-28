@@ -40,34 +40,39 @@ timestamp: 2026-07-28T00:00:00+09:00
 | BE-010 | P0 | AI 없는 데모용 결정적 fixture provider 구현 | 훈련 생성·평가, 이야기, STT·TTS 대체 결과 | BE-001 | done |
 | BE-011 | P1 | 비식별 데모 seed와 파일·DB 초기화 절차 작성 | Flyway, 데모 데이터, `audio/` | BE-001 | done |
 | BE-012 | P1 | OpenAPI 기준 오류 응답과 입력 검증 통일 | Auth·Admin·App 전체 | BE-002~BE-010 | done |
-| BE-013 | P0 | 맞춤 훈련 생성 기능·OpenAPI·JSON 계약 확정 | 33개 `trainingType`, AI 후보 `{type,data}`, 최종 `generated_data` V2 | BE-005, BE-008 | blocked |
-| BE-014 | P0 | 최종 ERD 기준 읽기 특징 스키마와 엔티티 정합화 | `reading_features`, `student_feature_profiles`, Flyway V1 | BE-001, BE-013 | todo |
-| BE-015 | P0 | 읽기 특징·훈련 템플릿 멱등 초기화 구현 | 자모·음절·음운 규칙 특징, 33개 `training_templates.prompt` JSON | BE-014 | todo |
-| BE-016 | P0 | 최종 훈련 데이터 모델과 타입별 구조 검증기 구현 | `questionNo`, `content`, `answer`, `analysisTargets`, profile snapshot | BE-013, BE-015 | todo |
-| BE-017 | P0 | 한국어 형태·자모·G2P·음운 규칙 분석기 구현 | KOMORAN 3.3.9, 자모 특징, 주요 음운 규칙 7종 | BE-014, BE-015 | todo |
-| BE-018 | P0 | 33개 훈련 타입 AI 후보 Mock provider 구현 | 공통 프롬프트, 타입별 출력 형식, `count=5`, 비식별 요청 | BE-010, BE-013, BE-015 | todo |
-| BE-019 | P0 | 후보 분석·검증·보충 생성·최종 저장 오케스트레이션 구현 | 통과 문항 유지, 최대 3회 재생성, `training_datas` 원자 저장 | BE-016~BE-018 | todo |
-| BE-020 | P0 | 일시 음성 업로드와 발음 분석 Mock adapter 구현 | multipart 수신, 원본 미보관, 발음·오류·신뢰도 결과 | BE-010, BE-013 | todo |
-| BE-021 | P0 | 최종 단어 시도 연결과 발음 상세 결과 집계 구현 | `trainings.result`의 로그 ID·문항 위치·발음 상세, 마지막 확정 시도만 반영 | BE-016, BE-020 | todo |
-| BE-022 | P0 | 학생별 특징 프로필 계산·조회 구현 | `WEAKNESS_V1`, 고정 임계값, 신뢰도·상태 계산 | BE-017, BE-021, BE-026 | todo |
-| BE-023 | P1 | 커리큘럼 완료 후 다음 맞춤 목록 자동 편성 구현 | 직접 보완 3개, 확장 1개, 복습·유창성 1개 | BE-015, BE-022 | todo |
-| BE-024 | P1 | 생성 전 커리큘럼 편집과 생성 후 잠금 구현 | 교사 목록·순서·유형 편집, 생성 완료 후 수정 금지 | BE-023 | todo |
-| BE-025 | P1 | 매일 03:00 커리큘럼 훈련 데이터 생성 배치 구현 | Asia/Seoul, 5개 전체 성공 시 저장·잠금 | BE-019, BE-024 | todo |
-| BE-026 | P1 | 단어 단위 시선 분석 연동·Mock adapter 구현 | 응시 시간·횟수·회귀·건너뛰기, 원시 좌표 비전달 | BE-009, BE-010, BE-013 | todo |
-| BE-027 | P0 | 맞춤 생성 파이프라인 계약·통합·보안 회귀 테스트 | MySQL, 33개 타입, 분석 규칙, 배치 원자성, 개인정보 차단 | BE-013~BE-026 | todo |
+| BE-013 | P0 | 맞춤 훈련 생성 기능·OpenAPI·JSON 계약 확정 | 34개 `trainingType`, AI 후보 `{type,data}`, 최종 `generated_data` V2 | BE-005, BE-008 | done |
+| BE-014 | P0 | 최종 ERD 기준 읽기 특징 스키마와 엔티티 정합화 | `reading_features`, `student_feature_profiles`, Flyway V1 | BE-001, BE-013 | done |
+| BE-015 | P0 | 읽기 특징·훈련 템플릿 멱등 초기화 구현 | 자모·음절·음운 규칙 특징, 34개 `training_templates.prompt` JSON | BE-014 | done |
+| BE-016 | P0 | 최종 훈련 데이터 모델과 타입별 구조 검증기 구현 | `questionNo`, `content`, `answer`, `analysisTargets`, profile snapshot | BE-013, BE-015 | done |
+| BE-017 | P0 | 한국어 형태·자모·G2P·음운 규칙 분석기 구현 | KOMORAN 3.3.9, 자모 특징, 주요 음운 규칙 7종 | BE-014, BE-015 | done |
+| BE-018 | P0 | 34개 훈련 타입 AI 후보 Mock provider 구현 | 공통 프롬프트, 타입별 출력 형식, `count=5`, 비식별 요청 | BE-010, BE-013, BE-015 | done |
+| BE-019 | P0 | 후보 분석·검증·보충 생성·최종 저장 오케스트레이션 구현 | 통과 문항 유지, 최대 3회 재생성, `training_datas` 원자 저장 | BE-016~BE-018 | done |
+| BE-020 | P0 | 일시 음성 업로드와 발음 분석 Mock adapter 구현 | multipart 수신, 원본 미보관, 발음·오류·신뢰도 결과 | BE-010, BE-013 | done |
+| BE-021 | P0 | 최종 단어 시도 연결과 발음 상세 결과 집계 구현 | `trainings.result`의 로그 ID·문항 위치·발음 상세, 마지막 확정 시도만 반영 | BE-016, BE-020 | done |
+| BE-022 | P0 | 학생별 특징 프로필 계산·조회 구현 | `WEAKNESS_V1`, 고정 임계값, 신뢰도·상태 계산 | BE-017, BE-021, BE-026 | done |
+| BE-023 | P1 | 커리큘럼 완료 후 다음 맞춤 목록 자동 편성 구현 | 직접 보완 3개, 확장 1개, 복습·유창성 1개 | BE-015, BE-022 | done |
+| BE-024 | P1 | 생성 전 커리큘럼 편집과 생성 후 잠금 구현 | 교사 목록·순서·유형 편집, 생성 완료 후 수정 금지 | BE-023 | done |
+| BE-025 | P1 | 매일 03:00 커리큘럼 훈련 데이터 생성 배치 구현 | Asia/Seoul, 5개 전체 성공 시 저장·잠금 | BE-019, BE-024 | done |
+| BE-026 | P1 | 단어 단위 시선 분석 연동·Mock adapter 구현 | 응시 시간·횟수·회귀·건너뛰기, 원시 좌표 비전달 | BE-009, BE-010, BE-013 | done |
+| BE-027 | P0 | 맞춤 생성 파이프라인 계약·통합·보안 회귀 테스트 | MySQL, 34개 타입, 분석 규칙, 배치 원자성, 개인정보 차단 | BE-013~BE-026 | done |
 
 ### 2026-07-28 맞춤 훈련 데이터 생성 결정
 
 - 세부 실행 순서와 수용 기준은 [맞춤 훈련 데이터 생성 파이프라인 실행 계획](../../plans/2026-07-28-personalized-training-generation.md)을 따른다.
-- [BLOCKED] 훈련·이야기나라·학습의 Vue–Backend, Backend–AI, DB 저장 JSON 형식은 팀 협의 중이다. BE-013과 해당 계약에 의존하는 구현은 합의 전 완료 처리하거나 `develop`에 병합하지 않는다.
-- `feature/personalized-training-generation`은 다른 팀원이 작업 중인 브랜치이므로 수정하거나 이력을 재작성하지 않는다. 계약 독립 변경과 계약 의존 변경을 분리해 검토한다.
 - AI server는 훈련 후보와 발음 분석을 Mock 응답으로 제공한다. 형태소 분석, 자모 분해, G2P, 읽기 특징 판정, 취약도 계산과 최종 저장 여부는 Backend가 결정한다.
 - 최종 ERD 이미지를 기준으로 단일 Flyway V1을 수정한다. `word_attempt_logs`에는 `question_no`, `token_index`를 추가하지 않고 `trainings.result`에서 최종 `wordAttemptLogId`와 문항·토큰 위치를 연결한다.
 - ERD에 없는 예상·관찰 발음, 발음 점수·신뢰도·오류 유형과 단어 읽기 시간도 `word_attempt_logs`에 추가하지 않고 같은 `trainings.result` 항목에 저장한다.
 - `student_feature_profiles.status`는 저장하지 않고 `weakness_score`에서 계산한다. 분석 버전은 코드 상수와 `profileSnapshot`에 저장한다.
 - DB의 발음·취약도 점수는 `0~1000`, API와 생성 JSON은 각각 `0~100`, `0~1`로 변환한다.
-- 현재 커리큘럼 전체 완료 직후 최신 프로필을 갱신하고 다음 커리큘럼 목록 약 5개를 편성한다. 교사는 03:00 생성 전까지 목록을 편집할 수 있고 생성 성공 후에는 수정할 수 없다.
+- 현재 커리큘럼 전체 완료 직후 최신 프로필을 갱신하고 다음 커리큘럼 목록 5개를 편성한다. 교사는 03:00 생성 전까지 목록을 편집할 수 있고 생성 성공 후에는 수정할 수 없다.
 - 03:00 배치는 목록의 5개 훈련이 모두 검증에 성공했을 때만 결과를 한 번에 저장한다. 한 건이라도 실패하면 전체를 저장하거나 잠그지 않는다.
+
+### 2026-07-28 맞춤 훈련 데이터 생성 완료
+
+- Backend 기능 브랜치에서 119개 읽기 특징, 34개 훈련 템플릿, 형태·자모·G2P·7개 음운 규칙 분석, 후보 검증·재생성, 발음·시선 Mock adapter와 `WEAKNESS_V1` 프로필 갱신을 구현했다.
+- 커리큘럼 완료 직후 직접 보완 3개·확장 1개·복습·유창성 1개의 목록을 편성하고, 교사 편집은 정확히 5개를 유지하며 생성 전까지만 허용한다.
+- `Asia/Seoul` 03:00 배치는 커리큘럼 행 잠금과 상태 확인 후 5개를 모두 생성·검증하고, 전체 성공 시에만 한 트랜잭션으로 저장한다.
+- Backend 전체 테스트, 34개 타입 계약, 개인정보 비전달, 배치 실패·중복 실행, MySQL 8.4 Flyway·JPA 매핑, 계약·문서 하네스와 `git diff --check`를 검증했다.
 
 ### 2026-07-25 Backend 구현 검토
 

@@ -1,27 +1,27 @@
 ---
 type: Execution Plan
 title: "맞춤 훈련 데이터 생성 파이프라인"
-description: "학생별 읽기 취약도를 집계하고 33개 훈련 타입의 후보를 생성·검증하여 다음 커리큘럼에 배정하는 Backend 구현 계획입니다."
+description: "학생별 읽기 취약도를 집계하고 34개 훈련 타입의 후보를 생성·검증하여 다음 커리큘럼에 배정하는 Backend 구현 계획입니다."
 tags: [plan, backend, training, personalization, mysql, batch, mock-ai]
 timestamp: 2026-07-28T00:00:00+09:00
 ---
 # 맞춤 훈련 데이터 생성 파이프라인
 
-- 상태: blocked
+- 상태: completed
 - 작성일: 2026-07-28
 - 수정일: 2026-07-28
 - 대상: `services/backend`
 
 ## 기대 결과
 
-현재 커리큘럼을 완료한 학생의 단어별 정답·발음·시선·읽기 시간 근거로 특징별 취약도를 갱신하고, 다음 커리큘럼에 배정할 약 5개 훈련 목록을 즉시 편성한다. 교사가 목록을 편집한 뒤 매일 03:00 배치가 각 훈련에 5개 문항을 생성한다. Backend가 형태·자모·G2P·음운 규칙과 타입별 형식을 검증하고, 커리큘럼의 모든 훈련이 통과한 경우에만 `training_datas.generated_data`를 저장하고 목록을 잠근다.
+현재 커리큘럼을 완료한 학생의 단어별 정답·발음·시선·읽기 시간 근거로 특징별 취약도를 갱신하고, 다음 커리큘럼에 배정할 5개 훈련 목록을 즉시 편성한다. 교사가 목록을 편집한 뒤 매일 03:00 배치가 각 훈련에 5개 문항을 생성한다. Backend가 형태·자모·G2P·음운 규칙과 타입별 형식을 검증하고, 커리큘럼의 모든 훈련이 통과한 경우에만 `training_datas.generated_data`를 저장하고 목록을 잠근다.
 
 ## 범위
 
 ### 포함
 
 - 최종 `contracts/database/erd.png`에 있는 `reading_features`, `student_feature_profiles`를 Flyway V1·계약 SQL·Backend 엔티티에 반영한다.
-- 33개 훈련 타입과 타입별 프롬프트·출력 템플릿을 `training_templates.prompt` JSON으로 관리한다.
+- 34개 훈련 타입과 타입별 프롬프트·출력 템플릿을 `training_templates.prompt` JSON으로 관리한다.
 - AI 훈련 후보 생성, 발음 분석과 시선 분석의 결정적 Mock adapter를 구현한다.
 - KOMORAN 3.3.9 형태소 분석, 한글 자모 분해, G2P와 주요 음운 규칙 엔진을 Backend에 구현한다.
 - 수행 결과 집계, 특징별 취약도, 다음 커리큘럼 목록 편성, 교사 편집, 03:00 생성 배치를 구현한다.
@@ -144,33 +144,33 @@ AI 후보 응답은 유효한 JSON `{type, data[]}` 하나다. Backend는 후보
 
 ### 1. 계약과 기준선
 
-- [ ] **BE-013** 기능 명세, Backend–AI 내부 OpenAPI, App·Admin OpenAPI와 `generated_data` V2 계약을 먼저 확정한다.
-- [ ] **BE-014** 최종 ERD의 두 신규 테이블을 Flyway V1, `contracts/database/schema.sql`, 엔티티와 ERD 파생 문서에 동기화한다.
-- [ ] **BE-015** 읽기 특징과 33개 템플릿을 기존 행을 덮어쓰지 않는 멱등 초기화 코드로 등록한다.
+- [x] **BE-013** 기능 명세, Backend–AI 내부 OpenAPI, App·Admin OpenAPI와 `generated_data` V2 계약을 먼저 확정한다.
+- [x] **BE-014** 최종 ERD의 두 신규 테이블을 Flyway V1, `contracts/database/schema.sql`, 엔티티와 ERD 파생 문서에 동기화한다.
+- [x] **BE-015** 읽기 특징과 34개 템플릿을 기존 행을 덮어쓰지 않는 멱등 초기화 코드로 등록한다.
 
 ### 2. 생성 데이터와 언어 분석
 
-- [ ] **BE-016** 공통 봉투, 33개 타입별 `content`·`answer`, `analysisTargets` DTO와 검증기를 구현한다.
-- [ ] **BE-017** KOMORAN adapter, 자모 분석기, G2P와 7개 음운 규칙 엔진을 구현하고 분석 버전을 고정한다.
-- [ ] **BE-018** 모든 타입에 대해 동일 입력에 동일 후보를 반환하는 Mock provider를 구현한다.
-- [ ] **BE-019** 부분 통과 유지, 부족분 재요청, 중복 제거, 최종 문항 수 검증과 원자 저장을 구현한다.
+- [x] **BE-016** 공통 봉투, 34개 타입별 `content`·`answer`, `analysisTargets` DTO와 검증기를 구현한다.
+- [x] **BE-017** KOMORAN adapter, 자모 분석기, G2P와 7개 음운 규칙 엔진을 구현하고 분석 버전을 고정한다.
+- [x] **BE-018** 모든 타입에 대해 동일 입력에 동일 후보를 반환하는 Mock provider를 구현한다.
+- [x] **BE-019** 부분 통과 유지, 부족분 재요청, 중복 제거, 최종 문항 수 검증과 원자 저장을 구현한다.
 
 ### 3. 수행 근거와 프로필
 
-- [ ] **BE-020** multipart 음성을 일시 수신하고 저장하지 않은 채 발음 분석 Mock adapter로 전달한다.
-- [ ] **BE-021** 최종 단어 시도 ID, 문항·토큰 위치와 발음 상세 결과를 `trainings.result`에 연결하고 마지막 확정 시도만 선택한다.
-- [ ] **BE-026** 시선 추적 서버의 단어 단위 결과 adapter와 Mock 응답을 구현한다.
-- [ ] **BE-022** 특징별 근거 변환, 취약도·신뢰도·상태·난이도 계산과 프로필 upsert를 구현한다.
+- [x] **BE-020** multipart 음성을 일시 수신하고 저장하지 않은 채 발음 분석 Mock adapter로 전달한다.
+- [x] **BE-021** 최종 단어 시도 ID, 문항·토큰 위치와 발음 상세 결과를 `trainings.result`에 연결하고 마지막 확정 시도만 선택한다.
+- [x] **BE-026** 시선 추적 서버의 단어 단위 결과 adapter와 Mock 응답을 구현한다.
+- [x] **BE-022** 특징별 근거 변환, 취약도·신뢰도·상태·난이도 계산과 프로필 upsert를 구현한다.
 
 ### 4. 다음 커리큘럼과 배치
 
-- [ ] **BE-023** 특징 category·scope와 템플릿 호환 정보를 이용해 다음 커리큘럼 목록을 중복 없이 편성한다.
-- [ ] **BE-024** 생성 전 교사 편집과 생성 성공 후 수정 금지 규칙을 Admin API와 도메인 상태에 반영한다.
-- [ ] **BE-025** 매일 03:00 실행, 중복 실행 방지, 전체 성공 커밋과 실패 재시도를 포함한 배치를 구현한다.
+- [x] **BE-023** 특징 category·scope와 템플릿 호환 정보를 이용해 다음 커리큘럼 목록을 중복 없이 편성한다.
+- [x] **BE-024** 생성 전 교사 편집과 생성 성공 후 수정 금지 규칙을 Admin API와 도메인 상태에 반영한다.
+- [x] **BE-025** 매일 03:00 실행, 중복 실행 방지, 전체 성공 커밋과 실패 재시도를 포함한 배치를 구현한다.
 
 ### 5. 검증
 
-- [ ] **BE-027** 아래 필수 검증을 자동화하고 모두 성공한 뒤 관련 백로그만 `done`으로 변경한다.
+- [x] **BE-027** 아래 필수 검증을 자동화하고 모두 성공한 뒤 관련 백로그만 `done`으로 변경한다.
 
 ## 검증
 
@@ -179,7 +179,7 @@ AI 후보 응답은 유효한 JSON `{type, data[]}` 하나다. Backend는 후보
 - `python tools/validate_harness.py`
 - `git diff --check`
 - Backend 전체 테스트
-- 33개 `trainingType`별 정상·필수 필드 누락·배열 길이·인덱스·정답 위치 검증
+- 34개 `trainingType`별 정상·필수 필드 누락·배열 길이·인덱스·정답 위치 검증
 - 자모 전체와 7개 음운 규칙의 양성·음성·경계 사례
 - 낮은 음성 신뢰도, 시선 부담, 마지막 확정 시도와 점수 단위 변환 검증
 - 현재 커리큘럼 완료부터 프로필·다음 목록·교사 편집·03:00 생성·잠금까지 통합 테스트
@@ -187,12 +187,11 @@ AI 후보 응답은 유효한 JSON `{type, data[]}` 하나다. Backend는 후보
 - AI 요청의 이름·생년월일·연락처·학생 식별자·원본 시선 좌표 부재 검증
 - multipart 임시 파일이 성공·실패 모두에서 남지 않는지 검증
 
-## 미결 사항
+## 확정 사항
 
-- [BLOCKED] 훈련·이야기나라·학습의 Vue–Backend 입력·출력 JSON
-- [BLOCKED] Backend–AI 요청·응답 JSON
-- [BLOCKED] `training_datas.generated_data`, `trainings.result` 저장 JSON
-- [TBD] 기준 문서의 33개 훈련 타입과 작업 브랜치의 34개 템플릿 차이
+- Vue–Backend, Backend–AI 요청·응답과 DB 저장 JSON 계약을 확정했다.
+- `training_datas.generated_data`와 `trainings.result` 저장 구조를 계약 문서와 구현에 반영했다.
+- 훈련 타입은 자모 특징을 포함한 34개 템플릿을 기준으로 한다.
 
 ## 중요한 위험
 

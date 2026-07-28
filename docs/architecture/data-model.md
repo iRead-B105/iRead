@@ -3,16 +3,16 @@ type: Data Model
 title: MySQL 데이터 모델
 description: iRead MySQL 스키마의 확정 ERD, 실행 기준선과 도메인별 관계를 설명합니다.
 tags: [architecture, data-model, mysql, schema, erd]
-timestamp: 2026-07-27T00:00:00+09:00
+timestamp: 2026-07-28T00:00:00+09:00
 ---
 # MySQL 데이터 모델
 
 - 상태: accepted
-- 최종 검토일: 2026-07-27
+- 최종 검토일: 2026-07-28
 
 ## 결정
 
-주 데이터베이스는 [ADR-0006](../decisions/ADR-0006-mysql-primary-database.md)에 따라 MySQL 8.4.x LTS를 사용한다. [ADR-0011](../decisions/ADR-0011-adopt-approved-erd-baseline.md)에 따라 2026-07-27에 확정한 [ERD 이미지](../../contracts/database/erd.png)의 23개 테이블과 관계를 현재 데이터 모델로 채택한다.
+주 데이터베이스는 [ADR-0006](../decisions/ADR-0006-mysql-primary-database.md)에 따라 MySQL 8.4.x LTS를 사용한다. [ADR-0011](../decisions/ADR-0011-adopt-approved-erd-baseline.md)에 따라 2026-07-28에 확정한 [ERD 이미지](../../contracts/database/erd.png)의 25개 테이블과 관계를 현재 데이터 모델로 채택한다.
 
 ERDCloud가 COMMENT로 표현한 `AUTO_INCREMENT`, `UNIQUE`, `DEFAULT`, `CHECK` 메타데이터는 실행 스키마에서 실제 MySQL 제약조건으로 변환한다. 관계선은 외래 키로 변환하며 외래 키 컬럼에는 `AUTO_INCREMENT`를 적용하지 않는다.
 
@@ -40,6 +40,7 @@ DB 적용 전이므로 별도 V2를 만들지 않고 V1을 교체한다. `schema
 - `daily_curriculums`는 순서가 있는 `trainings`를 가진다.
 - `test_curriculums`는 순서가 있는 `tests`를 가진다.
 - `trainings`와 `tests`는 모두 `training_templates`를 참조한다.
+- `training_templates.prompt` text에는 타입별 AI 생성 프롬프트와 출력 계약 JSON 문자열을 저장한다.
 - AI 생성 데이터는 기존 물리 명칭인 `training_datas`, `test_datas`에 저장한다.
 - 훈련 생성 데이터 FK는 기존 물리 명칭인 `train_id`를 유지한다.
 - 훈련 정확도와 단어 시도 점수는 `0~1000` 범위로 관리한다.
@@ -48,6 +49,13 @@ DB 적용 전이므로 별도 V2를 만들지 않고 V1을 교체한다. `schema
 - 성장 횟수 컬럼과 집계 테이블은 추가하지 않는다. API는 완료 횟수만 반환한다.
 - 꽃은 훈련 템플릿별 완료 `0~5`회를 성장 `0~5`단계로 사용한다. 1회 완료할 때마다 한 단계 성장하고 5회에 만개하며, 5회 이후에는 만개 상태를 유지한다.
 - 클라이언트는 `min(completedCount, 5)`로 꽃 성장 단계를 계산한다.
+
+## 읽기 특징과 학생 프로필
+
+- `reading_features`는 자모·음절·음운·형태·단어·문장 특징을 코드로 관리하며 `parent_feature_id`로 상하위 특징을 연결한다.
+- `student_feature_profiles`는 학생과 읽기 특징별 정확도, 발음, 시선, 읽기 시간, 취약도와 신뢰도를 저장한다.
+- 두 테이블의 PK는 확정 ERD에 자동 증가 표시가 없으므로 애플리케이션이 값을 부여한다.
+- 확정 ERD의 물리 컬럼명 `reading_features_id`, `avg_pronunciation_scor`를 그대로 사용한다.
 
 ## 이야기
 

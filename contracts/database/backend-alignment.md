@@ -1,19 +1,19 @@
 ---
 type: Contract Alignment
 title: "Backend 엔티티와 MySQL 계약 정합화"
-description: "2026-07-27 확정 ERD와 Backend 엔티티의 차이, V1 적용 경계와 후속 정합화 범위를 정리합니다."
+description: "2026-07-28 확정 ERD와 Backend 엔티티의 차이, V1 적용 경계와 후속 정합화 범위를 정리합니다."
 tags: [contracts, backend, mysql, migration, alignment, erd]
 timestamp: 2026-07-27T00:00:00+09:00
 ---
 # Backend 엔티티와 MySQL 계약 정합화
 
 - 상태: active
-- 비교 기준: 2026-07-27 확정 ERD, `contracts/database/schema.sql`, 현재 Backend 작업 트리
-- 최종 검토일: 2026-07-27
+- 비교 기준: 2026-07-28 확정 ERD, `contracts/database/schema.sql`, 현재 Backend 작업 트리
+- 최종 검토일: 2026-07-28
 
 ## 결론
 
-사용자가 확정한 23개 테이블 ERD를 현재 MySQL 계약으로 채택했다. 실행 가능한 DDL은 Flyway `V1__baseline_schema.sql`에 반영하고 `contracts/database/schema.sql`과 동일하게 유지한다.
+사용자가 확정한 25개 테이블 ERD를 현재 MySQL 계약으로 채택했다. 실행 가능한 DDL은 Flyway `V1__baseline_schema.sql`에 반영하고 `contracts/database/schema.sql`과 동일하게 유지한다.
 
 Backend 엔티티를 현재 계약에 맞춰 정합화했고 공식 MySQL 8.4.10의 빈 데이터베이스에서 Flyway V1과 Hibernate schema validation을 완료했다.
 
@@ -26,6 +26,10 @@ Backend 엔티티를 현재 계약에 맞춰 정합화했고 공식 MySQL 8.4.10
 - `story_lines.has_choices`
 - `teachers.email`
 - `auth_refresh_sessions`
+- `training_templates.prompt`
+- `reading_features`
+- `student_feature_profiles.reading_features_id`
+- `student_feature_profiles.avg_pronunciation_scor`
 
 `training_contents`, `training_id`로의 물리 FK 변경, `test_questions`, `requires_branch_input`, `teachers.login_id`, `auth_revoked_access_tokens`는 사용하지 않는다.
 
@@ -43,6 +47,9 @@ Backend 엔티티를 현재 계약에 맞춰 정합화했고 공식 MySQL 8.4.10
 | 보고서 | 기간 `timestamp`, nullable `snapshot_data` | `LocalDate` 및 필수 snapshot 매핑 교체 |
 | 누적 통계 | 별도 누적 통계 테이블 없음 | `student_word_stats`, `student_study_progresses` 매핑 제거 |
 | 훈련 점수 | `accuracy` 0~1000 | 기존 0~100 소수 정밀도 매핑 교체 |
+| 훈련 생성 프롬프트 | `training_templates.prompt` text | 기존 `form` JSON 컬럼을 최종 ERD 명칭으로 교체 |
+| 읽기 특징 | `reading_features` 자기 참조 계층 | 자모·음절·음운·형태·단어·문장 특징 사전 추가 |
+| 학생 특징 프로필 | `student_feature_profiles` | 학생·읽기 특징별 집계 지표와 취약도·신뢰도 저장 |
 
 - 확정 ERD에 대표 캐릭터 상태가 없으므로 대표 캐릭터 변경 API를 제거하고 관련 표시 상태는 클라이언트 책임으로 변경했다.
 - `story_choices.content`에는 음성 입력을 STT로 복원한 최종 텍스트를 저장한다. `story_line_id`를 UNIQUE로 보호하고 STT 중간 실패는 저장하지 않는다. 같은 분기 대사의 재시도는 최초 저장 결과를 반환한다.
@@ -51,9 +58,10 @@ Backend 엔티티를 현재 계약에 맞춰 정합화했고 공식 MySQL 8.4.10
 ## V1 변환 규칙
 
 - ERDCloud COMMENT의 `AUTO_INCREMENT`, `UNIQUE`, `DEFAULT`, `CHECK`는 실행 DDL의 실제 속성·제약조건으로 변환했다.
-- 관계선은 31개 외래 키로 변환했다.
+- 관계선은 34개 외래 키로 변환했다.
 - FK에 복사된 `AUTO_INCREMENT` 메모는 적용하지 않았다.
 - `test_curriculums.id`, `test_datas.id`는 확정 ERD에 자동 증가 표시가 없으므로 일반 `bigint` PK로 유지했다.
+- `reading_features.id`, `student_feature_profiles.id`도 확정 ERD에 자동 증가 표시가 없으므로 일반 `bigint` PK로 유지했다.
 - `gaze_analysis_results.gaze_session_id`는 시선 세션당 분석 결과 하나를 보장하도록 UNIQUE로 보호했다.
 - `story_choices.story_line_id`는 분기 대사당 최종 선택 하나를 보장하도록 UNIQUE로 보호했다.
 
@@ -86,3 +94,9 @@ Backend 엔티티를 현재 계약에 맞춰 정합화했고 공식 MySQL 8.4.10
 - Hibernate `ddl-auto=validate`: MySQL 8.4.10에서 성공
 - MySQL 제약 검증: 애플리케이션 테이블 23개, 외래 키 31개, UNIQUE 11개, CHECK 7개
 - MySQL 통합 검증을 활성화한 `.\gradlew.bat test --rerun-tasks`: Java 21에서 119개 전체 성공, skip·실패 0개
+
+## 2026-07-28 계약 갱신
+
+- 확정 ERD의 `reading_features`, `student_feature_profiles`를 V1과 JPA 엔티티에 추가했다.
+- `training_templates.form`을 최종 ERD 물리 명칭인 `prompt` text로 교체했다.
+- 스키마 규모는 애플리케이션 테이블 25개, 외래 키 34개, UNIQUE 11개, CHECK 7개다.

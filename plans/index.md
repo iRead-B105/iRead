@@ -4,7 +4,7 @@
 
 현재 진행 대상 계획:
 
-* [맞춤 훈련 데이터 생성 파이프라인](2026-07-28-personalized-training-generation.md) - draft
+* [맞춤 훈련 데이터 생성 파이프라인](2026-07-28-personalized-training-generation.md) - active
 
 완료된 계획은 결정과 검증 이력이 필요할 때 보존한다.
 

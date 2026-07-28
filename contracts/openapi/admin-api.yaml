@@ -2752,7 +2752,7 @@
           "CU-SAVE-12"
         ],
         "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
-        "x-notion-request-summary": "studentId(path)\ncurriculumId(path)\n훈련id[]",
+        "x-notion-request-summary": "studentId(path)\ncurriculumId(path)\ntrainingTemplateIds(body, exactly 5)",
         "x-notion-response-summary": "ok",
         "x-review-status": "reviewed",
         "requestBody": {
@@ -2762,21 +2762,28 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "trainingId": {
+                  "trainingTemplateIds": {
                     "type": "array",
+                    "minItems": 5,
+                    "maxItems": 5,
                     "items": {
-                      "type": "string"
+                      "type": "integer",
+                      "format": "int64"
                     },
-                    "description": "훈련id 식별자"
+                    "description": "순서대로 배정할 training_templates.id 5개"
                   }
                 },
                 "required": [
-                  "trainingId"
+                  "trainingTemplateIds"
                 ]
               },
               "example": {
-                "trainingId": [
-                  "1001"
+                "trainingTemplateIds": [
+                  1,
+                  7,
+                  19,
+                  25,
+                  30
                 ]
               }
             }
