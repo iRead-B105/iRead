@@ -9,7 +9,7 @@ timestamp: 2026-07-28T00:00:00+09:00
 
 - 상태: active
 - 최종 검토일: 2026-07-28
-- 적용 범위: `services/backend`, `services/frontend`, `services/app`
+- 적용 범위: `services/backend`, `services/frontend-web`, `services/frontend-app`
 - 계약 기준: [OpenAPI](../../contracts/openapi/index.md), [MySQL 스키마](../../contracts/database/index.md), [기능 카탈로그](../product/features/catalog/index.md)
 
 ## 범위
@@ -35,7 +35,7 @@ timestamp: 2026-07-28T00:00:00+09:00
 | BE-005 | P0 | 관리자 훈련·검사 API 계약 정합화 | Admin `training`, `test` 중 시선 조회를 제외한 13개 operation | BE-001, BE-004 | done |
 | BE-006 | P1 | 관리자 보고서·시선 결과 API 계약 정합화 | Admin `report` 4개, 검사·훈련 시선 조회 2개 operation | BE-004, BE-005 | done |
 | BE-007 | P0 | 아동 로그인·성장·마이페이지 API 구현 | App 인증, `student`, `mypage` | BE-002, BE-003 | done |
-| BE-008 | P0 | 아동 검사·훈련 세션 API 구현 | App `test` 8개, `training` 7개 operation | BE-001, BE-007 | done |
+| BE-008 | P0 | 아동 검사·훈련 세션 API 구현 | App `test` 7개, `training` 7개 operation | BE-001, BE-007 | done |
 | BE-009 | P1 | 이야기·시선 세션 API 구현 | App `story` 9개, `gaze` 6개 operation | BE-007, BE-010 | done |
 | BE-010 | P0 | AI 없는 데모용 결정적 fixture provider 구현 | 훈련 생성·평가, 이야기, STT·TTS 대체 결과 | BE-001 | done |
 | BE-011 | P1 | 비식별 데모 seed와 파일·DB 초기화 절차 작성 | Flyway, 데모 데이터, `audio/` | BE-001 | done |
@@ -177,7 +177,7 @@ timestamp: 2026-07-28T00:00:00+09:00
 
 ### 2026-07-27 교수자 앱 Backend 순차 구현
 
-- `services/frontend` 변경은 롤백했고, 이후 작업은 Backend와 루트의 Backend submodule 포인터·현황 문서로 제한했다.
+- `services/frontend-web` 변경은 롤백했고, 이후 작업은 Backend와 루트의 Backend submodule 포인터·현황 문서로 제한했다.
 - `BE-004`: 교수자 정보와 학생 관리 12개 operation의 경로, 소유권, 목록 검색·나이·최근 학습 필터, 요약, 정확도·읽기 속도 추이, 훈련 이력 기간 필터, 학습 요약과 추천 규칙을 구현했다.
 - 학생 등록·상세는 기존 `birthday`, `guardian`, `guardianContact`, `imageUrl`과 OpenAPI의 `birthDate`, `guardianName`, `guardianPhone`, `profileImage`를 함께 처리한다. 상세의 `studentCode`는 서버의 `studentId` 문자열로 반환하고 배열형 주소 입력도 기존 문자열 컬럼에 호환 저장한다.
 - `get_admin_student_by_studentId_learning_events`는 필수 `eventType(test|training|story|gaze)`과 `eventId` 조합으로 원본 테이블을 구분하며 네 유형을 모두 조회한다.
@@ -207,33 +207,34 @@ timestamp: 2026-07-28T00:00:00+09:00
 ### 2026-07-27 BE-008 완료
 
 - App 훈련 7개 operation을 별도 이력 식별자 없이 `trainings.id`를 세션 식별자로 사용하는 ERD 중심 계약으로 정리했다.
-- 안내·문항은 `training_datas.generated_data`를 조회하고, 선택·녹음 응답은 `word_attempt_logs.training_id`에 저장한다.
-- 시작·초기화·완료는 `trainings.status`, `started_at`, `finished_at`, `result`, `accuracy`를 갱신하며 학습 토큰과 학생·훈련 소유권을 검증한다.
-- App 검사 8개 operation은 `tests.id`를 세션 식별자로 사용하고 최신 `test_datas.generated_data`의 문항을 조회한다.
-- 검사 선택·녹음 응답은 `word_attempt_logs.test_id`에 저장하고, 최종 정확도는 저장된 0~1000 점수의 평균을 0~100 범위로 환산해 `tests.accuracy`에 저장한다.
-- 검사 문항 완료는 누적 결과를 `tests.result`에 저장하며, 검사 전체 완료가 `status`, `accuracy`, `finished_at`을 확정한다. 세션 초기화는 미완료 응답 로그와 진행 결과를 함께 제거한다.
+- 안내·문항은 `training_datas.generated_data`를 조회하며 App에는 `questionType`, `responseType`, `content`만 반환한다.
+- 비음성 훈련 제출은 App이 보낸 `submissionId`, `responseType`, 원시 `response`를 Backend가 저장된 `answer`와 비교한다. 최대 3회, 힌트, 3회차 정답 공개와 동일 `submissionId` 재전송 멱등성을 `trainings.result`에서 처리한다.
+- App 검사 7개 operation은 `tests.id`를 세션 식별자로 사용하고 최신 `test_datas.generated_data`의 문항을 같은 표시용 문항 계약으로 변환한다.
+- 비음성 검사는 문항당 최초 제출만 `tests.result`에 저장하고 App에는 정답·점수 없이 진행률만 반환한다. 제거된 문항별 완료 API 대신 제출 자체를 완료 단위로 사용한다.
+- 훈련 완료 요청에는 body를 받지 않고 검사 완료 요청에는 `testId`만 받는다. Backend가 전체 문항 제출 여부와 서버 완료 시각을 검증하며 아동 응답에는 정확도와 상세 분석을 노출하지 않는다.
+- 비음성 평가 점수는 교수자 결과와 프로필 계산을 위해 서버 내부 결과에만 저장한다. 음성 제출은 별도 팀 작업 범위로 유지한다.
 - 모든 검사·훈련 App 경로에서 학습 토큰의 학생과 경로 학생을 먼저 대조하고 교수자 소유 학생·세션 관계를 검증한다.
-- `.\gradlew.bat test --rerun-tasks`: 132개 중 일반 테스트 131개 성공, opt-in MySQL 통합 테스트 1개 skip, 실패 0개.
+- 2026-07-28 비음성 계약 정합화 후 Backend 전체 `.\gradlew.bat test`가 성공했다.
 - `python tools/validate_contracts.py`: 80 operations, 334 features, 73 reviewed, 23 MySQL tables, 31 foreign keys 검증 성공.
 - `python tools/validate_harness.py`: 82 Markdown files와 31 record docs 검증 성공.
 - DB 스키마 변경은 없으며 기존 ERD의 `tests`, `test_datas`, `trainings`, `training_datas`, `word_attempt_logs`만 사용한다.
 
 ## Frontend TODO
 
-`FE`는 하나의 관리 영역이며 교수자용 화면은 `services/frontend`, 아동용 화면은 `services/app`에서 구현한다.
+`FE`는 하나의 관리 영역이며 교수자용 화면은 `services/frontend-web`, 아동용 화면은 `services/frontend-app`에서 구현한다.
 
 | ID | 경로 | 우선순위 | 작업 | 계약·영역 | 선행 작업 | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
-| FE-001 | `services/frontend` | P0 | Vue 3·TypeScript·Vite·pnpm 애플리케이션 기반 구성 | 라우팅, 상태, API client, 환경변수 | 없음 | todo |
-| FE-002 | `services/frontend` | P0 | 교수자 인증과 공통 레이아웃 구현 | Auth Admin operation | FE-001, BE-002 | todo |
-| FE-003 | `services/frontend` | P0 | 학생 목록·요약·등록·상세·수정 화면 구현 | Admin `student`, `teacher` | FE-002, BE-004 | todo |
-| FE-004 | `services/frontend` | P0 | 훈련 교안·이력·통계와 검사 비교 화면 구현 | Admin `training`, `test` | FE-003, BE-005 | todo |
-| FE-005 | `services/frontend` | P1 | 보고서·시선 결과·교수자 프로필 화면 구현 | Admin `report`, gaze, `teacher` | FE-003, FE-004, BE-006 | todo |
-| FE-006 | `services/app` | P0 | 아동 App 기술 스택 확정과 애플리케이션 기반 구성 | 라우팅, 상태, API client, 미디어 권한 | 없음 | todo |
-| FE-007 | `services/app` | P0 | 교수자 로그인·연결 아동 프로필 선택과 홈·성장·캐릭터 화면 구현 | Auth App, App `student`, `mypage` | FE-006, BE-007 | todo |
-| FE-008 | `services/app` | P0 | 검사·훈련 안내, 문항, 녹음·응답과 완료 흐름 구현 | App `test`, `training` | FE-007, BE-008 | todo |
-| FE-009 | `services/app` | P1 | 이야기 책장·읽기·분기·음성 재생 흐름 구현 | App `story` | FE-007, BE-009, BE-010 | todo |
-| FE-010 | `services/app` | P1 | 시선 장치 안내, 세션 시작·종료·실패 흐름 구현 | App `gaze` | FE-006, BE-009 | todo |
+| FE-001 | `services/frontend-web` | P0 | Vue 3·TypeScript·Vite·pnpm 애플리케이션 기반 구성 | 라우팅, 상태, API client, 환경변수 | 없음 | todo |
+| FE-002 | `services/frontend-web` | P0 | 교수자 인증과 공통 레이아웃 구현 | Auth Admin operation | FE-001, BE-002 | todo |
+| FE-003 | `services/frontend-web` | P0 | 학생 목록·요약·등록·상세·수정 화면 구현 | Admin `student`, `teacher` | FE-002, BE-004 | todo |
+| FE-004 | `services/frontend-web` | P0 | 훈련 교안·이력·통계와 검사 비교 화면 구현 | Admin `training`, `test` | FE-003, BE-005 | todo |
+| FE-005 | `services/frontend-web` | P1 | 보고서·시선 결과·교수자 프로필 화면 구현 | Admin `report`, gaze, `teacher` | FE-003, FE-004, BE-006 | todo |
+| FE-006 | `services/frontend-app` | P0 | 아동 App 기술 스택 확정과 애플리케이션 기반 구성 | 라우팅, 상태, API client, 미디어 권한 | 없음 | todo |
+| FE-007 | `services/frontend-app` | P0 | 교수자 로그인·연결 아동 프로필 선택과 홈·성장·캐릭터 화면 구현 | Auth App, App `student`, `mypage` | FE-006, BE-007 | todo |
+| FE-008 | `services/frontend-app` | P0 | 검사·훈련 안내, 문항, 녹음·응답과 완료 흐름 구현 | App `test`, `training` | FE-007, BE-008 | todo |
+| FE-009 | `services/frontend-app` | P1 | 이야기 책장·읽기·분기·음성 재생 흐름 구현 | App `story` | FE-007, BE-009, BE-010 | todo |
+| FE-010 | `services/frontend-app` | P1 | 시선 장치 안내, 세션 시작·종료·실패 흐름 구현 | App `gaze` | FE-006, BE-009 | todo |
 | FE-011 | 두 저장소 | P1 | 공통 로딩·빈 상태·오류·재인증 UX 정리 | 공통 오류 응답, 401·403·404·409 | FE-002, FE-007, BE-012 | todo |
 | FE-012 | 두 저장소 | P1 | 핵심 데모 시나리오와 접근성·반응형 마무리 | 교수자 관리, 아동 검사·훈련·이야기 | FE-003~FE-011 | todo |
 

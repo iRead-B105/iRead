@@ -31,7 +31,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 ## 결정
 
 - 아동 앱 저장소는 공개 저장소 `iRead-B105/iRead-frontend-app`으로 관리한다.
-- 오케스트레이션 저장소의 `services/app` 경로에 Git submodule로 연결한다.
+- 오케스트레이션 저장소의 `services/frontend-app` 경로에 Git submodule로 연결한다.
 - submodule의 갱신 기준 브랜치는 `develop`이다.
 - 저장소는 `main`, `develop` 브랜치를 사용하며 기본 브랜치는 `develop`이다.
 - `main`은 PR과 승인 1명을 요구한다.
@@ -53,5 +53,5 @@ timestamp: 2026-07-24T00:00:00+09:00
 ## 검증 및 재검토 조건
 
 - `iRead-frontend-app`의 `main`, `develop` 브랜치와 보호 정책을 확인한다.
-- `services/app`이 `develop`의 원격 커밋을 가리키는지 확인한다.
+- `services/frontend-app`이 `develop`의 원격 커밋을 가리키는지 확인한다.
 - 아동 앱 기술 스택 또는 Frontend와의 책임 경계가 확정되면 관련 기준 문서와 새 ADR 필요 여부를 검토한다.

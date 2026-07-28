@@ -33,9 +33,9 @@ timestamp: 2026-07-24T00:00:00+09:00
 - 공개 범위와 보호 정책은 [ADR-0003](../decisions/ADR-0003-public-repositories.md)에 기록되어 있다.
 - 기존 서비스 저장소명과 submodule 경로는 [ADR-0004](../decisions/ADR-0004-service-repository-layout.md), 아동 앱 추가 결정은 [ADR-0005](../decisions/ADR-0005-add-child-app-repository.md), 시선 추적 저장소 추가 결정은 [ADR-0010](../decisions/ADR-0010-add-eyetracking-repository.md)에 기록되어 있다.
 - Backend는 `iRead-B105/iRead-backend`를 `services/backend`에 연결한다.
-- Frontend는 `iRead-B105/iRead-frontend-web`을 `services/frontend`에 연결한다.
+- Frontend는 `iRead-B105/iRead-frontend-web`을 `services/frontend-web`에 연결한다.
 - AI server는 `iRead-B105/iRead-ai`를 `services/ai`에 연결한다.
-- 아동 앱은 `iRead-B105/iRead-frontend-app`을 `services/app`에 연결한다.
+- 아동 앱은 `iRead-B105/iRead-frontend-app`을 `services/frontend-app`에 연결한다.
 - 시선 추적 프로토타입은 `iRead-B105/iRead-eyetracking`을 `services/eyetracking`에 연결한다.
 - 단어 발음 평가는 [ADR-0013](../decisions/ADR-0013-azure-speech-pronunciation-assessment.md)에 따라 AI server가 Azure Speech `ko-KR` scripted Pronunciation Assessment를 호출하는 방향으로 전환한다.
 - 향후 Git 운영은 [Git Flow 및 커밋 정책](../workflows/git-flow.md)을 따른다.

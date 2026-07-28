@@ -24,9 +24,9 @@ declare -Ar SERVICE_URLS=(
 )
 declare -Ar SERVICE_PATHS=(
   [backend]="services/backend"
-  [frontend]="services/frontend"
+  [frontend]="services/frontend-web"
   [ai]="services/ai"
-  [app]="services/app"
+  [app]="services/frontend-app"
   [eyetracking]="services/eyetracking"
 )
 

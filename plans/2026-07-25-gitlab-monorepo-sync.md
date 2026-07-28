@@ -30,7 +30,7 @@ GitHub의 독립 저장소와 submodule 개발 방식을 유지하면서 GitLab 
 ## 완료 조건
 
 - GitLab 루트에 orchestration 파일이 존재한다.
-- `services/backend`, `services/frontend`, `services/ai`, `services/app`, `services/eyetracking`에 실제 코드가 존재한다.
+- `services/backend`, `services/frontend-web`, `services/ai`, `services/frontend-app`, `services/eyetracking`에 실제 코드가 존재한다.
 - 서비스 원본 commit과 branch가 `upstream/*`에서 조회된다.
 - manifest commit이 orchestration gitlink와 일치한다.
 - 후속 orchestration `develop` push가 fast-forward 증분 동기화된다.

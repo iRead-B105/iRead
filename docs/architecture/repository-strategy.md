@@ -18,9 +18,9 @@ timestamp: 2026-07-24T00:00:00+09:00
 | --- | --- | --- | --- |
 | Orchestration | 공통 문서, 계약, ADR, 통합 구성 | Markdown, Docker Compose 예정 | 현재 디렉터리 |
 | Backend | 도메인/API 구현과 자체 테스트 | Spring Boot 4.0.7, Java 21, Gradle Groovy DSL | `services/backend` / [iRead-backend](https://github.com/iRead-B105/iRead-backend) |
-| Frontend | UI 구현과 자체 테스트 | Vue 3, TypeScript, Vite, pnpm | `services/frontend` / [iRead-frontend-web](https://github.com/iRead-B105/iRead-frontend-web) |
+| Frontend | UI 구현과 자체 테스트 | Vue 3, TypeScript, Vite, pnpm | `services/frontend-web` / [iRead-frontend-web](https://github.com/iRead-B105/iRead-frontend-web) |
 | AI server | AI 기능 구현과 자체 테스트 | FastAPI, Python 3.12, uv | `services/ai` / [iRead-ai](https://github.com/iRead-B105/iRead-ai) |
-| 아동 앱 | 아동용 애플리케이션 구현과 자체 테스트 | [TBD] | `services/app` / [iRead-frontend-app](https://github.com/iRead-B105/iRead-frontend-app) |
+| 아동 앱 | 아동용 애플리케이션 구현과 자체 테스트 | [TBD] | `services/frontend-app` / [iRead-frontend-app](https://github.com/iRead-B105/iRead-frontend-app) |
 | 시선 추적 | Tobii 기반 시선 수집·보정 프로토타입 | FastAPI, HTML/CSS/JavaScript, C++ | `services/eyetracking` / [iRead-eyetracking](https://github.com/iRead-B105/iRead-eyetracking) |
 
 ## 소유권 원칙
