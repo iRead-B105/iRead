@@ -7,7 +7,7 @@ timestamp: 2026-07-28T00:00:00+09:00
 ---
 # 맞춤 훈련 데이터 생성 파이프라인
 
-- 상태: draft
+- 상태: active
 - 작성일: 2026-07-28
 - 수정일: 2026-07-28
 - 대상: `services/backend`
@@ -138,7 +138,7 @@ AI 후보 응답은 유효한 JSON `{type, data[]}` 하나다. Backend는 후보
 
 ### 1. 계약과 기준선
 
-- [ ] **BE-013** 기능 명세, Backend–AI 내부 OpenAPI, App·Admin OpenAPI와 `generated_data` V2 계약을 먼저 확정한다.
+- [x] **BE-013** 기능 명세, Backend–AI 내부 OpenAPI, App·Admin OpenAPI와 `generated_data` V2 계약을 먼저 확정한다.
 - [ ] **BE-014** 최종 ERD의 두 신규 테이블을 Flyway V1, `contracts/database/schema.sql`, 엔티티와 ERD 파생 문서에 동기화한다.
 - [ ] **BE-015** 읽기 특징과 33개 템플릿을 기존 행을 덮어쓰지 않는 멱등 초기화 코드로 등록한다.
 

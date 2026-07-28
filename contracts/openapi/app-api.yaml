@@ -3780,6 +3780,60 @@
             "description": "문항 번호"
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "wordId",
+                  "targetIndex",
+                  "expectedText",
+                  "expectedPronunciation",
+                  "audioFile"
+                ],
+                "properties": {
+                  "wordId": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 1
+                  },
+                  "targetIndex": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "generated_data.questions[].analysisTargets의 0부터 시작하는 위치"
+                  },
+                  "tokenIndex": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "읽기 문항의 0부터 시작하는 단어·토큰 위치"
+                  },
+                  "expectedText": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "expectedPronunciation": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "audioFile": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "speechStartOffsetMs": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "speechEndOffsetMs": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "요청 성공",
@@ -3815,6 +3869,23 @@
                               "type": "string",
                               "description": "STT 인식 결과"
                             },
+                            "observedPronunciation": {
+                              "type": "string",
+                              "description": "발음 분석기가 판정한 관찰 발음"
+                            },
+                            "pronunciationScore": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 100
+                            },
+                            "pronunciationConfidence": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
+                            },
+                            "pronunciationErrorType": {
+                              "type": "string"
+                            },
                             "totalScore": {
                               "type": "integer",
                               "format": "int64",
@@ -3831,6 +3902,10 @@
                             "trainingId",
                             "wordId",
                             "recognizedText",
+                            "observedPronunciation",
+                            "pronunciationScore",
+                            "pronunciationConfidence",
+                            "pronunciationErrorType",
                             "totalScore",
                             "createdAt"
                           ]
@@ -3895,9 +3970,9 @@
           "TR-REC-03",
           "TR-REC-07"
         ],
-        "description": "음성 원본 경로는 응답하지 않는다. recognizedText와 음성 구간·점수를 word_attempt_logs에 저장하고 training_id로 훈련에 연결한다.",
-        "x-notion-request-summary": "studentId(path)\ntrainingId(path)\nquestionNumber(path)\nwordId(body)\nrecognizedText(body)\nspeechStartOffsetMs(body, optional)\nspeechEndOffsetMs(body, optional)\nisCorrect(body, optional)\ntotalScore(body)",
-        "x-notion-response-summary": "attemptId\ntrainingId\nwordId\nrecognizedText\ntotalScore\ncreatedAt",
+        "description": "Backend는 multipart 음성을 STT·발음 분석 adapter에 일시 전달하고 원본을 보관하지 않는다. word_attempt_logs에는 기존 ERD 컬럼만 저장하며 문항 위치와 발음 상세는 trainings.result에 연결한다.",
+        "x-notion-request-summary": "studentId(path)\ntrainingId(path)\nquestionNumber(path)\nwordId(body)\ntargetIndex(body)\ntokenIndex(body, optional)\nexpectedText(body)\nexpectedPronunciation(body)\naudioFile(body)\nspeechStartOffsetMs(body, optional)\nspeechEndOffsetMs(body, optional)",
+        "x-notion-response-summary": "attemptId\ntrainingId\nwordId\nrecognizedText\nobservedPronunciation\npronunciationScore\npronunciationConfidence\npronunciationErrorType\ntotalScore\ncreatedAt",
         "x-review-status": "reviewed",
         "requestBody": {
           "required": true,

@@ -127,6 +127,44 @@
         "x-retry-policy": "연결 실패와 502·503·504에 한해 같은 Idempotency-Key로 최대 1회 재시도"
       }
     },
+    "/api/v1/speech/pronunciation/analyze": {
+      "post": {
+        "operationId": "analyzePronunciation",
+        "summary": "학습자 발음 분석",
+        "description": "Backend가 일시 수신한 음성을 전달한다. AI server는 원본 음성을 보관하지 않고 관찰 발음, 점수, 신뢰도와 오류 유형만 반환한다.",
+        "tags": ["speech"],
+        "security": [{"apiKeyAuth": []}],
+        "parameters": [{"$ref": "#/components/parameters/IdempotencyKey"}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["requestId", "expectedText", "expectedPronunciation", "audioFile"],
+                "properties": {
+                  "requestId": {"type": "string", "minLength": 1},
+                  "expectedText": {"type": "string", "minLength": 1},
+                  "expectedPronunciation": {"type": "string", "minLength": 1},
+                  "audioFile": {"type": "string", "format": "binary"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "발음 분석 성공", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/PronunciationAnalysisResponse"}}}},
+          "400": {"$ref": "#/components/responses/BadRequest"},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "409": {"$ref": "#/components/responses/Conflict"},
+          "422": {"$ref": "#/components/responses/Unprocessable"},
+          "502": {"$ref": "#/components/responses/UpstreamFailure"},
+          "504": {"$ref": "#/components/responses/Timeout"}
+        },
+        "x-timeout-ms": 30000,
+        "x-retry-policy": "연결 실패와 502·503·504에 한해 같은 Idempotency-Key로 최대 1회 재시도"
+      }
+    },
     "/api/v1/speech/synthesize": {
       "post": {
         "operationId": "synthesizeSpeech",
@@ -210,23 +248,82 @@
       },
       "TrainingGenerateRequest": {
         "type": "object",
-        "required": ["requestId", "trainingId", "studentId", "trainingTemplateId", "schemaVersion", "inputData"],
+        "required": [
+          "requestId",
+          "schemaVersion",
+          "trainingType",
+          "count",
+          "difficulty",
+          "targetFeatures",
+          "excludedFeatures",
+          "additionalPrompt",
+          "outputTemplate"
+        ],
         "properties": {
-          "requestId": {"type": "string"},
-          "trainingId": {"type": "integer", "format": "int64", "minimum": 1},
-          "studentId": {"type": "integer", "format": "int64", "minimum": 1},
-          "trainingTemplateId": {"type": "integer", "format": "int64", "minimum": 1},
+          "requestId": {"type": "string", "minLength": 1, "maxLength": 128},
           "schemaVersion": {"type": "integer", "minimum": 1},
-          "inputData": {"type": "object", "additionalProperties": true}
+          "trainingType": {"type": "string", "minLength": 1},
+          "count": {"type": "integer", "const": 5},
+          "difficulty": {"type": "integer", "minimum": 1, "maximum": 5},
+          "targetFeatures": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "items": {"$ref": "#/components/schemas/TrainingTargetFeature"}
+          },
+          "excludedFeatures": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {"type": "string", "minLength": 1}
+          },
+          "additionalPrompt": {"type": "string"},
+          "outputTemplate": {"type": "object", "additionalProperties": true}
         }
       },
       "TrainingGenerateResponse": {
         "type": "object",
-        "required": ["requestId", "schemaVersion", "generatedData"],
+        "required": ["type", "data"],
+        "properties": {
+          "type": {"type": "string", "minLength": 1},
+          "data": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 5,
+            "items": {"type": "object", "additionalProperties": true}
+          }
+        }
+      },
+      "TrainingTargetFeature": {
+        "type": "object",
+        "required": ["featureCode", "weaknessScore", "confidence", "evidenceCount"],
+        "properties": {
+          "featureCode": {"type": "string", "minLength": 1},
+          "weaknessScore": {"type": "number", "minimum": 0, "maximum": 1},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+          "evidenceCount": {"type": "integer", "minimum": 0}
+        }
+      },
+      "PronunciationAnalysisResponse": {
+        "type": "object",
+        "required": [
+          "requestId",
+          "expectedText",
+          "expectedPronunciation",
+          "observedPronunciation",
+          "pronunciationScore",
+          "confidence",
+          "errorType",
+          "analysisVersion"
+        ],
         "properties": {
           "requestId": {"type": "string"},
-          "schemaVersion": {"type": "integer", "minimum": 1},
-          "generatedData": {"type": "object", "additionalProperties": true}
+          "expectedText": {"type": "string"},
+          "expectedPronunciation": {"type": "string"},
+          "observedPronunciation": {"type": "string"},
+          "pronunciationScore": {"type": "number", "minimum": 0, "maximum": 100},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+          "errorType": {"type": "string"},
+          "analysisVersion": {"type": "string", "minLength": 1}
         }
       },
       "TrainingEvaluateRequest": {

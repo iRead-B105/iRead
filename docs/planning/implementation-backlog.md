@@ -40,7 +40,7 @@ timestamp: 2026-07-28T00:00:00+09:00
 | BE-010 | P0 | AI 없는 데모용 결정적 fixture provider 구현 | 훈련 생성·평가, 이야기, STT·TTS 대체 결과 | BE-001 | in-progress |
 | BE-011 | P1 | 비식별 데모 seed와 파일·DB 초기화 절차 작성 | Flyway, 데모 데이터, `audio/` | BE-001 | in-progress |
 | BE-012 | P1 | OpenAPI 기준 오류 응답과 입력 검증 통일 | Auth·Admin·App 전체 | BE-002~BE-010 | in-progress |
-| BE-013 | P0 | 맞춤 훈련 생성 기능·OpenAPI·JSON 계약 확정 | 33개 `trainingType`, AI 후보 `{type,data}`, 최종 `generated_data` V2 | BE-005, BE-008 | todo |
+| BE-013 | P0 | 맞춤 훈련 생성 기능·OpenAPI·JSON 계약 확정 | 33개 `trainingType`, AI 후보 `{type,data}`, 최종 `generated_data` V2 | BE-005, BE-008 | done |
 | BE-014 | P0 | 최종 ERD 기준 읽기 특징 스키마와 엔티티 정합화 | `reading_features`, `student_feature_profiles`, Flyway V1 | BE-001, BE-013 | todo |
 | BE-015 | P0 | 읽기 특징·훈련 템플릿 멱등 초기화 구현 | 자모·음절·음운 규칙 특징, 33개 `training_templates.prompt` JSON | BE-014 | todo |
 | BE-016 | P0 | 최종 훈련 데이터 모델과 타입별 구조 검증기 구현 | `questionNo`, `content`, `answer`, `analysisTargets`, profile snapshot | BE-013, BE-015 | todo |
