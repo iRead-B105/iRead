@@ -32,7 +32,7 @@ timestamp: 2026-07-28T00:00:00+09:00
 - AI server의 실제 LLM·STT·발음 분석 모델 구현
 - 음성 파일과 `sounds` 테이블의 영구 저장
 - 원시 시선 좌표를 Backend에서 직접 분석하는 기능
-- `word_attempt_logs.question_no`, `word_attempt_logs.token_index` 컬럼 추가
+- 실제 Azure Speech adapter 구현
 - 운영 환경의 분산 스케줄러, 작업 큐와 다중 인스턴스 리더 선출
 
 ## 확정된 계약
@@ -41,8 +41,8 @@ timestamp: 2026-07-28T00:00:00+09:00
 
 - `contracts/database/erd.png`를 물리 스키마 기준으로 사용하고 신규 V2가 아닌 단일 `V1__baseline_schema.sql`을 수정한다.
 - `word_attempt_logs`와 `student_feature_profiles`에는 ERD에 없는 컬럼을 추가하지 않는다.
-- 문항·토큰과 단어 로그는 `trainings.result.wordAttempts[]`의 `questionNo`, `tokenIndex`, `wordAttemptLogId`, `isFinal`로 연결한다.
-- ERD에 별도 컬럼이 없는 `expectedPronunciation`, `observedPronunciation`, `pronunciationScore`, `pronunciationConfidence`, `errorType`, `wordReadTimeMs`, `analysisVersion`도 같은 결과 항목에 저장한다.
+- 문항·토큰과 단어 로그는 `word_attempt_logs.question_no`, `target_index`, `token_index`, `is_final`로 연결한다.
+- Azure 단어별 정확도는 `word_attempt_logs.pronunciation_accuracy_score`에 저장하고 공급자 신뢰도·오류 유형·분석 버전과 전체 발화 점수는 부모 `result` JSON에 저장한다.
 - 같은 위치의 여러 시도 중 `isFinal=true`인 마지막 확정 시도만 프로필 근거로 사용한다.
 - 프로필 상태는 저장하지 않고 취약도에서 `NORMAL`, `WATCH`, `WEAK`, `CRITICAL`을 계산한다.
 - 분석 버전 `WEAKNESS_V1`은 Backend 상수와 `generated_data.profileSnapshot.analysisVersion`에 기록한다.
@@ -84,7 +84,7 @@ AI 후보 응답은 유효한 JSON `{type, data[]}` 하나다. Backend는 후보
 }
 ```
 
-- `analysisTargets`는 목표, 문장 토큰, 선택지와 카드를 포함하는 모든 화면 텍스트를 `targetIndex`, `role`, `text`, `expectedPronunciation`, `featureCodes`, `featureOccurrences`로 정규화한다.
+- `analysisTargets`는 목표, 문장 토큰, 선택지와 카드를 포함하는 모든 화면 텍스트를 `targetIndex`, `role`, `text`, `featureCodes`, `featureOccurrences`로 정규화한다.
 - 정답 근거는 정답 목표와 학생이 실제 선택한 항목에만 반영한다.
 - 시선 근거는 실제 응시한 모든 항목에 반영한다.
 - 읽어야 하는 항목을 건너뛴 경우에만 건너뛰기를 실패 근거로 반영한다.
@@ -199,3 +199,4 @@ AI 후보 응답은 유효한 JSON `{type, data[]}` 하나다. Backend는 후보
 - 최종 ERD에는 문항·토큰 연결 컬럼이 없으므로 `trainings.result`가 유실되거나 형식이 깨지면 단어 로그를 특징 근거로 복원할 수 없다.
 - 단일 Flyway V1 수정은 공용 환경에 기존 V1이 적용되지 않았다는 결정에 의존한다. 적용된 환경이 발견되면 V2 전환 계획이 필요하다.
 - 단일 인스턴스 MVP 이후 서버를 수평 확장하면 03:00 배치의 분산 중복 실행 방지 수단이 추가로 필요하다.
+- 실제 발음 분석 전환은 [Azure Speech 단어 단위 발음 평가 연동 계획](2026-07-28-azure-speech-pronunciation-assessment.md)을 따른다.

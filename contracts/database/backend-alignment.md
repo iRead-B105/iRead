@@ -50,6 +50,7 @@ Backend 엔티티를 현재 계약에 맞춰 정합화했고 공식 MySQL 8.4.10
 | 훈련 생성 프롬프트 | `training_templates.prompt` text | 기존 `form` JSON 컬럼을 최종 ERD 명칭으로 교체 |
 | 읽기 특징 | `reading_features` 자기 참조 계층 | 자모·음절·음운·형태·단어·문장 특징 사전 추가 |
 | 학생 특징 프로필 | `student_feature_profiles` | 학생·읽기 특징별 집계 지표와 취약도·신뢰도 저장 |
+| 단어 수행 근거 | `word_attempt_logs` | 인식 문자열과 시선 존재 boolean 제거, 발음 정확도·문항 위치·최종 시도 컬럼 추가 |
 
 - 확정 ERD에 대표 캐릭터 상태가 없으므로 대표 캐릭터 변경 API를 제거하고 관련 표시 상태는 클라이언트 책임으로 변경했다.
 - `story_choices.content`에는 음성 입력을 STT로 복원한 최종 텍스트를 저장한다. `story_line_id`를 UNIQUE로 보호하고 STT 중간 실패는 저장하지 않는다. 같은 분기 대사의 재시도는 최초 저장 결과를 반환한다.
@@ -64,6 +65,8 @@ Backend 엔티티를 현재 계약에 맞춰 정합화했고 공식 MySQL 8.4.10
 - `reading_features.id`, `student_feature_profiles.id`도 확정 ERD에 자동 증가 표시가 없으므로 일반 `bigint` PK로 유지했다.
 - `gaze_analysis_results.gaze_session_id`는 시선 세션당 분석 결과 하나를 보장하도록 UNIQUE로 보호했다.
 - `story_choices.story_line_id`는 분기 대사당 최종 선택 하나를 보장하도록 UNIQUE로 보호했다.
+- `word_attempt_logs.pronunciation_accuracy_score`와 `total_score`는 각각 `0~1000` CHECK를 적용한다.
+- `word_attempt_logs.question_no`는 1 이상, `target_index`와 `token_index`는 0 이상 CHECK를 적용한다.
 
 ## 적용 경계
 
@@ -100,3 +103,6 @@ Backend 엔티티를 현재 계약에 맞춰 정합화했고 공식 MySQL 8.4.10
 - 확정 ERD의 `reading_features`, `student_feature_profiles`를 V1과 JPA 엔티티에 추가했다.
 - `training_templates.form`을 최종 ERD 물리 명칭인 `prompt` text로 교체했다.
 - 스키마 규모는 애플리케이션 테이블 25개, 외래 키 34개, UNIQUE 11개, CHECK 7개다.
+- 갱신 ERD에 따라 `word_attempt_logs.has_gaze_data`, `recognized_text`를 제거했다.
+- `pronunciation_accuracy_score`, `question_no`, `target_index`, `token_index`, `is_final`을 추가해 단어 발음 정확도와 최종 시도를 행 자체에서 식별한다.
+- 점수·위치 CHECK 추가로 CHECK 개수는 MySQL 실행 검증 후 다시 확정한다.

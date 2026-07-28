@@ -44,6 +44,7 @@ DB 적용 전이므로 별도 V2를 만들지 않고 V1을 교체한다. `schema
 - AI 생성 데이터는 기존 물리 명칭인 `training_datas`, `test_datas`에 저장한다.
 - 훈련 생성 데이터 FK는 기존 물리 명칭인 `train_id`를 유지한다.
 - 훈련 정확도와 단어 시도 점수는 `0~1000` 범위로 관리한다.
+- `word_attempt_logs.pronunciation_accuracy_score`는 Azure 단어별 `AccuracyScore × 10`, `total_score`는 발음·시선·읽기 수행을 결합한 종합 점수다.
 - 성장 정보는 `daily_curriculums`와 `trainings`를 조인해 학생·훈련 템플릿별 `COMPLETED` 행을 실시간 집계한다.
 - 완료된 훈련 한 건을 1회로 계산하며 동일 템플릿을 다시 완료하면 새로운 완료 건으로 포함한다.
 - 성장 횟수 컬럼과 집계 테이블은 추가하지 않는다. API는 완료 횟수만 반환한다.
@@ -87,6 +88,9 @@ story_templates
 - 세션에서 초당 5~10프레임으로 수집한 시선 데이터는 `gaze_sessions.data` JSON에 저장한다.
 - `gaze_analysis_results`는 시선 세션당 하나의 분석 결과를 가진다.
 - `word_attempt_logs`는 `use_location`에 해당하는 검사·훈련·이야기 대사 식별자 하나만 가진다.
+- `word_attempt_logs`는 문항 번호와 분석 대상·토큰 위치를 저장하며 같은 위치의 마지막 성공 시도만 `is_final=true`다.
+- 시선 데이터 존재 여부는 별도 boolean 대신 fixation·gaze offset·skip·regression 필드의 존재로 판정한다.
+- 음성 분석 결과는 인식 문자열을 저장하지 않고 `pronunciation_accuracy_score`, 음성 offset과 정오 여부로 저장한다.
 - 보고서 기간은 `start_date <= end_date`를 만족해야 한다.
 - 보고서 기간은 확정 ERD에 따라 `timestamp`로 저장하고 `snapshot_data`는 NULL을 허용한다.
 
@@ -94,7 +98,8 @@ story_templates
 
 - 모든 명시적 연관관계는 외래 키로 보호한다.
 - 교사 이메일, refresh token 해시, 단어 원형과 도메인별 순번은 `UNIQUE`로 보호한다.
-- 이야기 진행률은 `0~100`, 훈련 정확도와 단어 시도 점수는 `0~1000` 범위를 검사한다.
+- 이야기 진행률은 `0~100`, 훈련 정확도·단어 발음 정확도·단어 종합 점수는 `0~1000` 범위를 검사한다.
+- `question_no`는 1 이상, `target_index`와 `token_index`는 0 이상이어야 한다.
 - 조건부 관계인 인증 audience, 시선 content type과 단어 사용 위치는 `CHECK`로 보호한다.
 
 ## 구현 정합화
@@ -103,6 +108,8 @@ story_templates
 
 ## 음성 데이터
 
-음성 원본은 제한된 데모 환경의 `audio/{studentId}/{dataType}/` 구조에 저장한다. MySQL에는 내부 파일 경로를 API로 노출하지 않으며 필요한 분석 결과와 메타데이터만 저장한다.
+검사·훈련 발음 평가용 음성은 요청 처리 중에만 보유하고 분석 성공·실패 후 저장하지 않는다. App은 Backend에만 음성을 전송하고 AI server가 Azure Speech를 호출하며 자격증명은 [ADR-0013](../decisions/ADR-0013-azure-speech-pronunciation-assessment.md)에 따라 AI server에 한정한다.
+
+이야기 분기처럼 제품 기능상 재사용이 필요한 음성의 별도 보관 정책은 `audio/{studentId}/{dataType}/` 구조를 사용하되 발음 평가 음성과 혼합하지 않는다. MySQL에는 내부 파일 경로를 API로 노출하지 않으며 필요한 분석 결과와 메타데이터만 저장한다.
 
 [ADR-0008](../decisions/ADR-0008-demo-data-and-runtime-policy.md)에 따라 음성 원본과 보고서의 장기 보관은 연구·분석 목적, 보관 기간, 접근 주체와 삭제 방법을 명시한 별도 동의를 받은 데이터에만 허용한다. 동의 철회 또는 명시한 기간 종료 시 원본과 연결 가능한 파생 데이터를 삭제한다.

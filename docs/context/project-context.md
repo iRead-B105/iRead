@@ -37,6 +37,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 - AI server는 `iRead-B105/iRead-ai`를 `services/ai`에 연결한다.
 - 아동 앱은 `iRead-B105/iRead-frontend-app`을 `services/app`에 연결한다.
 - 시선 추적 프로토타입은 `iRead-B105/iRead-eyetracking`을 `services/eyetracking`에 연결한다.
+- 단어 발음 평가는 [ADR-0013](../decisions/ADR-0013-azure-speech-pronunciation-assessment.md)에 따라 AI server가 Azure Speech `ko-KR` scripted Pronunciation Assessment를 호출하는 방향으로 전환한다.
 - 향후 Git 운영은 [Git Flow 및 커밋 정책](../workflows/git-flow.md)을 따른다.
 - 요구사항이나 필수 정보가 모호하면 변경 작업 전에 사용자에게 질문한다.
 

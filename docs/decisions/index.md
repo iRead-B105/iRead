@@ -16,5 +16,6 @@
 | [ADR-0010](ADR-0010-add-eyetracking-repository.md) | 시선 추적 저장소와 submodule 경로 추가 | accepted | 2026-07-25 |
 | [ADR-0011](ADR-0011-adopt-approved-erd-baseline.md) | 확정 ERD를 단일 V1 기준선으로 채택 | accepted | 2026-07-27 |
 | [ADR-0012](ADR-0012-lightweight-harness-policy.md) | 위험 기반 경량 하네스 정책 | accepted | 2026-07-27 |
+| [ADR-0013](ADR-0013-azure-speech-pronunciation-assessment.md) | Azure Speech 단어 단위 발음 평가 채택 | accepted | 2026-07-28 |
 
 새 기록은 [ADR 템플릿](ADR-template.md)을 복사하고 다음 번호를 사용한다.

@@ -1579,8 +1579,8 @@
       "action": "update",
       "reason": "검사 음성 응답을 확정 ERD의 word_attempt_logs.test_id에 저장한다.",
       "changes": {
-        "note": "진행 중인 tests.id와 학생 소유 관계를 검증한 뒤 음성 인식 결과와 서버 평가 점수를 TEST 위치의 word_attempt_logs에 저장한다.",
-        "request_summary": "studentId(path)\nquestionNumber(path)\ntestId(body)\nwordId(body)\nrecognizedText(body)\nspeechStartOffsetMs(body)\nspeechEndOffsetMs(body)\nisCorrect(body)\ntotalScore(body)",
+        "note": "진행 중인 tests.id와 학생 소유 관계를 검증한 뒤 multipart 음성을 서버 발음 분석 adapter에 일시 전달하고 단어별 발음 정확도와 종합 점수를 TEST 위치의 word_attempt_logs에 저장한다.",
+        "request_summary": "studentId(path)\nquestionNumber(path)\ntestId(body)\nwordId(body)\naudioFile(body)\nspeechStartOffsetMs(body, optional)\nspeechEndOffsetMs(body, optional)",
         "request_example": "",
         "request_parameters": [
           {
@@ -1612,11 +1612,11 @@
             "description": "words.id"
           },
           {
-            "name": "recognizedText",
+            "name": "audioFile",
             "type": "string",
             "in": "Body",
             "required": true,
-            "description": "최종 음성 인식 텍스트"
+            "description": "평가할 음성 파일"
           },
           {
             "name": "speechStartOffsetMs",
@@ -1631,23 +1631,9 @@
             "in": "Body",
             "required": false,
             "description": "음성 종료 오프셋(ms)"
-          },
-          {
-            "name": "isCorrect",
-            "type": "boolean",
-            "in": "Body",
-            "required": false,
-            "description": "정답 여부"
-          },
-          {
-            "name": "totalScore",
-            "type": "integer",
-            "in": "Body",
-            "required": true,
-            "description": "0~1000 평가 점수"
           }
         ],
-        "response_summary": "attemptId\ntestId\nwordId\nrecognizedText\ntotalScore\ncreatedAt",
+        "response_summary": "attemptId\ntestId\nwordId\npronunciationAccuracyScore\npronunciationErrorType\ntotalScore\ncreatedAt",
         "response_example": "",
         "response_fields": [
           {
@@ -1669,10 +1655,16 @@
             "description": "words.id"
           },
           {
-            "name": "recognizedText",
+            "name": "pronunciationAccuracyScore",
+            "type": "number",
+            "required": true,
+            "description": "Azure 단어별 AccuracyScore 0~100"
+          },
+          {
+            "name": "pronunciationErrorType",
             "type": "string",
             "required": true,
-            "description": "저장한 인식 텍스트"
+            "description": "Azure 단어별 오류 유형"
           },
           {
             "name": "totalScore",
@@ -2093,8 +2085,8 @@
       "action": "update",
       "reason": "녹음 분석 결과를 확정 ERD의 word_attempt_logs에 저장한다.",
       "changes": {
-        "note": "음성 원본 경로는 응답하지 않는다. recognizedText와 음성 구간·점수를 word_attempt_logs에 저장하고 training_id로 훈련에 연결한다.",
-        "request_summary": "studentId(path)\ntrainingId(path)\nquestionNumber(path)\nwordId(body)\nrecognizedText(body)\nspeechStartOffsetMs(body, optional)\nspeechEndOffsetMs(body, optional)\nisCorrect(body, optional)\ntotalScore(body)",
+        "note": "음성 원본은 저장하지 않는다. 문항 위치와 서버 발음 분석 점수를 word_attempt_logs에 저장하고 training_id로 훈련에 연결한다.",
+        "request_summary": "studentId(path)\ntrainingId(path)\nquestionNumber(path)\nwordId(body)\ntargetIndex(body)\ntokenIndex(body, optional)\nexpectedText(body)\naudioFile(body)\nspeechStartOffsetMs(body, optional)\nspeechEndOffsetMs(body, optional)",
         "request_parameters": [
           {
             "name": "studentId",
@@ -2125,11 +2117,32 @@
             "description": "words.id"
           },
           {
-            "name": "recognizedText",
+            "name": "targetIndex",
+            "type": "integer",
+            "in": "Body",
+            "required": true,
+            "description": "분석 대상 위치"
+          },
+          {
+            "name": "tokenIndex",
+            "type": "integer",
+            "in": "Body",
+            "required": false,
+            "description": "단어 토큰 위치"
+          },
+          {
+            "name": "expectedText",
             "type": "string",
             "in": "Body",
             "required": true,
-            "description": "STT 인식 결과"
+            "description": "기준 텍스트"
+          },
+          {
+            "name": "audioFile",
+            "type": "string",
+            "in": "Body",
+            "required": true,
+            "description": "평가할 음성 파일"
           },
           {
             "name": "speechStartOffsetMs",
@@ -2144,23 +2157,9 @@
             "in": "Body",
             "required": false,
             "description": "음성 종료 오프셋(ms)"
-          },
-          {
-            "name": "isCorrect",
-            "type": "boolean",
-            "in": "Body",
-            "required": false,
-            "description": "정답 여부"
-          },
-          {
-            "name": "totalScore",
-            "type": "integer",
-            "in": "Body",
-            "required": true,
-            "description": "0~1000 단어 점수"
           }
         ],
-        "response_summary": "attemptId\ntrainingId\nwordId\nrecognizedText\ntotalScore\ncreatedAt",
+        "response_summary": "attemptId\ntrainingId\nwordId\npronunciationAccuracyScore\npronunciationConfidence\npronunciationErrorType\ntotalScore\ncreatedAt",
         "response_fields": [
           {
             "name": "attemptId",
@@ -2181,10 +2180,22 @@
             "description": "words.id"
           },
           {
-            "name": "recognizedText",
+            "name": "pronunciationAccuracyScore",
+            "type": "number",
+            "required": true,
+            "description": "Azure 단어별 AccuracyScore 0~100"
+          },
+          {
+            "name": "pronunciationConfidence",
+            "type": "number",
+            "required": true,
+            "description": "분석 신뢰도 0~1"
+          },
+          {
+            "name": "pronunciationErrorType",
             "type": "string",
             "required": true,
-            "description": "STT 인식 결과"
+            "description": "Azure 단어별 오류 유형"
           },
           {
             "name": "totalScore",

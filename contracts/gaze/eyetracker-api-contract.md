@@ -49,7 +49,7 @@
 | --- | --- | --- | --- |
 | 시선 추적 실행 단위 | `gaze_sessions` | `student_id`, `test_id`, `training_id`, `story_id`, `content_type`, `started_at`, `ended_at`, `data`, `status`, `calibration_status` | 콘텐츠 ID, 보정 상태, 세션 시작·종료 시각, 5~10fps 샘플 또는 요약 JSON |
 | 세션 분석 요약 | `gaze_analysis_results` | `gaze_session_id`, `total_visited_duration`, `total_visited_count`, `reverse_read_count`, `avg_visited_duration` | 세션 전체 체류 시간, 응시 횟수, 되돌아보기 횟수 |
-| 단어별 읽기 근거 | `word_attempt_logs` | `word_id`, `story_line_id`, `training_id`, `test_id`, `surface_text`, `has_gaze_data`, `fixation_duration_ms`, `fixation_count`, `gaze_start_offset_ms`, `gaze_end_offset_ms`, `is_skipped`, `regression_count` | 단어 DOM hit test 결과, dwell 시간, skip 여부, regression 횟수 |
+| 단어별 읽기 근거 | `word_attempt_logs` | `word_id`, `story_line_id`, `training_id`, `test_id`, `surface_text`, `fixation_duration_ms`, `fixation_count`, `gaze_start_offset_ms`, `gaze_end_offset_ms`, `is_skipped`, `regression_count` | 단어 DOM hit test 결과, dwell 시간, skip 여부, regression 횟수. 시선 데이터 존재 여부는 관련 값의 존재로 판정한다. |
 
 ## Frontend에서 계산할 값
 

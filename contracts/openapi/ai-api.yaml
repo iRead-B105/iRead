@@ -131,7 +131,7 @@
       "post": {
         "operationId": "analyzePronunciation",
         "summary": "학습자 발음 분석",
-        "description": "Backend가 일시 수신한 음성을 전달한다. AI server는 원본 음성을 보관하지 않고 관찰 발음, 점수, 신뢰도와 오류 유형만 반환한다.",
+        "description": "Backend가 일시 수신한 음성과 기준 텍스트를 전달한다. AI server는 Azure Speech의 ko-KR scripted Pronunciation Assessment를 호출하고 원본 음성을 보관하지 않은 채 단어 정확도 점수와 오류 유형을 반환한다.",
         "tags": ["speech"],
         "security": [{"apiKeyAuth": []}],
         "parameters": [{"$ref": "#/components/parameters/IdempotencyKey"}],
@@ -141,11 +141,10 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": ["requestId", "expectedText", "expectedPronunciation", "audioFile"],
+                "required": ["requestId", "expectedText", "audioFile"],
                 "properties": {
                   "requestId": {"type": "string", "minLength": 1},
                   "expectedText": {"type": "string", "minLength": 1},
-                  "expectedPronunciation": {"type": "string", "minLength": 1},
                   "audioFile": {"type": "string", "format": "binary"}
                 }
               }
@@ -307,20 +306,19 @@
         "type": "object",
         "required": [
           "requestId",
-          "expectedText",
-          "expectedPronunciation",
-          "observedPronunciation",
-          "pronunciationScore",
+          "pronunciationAccuracyScore",
           "confidence",
           "errorType",
           "analysisVersion"
         ],
         "properties": {
           "requestId": {"type": "string"},
-          "expectedText": {"type": "string"},
-          "expectedPronunciation": {"type": "string"},
-          "observedPronunciation": {"type": "string"},
-          "pronunciationScore": {"type": "number", "minimum": 0, "maximum": 100},
+          "pronunciationAccuracyScore": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Azure 단어별 AccuracyScore"
+          },
           "confidence": {"type": "number", "minimum": 0, "maximum": 1},
           "errorType": {"type": "string"},
           "analysisVersion": {"type": "string", "minLength": 1}
