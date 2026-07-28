@@ -17,9 +17,9 @@ readonly AGGREGATE_DIR="$WORK_DIR/aggregate"
 declare -ar SERVICE_NAMES=(backend frontend ai app eyetracking)
 declare -Ar SERVICE_URLS=(
   [backend]="https://github.com/iRead-B105/iRead-backend.git"
-  [frontend]="https://github.com/iRead-B105/iRead-frontend.git"
+  [frontend]="https://github.com/iRead-B105/iRead-frontend-web.git"
   [ai]="https://github.com/iRead-B105/iRead-ai.git"
-  [app]="https://github.com/iRead-B105/iRead-app.git"
+  [app]="https://github.com/iRead-B105/iRead-frontend-app.git"
   [eyetracking]="https://github.com/iRead-B105/iRead-eyetracking.git"
 )
 declare -Ar SERVICE_PATHS=(
