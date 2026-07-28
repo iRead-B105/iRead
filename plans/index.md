@@ -4,10 +4,11 @@
 
 현재 진행 대상 계획:
 
-* [맞춤 훈련 데이터 생성 파이프라인](2026-07-28-personalized-training-generation.md) - active
+* [Azure Speech 단어 단위 발음 평가 연동](2026-07-28-azure-speech-pronunciation-assessment.md) - active
 
 완료된 계획은 결정과 검증 이력이 필요할 때 보존한다.
 
+* [맞춤 훈련 데이터 생성 파이프라인](2026-07-28-personalized-training-generation.md) - completed
 * [OKF·명세 관리 체계 도입](2026-07-24-okf-spec-management.md) - completed
 * [Notion 명세 계약 이전](2026-07-24-notion-contract-migration.md) - completed
 * [기능·API·MySQL 계약 후속 작업](2026-07-24-contract-remaining-work.md) - completed

@@ -10,6 +10,7 @@ timestamp: 2026-07-28T00:00:00+09:00
 - 상태: accepted
 - 작성일: 2026-07-28
 - 관련 실행 계획: [맞춤 훈련 데이터 생성 파이프라인](../../../plans/2026-07-28-personalized-training-generation.md)
+- 후속 실행 계획: [Azure Speech 단어 단위 발음 평가 연동](../../../plans/2026-07-28-azure-speech-pronunciation-assessment.md)
 
 ## 문제와 기대 결과
 
@@ -28,6 +29,7 @@ Backend는 마지막 확정 수행 결과를 읽기 특징별로 집계하고, �
 - 생성 전 교수자 편집과 생성 성공 후 잠금
 - 매일 03:00 `Asia/Seoul` 기준 문항 생성
 - AI 훈련 후보·발음 분석과 시선 분석의 Mock adapter
+- Azure Speech 단어 단위 발음 평가를 위한 저장·API 계약
 
 ### 제외 범위
 
@@ -61,17 +63,17 @@ Backend는 마지막 확정 수행 결과를 읽기 특징별로 집계하고, �
 - `PTG-010`: 최종 `generated_data`는 `schemaVersion`, `generationMetadata`, `profileSnapshot`, `questions`, `validationResult`를 포함한다.
 - `PTG-011`: 문항은 공통 `questionNo`, `type`, `content`, `answer`, `analysisTargets`, `targetFeatureCodes`를 포함하고 읽기 문항은 `text`, `words`를 추가한다.
 - `PTG-012`: 학생용 문항 응답에는 서버 평가용 `answer`, 프로필 스냅샷과 내부 검증 정보를 노출하지 않는다.
-- `PTG-013`: 같은 문항·토큰의 여러 시도 중 `trainings.result`에서 `isFinal=true`로 연결한 마지막 시도만 프로필 근거로 사용한다.
-- `PTG-014`: 문항·토큰 위치와 발음 상세는 ERD에 컬럼을 추가하지 않고 `trainings.result.wordAttempts`에 저장한다.
+- `PTG-013`: 같은 문항·대상·토큰 위치의 여러 시도 중 `word_attempt_logs.is_final=true`인 마지막 성공 시도만 프로필 근거로 사용한다.
+- `PTG-014`: `question_no`, `target_index`, `token_index`, `pronunciation_accuracy_score`, `is_final`을 `word_attempt_logs`에 저장하고 공급자 메타데이터와 오류 상세만 부모 `result` JSON에 저장한다.
 - `PTG-015`: 음성은 multipart로 일시 수신해 발음 분석 adapter에 전달하고 성공·실패와 관계없이 영구 저장하지 않는다.
 - `PTG-016`: 프로필 상태는 저장하지 않고 취약도에서 계산하며 분석 버전은 Backend 상수와 생성 스냅샷에 기록한다.
-- `PTG-017`: DB 점수는 `0~1000`, API와 생성 JSON은 발음 `0~100`, 취약도 `0~1` 단위를 사용한다.
+- `PTG-017`: Azure 단어별 `AccuracyScore`는 API `0~100`, DB `pronunciation_accuracy_score` `0~1000`을 사용하고 `total_score`는 종합 단어 점수로 분리한다.
 - `PTG-018`: 목록의 모든 훈련이 검증에 성공한 경우에만 데이터를 저장하고 `NOT_READY`에서 `NOT_STARTED`로 전환한다.
 
 ## 서비스와 데이터 영향
 
 - 책임 서비스: Backend
-- 후보 생성·발음 분석: AI server 계약, MVP는 Backend의 결정적 Mock provider
+- 후보 생성·발음 분석: AI server 계약, MVP는 Backend의 결정적 Mock provider, 운영 목표는 [ADR-0013](../../decisions/ADR-0013-azure-speech-pronunciation-assessment.md)의 Azure Speech adapter
 - 시선 분석: eyetracking server 계약, MVP는 결정적 Mock adapter
 - 데이터 기준: `reading_features`, `student_feature_profiles`, `training_templates`, `trainings`, `training_datas`, `word_attempt_logs`, `gaze_sessions`, `gaze_analysis_results`
 - 원본 음성: 요청 처리 중에만 유지하고 DB·파일 시스템에 보관하지 않는다.

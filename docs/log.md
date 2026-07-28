@@ -1,5 +1,13 @@
 # 문서 업데이트 로그
 
+## 2026-07-28
+
+* **결정**: [Azure Speech 단어 단위 발음 평가](decisions/ADR-0013-azure-speech-pronunciation-assessment.md)를 채택하고 App → Backend → AI server → Azure 경계와 음성·자격증명 정책을 확정했다.
+* **ERD 정합화**: `word_attempt_logs`에서 `has_gaze_data`, `recognized_text`를 제거하고 발음 정확도, 문항·대상·토큰 위치와 최종 시도 컬럼을 MySQL 계약·Backend에 반영했다.
+* **점수 분리**: Azure `AccuracyScore`는 `pronunciation_accuracy_score`에 저장하고 `total_score`는 발음·시선·읽기 수행 종합 점수로 유지했다.
+* **API 전환**: 검사·훈련 녹음 API가 클라이언트 인식 문자열·점수 대신 multipart 음성을 받고 서버 분석 결과를 반환하도록 계약을 갱신했다.
+* **계획**: [Azure Speech 연동 실행 계획](../plans/2026-07-28-azure-speech-pronunciation-assessment.md)에 AI adapter, 단어 배열 정렬, 오류·비용·보안 검증과 미결 점수 정책을 기록했다.
+
 ## 2026-07-27
 
 * **정책 경량화**: [ADR-0012](decisions/ADR-0012-lightweight-harness-policy.md)에 따라 위험 기반 계획·검증, 기록 문서 중심 메타데이터와 Git 추적 파일 기반 하네스 검증을 채택했다.

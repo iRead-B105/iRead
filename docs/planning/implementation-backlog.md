@@ -56,6 +56,8 @@ timestamp: 2026-07-28T00:00:00+09:00
 | BE-026 | P1 | 단어 단위 시선 분석 연동·Mock adapter 구현 | 응시 시간·횟수·회귀·건너뛰기, 원시 좌표 비전달 | BE-009, BE-010, BE-013 | done |
 | BE-027 | P0 | 맞춤 생성 파이프라인 계약·통합·보안 회귀 테스트 | MySQL, 34개 타입, 분석 규칙, 배치 원자성, 개인정보 차단 | BE-013~BE-026 | done |
 | BE-028 | P0 | 아동 App 실행 payload JSON 계약 확정 | 검사·훈련·이야기의 `generatedData`, `question`, `result` 요청·응답 구조 | BE-008, BE-009, BE-013 | blocked |
+| BE-029 | P0 | 갱신 ERD 단어 수행 스키마 정합화 | 발음 정확도, 문항·토큰 위치, 최종 시도, 인식 문자열 제거 | BE-014, BE-021 | in-progress |
+| BE-030 | P0 | Azure Speech 단어 발음 평가 연동 | `ko-KR` scripted assessment, Backend–AI 계약, 장애·보안 정책 | BE-020, BE-029 | todo |
 
 ### 아동 App JSON 계약 상태
 
@@ -68,11 +70,12 @@ timestamp: 2026-07-28T00:00:00+09:00
 
 - 세부 실행 순서와 수용 기준은 [맞춤 훈련 데이터 생성 파이프라인 실행 계획](../../plans/2026-07-28-personalized-training-generation.md)을 따른다.
 - AI server는 훈련 후보와 발음 분석을 Mock 응답으로 제공한다. 형태소 분석, 자모 분해, G2P, 읽기 특징 판정, 취약도 계산과 최종 저장 여부는 Backend가 결정한다.
-- 최종 ERD 이미지를 기준으로 단일 Flyway V1을 수정한다. `word_attempt_logs`에는 `question_no`, `token_index`를 추가하지 않고 `trainings.result`에서 최종 `wordAttemptLogId`와 문항·토큰 위치를 연결한다.
-- ERD에 없는 예상·관찰 발음, 발음 점수·신뢰도·오류 유형과 단어 읽기 시간도 `word_attempt_logs`에 추가하지 않고 같은 `trainings.result` 항목에 저장한다.
+- 최종 ERD 이미지를 기준으로 단일 Flyway V1을 수정한다. `word_attempt_logs`는 `pronunciation_accuracy_score`, `question_no`, `target_index`, `token_index`, `is_final`을 직접 저장한다.
+- 인식 문자열, 예상·관찰 발음 문자열은 저장하지 않는다. 공급자 신뢰도·오류 유형·분석 버전과 전체 발화 점수만 부모 `result` JSON에 저장한다.
 - `student_feature_profiles.status`는 저장하지 않고 `weakness_score`에서 계산한다. 분석 버전은 코드 상수와 `profileSnapshot`에 저장한다.
 - DB의 발음·취약도 점수는 `0~1000`, API와 생성 JSON은 각각 `0~100`, `0~1`로 변환한다.
 - 현재 커리큘럼 전체 완료 직후 최신 프로필을 갱신하고 다음 커리큘럼 목록 5개를 편성한다. 교사는 03:00 생성 전까지 목록을 편집할 수 있고 생성 성공 후에는 수정할 수 없다.
+- 실제 발음 분석 전환은 [ADR-0013](../decisions/ADR-0013-azure-speech-pronunciation-assessment.md)과 [Azure Speech 실행 계획](../../plans/2026-07-28-azure-speech-pronunciation-assessment.md)을 따른다.
 - 03:00 배치는 목록의 5개 훈련이 모두 검증에 성공했을 때만 결과를 한 번에 저장한다. 한 건이라도 실패하면 전체를 저장하거나 잠그지 않는다.
 
 ### 2026-07-28 맞춤 훈련 데이터 생성 완료

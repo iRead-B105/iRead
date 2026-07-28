@@ -2798,9 +2798,15 @@
                               "format": "int64",
                               "description": "words.id"
                             },
-                            "recognizedText": {
+                            "pronunciationAccuracyScore": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 100,
+                              "description": "Azure 단어별 AccuracyScore"
+                            },
+                            "pronunciationErrorType": {
                               "type": "string",
-                              "description": "저장한 인식 텍스트"
+                              "description": "Azure 단어별 오류 유형"
                             },
                             "totalScore": {
                               "type": "integer",
@@ -2817,7 +2823,8 @@
                             "attemptId",
                             "testId",
                             "wordId",
-                            "recognizedText",
+                            "pronunciationAccuracyScore",
+                            "pronunciationErrorType",
                             "totalScore",
                             "createdAt"
                           ]
@@ -2860,14 +2867,14 @@
           "TE-REC-05",
           "TE-REC-03"
         ],
-        "description": "진행 중인 tests.id와 학생 소유 관계를 검증한 뒤 음성 인식 결과와 서버 평가 점수를 TEST 위치의 word_attempt_logs에 저장한다.",
-        "x-notion-request-summary": "studentId(path)\nquestionNumber(path)\ntestId(body)\nwordId(body)\nrecognizedText(body)\nspeechStartOffsetMs(body)\nspeechEndOffsetMs(body)\nisCorrect(body)\ntotalScore(body)",
-        "x-notion-response-summary": "attemptId\ntestId\nwordId\nrecognizedText\ntotalScore\ncreatedAt",
+        "description": "진행 중인 tests.id와 학생 소유 관계를 검증한 뒤 multipart 음성을 서버 발음 분석 adapter에 일시 전달하고 단어별 발음 정확도와 종합 점수를 TEST 위치의 word_attempt_logs에 저장한다.",
+        "x-notion-request-summary": "studentId(path)\nquestionNumber(path)\ntestId(body)\nwordId(body)\naudioFile(body)\nspeechStartOffsetMs(body, optional)\nspeechEndOffsetMs(body, optional)",
+        "x-notion-response-summary": "attemptId\ntestId\nwordId\npronunciationAccuracyScore\npronunciationErrorType\ntotalScore\ncreatedAt",
         "x-review-status": "reviewed",
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
@@ -2881,9 +2888,9 @@
                     "format": "int64",
                     "description": "words.id"
                   },
-                  "recognizedText": {
+                  "audioFile": {
                     "type": "string",
-                    "description": "최종 음성 인식 텍스트"
+                    "format": "binary"
                   },
                   "speechStartOffsetMs": {
                     "type": "integer",
@@ -2894,22 +2901,12 @@
                     "type": "integer",
                     "format": "int64",
                     "description": "음성 종료 오프셋(ms)"
-                  },
-                  "isCorrect": {
-                    "type": "boolean",
-                    "description": "정답 여부"
-                  },
-                  "totalScore": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "0~1000 평가 점수"
                   }
                 },
                 "required": [
                   "testId",
                   "wordId",
-                  "recognizedText",
-                  "totalScore"
+                  "audioFile"
                 ]
               }
             }
@@ -3893,18 +3890,11 @@
                               "format": "int64",
                               "description": "words.id"
                             },
-                            "recognizedText": {
-                              "type": "string",
-                              "description": "STT 인식 결과"
-                            },
-                            "observedPronunciation": {
-                              "type": "string",
-                              "description": "발음 분석기가 판정한 관찰 발음"
-                            },
-                            "pronunciationScore": {
+                            "pronunciationAccuracyScore": {
                               "type": "number",
                               "minimum": 0,
-                              "maximum": 100
+                              "maximum": 100,
+                              "description": "Azure 단어별 AccuracyScore"
                             },
                             "pronunciationConfidence": {
                               "type": "number",
@@ -3929,9 +3919,7 @@
                             "attemptId",
                             "trainingId",
                             "wordId",
-                            "recognizedText",
-                            "observedPronunciation",
-                            "pronunciationScore",
+                            "pronunciationAccuracyScore",
                             "pronunciationConfidence",
                             "pronunciationErrorType",
                             "totalScore",
@@ -3948,11 +3936,13 @@
                 "example": {
                   "success": true,
                   "data": {
-                    "logId": "1001",
-                    "transcript": "string",
-                    "pronunciationScore": 85.5,
-                    "readingErrorType": "string",
-                    "success": true,
+                    "attemptId": "1001",
+                    "trainingId": "30",
+                    "wordId": "40",
+                    "pronunciationAccuracyScore": 85.5,
+                    "pronunciationConfidence": 0.91,
+                    "pronunciationErrorType": "NONE",
+                    "totalScore": 1000,
                     "createdAt": "2026-07-24T12:00:00+09:00"
                   }
                 }
@@ -3998,9 +3988,9 @@
           "TR-REC-03",
           "TR-REC-07"
         ],
-        "description": "Backend는 multipart 음성을 STT·발음 분석 adapter에 일시 전달하고 원본을 보관하지 않는다. word_attempt_logs에는 기존 ERD 컬럼만 저장하며 문항 위치와 발음 상세는 trainings.result에 연결한다.",
+        "description": "Backend는 multipart 음성을 발음 분석 adapter에 일시 전달하고 원본을 보관하지 않는다. word_attempt_logs에는 문항·대상·토큰 위치, Azure 단어 정확도와 최종 시도를 저장하고 공급자 메타데이터는 trainings.result에 연결한다.",
         "x-notion-request-summary": "studentId(path)\ntrainingId(path)\nquestionNumber(path)\nwordId(body)\ntargetIndex(body)\ntokenIndex(body, optional)\nexpectedText(body)\naudioFile(body)\nspeechStartOffsetMs(body, optional)\nspeechEndOffsetMs(body, optional)",
-        "x-notion-response-summary": "attemptId\ntrainingId\nwordId\nrecognizedText\nobservedPronunciation\npronunciationScore\npronunciationConfidence\npronunciationErrorType\ntotalScore\ncreatedAt",
+        "x-notion-response-summary": "attemptId\ntrainingId\nwordId\npronunciationAccuracyScore\npronunciationConfidence\npronunciationErrorType\ntotalScore\ncreatedAt",
         "x-review-status": "reviewed",
         "security": [
           {

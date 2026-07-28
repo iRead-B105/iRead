@@ -15,9 +15,9 @@ timestamp: 2026-07-27T00:00:00+09:00
 | App–Backend API | `contracts/openapi/app-api.yaml` | Orchestration | 이전·검토 완료 | Notion 이관 스냅샷, Backend·App |
 | Admin–Backend API | `contracts/openapi/admin-api.yaml` | Orchestration | 이전·검토 완료 | Notion 이관 스냅샷, Backend·Frontend |
 | 공통 인증 API | `contracts/openapi/auth-api.yaml` | Orchestration | 이전·검토 완료 | Notion 이관 스냅샷, Backend·소비 앱 |
-| Backend–AI API | `contracts/openapi/ai-api.yaml` | Orchestration | 기준 계약 작성 및 이야기 계약 정합화 완료 | Backend·AI |
+| Backend–AI API | `contracts/openapi/ai-api.yaml` | Orchestration | Azure Speech 발음 평가 전환 계약 작성, 단어 배열 확장·AI adapter 구현 필요 | Backend·AI |
 | Eye Tracker API 연동 초안 | `contracts/gaze/eyetracker-api-contract.md` | Orchestration | draft, 팀 합의 필요 | Backend·Frontend·Eyetracking |
-| MySQL 실행 스키마 | `services/backend` Flyway migration | Backend | 2026-07-27 확정 ERD로 V1 교체, Backend 정합화·실행 검증 필요 | `contracts/database/schema.sql`, `contracts/database/erd.png`, `contracts/database/erd.md` |
+| MySQL 실행 스키마 | `services/backend` Flyway migration | Backend | 2026-07-28 갱신 ERD의 단어 발음 점수·위치·최종 시도 구조 동기화, MySQL 실행 검증 필요 | `contracts/database/schema.sql`, `contracts/database/erd.png`, `contracts/database/erd.md` |
 
 ## 전환 원칙
 
