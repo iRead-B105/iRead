@@ -215,27 +215,40 @@
                           "type": "object",
                           "properties": {
                             "gazeSessionId": {
-                              "type": "string",
-                              "description": "시선트래킹세션id"
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "시선 세션 식별자"
                             },
                             "contentType": {
                               "type": "string",
-                              "description": "콘텐츠유형"
+                              "description": "콘텐츠 유형"
                             },
                             "collectionStatus": {
                               "type": "string",
-                              "description": "수집상태"
+                              "description": "시선 수집 상태"
                             },
                             "calibrationStatus": {
                               "type": "string",
-                              "description": "보정상태"
+                              "description": "보정 상태"
                             },
                             "startedAt": {
                               "type": "string",
                               "format": "date-time",
-                              "description": "시작시간"
+                              "description": "수집 시작 시각"
+                            },
+                            "endedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "수집 종료 시각"
                             }
-                          }
+                          },
+                          "required": [
+                            "gazeSessionId",
+                            "contentType",
+                            "collectionStatus",
+                            "calibrationStatus",
+                            "startedAt"
+                          ]
                         }
                       },
                       "required": [
@@ -243,16 +256,6 @@
                       ]
                     }
                   ]
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "gazeSessionId": "1001",
-                    "contentType": "string",
-                    "collectionStatus": "COMPLETED",
-                    "calibrationStatus": "COMPLETED",
-                    "startedAt": "2026-07-24T12:00:00+09:00"
-                  }
                 }
               }
             }
@@ -274,9 +277,9 @@
           "TR-GAZE-01",
           "ST-GAZE-01"
         ],
-        "description": "[보류]api호출의 복잡도 증가 및 기존 합의내용과 달라 보류",
-        "x-notion-request-summary": "학생id\n콘텐츠유형\n테스트id\n보정상태",
-        "x-notion-response-summary": "시선트래킹세션id\n콘텐츠유형\n수집상태\n보정상태\n시작시간",
+        "description": "testId, trainingId, storyId 중 contentType과 일치하는 식별자 하나만 전달한다.",
+        "x-notion-request-summary": "studentId(body)\ncontentType(body)\ntestId(body, conditional)\ntrainingId(body, conditional)\nstoryId(body, conditional)\ncalibrationStatus(body)",
+        "x-notion-response-summary": "gazeSessionId\ncontentType\ncollectionStatus\ncalibrationStatus\nstartedAt\nendedAt",
         "x-review-status": "reviewed",
         "requestBody": {
           "required": true,
@@ -286,26 +289,37 @@
                 "type": "object",
                 "properties": {
                   "studentId": {
-                    "type": "string",
-                    "description": "학생id 식별자"
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "아동 식별자"
                   },
                   "contentType": {
                     "type": "string",
-                    "description": "콘텐츠유형"
+                    "description": "시선을 수집하는 콘텐츠 유형"
                   },
                   "testId": {
-                    "type": "string",
-                    "description": "테스트id 식별자"
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "contentType이 TEST일 때 사용할 검사 식별자"
+                  },
+                  "trainingId": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "contentType이 TRAINING일 때 사용할 훈련 식별자"
+                  },
+                  "storyId": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "contentType이 STORY일 때 사용할 이야기 식별자"
                   },
                   "calibrationStatus": {
                     "type": "string",
-                    "description": "보정상태"
+                    "description": "시선 장치 보정 상태"
                   }
                 },
                 "required": [
                   "studentId",
                   "contentType",
-                  "testId",
                   "calibrationStatus"
                 ]
               },
@@ -501,9 +515,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "gazeSessionId 식별자"
+            "description": "시선 세션 식별자"
           }
         ],
         "responses": {
@@ -523,19 +538,41 @@
                           "type": "object",
                           "properties": {
                             "gazeSessionId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "시선 세션 식별자"
+                            },
+                            "contentType": {
                               "type": "string",
-                              "description": "시선트래킹세션id"
+                              "description": "콘텐츠 유형"
                             },
                             "collectionStatus": {
                               "type": "string",
-                              "description": "수집상태"
+                              "description": "종료된 수집 상태"
+                            },
+                            "calibrationStatus": {
+                              "type": "string",
+                              "description": "보정 상태"
+                            },
+                            "startedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "수집 시작 시각"
                             },
                             "endedAt": {
                               "type": "string",
                               "format": "date-time",
-                              "description": "종료시간"
+                              "description": "수집 종료 시각"
                             }
-                          }
+                          },
+                          "required": [
+                            "gazeSessionId",
+                            "contentType",
+                            "collectionStatus",
+                            "calibrationStatus",
+                            "startedAt",
+                            "endedAt"
+                          ]
                         }
                       },
                       "required": [
@@ -543,14 +580,6 @@
                       ]
                     }
                   ]
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "gazeSessionId": "1001",
-                    "collectionStatus": "COMPLETED",
-                    "endedAt": "2026-07-24T12:00:00+09:00"
-                  }
                 }
               }
             }
@@ -572,9 +601,9 @@
           "TR-GAZE-02",
           "ST-GAZE-04"
         ],
-        "description": "[보류]api호출의 복잡도 증가 및 기존 합의내용과 달라 보류",
-        "x-notion-request-summary": "gazeSessionId(path)\n학생id\n테스트id\n종료상태",
-        "x-notion-response-summary": "시선트래킹세션id\n수집상태\n종료시간",
+        "description": "RUNNING 세션만 종료할 수 있다. data는 초당 5~10프레임으로 수집한 원시 시선 데이터이며 내부 JSON 컬럼에 저장한다.",
+        "x-notion-request-summary": "gazeSessionId(path)\nstudentId(body)\nendStatus(body)\ndata(body, optional)",
+        "x-notion-response-summary": "gazeSessionId\ncontentType\ncollectionStatus\ncalibrationStatus\nstartedAt\nendedAt",
         "x-review-status": "reviewed",
         "requestBody": {
           "required": true,
@@ -584,21 +613,25 @@
                 "type": "object",
                 "properties": {
                   "studentId": {
-                    "type": "string",
-                    "description": "학생id 식별자"
-                  },
-                  "testId": {
-                    "type": "string",
-                    "description": "테스트id 식별자"
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "아동 식별자"
                   },
                   "endStatus": {
                     "type": "string",
-                    "description": "종료상태"
+                    "description": "종료 상태"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": true
+                    },
+                    "description": "초당 5~10프레임으로 수집한 원시 시선 데이터"
                   }
                 },
                 "required": [
                   "studentId",
-                  "testId",
                   "endStatus"
                 ]
               },

@@ -688,6 +688,99 @@
       "reason": "이야기 책장과 진행 상태를 학생 이야기·템플릿 목록 조회로 통합한다."
     },
     {
+      "source": "POST /api/app/gaze/sessions",
+      "action": "update",
+      "reason": "확정 ERD의 content_type 조건부 관계에 맞춰 검사·훈련·이야기 시선 세션을 하나의 계약으로 시작한다.",
+      "changes": {
+        "note": "testId, trainingId, storyId 중 contentType과 일치하는 식별자 하나만 전달한다.",
+        "request_summary": "studentId(body)\ncontentType(body)\ntestId(body, conditional)\ntrainingId(body, conditional)\nstoryId(body, conditional)\ncalibrationStatus(body)",
+        "request_parameters": [
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Body",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "contentType",
+            "type": "string",
+            "in": "Body",
+            "required": true,
+            "description": "시선을 수집하는 콘텐츠 유형"
+          },
+          {
+            "name": "testId",
+            "type": "long",
+            "in": "Body",
+            "required": false,
+            "description": "contentType이 TEST일 때 사용할 검사 식별자"
+          },
+          {
+            "name": "trainingId",
+            "type": "long",
+            "in": "Body",
+            "required": false,
+            "description": "contentType이 TRAINING일 때 사용할 훈련 식별자"
+          },
+          {
+            "name": "storyId",
+            "type": "long",
+            "in": "Body",
+            "required": false,
+            "description": "contentType이 STORY일 때 사용할 이야기 식별자"
+          },
+          {
+            "name": "calibrationStatus",
+            "type": "string",
+            "in": "Body",
+            "required": true,
+            "description": "시선 장치 보정 상태"
+          }
+        ],
+        "response_summary": "gazeSessionId\ncontentType\ncollectionStatus\ncalibrationStatus\nstartedAt\nendedAt",
+        "response_fields": [
+          {
+            "name": "gazeSessionId",
+            "type": "long",
+            "required": true,
+            "description": "시선 세션 식별자"
+          },
+          {
+            "name": "contentType",
+            "type": "string",
+            "required": true,
+            "description": "콘텐츠 유형"
+          },
+          {
+            "name": "collectionStatus",
+            "type": "string",
+            "required": true,
+            "description": "시선 수집 상태"
+          },
+          {
+            "name": "calibrationStatus",
+            "type": "string",
+            "required": true,
+            "description": "보정 상태"
+          },
+          {
+            "name": "startedAt",
+            "type": "string(date-time)",
+            "required": true,
+            "description": "수집 시작 시각"
+          },
+          {
+            "name": "endedAt",
+            "type": "string(date-time)",
+            "required": false,
+            "description": "수집 종료 시각"
+          }
+        ],
+        "response_example": ""
+      }
+    },
+    {
       "source": "POST /api/app/gaze/sessions/{gazeSessionId}/analysis-results",
       "action": "update",
       "reason": "검사·훈련·이야기에서 공통으로 사용하는 시선 분석 저장 계약을 상세화한다.",
@@ -761,6 +854,85 @@
           }
         ],
         "response_codes": ["201", "400", "401", "403", "404", "409"]
+      }
+    },
+    {
+      "source": "PATCH /api/app/gaze/sessions/{gazeSessionId}/end",
+      "action": "update",
+      "reason": "시선 세션이 이미 연결 자원을 소유하므로 종료 요청의 중복 testId를 제거하고 원시 시선 데이터를 함께 저장한다.",
+      "changes": {
+        "note": "RUNNING 세션만 종료할 수 있다. data는 초당 5~10프레임으로 수집한 원시 시선 데이터이며 내부 JSON 컬럼에 저장한다.",
+        "request_summary": "gazeSessionId(path)\nstudentId(body)\nendStatus(body)\ndata(body, optional)",
+        "request_parameters": [
+          {
+            "name": "gazeSessionId",
+            "type": "long",
+            "in": "Path",
+            "required": true,
+            "description": "시선 세션 식별자"
+          },
+          {
+            "name": "studentId",
+            "type": "long",
+            "in": "Body",
+            "required": true,
+            "description": "아동 식별자"
+          },
+          {
+            "name": "endStatus",
+            "type": "string",
+            "in": "Body",
+            "required": true,
+            "description": "종료 상태"
+          },
+          {
+            "name": "data",
+            "type": "array<object>",
+            "in": "Body",
+            "required": false,
+            "description": "초당 5~10프레임으로 수집한 원시 시선 데이터"
+          }
+        ],
+        "response_summary": "gazeSessionId\ncontentType\ncollectionStatus\ncalibrationStatus\nstartedAt\nendedAt",
+        "response_fields": [
+          {
+            "name": "gazeSessionId",
+            "type": "long",
+            "required": true,
+            "description": "시선 세션 식별자"
+          },
+          {
+            "name": "contentType",
+            "type": "string",
+            "required": true,
+            "description": "콘텐츠 유형"
+          },
+          {
+            "name": "collectionStatus",
+            "type": "string",
+            "required": true,
+            "description": "종료된 수집 상태"
+          },
+          {
+            "name": "calibrationStatus",
+            "type": "string",
+            "required": true,
+            "description": "보정 상태"
+          },
+          {
+            "name": "startedAt",
+            "type": "string(date-time)",
+            "required": true,
+            "description": "수집 시작 시각"
+          },
+          {
+            "name": "endedAt",
+            "type": "string(date-time)",
+            "required": true,
+            "description": "수집 종료 시각"
+          }
+        ],
+        "response_example": ""
       }
     },
     {

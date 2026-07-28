@@ -36,8 +36,8 @@ timestamp: 2026-07-28T00:00:00+09:00
 | BE-006 | P1 | 관리자 보고서·시선 결과 API 계약 정합화 | Admin `report` 4개, 검사·훈련 시선 조회 2개 operation | BE-004, BE-005 | done |
 | BE-007 | P0 | 아동 로그인·성장·마이페이지 API 구현 | App 인증, `student`, `mypage` | BE-002, BE-003 | done |
 | BE-008 | P0 | 아동 검사·훈련 세션 API 구현 | App `test` 8개, `training` 7개 operation | BE-001, BE-007 | done |
-| BE-009 | P1 | 이야기·시선 세션 API 구현 | App `story` 9개, `gaze` 6개 operation | BE-007, BE-010 | in-progress |
-| BE-010 | P0 | AI 없는 데모용 결정적 fixture provider 구현 | 훈련 생성·평가, 이야기, STT·TTS 대체 결과 | BE-001 | in-progress |
+| BE-009 | P1 | 이야기·시선 세션 API 구현 | App `story` 9개, `gaze` 6개 operation | BE-007, BE-010 | done |
+| BE-010 | P0 | AI 없는 데모용 결정적 fixture provider 구현 | 훈련 생성·평가, 이야기, STT·TTS 대체 결과 | BE-001 | done |
 | BE-011 | P1 | 비식별 데모 seed와 파일·DB 초기화 절차 작성 | Flyway, 데모 데이터, `audio/` | BE-001 | in-progress |
 | BE-012 | P1 | OpenAPI 기준 오류 응답과 입력 검증 통일 | Auth·Admin·App 전체 | BE-002~BE-010 | in-progress |
 | BE-013 | P0 | 맞춤 훈련 생성 기능·OpenAPI·JSON 계약 확정 | 33개 `trainingType`, AI 후보 `{type,data}`, 최종 `generated_data` V2 | BE-005, BE-008 | todo |
@@ -88,6 +88,17 @@ timestamp: 2026-07-28T00:00:00+09:00
 - 빈 MySQL에서 Flyway V1과 비식별 seed로 동일한 데모 상태를 만들 수 있다.
 - `demo` profile은 `services/ai` 실행 없이 동일 입력에 동일한 결과를 반환한다.
 - 작업별 관련 테스트 코드를 추가·수정하고 테스트 성공을 확인한 뒤 결과를 기록한다.
+
+### 2026-07-28 BE-009·BE-010 완료
+
+- App Story 9개와 Gaze 6개 operation의 경로·method를 회귀 테스트로 고정했다.
+- 이야기 생성 결과를 `story_scenes`와 `story_lines`에 순서대로 저장하고, 음성 분기의 최종 STT 텍스트를 `story_choices`에 저장한다.
+- 분기 대사를 비관적 잠금으로 직렬화하고 이미 저장된 선택은 STT·AI를 다시 호출하지 않은 채 최초 다음 장면을 반환한다.
+- STT 음성 원본은 외부 응답에 내부 경로를 노출하지 않고 `audio/{studentId}/story/`에 저장한다. TTS 결과는 생성 파일명만 포함한 인증 API URL로 제공한다.
+- Backend–AI의 이야기 생성·이어쓰기·STT·TTS 호출을 구현하고 `AI_MOCK_GENERATE`, `AI_MOCK_SPEECH` 기본 fixture 모드에서 동일 입력에 결정적 결과를 반환한다.
+- 시선 세션은 `contentType`과 일치하는 검사·훈련·이야기 식별자 하나만 허용하고, 종료 시 원시 시선 JSON을 저장하며 완료 세션당 분석 결과 하나만 허용한다.
+- App 시선 계약은 확정 ERD에 맞춰 조건부 콘텐츠 식별자, `endStatus`, 원시 `data`와 `collectionStatus` 응답으로 정합화했다.
+- Backend 전체 `.\gradlew.bat test`와 계약·하네스 검증을 실행해 모두 성공했다.
 
 ### 2026-07-26 BE-002 완료
 
