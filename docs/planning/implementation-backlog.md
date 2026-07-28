@@ -40,7 +40,7 @@ timestamp: 2026-07-28T00:00:00+09:00
 | BE-010 | P0 | AI 없는 데모용 결정적 fixture provider 구현 | 훈련 생성·평가, 이야기, STT·TTS 대체 결과 | BE-001 | done |
 | BE-011 | P1 | 비식별 데모 seed와 파일·DB 초기화 절차 작성 | Flyway, 데모 데이터, `audio/` | BE-001 | done |
 | BE-012 | P1 | OpenAPI 기준 오류 응답과 입력 검증 통일 | Auth·Admin·App 전체 | BE-002~BE-010 | done |
-| BE-013 | P0 | 맞춤 훈련 생성 기능·OpenAPI·JSON 계약 확정 | 33개 `trainingType`, AI 후보 `{type,data}`, 최종 `generated_data` V2 | BE-005, BE-008 | todo |
+| BE-013 | P0 | 맞춤 훈련 생성 기능·OpenAPI·JSON 계약 확정 | 33개 `trainingType`, AI 후보 `{type,data}`, 최종 `generated_data` V2 | BE-005, BE-008 | blocked |
 | BE-014 | P0 | 최종 ERD 기준 읽기 특징 스키마와 엔티티 정합화 | `reading_features`, `student_feature_profiles`, Flyway V1 | BE-001, BE-013 | todo |
 | BE-015 | P0 | 읽기 특징·훈련 템플릿 멱등 초기화 구현 | 자모·음절·음운 규칙 특징, 33개 `training_templates.prompt` JSON | BE-014 | todo |
 | BE-016 | P0 | 최종 훈련 데이터 모델과 타입별 구조 검증기 구현 | `questionNo`, `content`, `answer`, `analysisTargets`, profile snapshot | BE-013, BE-015 | todo |
@@ -59,6 +59,8 @@ timestamp: 2026-07-28T00:00:00+09:00
 ### 2026-07-28 맞춤 훈련 데이터 생성 결정
 
 - 세부 실행 순서와 수용 기준은 [맞춤 훈련 데이터 생성 파이프라인 실행 계획](../../plans/2026-07-28-personalized-training-generation.md)을 따른다.
+- [BLOCKED] 훈련·이야기나라·학습의 Vue–Backend, Backend–AI, DB 저장 JSON 형식은 팀 협의 중이다. BE-013과 해당 계약에 의존하는 구현은 합의 전 완료 처리하거나 `develop`에 병합하지 않는다.
+- `feature/personalized-training-generation`은 다른 팀원이 작업 중인 브랜치이므로 수정하거나 이력을 재작성하지 않는다. 계약 독립 변경과 계약 의존 변경을 분리해 검토한다.
 - AI server는 훈련 후보와 발음 분석을 Mock 응답으로 제공한다. 형태소 분석, 자모 분해, G2P, 읽기 특징 판정, 취약도 계산과 최종 저장 여부는 Backend가 결정한다.
 - 최종 ERD 이미지를 기준으로 단일 Flyway V1을 수정한다. `word_attempt_logs`에는 `question_no`, `token_index`를 추가하지 않고 `trainings.result`에서 최종 `wordAttemptLogId`와 문항·토큰 위치를 연결한다.
 - ERD에 없는 예상·관찰 발음, 발음 점수·신뢰도·오류 유형과 단어 읽기 시간도 `word_attempt_logs`에 추가하지 않고 같은 `trainings.result` 항목에 저장한다.

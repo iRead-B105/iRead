@@ -7,7 +7,7 @@ timestamp: 2026-07-28T00:00:00+09:00
 ---
 # 맞춤 훈련 데이터 생성 파이프라인
 
-- 상태: draft
+- 상태: blocked
 - 작성일: 2026-07-28
 - 수정일: 2026-07-28
 - 대상: `services/backend`
@@ -134,6 +134,12 @@ AI 후보 응답은 유효한 JSON `{type, data[]}` 하나다. Backend는 후보
 7. 커리큘럼의 모든 훈련이 통과하면 결과를 한 번에 저장하고 목록을 잠근다.
 8. 하나라도 실패하면 결과를 저장하거나 잠그지 않고 다음 배치 대상으로 유지한다.
 
+### 운영 기반
+
+- 음성 업로드는 최대 20MB이며 `audio/webm`, `audio/wav`, `audio/mpeg`, `audio/mp4`만 허용한다. MIME과 확장자가 일치해야 한다.
+- AI 서버 연결 제한 시간은 3초, 응답 제한 시간은 30초다.
+- 상태를 변경하는 AI 요청은 자동 재시도하지 않는다. 조회성 요청은 네트워크 오류에 한해 최대 1회 재시도할 수 있다.
+
 ## 작업
 
 ### 1. 계약과 기준선
@@ -183,7 +189,10 @@ AI 후보 응답은 유효한 JSON `{type, data[]}` 하나다. Backend는 후보
 
 ## 미결 사항
 
-- 없음
+- [BLOCKED] 훈련·이야기나라·학습의 Vue–Backend 입력·출력 JSON
+- [BLOCKED] Backend–AI 요청·응답 JSON
+- [BLOCKED] `training_datas.generated_data`, `trainings.result` 저장 JSON
+- [TBD] 기준 문서의 33개 훈련 타입과 작업 브랜치의 34개 템플릿 차이
 
 ## 중요한 위험
 
