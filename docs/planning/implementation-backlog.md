@@ -3,12 +3,12 @@ type: Implementation Backlog
 title: "Backend·Frontend 구현 백로그"
 description: "AI server를 제외한 Backend와 교수자 Frontend·아동 App 구현 작업, 우선순위와 의존성을 관리합니다."
 tags: [planning, implementation, backend, frontend, app, demo]
-timestamp: 2026-07-27T00:00:00+09:00
+timestamp: 2026-07-28T00:00:00+09:00
 ---
 # Backend·Frontend 구현 백로그
 
 - 상태: active
-- 최종 검토일: 2026-07-26
+- 최종 검토일: 2026-07-28
 - 적용 범위: `services/backend`, `services/frontend`, `services/app`
 - 계약 기준: [OpenAPI](../../contracts/openapi/index.md), [MySQL 스키마](../../contracts/database/index.md), [기능 카탈로그](../product/features/catalog/index.md)
 
@@ -40,6 +40,32 @@ timestamp: 2026-07-27T00:00:00+09:00
 | BE-010 | P0 | AI 없는 데모용 결정적 fixture provider 구현 | 훈련 생성·평가, 이야기, STT·TTS 대체 결과 | BE-001 | in-progress |
 | BE-011 | P1 | 비식별 데모 seed와 파일·DB 초기화 절차 작성 | Flyway, 데모 데이터, `audio/` | BE-001 | in-progress |
 | BE-012 | P1 | OpenAPI 기준 오류 응답과 입력 검증 통일 | Auth·Admin·App 전체 | BE-002~BE-010 | in-progress |
+| BE-013 | P0 | 맞춤 훈련 생성 기능·OpenAPI·JSON 계약 확정 | 33개 `trainingType`, AI 후보 `{type,data}`, 최종 `generated_data` V2 | BE-005, BE-008 | todo |
+| BE-014 | P0 | 최종 ERD 기준 읽기 특징 스키마와 엔티티 정합화 | `reading_features`, `student_feature_profiles`, Flyway V1 | BE-001, BE-013 | todo |
+| BE-015 | P0 | 읽기 특징·훈련 템플릿 멱등 초기화 구현 | 자모·음절·음운 규칙 특징, 33개 `training_templates.prompt` JSON | BE-014 | todo |
+| BE-016 | P0 | 최종 훈련 데이터 모델과 타입별 구조 검증기 구현 | `questionNo`, `content`, `answer`, `analysisTargets`, profile snapshot | BE-013, BE-015 | todo |
+| BE-017 | P0 | 한국어 형태·자모·G2P·음운 규칙 분석기 구현 | KOMORAN 3.3.9, 자모 특징, 주요 음운 규칙 7종 | BE-014, BE-015 | todo |
+| BE-018 | P0 | 33개 훈련 타입 AI 후보 Mock provider 구현 | 공통 프롬프트, 타입별 출력 형식, `count=5`, 비식별 요청 | BE-010, BE-013, BE-015 | todo |
+| BE-019 | P0 | 후보 분석·검증·보충 생성·최종 저장 오케스트레이션 구현 | 통과 문항 유지, 최대 3회 재생성, `training_datas` 원자 저장 | BE-016~BE-018 | todo |
+| BE-020 | P0 | 일시 음성 업로드와 발음 분석 Mock adapter 구현 | multipart 수신, 원본 미보관, 발음·오류·신뢰도 결과 | BE-010, BE-013 | todo |
+| BE-021 | P0 | 최종 단어 시도 연결과 발음 상세 결과 집계 구현 | `trainings.result`의 로그 ID·문항 위치·발음 상세, 마지막 확정 시도만 반영 | BE-016, BE-020 | todo |
+| BE-022 | P0 | 학생별 특징 프로필 계산·조회 구현 | `WEAKNESS_V1`, 고정 임계값, 신뢰도·상태 계산 | BE-017, BE-021, BE-026 | todo |
+| BE-023 | P1 | 커리큘럼 완료 후 다음 맞춤 목록 자동 편성 구현 | 직접 보완 3개, 확장 1개, 복습·유창성 1개 | BE-015, BE-022 | todo |
+| BE-024 | P1 | 생성 전 커리큘럼 편집과 생성 후 잠금 구현 | 교사 목록·순서·유형 편집, 생성 완료 후 수정 금지 | BE-023 | todo |
+| BE-025 | P1 | 매일 03:00 커리큘럼 훈련 데이터 생성 배치 구현 | Asia/Seoul, 5개 전체 성공 시 저장·잠금 | BE-019, BE-024 | todo |
+| BE-026 | P1 | 단어 단위 시선 분석 연동·Mock adapter 구현 | 응시 시간·횟수·회귀·건너뛰기, 원시 좌표 비전달 | BE-009, BE-010, BE-013 | todo |
+| BE-027 | P0 | 맞춤 생성 파이프라인 계약·통합·보안 회귀 테스트 | MySQL, 33개 타입, 분석 규칙, 배치 원자성, 개인정보 차단 | BE-013~BE-026 | todo |
+
+### 2026-07-28 맞춤 훈련 데이터 생성 결정
+
+- 세부 실행 순서와 수용 기준은 [맞춤 훈련 데이터 생성 파이프라인 실행 계획](../../plans/2026-07-28-personalized-training-generation.md)을 따른다.
+- AI server는 훈련 후보와 발음 분석을 Mock 응답으로 제공한다. 형태소 분석, 자모 분해, G2P, 읽기 특징 판정, 취약도 계산과 최종 저장 여부는 Backend가 결정한다.
+- 최종 ERD 이미지를 기준으로 단일 Flyway V1을 수정한다. `word_attempt_logs`에는 `question_no`, `token_index`를 추가하지 않고 `trainings.result`에서 최종 `wordAttemptLogId`와 문항·토큰 위치를 연결한다.
+- ERD에 없는 예상·관찰 발음, 발음 점수·신뢰도·오류 유형과 단어 읽기 시간도 `word_attempt_logs`에 추가하지 않고 같은 `trainings.result` 항목에 저장한다.
+- `student_feature_profiles.status`는 저장하지 않고 `weakness_score`에서 계산한다. 분석 버전은 코드 상수와 `profileSnapshot`에 저장한다.
+- DB의 발음·취약도 점수는 `0~1000`, API와 생성 JSON은 각각 `0~100`, `0~1`로 변환한다.
+- 현재 커리큘럼 전체 완료 직후 최신 프로필을 갱신하고 다음 커리큘럼 목록 약 5개를 편성한다. 교사는 03:00 생성 전까지 목록을 편집할 수 있고 생성 성공 후에는 수정할 수 없다.
+- 03:00 배치는 목록의 5개 훈련이 모두 검증에 성공했을 때만 결과를 한 번에 저장한다. 한 건이라도 실패하면 전체를 저장하거나 잠그지 않는다.
 
 ### 2026-07-25 Backend 구현 검토
 
@@ -184,6 +210,12 @@ timestamp: 2026-07-27T00:00:00+09:00
 4. `BE-005`, `BE-008`, `FE-004`, `FE-008`
 5. `BE-006`, `BE-009`, `BE-012`, `FE-005`, `FE-009`, `FE-010`
 6. `BE-011`, `FE-011`, `FE-012`
+7. `BE-013`, `BE-014`
+8. `BE-015`, `BE-016`, `BE-017`, `BE-020`, `BE-026`
+9. `BE-018`, `BE-021`
+10. `BE-019`, `BE-022`
+11. `BE-023`, `BE-024`
+12. `BE-025`, `BE-027`
 
 ## 관리 규칙
 
