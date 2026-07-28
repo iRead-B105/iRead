@@ -59,7 +59,7 @@ Backend는 마지막 확정 수행 결과를 읽기 특징별로 집계하고, �
 - `PTG-008`: 정답 근거는 정답 목표와 실제 선택 항목에만, 시선 근거는 실제 응시한 모든 항목에 반영한다.
 - `PTG-009`: AI 후보는 목표 특징, 제외 특징, 길이, 형식과 정답 일치를 모두 통과해야 한다.
 - `PTG-010`: 최종 `generated_data`는 `schemaVersion`, `generationMetadata`, `profileSnapshot`, `questions`, `validationResult`를 포함한다.
-- `PTG-011`: 문항은 공통 `questionNo`, `type`, `content`, `answer`, `analysisTargets`, `targetFeatureCodes`를 포함하고 읽기 문항은 `text`, `expectedPronunciation`, `words`를 추가한다.
+- `PTG-011`: 문항은 공통 `questionNo`, `type`, `content`, `answer`, `analysisTargets`, `targetFeatureCodes`를 포함하고 읽기 문항은 `text`, `words`를 추가한다.
 - `PTG-012`: 학생용 문항 응답에는 서버 평가용 `answer`, 프로필 스냅샷과 내부 검증 정보를 노출하지 않는다.
 - `PTG-013`: 같은 문항·토큰의 여러 시도 중 `trainings.result`에서 `isFinal=true`로 연결한 마지막 시도만 프로필 근거로 사용한다.
 - `PTG-014`: 문항·토큰 위치와 발음 상세는 ERD에 컬럼을 추가하지 않고 `trainings.result.wordAttempts`에 저장한다.

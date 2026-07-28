@@ -42,7 +42,7 @@ timestamp: 2026-07-28T00:00:00+09:00
 - `contracts/database/erd.png`를 물리 스키마 기준으로 사용하고 신규 V2가 아닌 단일 `V1__baseline_schema.sql`을 수정한다.
 - `word_attempt_logs`와 `student_feature_profiles`에는 ERD에 없는 컬럼을 추가하지 않는다.
 - 문항·토큰과 단어 로그는 `trainings.result.wordAttempts[]`의 `questionNo`, `tokenIndex`, `wordAttemptLogId`, `isFinal`로 연결한다.
-- ERD에 별도 컬럼이 없는 `expectedPronunciation`, `observedPronunciation`, `pronunciationScore`, `pronunciationConfidence`, `errorType`, `wordReadTimeMs`, `analysisVersion`도 같은 결과 항목에 저장한다.
+- ERD에 별도 컬럼이 없는 `observedPronunciation`, `pronunciationScore`, `pronunciationConfidence`, `errorType`, `wordReadTimeMs`, `analysisVersion`도 같은 결과 항목에 저장한다.
 - 같은 위치의 여러 시도 중 `isFinal=true`인 마지막 확정 시도만 프로필 근거로 사용한다.
 - 프로필 상태는 저장하지 않고 취약도에서 `NORMAL`, `WATCH`, `WEAK`, `CRITICAL`을 계산한다.
 - 분석 버전 `WEAKNESS_V1`은 Backend 상수와 `generated_data.profileSnapshot.analysisVersion`에 기록한다.
@@ -84,7 +84,7 @@ AI 후보 응답은 유효한 JSON `{type, data[]}` 하나다. Backend는 후보
 }
 ```
 
-- `analysisTargets`는 목표, 문장 토큰, 선택지와 카드를 포함하는 모든 화면 텍스트를 `targetIndex`, `role`, `text`, `expectedPronunciation`, `featureCodes`, `featureOccurrences`로 정규화한다.
+- `analysisTargets`는 목표, 문장 토큰, 선택지와 카드를 포함하는 모든 화면 텍스트를 `targetIndex`, `role`, `text`, `featureCodes`, `featureOccurrences`로 정규화한다.
 - 정답 근거는 정답 목표와 학생이 실제 선택한 항목에만 반영한다.
 - 시선 근거는 실제 응시한 모든 항목에 반영한다.
 - 읽어야 하는 항목을 건너뛴 경우에만 건너뛰기를 실패 근거로 반영한다.
