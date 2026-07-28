@@ -40,12 +40,12 @@ timestamp: 2026-07-28T00:00:00+09:00
 | BE-010 | P0 | AI 없는 데모용 결정적 fixture provider 구현 | 훈련 생성·평가, 이야기, STT·TTS 대체 결과 | BE-001 | in-progress |
 | BE-011 | P1 | 비식별 데모 seed와 파일·DB 초기화 절차 작성 | Flyway, 데모 데이터, `audio/` | BE-001 | in-progress |
 | BE-012 | P1 | OpenAPI 기준 오류 응답과 입력 검증 통일 | Auth·Admin·App 전체 | BE-002~BE-010 | in-progress |
-| BE-013 | P0 | 맞춤 훈련 생성 기능·OpenAPI·JSON 계약 확정 | 33개 `trainingType`, AI 후보 `{type,data}`, 최종 `generated_data` V2 | BE-005, BE-008 | done |
-| BE-014 | P0 | 최종 ERD 기준 읽기 특징 스키마와 엔티티 정합화 | `reading_features`, `student_feature_profiles`, Flyway V1 | BE-001, BE-013 | todo |
-| BE-015 | P0 | 읽기 특징·훈련 템플릿 멱등 초기화 구현 | 자모·음절·음운 규칙 특징, 33개 `training_templates.prompt` JSON | BE-014 | todo |
+| BE-013 | P0 | 맞춤 훈련 생성 기능·OpenAPI·JSON 계약 확정 | 34개 `trainingType`, AI 후보 `{type,data}`, 최종 `generated_data` V2 | BE-005, BE-008 | done |
+| BE-014 | P0 | 최종 ERD 기준 읽기 특징 스키마와 엔티티 정합화 | `reading_features`, `student_feature_profiles`, Flyway V1 | BE-001, BE-013 | done |
+| BE-015 | P0 | 읽기 특징·훈련 템플릿 멱등 초기화 구현 | 자모·음절·음운 규칙 특징, 34개 `training_templates.prompt` JSON | BE-014 | done |
 | BE-016 | P0 | 최종 훈련 데이터 모델과 타입별 구조 검증기 구현 | `questionNo`, `content`, `answer`, `analysisTargets`, profile snapshot | BE-013, BE-015 | todo |
 | BE-017 | P0 | 한국어 형태·자모·G2P·음운 규칙 분석기 구현 | KOMORAN 3.3.9, 자모 특징, 주요 음운 규칙 7종 | BE-014, BE-015 | todo |
-| BE-018 | P0 | 33개 훈련 타입 AI 후보 Mock provider 구현 | 공통 프롬프트, 타입별 출력 형식, `count=5`, 비식별 요청 | BE-010, BE-013, BE-015 | todo |
+| BE-018 | P0 | 34개 훈련 타입 AI 후보 Mock provider 구현 | 공통 프롬프트, 타입별 출력 형식, `count=5`, 비식별 요청 | BE-010, BE-013, BE-015 | todo |
 | BE-019 | P0 | 후보 분석·검증·보충 생성·최종 저장 오케스트레이션 구현 | 통과 문항 유지, 최대 3회 재생성, `training_datas` 원자 저장 | BE-016~BE-018 | todo |
 | BE-020 | P0 | 일시 음성 업로드와 발음 분석 Mock adapter 구현 | multipart 수신, 원본 미보관, 발음·오류·신뢰도 결과 | BE-010, BE-013 | todo |
 | BE-021 | P0 | 최종 단어 시도 연결과 발음 상세 결과 집계 구현 | `trainings.result`의 로그 ID·문항 위치·발음 상세, 마지막 확정 시도만 반영 | BE-016, BE-020 | todo |
@@ -54,7 +54,7 @@ timestamp: 2026-07-28T00:00:00+09:00
 | BE-024 | P1 | 생성 전 커리큘럼 편집과 생성 후 잠금 구현 | 교사 목록·순서·유형 편집, 생성 완료 후 수정 금지 | BE-023 | todo |
 | BE-025 | P1 | 매일 03:00 커리큘럼 훈련 데이터 생성 배치 구현 | Asia/Seoul, 5개 전체 성공 시 저장·잠금 | BE-019, BE-024 | todo |
 | BE-026 | P1 | 단어 단위 시선 분석 연동·Mock adapter 구현 | 응시 시간·횟수·회귀·건너뛰기, 원시 좌표 비전달 | BE-009, BE-010, BE-013 | todo |
-| BE-027 | P0 | 맞춤 생성 파이프라인 계약·통합·보안 회귀 테스트 | MySQL, 33개 타입, 분석 규칙, 배치 원자성, 개인정보 차단 | BE-013~BE-026 | todo |
+| BE-027 | P0 | 맞춤 생성 파이프라인 계약·통합·보안 회귀 테스트 | MySQL, 34개 타입, 분석 규칙, 배치 원자성, 개인정보 차단 | BE-013~BE-026 | todo |
 
 ### 2026-07-28 맞춤 훈련 데이터 생성 결정
 

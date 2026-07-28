@@ -1,7 +1,7 @@
 ---
 type: Execution Plan
 title: "맞춤 훈련 데이터 생성 파이프라인"
-description: "학생별 읽기 취약도를 집계하고 33개 훈련 타입의 후보를 생성·검증하여 다음 커리큘럼에 배정하는 Backend 구현 계획입니다."
+description: "학생별 읽기 취약도를 집계하고 34개 훈련 타입의 후보를 생성·검증하여 다음 커리큘럼에 배정하는 Backend 구현 계획입니다."
 tags: [plan, backend, training, personalization, mysql, batch, mock-ai]
 timestamp: 2026-07-28T00:00:00+09:00
 ---
@@ -21,7 +21,7 @@ timestamp: 2026-07-28T00:00:00+09:00
 ### 포함
 
 - 최종 `contracts/database/erd.png`에 있는 `reading_features`, `student_feature_profiles`를 Flyway V1·계약 SQL·Backend 엔티티에 반영한다.
-- 33개 훈련 타입과 타입별 프롬프트·출력 템플릿을 `training_templates.prompt` JSON으로 관리한다.
+- 34개 훈련 타입과 타입별 프롬프트·출력 템플릿을 `training_templates.prompt` JSON으로 관리한다.
 - AI 훈련 후보 생성, 발음 분석과 시선 분석의 결정적 Mock adapter를 구현한다.
 - KOMORAN 3.3.9 형태소 분석, 한글 자모 분해, G2P와 주요 음운 규칙 엔진을 Backend에 구현한다.
 - 수행 결과 집계, 특징별 취약도, 다음 커리큘럼 목록 편성, 교사 편집, 03:00 생성 배치를 구현한다.
@@ -139,12 +139,12 @@ AI 후보 응답은 유효한 JSON `{type, data[]}` 하나다. Backend는 후보
 ### 1. 계약과 기준선
 
 - [x] **BE-013** 기능 명세, Backend–AI 내부 OpenAPI, App·Admin OpenAPI와 `generated_data` V2 계약을 먼저 확정한다.
-- [ ] **BE-014** 최종 ERD의 두 신규 테이블을 Flyway V1, `contracts/database/schema.sql`, 엔티티와 ERD 파생 문서에 동기화한다.
-- [ ] **BE-015** 읽기 특징과 33개 템플릿을 기존 행을 덮어쓰지 않는 멱등 초기화 코드로 등록한다.
+- [x] **BE-014** 최종 ERD의 두 신규 테이블을 Flyway V1, `contracts/database/schema.sql`, 엔티티와 ERD 파생 문서에 동기화한다.
+- [x] **BE-015** 읽기 특징과 34개 템플릿을 기존 행을 덮어쓰지 않는 멱등 초기화 코드로 등록한다.
 
 ### 2. 생성 데이터와 언어 분석
 
-- [ ] **BE-016** 공통 봉투, 33개 타입별 `content`·`answer`, `analysisTargets` DTO와 검증기를 구현한다.
+- [ ] **BE-016** 공통 봉투, 34개 타입별 `content`·`answer`, `analysisTargets` DTO와 검증기를 구현한다.
 - [ ] **BE-017** KOMORAN adapter, 자모 분석기, G2P와 7개 음운 규칙 엔진을 구현하고 분석 버전을 고정한다.
 - [ ] **BE-018** 모든 타입에 대해 동일 입력에 동일 후보를 반환하는 Mock provider를 구현한다.
 - [ ] **BE-019** 부분 통과 유지, 부족분 재요청, 중복 제거, 최종 문항 수 검증과 원자 저장을 구현한다.
@@ -173,7 +173,7 @@ AI 후보 응답은 유효한 JSON `{type, data[]}` 하나다. Backend는 후보
 - `python tools/validate_harness.py`
 - `git diff --check`
 - Backend 전체 테스트
-- 33개 `trainingType`별 정상·필수 필드 누락·배열 길이·인덱스·정답 위치 검증
+- 34개 `trainingType`별 정상·필수 필드 누락·배열 길이·인덱스·정답 위치 검증
 - 자모 전체와 7개 음운 규칙의 양성·음성·경계 사례
 - 낮은 음성 신뢰도, 시선 부담, 마지막 확정 시도와 점수 단위 변환 검증
 - 현재 커리큘럼 완료부터 프로필·다음 목록·교사 편집·03:00 생성·잠금까지 통합 테스트
