@@ -38,8 +38,8 @@ timestamp: 2026-07-28T00:00:00+09:00
 | BE-008 | P0 | 아동 검사·훈련 세션 API 구현 | App `test` 8개, `training` 7개 operation | BE-001, BE-007 | done |
 | BE-009 | P1 | 이야기·시선 세션 API 구현 | App `story` 9개, `gaze` 6개 operation | BE-007, BE-010 | done |
 | BE-010 | P0 | AI 없는 데모용 결정적 fixture provider 구현 | 훈련 생성·평가, 이야기, STT·TTS 대체 결과 | BE-001 | done |
-| BE-011 | P1 | 비식별 데모 seed와 파일·DB 초기화 절차 작성 | Flyway, 데모 데이터, `audio/` | BE-001 | in-progress |
-| BE-012 | P1 | OpenAPI 기준 오류 응답과 입력 검증 통일 | Auth·Admin·App 전체 | BE-002~BE-010 | in-progress |
+| BE-011 | P1 | 비식별 데모 seed와 파일·DB 초기화 절차 작성 | Flyway, 데모 데이터, `audio/` | BE-001 | done |
+| BE-012 | P1 | OpenAPI 기준 오류 응답과 입력 검증 통일 | Auth·Admin·App 전체 | BE-002~BE-010 | done |
 | BE-013 | P0 | 맞춤 훈련 생성 기능·OpenAPI·JSON 계약 확정 | 33개 `trainingType`, AI 후보 `{type,data}`, 최종 `generated_data` V2 | BE-005, BE-008 | todo |
 | BE-014 | P0 | 최종 ERD 기준 읽기 특징 스키마와 엔티티 정합화 | `reading_features`, `student_feature_profiles`, Flyway V1 | BE-001, BE-013 | todo |
 | BE-015 | P0 | 읽기 특징·훈련 템플릿 멱등 초기화 구현 | 자모·음절·음운 규칙 특징, 33개 `training_templates.prompt` JSON | BE-014 | todo |
@@ -99,6 +99,21 @@ timestamp: 2026-07-28T00:00:00+09:00
 - 시선 세션은 `contentType`과 일치하는 검사·훈련·이야기 식별자 하나만 허용하고, 종료 시 원시 시선 JSON을 저장하며 완료 세션당 분석 결과 하나만 허용한다.
 - App 시선 계약은 확정 ERD에 맞춰 조건부 콘텐츠 식별자, `endStatus`, 원시 `data`와 `collectionStatus` 응답으로 정합화했다.
 - Backend 전체 `.\gradlew.bat test`와 계약·하네스 검증을 실행해 모두 성공했다.
+
+### 2026-07-28 BE-011 완료
+
+- `demo` 프로필에서만 Flyway demo V2 seed와 훈련 템플릿 초기화를 활성화하고 일반 실행 환경의 자동 seed는 비활성화했다.
+- 비식별 교수자·아동, 훈련·검사·완료 이야기·획득 캐릭터를 고정 ID로 구성해 빈 데모 DB를 같은 상태로 재현한다.
+- 외부 AI 없이 Story·훈련·STT·TTS fixture를 사용하도록 demo 프로필을 고정했다.
+- 데모 계정, 실행 방법, DB와 `audio/` 초기화 경계를 Backend `DEMO.md`에 기록했다.
+- H2의 JPA 스키마 위에서 demo seed 전체 SQL과 BCrypt 데모 비밀번호를 통합 테스트로 검증했다.
+
+### 2026-07-28 BE-012 완료
+
+- 인증 실패, 권한 거부, 리소스 없음, 상태 충돌, AI upstream 실패와 내부 오류를 각각 `401`, `403`, `404`, `409`, `502`, `500`으로 분리했다.
+- 내부 저장·JSON·토큰 처리 실패는 메시지와 경로를 노출하지 않는 `INTERNAL_ERROR`로 통일했다.
+- multipart 누락·용량 초과, query·path 타입 오류와 method validation을 `400` 입력 오류로 통일했다.
+- 검사·훈련·이야기·시선의 사용자 상태 충돌은 명시적인 `ConflictException`을 사용해 내부 실패와 구분했다.
 
 ### 2026-07-26 BE-002 완료
 
