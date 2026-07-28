@@ -21,7 +21,7 @@ erDiagram
         BIGINT id PK "required"
         BIGINT curriculum_unit_id FK "required"
         VARCHAR_100 name "required"
-        JSON form "required"
+        TEXT prompt "required"
         INT sequence_no "required"
     }
     students {
@@ -38,6 +38,33 @@ erDiagram
         TIMESTAMP created_at "required"
         VARCHAR_255 image_url "nullable"
         TEXT teacher_memo "nullable"
+    }
+    reading_features {
+        BIGINT id PK "required"
+        BIGINT parent_feature_id FK "nullable"
+        VARCHAR_150 feature_code "required"
+        VARCHAR_150 feature_name "required"
+        VARCHAR_30 category "required"
+        VARCHAR_30 scope "required"
+        TIMESTAMP created_at "nullable"
+    }
+    student_feature_profiles {
+        BIGINT id PK "required"
+        BIGINT student_id FK "required"
+        BIGINT reading_features_id FK "required"
+        DECIMAL_5_4 accuracy_rate "nullable"
+        INT avg_pronunciation_scor "nullable"
+        DECIMAL_8_2 pronunciation_error_rate "nullable"
+        INT avg_fixation_duration_ms "nullable"
+        DECIMAL_8_2 avg_fixation_count "nullable"
+        DECIMAL_8_2 avg_regression_count "nullable"
+        DECIMAL_5_2 skip_rate "nullable"
+        INT avg_reading_time_ms "nullable"
+        INT weakness_score "nullable"
+        DECIMAL_5_4 confidence "required"
+        INT evidence_count "nullable"
+        TIMESTAMP last_evidence_at "nullable"
+        TIMESTAMP analyzed_at "nullable"
     }
     auth_refresh_sessions {
         BIGINT id PK "required"
@@ -225,6 +252,9 @@ erDiagram
         TIMESTAMP created_at "nullable"
     }
     teachers ||--o{ students : "teacher_id"
+    reading_features o|--o{ reading_features : "parent_feature_id"
+    students ||--o{ student_feature_profiles : "student_id"
+    reading_features ||--o{ student_feature_profiles : "reading_features_id"
     teachers ||--o{ auth_refresh_sessions : "teacher_id"
     students o|--o{ auth_refresh_sessions : "student_id"
     curriculum_units ||--o{ training_templates : "curriculum_unit_id"

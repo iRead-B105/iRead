@@ -18,9 +18,9 @@ class ValidateSchemaTest(unittest.TestCase):
         errors, counts = validate_schema()
 
         self.assertEqual([], errors)
-        self.assertEqual(23, counts["tables"])
-        self.assertEqual(23, counts["primary_keys"])
-        self.assertEqual(31, counts["foreign_keys"])
+        self.assertEqual(25, counts["tables"])
+        self.assertEqual(25, counts["primary_keys"])
+        self.assertEqual(34, counts["foreign_keys"])
         self.assertEqual(11, counts["unique_constraints"])
 
     def test_named_primary_key_constraint_is_rendered(self) -> None:

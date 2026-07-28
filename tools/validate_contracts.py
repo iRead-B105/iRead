@@ -375,6 +375,8 @@ def validate_schema() -> tuple[list[str], dict[str, int]]:
         "test_curriculums",
         "story_scenes",
         "story_choices",
+        "reading_features",
+        "student_feature_profiles",
     ):
         if required_table not in table_names:
             errors.append(f"required table is missing: {required_table}")
@@ -382,7 +384,12 @@ def validate_schema() -> tuple[list[str], dict[str, int]]:
         errors.append("required auth table is missing: auth_refresh_sessions")
     if "auth_revoked_access_tokens" in table_names:
         errors.append("unused auth_revoked_access_tokens table remains")
-    application_assigned_ids = {"test_curriculums", "test_datas"}
+    application_assigned_ids = {
+        "test_curriculums",
+        "test_datas",
+        "reading_features",
+        "student_feature_profiles",
+    }
     for table_name, definition in tables:
         id_column = re.search(r"`id`\s+bigint\s+NOT NULL([^\n]*)", definition)
         if (
@@ -415,6 +422,8 @@ def validate_schema() -> tuple[list[str], dict[str, int]]:
         "CREATE TABLE `test_curriculums`",
         "CREATE TABLE `story_scenes`",
         "CREATE TABLE `story_choices`",
+        "CREATE TABLE `reading_features`",
+        "CREATE TABLE `student_feature_profiles`",
         "`train_id` bigint NOT NULL",
         "`progress` tinyint unsigned NOT NULL",
         "`scene_id` bigint NOT NULL",
