@@ -28,14 +28,14 @@ timestamp: 2026-07-27T00:00:00+09:00
 
 | ID | 우선순위 | 작업 | 계약·영역 | 선행 작업 | 상태 |
 | --- | --- | --- | --- | --- | --- |
-| BE-001 | P0 | 확정 ERD 기준 Flyway V1과 엔티티 재정합화 | MySQL 23개 테이블, `training_datas`, `test_datas`, `test_curriculums`, 이야기 장면·선택 | 없음 | in-progress |
+| BE-001 | P0 | 확정 ERD 기준 Flyway V1과 엔티티 재정합화 | MySQL 23개 테이블, `training_datas`, `test_datas`, `test_curriculums`, 이야기 장면·선택 | 없음 | done |
 | BE-002 | P0 | Admin·App 인증 API를 Auth OpenAPI 10개 operation에 맞춤 | `auth-api.yaml` | BE-001 | done |
 | BE-003 | P0 | 역할과 리소스 소유권 검증 및 민감정보 로그 차단 | 인증, 학생·보고서·훈련 접근 | BE-002 | done |
-| BE-004 | P0 | 교수자·학생 관리 API 계약 정합화 | Admin `teacher`, `student` 12개 operation | BE-002, BE-003 | in-progress |
-| BE-005 | P0 | 관리자 훈련·검사 API 계약 정합화 | Admin `training`, `test` 중 시선 조회를 제외한 13개 operation | BE-001, BE-004 | in-progress |
-| BE-006 | P1 | 관리자 보고서·시선 결과 API 계약 정합화 | Admin `report` 4개, 검사·훈련 시선 조회 2개 operation | BE-004, BE-005 | in-progress |
-| BE-007 | P0 | 아동 로그인·성장·마이페이지 API 구현 | App 인증, `student`, `mypage` | BE-002, BE-003 | in-progress |
-| BE-008 | P0 | 아동 검사·훈련 세션 API 구현 | App `test` 8개, `training` 7개 operation | BE-001, BE-007 | todo |
+| BE-004 | P0 | 교수자·학생 관리 API 계약 정합화 | Admin `teacher`, `student` 12개 operation | BE-002, BE-003 | done |
+| BE-005 | P0 | 관리자 훈련·검사 API 계약 정합화 | Admin `training`, `test` 중 시선 조회를 제외한 13개 operation | BE-001, BE-004 | done |
+| BE-006 | P1 | 관리자 보고서·시선 결과 API 계약 정합화 | Admin `report` 4개, 검사·훈련 시선 조회 2개 operation | BE-004, BE-005 | done |
+| BE-007 | P0 | 아동 로그인·성장·마이페이지 API 구현 | App 인증, `student`, `mypage` | BE-002, BE-003 | done |
+| BE-008 | P0 | 아동 검사·훈련 세션 API 구현 | App `test` 8개, `training` 7개 operation | BE-001, BE-007 | done |
 | BE-009 | P1 | 이야기·시선 세션 API 구현 | App `story` 9개, `gaze` 6개 operation | BE-007, BE-010 | in-progress |
 | BE-010 | P0 | AI 없는 데모용 결정적 fixture provider 구현 | 훈련 생성·평가, 이야기, STT·TTS 대체 결과 | BE-001 | in-progress |
 | BE-011 | P1 | 비식별 데모 seed와 파일·DB 초기화 절차 작성 | Flyway, 데모 데이터, `audio/` | BE-001 | in-progress |
@@ -100,9 +100,53 @@ timestamp: 2026-07-27T00:00:00+09:00
 - 대표 캐릭터 변경 API를 제거하고 관련 표시 상태를 클라이언트 책임으로 변경했다.
 - 성장 API는 완료된 훈련을 학생·훈련 템플릿별로 실시간 집계한 `completedCount`를 반환하고, 클라이언트는 매회 한 단계씩 성장시켜 5회에 만개하도록 변경했다.
 - 음성 분기 API는 최종 STT 텍스트를 `story_choices`에 한 건 저장하고 다음 장면·대사·진행률과 함께 반영한다. 같은 분기 대사의 재시도는 최초 결과를 `200 OK`로 반환한다.
-- Backend 엔티티 정합화와 MySQL 8.4 실행 검증이 완료되기 전에는 `BE-001`을 `done`으로 변경하지 않는다.
+- Backend 엔티티 정합화와 MySQL 8.4.10 실행 검증을 완료해 `BE-001`을 `done`으로 변경했다.
 - 계약 검증은 23개 테이블·31개 외래 키 기준으로 성공했고 문서 하네스도 성공했다.
-- Backend 테스트는 Java 21에서 88개 중 일반 테스트 87개가 성공했고 opt-in MySQL 통합 테스트 1개가 skip됐다. MySQL 실행 검증은 Docker·MySQL 클라이언트 부재로 미실행했다.
+- 공식 MySQL 8.4.10 ZIP의 일회성 서버에서 빈 테스트 DB를 생성하고 Flyway V1 전체 적용과 Hibernate schema validation을 완료했다.
+- MySQL 통합 테스트는 애플리케이션 테이블 23개, 외래 키 31개, UNIQUE 11개, CHECK 7개와 핵심 물리 명칭을 검증한다.
+
+### 2026-07-27 교수자 앱 Backend 순차 구현
+
+- `services/frontend` 변경은 롤백했고, 이후 작업은 Backend와 루트의 Backend submodule 포인터·현황 문서로 제한했다.
+- `BE-004`: 교수자 정보와 학생 관리 12개 operation의 경로, 소유권, 목록 검색·나이·최근 학습 필터, 요약, 정확도·읽기 속도 추이, 훈련 이력 기간 필터, 학습 요약과 추천 규칙을 구현했다.
+- 학생 등록·상세는 기존 `birthday`, `guardian`, `guardianContact`, `imageUrl`과 OpenAPI의 `birthDate`, `guardianName`, `guardianPhone`, `profileImage`를 함께 처리한다. 상세의 `studentCode`는 서버의 `studentId` 문자열로 반환하고 배열형 주소 입력도 기존 문자열 컬럼에 호환 저장한다.
+- `get_admin_student_by_studentId_learning_events`는 필수 `eventType(test|training|story|gaze)`과 `eventId` 조합으로 원본 테이블을 구분하며 네 유형을 모두 조회한다.
+- 최종 계약 감사에서 훈련 이력의 잘못된 필수 `trainingRecord`를 선택 `from`·`to` 날짜 query로 교체하고, 교수자 조회의 이미지 필드를 `profileImageUrl`로 통일했다.
+- `BE-005`: 관리자 훈련·검사 목록 wrapper와 응답 필드, 커리큘럼 상세·수정, 훈련 상세, JSON·CSV 동기 다운로드, 검사 비교 계약을 구현했다.
+- `BE-006`: 보고서 목록·생성·상세·메모·시선 분석 반영과 검사·훈련 시선 결과 조회 계약을 구현했다. 제거된 `student_word_stats` 대신 `word_attempt_logs`를 보고서 기간별로 집계한다.
+- `BE-012`: 관리자 범위의 `400`, `401`, `403`, `404`, `409`, `500` 오류 응답과 입력 검증을 통일했다. Auth·App 전체 범위가 남아 있어 작업 상태는 `in-progress`를 유지한다.
+- 확정 ERD의 검사 커리큘럼, 보고서 기간 timestamp, 시선 원시 데이터, 훈련 정확도, 캐릭터와 이야기 장면 관계를 Backend 엔티티에 반영했다. 엔티티가 생성하는 모든 테이블의 컬럼 집합을 Flyway V1과 비교하는 회귀 테스트를 추가했다.
+- Admin OpenAPI 31개 operation의 경로·HTTP method 회귀 테스트를 추가했다.
+- MySQL 통합 검증을 활성화한 `.\gradlew.bat test --rerun-tasks`: 119개 전체 성공, skip·실패 0개.
+- `python tools/validate_contracts.py`: 80 operations, 334 features, 73 reviewed, 23 MySQL tables, 31 foreign keys 검증 성공.
+- `python tools/validate_harness.py`: 82 Markdown files와 31 record docs 검증 성공.
+- 공식 MySQL 8.4.10 ZIP을 임시 런타임으로 사용해 빈 DB Flyway 적용, 23개 애플리케이션 테이블·31개 외래 키와 Hibernate 엔티티 매핑을 검증했다.
+
+### 2026-07-27 BE-007 완료
+
+- App 인증 4개 operation은 `BE-002`에서 완료한 learning audience JWT와 refresh rotation을 사용한다.
+- 캐릭터 목록은 query parameter 없이 학습 토큰의 `studentId`를 사용하며 `characterId`, `storyId`, `imageUrl`, `name`, `createdAt`을 `characters` 목록으로 반환한다.
+- 잘못된 캐릭터 `EntityGraph("image")`를 실제 연관관계인 `story`로 수정하고 영속성 통합 테스트로 조회를 검증했다.
+- 성장 조회는 완료된 `trainings`를 학생·훈련 템플릿별로 집계해 `trainingTemplateId`, `trainingTemplateName`, `completedCount`를 반환한다.
+- 학습 토큰과 성장 조회 경로의 학생이 다르면 서비스 호출 전에 `403 Forbidden`으로 차단하며, 교수자 소유 관계가 없으면 `404 Not Found`로 처리한다.
+- `.\gradlew.bat test --rerun-tasks`: 126개 중 일반 테스트 125개 성공, opt-in MySQL 통합 테스트 1개 skip, 실패 0개.
+- `python tools/validate_contracts.py`: 80 operations, 334 features, 73 reviewed, 23 MySQL tables, 31 foreign keys 검증 성공.
+- `python tools/validate_harness.py`: 82 Markdown files와 31 record docs 검증 성공.
+- DB 스키마 변경이 없어 MySQL 통합 테스트는 다시 실행하지 않았다.
+
+### 2026-07-27 BE-008 완료
+
+- App 훈련 7개 operation을 별도 이력 식별자 없이 `trainings.id`를 세션 식별자로 사용하는 ERD 중심 계약으로 정리했다.
+- 안내·문항은 `training_datas.generated_data`를 조회하고, 선택·녹음 응답은 `word_attempt_logs.training_id`에 저장한다.
+- 시작·초기화·완료는 `trainings.status`, `started_at`, `finished_at`, `result`, `accuracy`를 갱신하며 학습 토큰과 학생·훈련 소유권을 검증한다.
+- App 검사 8개 operation은 `tests.id`를 세션 식별자로 사용하고 최신 `test_datas.generated_data`의 문항을 조회한다.
+- 검사 선택·녹음 응답은 `word_attempt_logs.test_id`에 저장하고, 최종 정확도는 저장된 0~1000 점수의 평균을 0~100 범위로 환산해 `tests.accuracy`에 저장한다.
+- 검사 문항 완료는 누적 결과를 `tests.result`에 저장하며, 검사 전체 완료가 `status`, `accuracy`, `finished_at`을 확정한다. 세션 초기화는 미완료 응답 로그와 진행 결과를 함께 제거한다.
+- 모든 검사·훈련 App 경로에서 학습 토큰의 학생과 경로 학생을 먼저 대조하고 교수자 소유 학생·세션 관계를 검증한다.
+- `.\gradlew.bat test --rerun-tasks`: 132개 중 일반 테스트 131개 성공, opt-in MySQL 통합 테스트 1개 skip, 실패 0개.
+- `python tools/validate_contracts.py`: 80 operations, 334 features, 73 reviewed, 23 MySQL tables, 31 foreign keys 검증 성공.
+- `python tools/validate_harness.py`: 82 Markdown files와 31 record docs 검증 성공.
+- DB 스키마 변경은 없으며 기존 ERD의 `tests`, `test_datas`, `trainings`, `training_datas`, `word_attempt_logs`만 사용한다.
 
 ## Frontend TODO
 

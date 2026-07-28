@@ -1292,6 +1292,21 @@
             "description": "아동 식별자"
           },
           {
+            "name": "eventType",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "test",
+                "training",
+                "story",
+                "gaze"
+              ]
+            },
+            "description": "학습 이벤트 원본 유형"
+          },
+          {
             "name": "eventId",
             "in": "query",
             "required": true,
@@ -1447,8 +1462,8 @@
           "MH-DSP-04",
           "MH-DSP-03"
         ],
-        "description": "주의 표시는 진단이 아닌 교수자 확인 신호다. 최근 6주 완료 학습이 3건 이상이고 평균 정확도가 70% 미만이면 LOW_ACCURACY, 최근 30일의 최신 시선 분석이 실패했으면 GAZE_ANALYSIS_FAILED, 학습 이력이 있으나 최근 학습 후 14일 이상 지났으면 INACTIVE를 반환한다. 이력이 없는 신규 아동은 NO_HISTORY이며 주의 대상으로 집계하지 않는다. 권장 훈련은 최근 6주 평균 정확도가 가장 낮은 커리큘럼 영역의 미완료 다음 순번 훈련을 선택한다. 평균이 같으면 완료 시도 수가 많은 영역, curriculum_units.sequence_no, id 순으로 결정한다. 정확도 자료가 없으면 현재 단계의 미완료 다음 훈련을 사용하고 후보가 없으면 권장 훈련 필드는 null이다. MVP 권장량은 10분·2회이며 설정값으로 조정한다.",
-        "x-notion-request-summary": "studentId(path)\neventId(query)",
+        "description": "eventId는 검사·훈련·이야기·시선 원본 테이블별 식별자이므로 eventType으로 조회 대상을 구분한다. 주의 표시는 진단이 아닌 교수자 확인 신호다. 최근 6주 완료 학습이 3건 이상이고 평균 정확도가 70% 미만이면 LOW_ACCURACY, 최근 30일의 최신 시선 분석이 실패했으면 GAZE_ANALYSIS_FAILED, 학습 이력이 있으나 최근 학습 후 14일 이상 지났으면 INACTIVE를 반환한다. 이력이 없는 신규 아동은 NO_HISTORY이며 주의 대상으로 집계하지 않는다. 권장 훈련은 최근 6주 평균 정확도가 가장 낮은 커리큘럼 영역의 미완료 다음 순번 훈련을 선택한다. 평균이 같으면 완료 시도 수가 많은 영역, curriculum_units.sequence_no, id 순으로 결정한다. 정확도 자료가 없으면 현재 단계의 미완료 다음 훈련을 사용하고 후보가 없으면 권장 훈련 필드는 null이다. MVP 권장량은 10분·2회이며 설정값으로 조정한다.",
+        "x-notion-request-summary": "studentId(path)\neventType(query)\neventId(query)",
         "x-notion-response-summary": "eventId\neventType\noccurredAt\nsourceId\naccuracy\nretryCount\nproblemSegments\nattentionRequired\nattentionReasons\nrecommendedTrainingTemplateId\nrecommendedCurriculumUnitId\nrecommendedCurriculumUnitName\nrecommendationReason\nrecommendedMinutes\nrecommendedRepeatCount",
         "x-review-status": "reviewed",
         "security": [
@@ -1584,18 +1599,30 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "studentId 식별자"
+            "description": "아동 식별자"
           },
           {
-            "name": "trainingRecord",
+            "name": "from",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "date"
             },
-            "description": "훈련 기록"
+            "description": "조회 시작일(YYYY-MM-DD)"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "조회 종료일(YYYY-MM-DD)"
           }
         ],
         "responses": {
@@ -1672,6 +1699,9 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
@@ -1682,8 +1712,8 @@
           "MH-DSP-01",
           "TH-FLT-01"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
-        "x-notion-request-summary": "studentId(path)\n훈련 기록",
+        "description": "from과 to는 선택 입력이며 생략하면 전체 훈련 이력을 반환한다. from은 to보다 늦을 수 없다.",
+        "x-notion-request-summary": "studentId(path)\nfrom(query, optional)\nto(query, optional)",
         "x-notion-response-summary": "학습기록[] {\n  날짜\n  학습종류\n  학습분류\n  정답률\n}",
         "x-review-status": "reviewed",
         "security": [
@@ -1719,25 +1749,33 @@
                           "properties": {
                             "name": {
                               "type": "string",
-                              "description": "이름"
+                              "description": "교수자 이름"
                             },
                             "organization": {
                               "type": "string",
-                              "description": "기관"
+                              "description": "소속"
                             },
                             "email": {
                               "type": "string",
-                              "description": "이메일"
+                              "description": "교수자 이메일"
                             },
                             "gender": {
                               "type": "string",
+                              "enum": [
+                                "male",
+                                "female"
+                              ],
                               "description": "성별"
                             },
-                            "profileImage": {
+                            "profileImageUrl": {
                               "type": "string",
-                              "description": "프로필사진"
+                              "description": "외부에 노출 가능한 프로필 이미지 URL"
                             }
-                          }
+                          },
+                          "required": [
+                            "name",
+                            "email"
+                          ]
                         }
                       },
                       "required": [
@@ -1781,7 +1819,7 @@
           "SB-DSP-02"
         ],
         "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
-        "x-notion-response-summary": "이름\n기관\n이메일\n성별\n프로필사진",
+        "x-notion-response-summary": "name\norganization\nemail\ngender\nprofileImageUrl",
         "x-review-status": "reviewed",
         "security": [
           {

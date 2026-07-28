@@ -733,17 +733,7 @@
         "tags": [
           "mypage"
         ],
-        "parameters": [
-          {
-            "name": "studentCode",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "학습자코드"
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "요청 성공",
@@ -803,11 +793,11 @@
               }
             }
           },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
@@ -819,7 +809,6 @@
           "GR-CHAR-02"
         ],
         "description": "학습 토큰의 studentId에 속한 캐릭터만 조회한다. 대표 캐릭터 상태는 저장하거나 반환하지 않는다.",
-        "x-notion-request-summary": "학습자코드",
         "x-notion-response-summary": "characters[] {\n  characterId\n  storyId\n  imageUrl\n  name\n  createdAt\n}",
         "x-review-status": "reviewed",
         "security": [
@@ -2113,9 +2102,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "studentId 식별자"
+            "description": "아동 식별자"
           }
         ],
         "responses": {
@@ -2173,6 +2163,9 @@
           },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
@@ -2266,14 +2259,6 @@
                       ]
                     }
                   ]
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "saveStatus": "COMPLETED",
-                    "completionStatus": "COMPLETED",
-                    "nextRoute": "string"
-                  }
                 }
               }
             }
@@ -2292,16 +2277,6 @@
           },
           "409": {
             "$ref": "#/components/responses/Conflict"
-          },
-          "422": {
-            "description": "요청 실패",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
           }
         },
         "x-notion-page-id": "3a6027df-9053-814c-8252-ea0fa6cd5154",
@@ -2312,8 +2287,8 @@
           "TE-SAVE-02",
           "TE-SAVE-04"
         ],
-        "description": "검사 응답을 원자적으로 저장하고 status를 COMPLETED로 변경한다. 화면 이동은 응답에 포함하지 않고 클라이언트가 결정한다.",
-        "x-notion-request-summary": "studentId(path)\ntestId(body)\nresponses(body)\ncompletedAt(body)",
+        "description": "testId는 tests.id다. Backend가 word_attempt_logs.test_id의 응답 점수로 0~100 정확도를 계산하고 tests의 result, accuracy, status, finished_at을 원자적으로 저장한다. 화면 이동은 클라이언트가 결정한다.",
+        "x-notion-request-summary": "studentId(path)\ntestId(body)\ncompletedAt(body)",
         "x-notion-response-summary": "testId\nstatus\naccuracy\ncompletedAt",
         "x-review-status": "reviewed",
         "requestBody": {
@@ -2328,14 +2303,6 @@
                     "format": "int64",
                     "description": "검사 식별자"
                   },
-                  "responses": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "additionalProperties": true
-                    },
-                    "description": "문항별 최종 응답"
-                  },
                   "completedAt": {
                     "type": "string",
                     "format": "date-time",
@@ -2344,14 +2311,7 @@
                 },
                 "required": [
                   "testId",
-                  "responses",
                   "completedAt"
-                ]
-              },
-              "example": {
-                "testId": "1001",
-                "responses": [
-                  {}
                 ]
               }
             }
@@ -2377,9 +2337,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "studentId 식별자"
+            "description": "아동 식별자"
           }
         ],
         "responses": {
@@ -2399,27 +2360,37 @@
                           "type": "object",
                           "properties": {
                             "testId": {
-                              "type": "string",
-                              "description": "테스트id"
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "tests.id"
                             },
                             "studentId": {
-                              "type": "string",
-                              "description": "학습자id"
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "아동 식별자"
                             },
-                            "testDate": {
+                            "createdAt": {
                               "type": "string",
-                              "format": "date",
-                              "description": "테스트일자"
+                              "format": "date-time",
+                              "description": "검사 생성 시각"
                             },
-                            "testStatus": {
+                            "status": {
                               "type": "string",
-                              "description": "테스트상태"
+                              "description": "검사 상태"
                             },
-                            "question": {
-                              "type": "string",
-                              "description": "문항"
+                            "totalQuestions": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "생성된 전체 문항 수"
                             }
-                          }
+                          },
+                          "required": [
+                            "testId",
+                            "studentId",
+                            "createdAt",
+                            "status",
+                            "totalQuestions"
+                          ]
                         }
                       },
                       "required": [
@@ -2427,16 +2398,6 @@
                       ]
                     }
                   ]
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "testId": "1001",
-                    "studentId": "1001",
-                    "testDate": "2026-07-24",
-                    "testStatus": "COMPLETED",
-                    "question": "string"
-                  }
                 }
               }
             }
@@ -2446,6 +2407,9 @@
           },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
@@ -2458,9 +2422,9 @@
           "TE-GUIDE-01",
           "TE-INTRO-02"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
+        "description": "최신 검사 커리큘럼에서 NOT_STARTED 또는 IN_PROGRESS인 첫 검사 세션을 조회한다. 문항은 test_datas.generated_data의 questions를 사용한다.",
         "x-notion-request-summary": "studentId(path)",
-        "x-notion-response-summary": "테스트id\n학습자id\n테스트일자\n테스트상태\n문항",
+        "x-notion-response-summary": "testId\nstudentId\ncreatedAt\nstatus\ntotalQuestions",
         "x-review-status": "reviewed",
         "security": [
           {
@@ -2482,27 +2446,30 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "studentId 식별자"
+            "description": "아동 식별자"
           },
           {
             "name": "questionNumber",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "number"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "questionNumber 경로 변수"
+            "description": "1부터 시작하는 문항 순번"
           },
           {
             "name": "testId",
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "테스트id 식별자"
+            "description": "tests.id"
           }
         ],
         "responses": {
@@ -2522,42 +2489,32 @@
                           "type": "object",
                           "properties": {
                             "testId": {
-                              "type": "string",
-                              "description": "테스트id"
-                            },
-                            "question": {
-                              "type": "string",
-                              "description": "문항"
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "tests.id"
                             },
                             "questionNumber": {
-                              "type": "number",
-                              "description": "문항번호"
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "현재 문항 순번"
                             },
-                            "word": {
-                              "type": "string",
-                              "description": "단어명"
+                            "totalQuestions": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "전체 문항 수"
                             },
-                            "wordLength": {
-                              "type": "number",
-                              "description": "단어길이"
-                            },
-                            "imageId": {
-                              "type": "string",
-                              "description": "사진id"
-                            },
-                            "imageUrl": {
-                              "type": "string",
-                              "description": "사진 저장경로"
-                            },
-                            "audioFile": {
-                              "type": "string",
-                              "description": "음성파일"
-                            },
-                            "audioUrl": {
-                              "type": "string",
-                              "description": "음성 저장경로"
+                            "question": {
+                              "type": "object",
+                              "additionalProperties": true,
+                              "description": "test_datas.generated_data의 현재 문항"
                             }
-                          }
+                          },
+                          "required": [
+                            "testId",
+                            "questionNumber",
+                            "totalQuestions",
+                            "question"
+                          ]
                         }
                       },
                       "required": [
@@ -2565,20 +2522,6 @@
                       ]
                     }
                   ]
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "testId": "1001",
-                    "question": "string",
-                    "questionNumber": 1,
-                    "word": "string",
-                    "wordLength": 1,
-                    "imageId": "1001",
-                    "imageUrl": "https://example.com/resource",
-                    "audioFile": "string",
-                    "audioUrl": "https://example.com/resource"
-                  }
                 }
               }
             }
@@ -2588,6 +2531,9 @@
           },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
@@ -2607,9 +2553,9 @@
           "TE-COM-04",
           "TE-DSP-04"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
-        "x-notion-request-summary": "studentId(path)\n테스트id\nquestionNumber(path)",
-        "x-notion-response-summary": "테스트id\n문항\n문항번호\n단어명\n단어길이\n사진id\n사진 저장경로\n음성파일\n음성 저장경로",
+        "description": "testId는 tests.id다. questionNumber는 test_datas.generated_data.questions의 1부터 시작하는 순번이다.",
+        "x-notion-request-summary": "studentId(path)\nquestionNumber(path)\ntestId(query)",
+        "x-notion-response-summary": "testId\nquestionNumber\ntotalQuestions\nquestion",
         "x-review-status": "reviewed",
         "security": [
           {
@@ -2631,18 +2577,20 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "studentId 식별자"
+            "description": "아동 식별자"
           },
           {
             "name": "questionNumber",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "number"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "questionNumber 경로 변수"
+            "description": "완료한 문항 순번"
           }
         ],
         "responses": {
@@ -2662,23 +2610,31 @@
                           "type": "object",
                           "properties": {
                             "testId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "tests.id"
+                            },
+                            "questionNumber": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "완료한 문항 순번"
+                            },
+                            "status": {
                               "type": "string",
-                              "description": "테스트id"
+                              "description": "검사 진행 상태"
                             },
-                            "testStatus": {
+                            "updatedAt": {
                               "type": "string",
-                              "description": "테스트상태"
-                            },
-                            "testResults": {
-                              "type": "object",
-                              "additionalProperties": true,
-                              "description": "테스트결과"
-                            },
-                            "accuracyRate": {
-                              "type": "number",
-                              "description": "정답률"
+                              "format": "date-time",
+                              "description": "결과 갱신 시각"
                             }
-                          }
+                          },
+                          "required": [
+                            "testId",
+                            "questionNumber",
+                            "status",
+                            "updatedAt"
+                          ]
                         }
                       },
                       "required": [
@@ -2686,15 +2642,6 @@
                       ]
                     }
                   ]
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "testId": "1001",
-                    "testStatus": "COMPLETED",
-                    "testResults": {},
-                    "accuracyRate": 85.5
-                  }
                 }
               }
             }
@@ -2705,8 +2652,14 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
           }
         },
         "x-notion-page-id": "3a4027df-9053-8031-b477-e074a181edd4",
@@ -2715,9 +2668,9 @@
           "TE-SAVE-01",
           "TE-COMP-01"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
-        "x-notion-request-summary": "studentId(path)\n테스트id\n테스트상태\nquestionNumber(path)\n테스트결과\n정답률",
-        "x-notion-response-summary": "테스트id\n테스트상태\n테스트결과\n정답률",
+        "description": "진행 중인 검사에서 현재 문항까지의 누적 결과를 tests.result에 저장한다. 검사 상태와 정확도, finished_at은 검사 전체 완료 API에서 결정한다.",
+        "x-notion-request-summary": "studentId(path)\nquestionNumber(path)\ntestId(body)\nresult(body)",
+        "x-notion-response-summary": "testId\nquestionNumber\nstatus\nupdatedAt",
         "x-review-status": "reviewed",
         "requestBody": {
           "required": true,
@@ -2727,35 +2680,20 @@
                 "type": "object",
                 "properties": {
                   "testId": {
-                    "type": "string",
-                    "description": "테스트id 식별자"
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "tests.id"
                   },
-                  "testStatus": {
-                    "type": "string",
-                    "description": "테스트상태"
-                  },
-                  "testResults": {
+                  "result": {
                     "type": "object",
                     "additionalProperties": true,
-                    "description": "테스트결과"
-                  },
-                  "accuracyRate": {
-                    "type": "number",
-                    "description": "정답률"
+                    "description": "현재 문항까지의 누적 검사 결과"
                   }
                 },
                 "required": [
                   "testId",
-                  "testStatus",
-                  "testResults",
-                  "accuracyRate"
+                  "result"
                 ]
-              },
-              "example": {
-                "testId": "1001",
-                "testStatus": "COMPLETED",
-                "testResults": {},
-                "accuracyRate": 85.5
               }
             }
           }
@@ -2780,22 +2718,24 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "studentId 식별자"
+            "description": "아동 식별자"
           },
           {
             "name": "questionNumber",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "number"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "questionNumber 경로 변수"
+            "description": "문항 순번"
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "요청 성공",
             "content": {
               "application/json": {
@@ -2810,16 +2750,44 @@
                         "data": {
                           "type": "object",
                           "properties": {
-                            "testId": {
-                              "type": "string",
-                              "description": "테스트id"
+                            "attemptId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "word_attempt_logs.id"
                             },
-                            "testResults": {
-                              "type": "object",
-                              "additionalProperties": true,
-                              "description": "테스트결과"
+                            "testId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "tests.id"
+                            },
+                            "wordId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "words.id"
+                            },
+                            "recognizedText": {
+                              "type": "string",
+                              "description": "저장한 인식 텍스트"
+                            },
+                            "totalScore": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "0~1000 평가 점수"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "응답 저장 시각"
                             }
-                          }
+                          },
+                          "required": [
+                            "attemptId",
+                            "testId",
+                            "wordId",
+                            "recognizedText",
+                            "totalScore",
+                            "createdAt"
+                          ]
                         }
                       },
                       "required": [
@@ -2827,13 +2795,6 @@
                       ]
                     }
                   ]
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "testId": "1001",
-                    "testResults": {}
-                  }
                 }
               }
             }
@@ -2844,8 +2805,14 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
           }
         },
         "x-notion-page-id": "3a4027df-9053-803e-9056-d44e96b237e3",
@@ -2860,9 +2827,9 @@
           "TE-REC-05",
           "TE-REC-03"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다. 음성 파일은 EC2 내부 audio/{studentId}/test/ 구조에 저장하며 내부 파일 경로는 API 응답에 노출하지 않는다.",
-        "x-notion-request-summary": "studentId(path)\n테스트id\nquestionNumber(path)\n테스트결과",
-        "x-notion-response-summary": "테스트id\n테스트결과",
+        "description": "진행 중인 tests.id와 학생 소유 관계를 검증한 뒤 음성 인식 결과와 서버 평가 점수를 TEST 위치의 word_attempt_logs에 저장한다.",
+        "x-notion-request-summary": "studentId(path)\nquestionNumber(path)\ntestId(body)\nwordId(body)\nrecognizedText(body)\nspeechStartOffsetMs(body)\nspeechEndOffsetMs(body)\nisCorrect(body)\ntotalScore(body)",
+        "x-notion-response-summary": "attemptId\ntestId\nwordId\nrecognizedText\ntotalScore\ncreatedAt",
         "x-review-status": "reviewed",
         "requestBody": {
           "required": true,
@@ -2872,23 +2839,45 @@
                 "type": "object",
                 "properties": {
                   "testId": {
-                    "type": "string",
-                    "description": "테스트id 식별자"
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "tests.id"
                   },
-                  "testResults": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "description": "테스트결과"
+                  "wordId": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "words.id"
+                  },
+                  "recognizedText": {
+                    "type": "string",
+                    "description": "최종 음성 인식 텍스트"
+                  },
+                  "speechStartOffsetMs": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "음성 시작 오프셋(ms)"
+                  },
+                  "speechEndOffsetMs": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "음성 종료 오프셋(ms)"
+                  },
+                  "isCorrect": {
+                    "type": "boolean",
+                    "description": "정답 여부"
+                  },
+                  "totalScore": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "0~1000 평가 점수"
                   }
                 },
                 "required": [
                   "testId",
-                  "testResults"
+                  "wordId",
+                  "recognizedText",
+                  "totalScore"
                 ]
-              },
-              "example": {
-                "testId": "1001",
-                "testResults": {}
               }
             }
           }
@@ -2913,22 +2902,24 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "studentId 식별자"
+            "description": "아동 식별자"
           },
           {
             "name": "questionNumber",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "number"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "questionNumber 경로 변수"
+            "description": "문항 순번"
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "요청 성공",
             "content": {
               "application/json": {
@@ -2943,16 +2934,44 @@
                         "data": {
                           "type": "object",
                           "properties": {
-                            "testId": {
-                              "type": "string",
-                              "description": "테스트id"
+                            "attemptId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "word_attempt_logs.id"
                             },
-                            "testResults": {
-                              "type": "object",
-                              "additionalProperties": true,
-                              "description": "테스트결과"
+                            "testId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "tests.id"
+                            },
+                            "wordId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "words.id"
+                            },
+                            "isCorrect": {
+                              "type": "boolean",
+                              "description": "정답 여부"
+                            },
+                            "totalScore": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "0~1000 평가 점수"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "응답 저장 시각"
                             }
-                          }
+                          },
+                          "required": [
+                            "attemptId",
+                            "testId",
+                            "wordId",
+                            "isCorrect",
+                            "totalScore",
+                            "createdAt"
+                          ]
                         }
                       },
                       "required": [
@@ -2960,13 +2979,6 @@
                       ]
                     }
                   ]
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "testId": "1001",
-                    "testResults": {}
-                  }
                 }
               }
             }
@@ -2977,8 +2989,14 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
           }
         },
         "x-notion-page-id": "3a4027df-9053-80bf-97ec-dab95315115c",
@@ -2988,9 +3006,9 @@
           "TE-SEL-02",
           "TE-SEL-03"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
-        "x-notion-request-summary": "studentId(path)\n테스트id\nquestionNumber(path)\n테스트결과",
-        "x-notion-response-summary": "테스트id\n테스트결과",
+        "description": "진행 중인 tests.id와 학생 소유 관계를 검증한 뒤 선택 결과와 서버 평가 점수를 TEST 위치의 word_attempt_logs에 저장한다.",
+        "x-notion-request-summary": "studentId(path)\nquestionNumber(path)\ntestId(body)\nwordId(body)\nisCorrect(body)\ntotalScore(body)",
+        "x-notion-response-summary": "attemptId\ntestId\nwordId\nisCorrect\ntotalScore\ncreatedAt",
         "x-review-status": "reviewed",
         "requestBody": {
           "required": true,
@@ -3000,23 +3018,31 @@
                 "type": "object",
                 "properties": {
                   "testId": {
-                    "type": "string",
-                    "description": "테스트id 식별자"
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "tests.id"
                   },
-                  "testResults": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "description": "테스트결과"
+                  "wordId": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "words.id"
+                  },
+                  "isCorrect": {
+                    "type": "boolean",
+                    "description": "정답 여부"
+                  },
+                  "totalScore": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "0~1000 평가 점수"
                   }
                 },
                 "required": [
                   "testId",
-                  "testResults"
+                  "wordId",
+                  "isCorrect",
+                  "totalScore"
                 ]
-              },
-              "example": {
-                "testId": "1001",
-                "testResults": {}
               }
             }
           }
@@ -3090,13 +3116,6 @@
                       ]
                     }
                   ]
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "sessionState": "COMPLETED",
-                    "resetAt": "2026-07-24T12:00:00+09:00"
-                  }
                 }
               }
             }
@@ -3122,7 +3141,7 @@
         "x-feature-ids": [
           "TE-GUIDE-02"
         ],
-        "description": "지정한 미완료 검사의 현재 문항, 응답과 진행 상태를 초기화하고 NOT_STARTED로 되돌린다. 완료된 검사의 결과는 보존하며 재설정 요청에 409를 반환한다.",
+        "description": "지정한 미완료 tests 행의 result, accuracy, started_at, finished_at과 연결된 word_attempt_logs 응답을 지우고 NOT_STARTED로 되돌린다. test_datas의 생성 문항은 유지한다. 완료된 검사는 보존하며 재설정 요청에 409를 반환한다.",
         "x-notion-request-summary": "studentId(path)\ntestId(body)",
         "x-notion-response-summary": "testId\nsessionState\nresetAt",
         "x-review-status": "reviewed",
@@ -3142,9 +3161,6 @@
                 "required": [
                   "testId"
                 ]
-              },
-              "example": {
-                "testId": "1001"
               }
             }
           }
@@ -3169,9 +3185,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "studentId 식별자"
+            "description": "아동 식별자"
           }
         ],
         "responses": {
@@ -3191,19 +3208,25 @@
                           "type": "object",
                           "properties": {
                             "testId": {
-                              "type": "string",
-                              "description": "테스트id"
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "tests.id"
                             },
-                            "testDate": {
+                            "startedAt": {
                               "type": "string",
-                              "format": "date",
-                              "description": "테스트일자"
+                              "format": "date-time",
+                              "description": "검사 시작 시각"
                             },
-                            "testStatus": {
+                            "status": {
                               "type": "string",
-                              "description": "테스트상태"
+                              "description": "검사 상태"
                             }
-                          }
+                          },
+                          "required": [
+                            "testId",
+                            "startedAt",
+                            "status"
+                          ]
                         }
                       },
                       "required": [
@@ -3211,14 +3234,6 @@
                       ]
                     }
                   ]
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "testId": "1001",
-                    "testDate": "2026-07-24",
-                    "testStatus": "COMPLETED"
-                  }
                 }
               }
             }
@@ -3229,8 +3244,14 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
           }
         },
         "x-notion-page-id": "3a4027df-9053-80c5-9d34-c2cb8836f790",
@@ -3238,9 +3259,9 @@
         "x-feature-ids": [
           "TE-GUIDE-03"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
+        "description": "최신 검사 커리큘럼에서 NOT_STARTED인 첫 tests 행을 IN_PROGRESS로 변경하고 started_at을 기록한다.",
         "x-notion-request-summary": "studentId(path)",
-        "x-notion-response-summary": "테스트id\n테스트일자\n테스트상태",
+        "x-notion-response-summary": "testId\nstartedAt\nstatus",
         "x-review-status": "reviewed",
         "security": [
           {
@@ -3427,27 +3448,20 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "studentId 식별자"
+            "description": "아동 식별자"
           },
           {
             "name": "trainingId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "trainingId 식별자"
-          },
-          {
-            "name": "trainingHistoryId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "훈련이력id 식별자"
+            "description": "trainings.id"
           }
         ],
         "responses": {
@@ -3466,40 +3480,64 @@
                         "data": {
                           "type": "object",
                           "properties": {
-                            "trainingHistoryId": {
-                              "type": "string",
-                              "description": "훈련이력id"
+                            "trainingId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "trainings.id"
                             },
                             "trainingTemplateId": {
-                              "type": "string",
-                              "description": "훈련템플릿id"
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "훈련 템플릿 식별자"
                             },
-                            "curriculumId": {
-                              "type": "string",
-                              "description": "커리큘럼id"
+                            "dailyCurriculumId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "일일 커리큘럼 식별자"
                             },
-                            "trainingOrder": {
-                              "type": "string",
-                              "description": "훈련순서"
+                            "sequenceNo": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "커리큘럼 내 훈련 순서"
                             },
-                            "trainingStatus": {
+                            "status": {
                               "type": "string",
-                              "description": "훈련상태"
+                              "enum": [
+                                "not_ready",
+                                "not_started",
+                                "in_progress",
+                                "completed"
+                              ],
+                              "description": "trainings.status"
                             },
                             "trainingName": {
                               "type": "string",
-                              "description": "훈련명"
-                            },
-                            "dataType": {
-                              "type": "object",
-                              "additionalProperties": true,
-                              "description": "데이터형식"
+                              "description": "훈련 템플릿 이름"
                             },
                             "generatedData": {
-                              "type": "number",
-                              "description": "생성데이터"
+                              "type": "object",
+                              "additionalProperties": true,
+                              "description": "training_datas.generated_data"
+                            },
+                            "startedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "훈련 시작 시각"
+                            },
+                            "finishedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "훈련 완료 시각"
                             }
-                          }
+                          },
+                          "required": [
+                            "trainingId",
+                            "trainingTemplateId",
+                            "dailyCurriculumId",
+                            "sequenceNo",
+                            "status",
+                            "trainingName"
+                          ]
                         }
                       },
                       "required": [
@@ -3530,6 +3568,9 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
@@ -3541,9 +3582,9 @@
           "TR-GUIDE-01",
           "TR-INTRO-02"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
-        "x-notion-request-summary": "studentId(path)\ntrainingId(path)\n훈련이력id",
-        "x-notion-response-summary": "훈련이력id\n훈련템플릿id\n커리큘럼id\n훈련순서\n훈련상태\n훈련명\n데이터형식\n생성데이터",
+        "description": "trainingId는 trainings.id다. 훈련 문항은 training_datas.generated_data에서 조회하며 학생 소유 관계를 검증한다.",
+        "x-notion-request-summary": "studentId(path)\ntrainingId(path)",
+        "x-notion-response-summary": "trainingId\ntrainingTemplateId\ndailyCurriculumId\nsequenceNo\nstatus\ntrainingName\ngeneratedData\nstartedAt\nfinishedAt",
         "x-review-status": "reviewed",
         "security": [
           {
@@ -3565,36 +3606,30 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "studentId 식별자"
+            "description": "아동 식별자"
           },
           {
             "name": "trainingId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "trainingId 식별자"
+            "description": "trainings.id"
           },
           {
             "name": "questionNumber",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "number"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "questionNumber 경로 변수"
-          },
-          {
-            "name": "trainingHistoryId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "훈련이력id 식별자"
+            "description": "1부터 시작하는 문항 번호"
           }
         ],
         "responses": {
@@ -3613,56 +3648,33 @@
                         "data": {
                           "type": "object",
                           "properties": {
-                            "trainingHistoryId": {
-                              "type": "string",
-                              "description": "훈련이력id"
-                            },
-                            "trainingData": {
-                              "type": "object",
-                              "additionalProperties": true,
-                              "description": "훈련데이터"
-                            },
-                            "generatedData": {
-                              "type": "number",
-                              "description": "생성데이터"
+                            "trainingId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "trainings.id"
                             },
                             "questionNumber": {
-                              "type": "number",
-                              "description": "문항번호"
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "현재 문항 번호"
                             },
-                            "word": {
-                              "type": "string",
-                              "description": "단어명"
+                            "totalQuestions": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "전체 문항 수"
                             },
-                            "wordLength": {
-                              "type": "number",
-                              "description": "단어길이"
-                            },
-                            "imageId": {
-                              "type": "string",
-                              "description": "사진id"
-                            },
-                            "imageUrl": {
-                              "type": "string",
-                              "description": "사진저장경로"
-                            },
-                            "audioFile": {
-                              "type": "string",
-                              "description": "음성파일"
-                            },
-                            "audioUrl": {
-                              "type": "string",
-                              "description": "음성저장경로"
-                            },
-                            "videoFile": {
-                              "type": "string",
-                              "description": "영상파일"
-                            },
-                            "videoUrl": {
-                              "type": "string",
-                              "description": "영상저장경로"
+                            "question": {
+                              "type": "object",
+                              "additionalProperties": true,
+                              "description": "generated_data.questions의 현재 문항"
                             }
-                          }
+                          },
+                          "required": [
+                            "trainingId",
+                            "questionNumber",
+                            "totalQuestions",
+                            "question"
+                          ]
                         }
                       },
                       "required": [
@@ -3697,6 +3709,9 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
@@ -3715,9 +3730,9 @@
           "TR-COM-03",
           "TR-DSP-04"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
-        "x-notion-request-summary": "studentId(path)\ntrainingId(path)\n훈련이력id\nquestionNumber(path)",
-        "x-notion-response-summary": "훈련이력id\n훈련데이터\n생성데이터\n문항번호\n단어명\n단어길이\n사진id\n사진저장경로\n음성파일\n음성저장경로\n영상파일\n영상저장경로",
+        "description": "questionNumber는 1부터 시작하며 training_datas.generated_data.questions 범위를 벗어나면 404를 반환한다.",
+        "x-notion-request-summary": "studentId(path)\ntrainingId(path)\nquestionNumber(path)",
+        "x-notion-response-summary": "trainingId\nquestionNumber\ntotalQuestions\nquestion",
         "x-review-status": "reviewed",
         "security": [
           {
@@ -3739,31 +3754,34 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "studentId 식별자"
+            "description": "아동 식별자"
           },
           {
             "name": "trainingId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "trainingId 식별자"
+            "description": "trainings.id"
           },
           {
             "name": "questionNumber",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "number"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "questionNumber 경로 변수"
+            "description": "문항 번호"
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "요청 성공",
             "content": {
               "application/json": {
@@ -3778,28 +3796,44 @@
                         "data": {
                           "type": "object",
                           "properties": {
-                            "logId": {
-                              "type": "string",
-                              "description": "로그id"
+                            "attemptId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "word_attempt_logs.id"
                             },
-                            "transcript": {
-                              "type": "string",
-                              "description": "음성인식결과"
+                            "trainingId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "trainings.id"
                             },
-                            "pronunciationScore": {
-                              "type": "number",
-                              "description": "발음 점수"
+                            "wordId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "words.id"
                             },
-                            "readingErrorType": {
+                            "recognizedText": {
                               "type": "string",
-                              "description": "읽기오류유형"
+                              "description": "STT 인식 결과"
+                            },
+                            "totalScore": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "0~1000 단어 점수"
                             },
                             "createdAt": {
                               "type": "string",
                               "format": "date-time",
-                              "description": "생성일"
+                              "description": "시도 저장 시각"
                             }
-                          }
+                          },
+                          "required": [
+                            "attemptId",
+                            "trainingId",
+                            "wordId",
+                            "recognizedText",
+                            "totalScore",
+                            "createdAt"
+                          ]
                         }
                       },
                       "required": [
@@ -3828,8 +3862,24 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "description": "요청 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         },
         "x-notion-page-id": "3a4027df-9053-8052-b620-e6b308991683",
@@ -3845,9 +3895,9 @@
           "TR-REC-03",
           "TR-REC-07"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다. 음성 파일은 EC2 내부 audio/{studentId}/training/ 구조에 저장하며 내부 파일 경로는 API 응답에 노출하지 않는다.",
-        "x-notion-request-summary": "studentId(path)\ntrainingId(path)\n훈련이력id\nquestionNumber(path)\n단어id",
-        "x-notion-response-summary": "로그id\n음성인식결과\n발음 점수\n읽기오류유형\n성공/실패여부\n생성일",
+        "description": "음성 원본 경로는 응답하지 않는다. recognizedText와 음성 구간·점수를 word_attempt_logs에 저장하고 training_id로 훈련에 연결한다.",
+        "x-notion-request-summary": "studentId(path)\ntrainingId(path)\nquestionNumber(path)\nwordId(body)\nrecognizedText(body)\nspeechStartOffsetMs(body, optional)\nspeechEndOffsetMs(body, optional)\nisCorrect(body, optional)\ntotalScore(body)",
+        "x-notion-response-summary": "attemptId\ntrainingId\nwordId\nrecognizedText\ntotalScore\ncreatedAt",
         "x-review-status": "reviewed",
         "requestBody": {
           "required": true,
@@ -3856,18 +3906,39 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "trainingHistoryId": {
-                    "type": "string",
-                    "description": "훈련이력id 식별자"
-                  },
                   "wordId": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "words.id"
+                  },
+                  "recognizedText": {
                     "type": "string",
-                    "description": "단어id 식별자"
+                    "description": "STT 인식 결과"
+                  },
+                  "speechStartOffsetMs": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "음성 시작 오프셋(ms)"
+                  },
+                  "speechEndOffsetMs": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "음성 종료 오프셋(ms)"
+                  },
+                  "isCorrect": {
+                    "type": "boolean",
+                    "description": "정답 여부"
+                  },
+                  "totalScore": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "0~1000 단어 점수"
                   }
                 },
                 "required": [
-                  "trainingHistoryId",
-                  "wordId"
+                  "wordId",
+                  "recognizedText",
+                  "totalScore"
                 ]
               },
               "example": {
@@ -3897,31 +3968,34 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "studentId 식별자"
+            "description": "아동 식별자"
           },
           {
             "name": "trainingId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "trainingId 식별자"
+            "description": "trainings.id"
           },
           {
             "name": "questionNumber",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "number"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "questionNumber 경로 변수"
+            "description": "문항 번호"
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "요청 성공",
             "content": {
               "application/json": {
@@ -3936,23 +4010,44 @@
                         "data": {
                           "type": "object",
                           "properties": {
-                            "logId": {
-                              "type": "string",
-                              "description": "로그id"
+                            "attemptId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "word_attempt_logs.id"
                             },
-                            "trainingHistoryId": {
-                              "type": "string",
-                              "description": "훈련이력id"
+                            "trainingId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "trainings.id"
                             },
                             "wordId": {
-                              "type": "string",
-                              "description": "단어id"
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "words.id"
                             },
-                            "questionNumber": {
-                              "type": "number",
-                              "description": "문항번호"
+                            "isCorrect": {
+                              "type": "boolean",
+                              "description": "정답 여부"
+                            },
+                            "totalScore": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "0~1000 단어 점수"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "시도 저장 시각"
                             }
-                          }
+                          },
+                          "required": [
+                            "attemptId",
+                            "trainingId",
+                            "wordId",
+                            "isCorrect",
+                            "totalScore",
+                            "createdAt"
+                          ]
                         }
                       },
                       "required": [
@@ -3980,8 +4075,24 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "description": "요청 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
           }
         },
         "x-notion-page-id": "3a4027df-9053-80db-bc36-ccaf29005b38",
@@ -3992,9 +4103,9 @@
           "TR-SEL-03",
           "TR-SEL-02"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
-        "x-notion-request-summary": "studentId(path)\ntrainingId(path)\n훈련이력id\nquestionNumber(path)\n단어id",
-        "x-notion-response-summary": "로그id\n훈련이력id\n단어id\n문항번호\n성공/실패여부",
+        "description": "선택한 words.id를 word_attempt_logs에 저장하고 training_id로 훈련에 연결한다.",
+        "x-notion-request-summary": "studentId(path)\ntrainingId(path)\nquestionNumber(path)\nwordId(body)\nisCorrect(body)\ntotalScore(body)",
+        "x-notion-response-summary": "attemptId\ntrainingId\nwordId\nisCorrect\ntotalScore\ncreatedAt",
         "x-review-status": "reviewed",
         "requestBody": {
           "required": true,
@@ -4003,18 +4114,25 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "trainingHistoryId": {
-                    "type": "string",
-                    "description": "훈련이력id 식별자"
-                  },
                   "wordId": {
-                    "type": "string",
-                    "description": "단어id 식별자"
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "선택한 words.id"
+                  },
+                  "isCorrect": {
+                    "type": "boolean",
+                    "description": "정답 여부"
+                  },
+                  "totalScore": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "0~1000 단어 점수"
                   }
                 },
                 "required": [
-                  "trainingHistoryId",
-                  "wordId"
+                  "wordId",
+                  "isCorrect",
+                  "totalScore"
                 ]
               },
               "example": {
@@ -4159,18 +4277,20 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "studentId 식별자"
+            "description": "아동 식별자"
           },
           {
             "name": "trainingId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "trainingId 식별자"
+            "description": "trainings.id"
           }
         ],
         "responses": {
@@ -4189,20 +4309,26 @@
                         "data": {
                           "type": "object",
                           "properties": {
-                            "trainingHistoryId": {
-                              "type": "string",
-                              "description": "훈련이력id"
+                            "trainingId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "trainings.id"
                             },
                             "startedAt": {
                               "type": "string",
                               "format": "date-time",
-                              "description": "시작일자"
+                              "description": "훈련 시작 시각"
                             },
-                            "trainingStatus": {
+                            "status": {
                               "type": "string",
-                              "description": "훈련상태"
+                              "description": "훈련 상태"
                             }
-                          }
+                          },
+                          "required": [
+                            "trainingId",
+                            "startedAt",
+                            "status"
+                          ]
                         }
                       },
                       "required": [
@@ -4228,8 +4354,14 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
           }
         },
         "x-notion-page-id": "3a4027df-9053-80c0-892b-d91f3ff2e6c6",
@@ -4237,32 +4369,10 @@
         "x-feature-ids": [
           "TR-GUIDE-03"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
-        "x-notion-request-summary": "studentId(path)\ntrainingId(path)\n훈련이력id",
-        "x-notion-response-summary": "훈련이력id\n시작일자\n훈련상태",
+        "description": "NOT_STARTED 상태의 trainings 행을 IN_PROGRESS로 변경하고 started_at을 서버 시각으로 저장한다.",
+        "x-notion-request-summary": "studentId(path)\ntrainingId(path)",
+        "x-notion-response-summary": "trainingId\nstartedAt\nstatus",
         "x-review-status": "reviewed",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "trainingHistoryId": {
-                    "type": "string",
-                    "description": "훈련이력id 식별자"
-                  }
-                },
-                "required": [
-                  "trainingHistoryId"
-                ]
-              },
-              "example": {
-                "trainingHistoryId": "1001"
-              }
-            }
-          }
-        },
         "security": [
           {
             "bearerAuth": []

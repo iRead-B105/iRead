@@ -15,7 +15,7 @@ timestamp: 2026-07-27T00:00:00+09:00
 
 사용자가 확정한 23개 테이블 ERD를 현재 MySQL 계약으로 채택했다. 실행 가능한 DDL은 Flyway `V1__baseline_schema.sql`에 반영하고 `contracts/database/schema.sql`과 동일하게 유지한다.
 
-기존 Backend 엔티티는 이전 V1을 기준으로 작성되어 있으므로 현재 계약과 다시 정합화해야 한다. 이 문서는 계약 교체 결과를 기록하며 Backend 구현 완료를 선언하지 않는다.
+Backend 엔티티를 현재 계약에 맞춰 정합화했고 공식 MySQL 8.4.10의 빈 데이터베이스에서 Flyway V1과 Hibernate schema validation을 완료했다.
 
 ## 확정된 물리 명칭
 
@@ -60,8 +60,8 @@ timestamp: 2026-07-27T00:00:00+09:00
 ## 적용 경계
 
 - 이번 V1은 신규·빈 데이터베이스 기준이다.
-- 아직 실제 DB에 적용하지 않았으므로 V2를 만들지 않고 V1을 교체했다.
-- Backend 엔티티와 저장소 정합화가 끝나기 전에는 Hibernate schema validation이 실패할 수 있다.
+- 신규·빈 데이터베이스 기준선이므로 V2를 만들지 않고 V1을 유지한다.
+- Backend 엔티티와 저장소 정합화를 완료했으며 Hibernate schema validation이 MySQL 8.4.10에서 통과한다.
 - 다른 환경에 기존 스키마나 데이터가 있으면 V1을 직접 적용하지 않고 별도 baseline 및 데이터 변환 migration을 작성해야 한다.
 
 ## 인증 계약
@@ -73,16 +73,16 @@ timestamp: 2026-07-27T00:00:00+09:00
 
 ## 후속 검증
 
-- 빈 MySQL 8.4에서 V1 전체 실행
-- 23개 테이블, 31개 외래 키, UNIQUE와 CHECK 제약 확인
-- Backend 엔티티 정합화 후 Hibernate schema validation
-- 관련 Backend 전체 테스트
+- 기존 스키마나 데이터가 있는 환경에 적용할 때는 별도 baseline과 데이터 변환 migration을 검증한다.
+- V1을 변경하면 빈 MySQL에서 통합 테스트를 다시 실행한다.
 
 ## 2026-07-27 검증 결과
 
 - `python -m unittest tools.tests.test_validate_contracts`: 3개 성공
 - `python tools/generate_erd.py --check`: 성공
 - `python tools/validate_contracts.py`: 80 operations, 334 features, 23 MySQL tables, 31 foreign keys 검증 성공
-- `python tools/validate_harness.py`: 82 Markdown files, 63 OKF concepts, 92 explicit open markers 검증 성공
-- `.\gradlew.bat test --rerun-tasks`: Java 21에서 88개 중 일반 테스트 87개 성공, opt-in MySQL 통합 테스트 1개 skip, 실패 0개
-- MySQL 실행 검증: 현재 환경에 Docker와 MySQL 클라이언트가 없어 미실행
+- `python tools/validate_harness.py`: 82 Markdown files와 31 record documents 검증 성공
+- 공식 MySQL 8.4.10 ZIP으로 일회성 서버를 시작하고 빈 테스트 DB에 Flyway V1 전체 적용 성공
+- Hibernate `ddl-auto=validate`: MySQL 8.4.10에서 성공
+- MySQL 제약 검증: 애플리케이션 테이블 23개, 외래 키 31개, UNIQUE 11개, CHECK 7개
+- MySQL 통합 검증을 활성화한 `.\gradlew.bat test --rerun-tasks`: Java 21에서 119개 전체 성공, skip·실패 0개
