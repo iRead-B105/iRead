@@ -1,0 +1,24 @@
+{
+  "studentId": 1,
+  "totalVisitedDuration": 84500,
+  "totalVisitedCount": 128,
+  "reverseReadCount": 7,
+  "avgVisitedDuration": 660,
+  "sentenceMetrics": [
+    {
+      "storyLineId": 5,
+      "sequenceNo": 1,
+      "surfaceText": "개미는 부지런히 먹이를 옮겼어요.",
+      "dwellDurationMs": 4200,
+      "fixationCount": 6,
+      "firstGazeOffsetMs": 1200,
+      "lastGazeOffsetMs": 5400
+    }
+  ],
+  "analysisMeta": {
+    "contentType": "STORY",
+    "storyId": 10,
+    "calculationSource": "frontend",
+    "gazeSessionDurationMs": 200000
+  }
+}

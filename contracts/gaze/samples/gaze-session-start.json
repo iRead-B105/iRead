@@ -1,0 +1,16 @@
+{
+  "studentId": 1,
+  "contentType": "STORY",
+  "storyId": 10,
+  "testId": null,
+  "trainingId": null,
+  "calibrationStatus": "SUCCESS",
+  "startedAt": "2026-07-28T10:00:00+09:00",
+  "clientInfo": {
+    "viewportWidth": 1920,
+    "viewportHeight": 1080,
+    "devicePixelRatio": 1,
+    "trackerMode": "tobii",
+    "eyetrackingBridge": "iRead-eyetracking"
+  }
+}

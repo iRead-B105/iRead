@@ -28,3 +28,7 @@ timestamp: 2026-07-28T10:14:54+09:00
 # Sources
 
 [Notion 기능 명세](https://app.notion.com/p/de0027df905383e98fb00120c64321fc)
+
+## 계약 초안
+
+- [Eye Tracker API 연동 초안](../../../../contracts/gaze/eyetracker-api-contract.md)
