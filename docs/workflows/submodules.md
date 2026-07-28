@@ -15,9 +15,9 @@ timestamp: 2026-07-24T00:00:00+09:00
 | 서비스 | 경로 | 추적 브랜치 |
 | --- | --- | --- |
 | Backend | `services/backend` | `develop` |
-| Frontend | `services/frontend` | `develop` |
+| Frontend | `services/frontend-web` | `develop` |
 | AI server | `services/ai` | `develop` |
-| 아동 앱 | `services/app` | `develop` |
+| 아동 앱 | `services/frontend-app` | `develop` |
 | 시선 추적 | `services/eyetracking` | `develop` |
 
 오케스트레이션 저장소는 각 submodule의 특정 커밋을 기록한다. `develop` 추적 설정은 원격 변경을 조회할 기준이며, 참조 커밋은 자동으로 바뀌지 않는다.
@@ -47,10 +47,10 @@ git pull --ff-only origin develop
 git submodule update --init --recursive
 
 git switch -c chore/update-frontend-pointer
-git -C services/frontend fetch origin develop
-git -C services/frontend switch --detach origin/develop
+git -C services/frontend-web fetch origin develop
+git -C services/frontend-web switch --detach origin/develop
 
-git add services/frontend
+git add services/frontend-web
 git diff --cached --submodule=log
 git commit -m "chore(submodule): frontend develop 참조 갱신"
 git push -u origin chore/update-frontend-pointer
@@ -63,7 +63,7 @@ GitHub에서 `chore/update-frontend-pointer`를 orchestration `develop`에
 자동으로 이어진다.
 
 Backend, AI server, 아동 앱, 시선 추적도 각각 `services/backend`,
-`services/ai`, `services/app`, `services/eyetracking` 경로와 서비스 이름에
+`services/ai`, `services/frontend-app`, `services/eyetracking` 경로와 서비스 이름에
 맞는 브랜치·commit 메시지를 사용해 같은 방식으로 갱신한다.
 
 submodule 커밋이 원격 저장소에 push되었는지 확인한 뒤 오케스트레이션 저장소의 참조를 push한다. 원격에 없는 커밋을 참조하면 다른 환경에서 clone할 수 없다.

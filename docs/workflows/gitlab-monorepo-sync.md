@@ -20,9 +20,9 @@ S15P11B105/
 ├── orchestration 파일
 └── services/
     ├── backend/
-    ├── frontend/
+    ├── frontend-web/
     ├── ai/
-    ├── app/
+    ├── frontend-app/
     └── eyetracking/
 ```
 

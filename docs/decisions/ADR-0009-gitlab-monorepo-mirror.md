@@ -33,7 +33,7 @@ GitHub에서는 orchestration 저장소와 Backend, Frontend, AI server, 아동 
 ## 결정
 
 - GitHub `iRead`를 개발과 계약의 기준 저장소로 유지한다.
-- 서비스는 `services/backend`, `services/frontend`, `services/ai`, `services/app`, `services/eyetracking` submodule로 관리한다.
+- 서비스는 `services/backend`, `services/frontend-web`, `services/ai`, `services/frontend-app`, `services/eyetracking` submodule로 관리한다.
 - GitHub Actions는 orchestration `develop`의 gitlink가 가리키는 commit을 GitLab `services/*`에 squash 없는 subtree로 반영한다.
 - orchestration과 서비스의 모든 원본 브랜치는 GitLab `upstream/<repository>/*`, 태그는 `upstream/<repository>/*` 이름공간으로 push한다.
 - GitLab `main`에는 통합 merge commit이 추가되지만 원본 commit의 메시지, 작성자, 시각과 SHA를 변경하지 않는다.
