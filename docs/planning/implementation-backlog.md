@@ -55,6 +55,14 @@ timestamp: 2026-07-28T00:00:00+09:00
 | BE-025 | P1 | 매일 03:00 커리큘럼 훈련 데이터 생성 배치 구현 | Asia/Seoul, 5개 전체 성공 시 저장·잠금 | BE-019, BE-024 | done |
 | BE-026 | P1 | 단어 단위 시선 분석 연동·Mock adapter 구현 | 응시 시간·횟수·회귀·건너뛰기, 원시 좌표 비전달 | BE-009, BE-010, BE-013 | done |
 | BE-027 | P0 | 맞춤 생성 파이프라인 계약·통합·보안 회귀 테스트 | MySQL, 34개 타입, 분석 규칙, 배치 원자성, 개인정보 차단 | BE-013~BE-026 | done |
+| BE-028 | P0 | 아동 App 실행 payload JSON 계약 확정 | 검사·훈련·이야기의 `generatedData`, `question`, `result` 요청·응답 구조 | BE-008, BE-009, BE-013 | blocked |
+
+### 아동 App JSON 계약 상태
+
+- `BE-013`의 `generated_data` V2와 Backend–AI 후보 생성 구조는 맞춤 훈련 Backend 내부 계약으로 완료됐다.
+- `BE-028`은 아동 App이 직접 소비·제출하는 검사·훈련·이야기 payload의 세부 구조를 별도로 관리한다.
+- 팀 합의 전에는 OpenAPI의 자유 형식 객체를 강타입 DTO로 고정하거나 Vue 매핑, 정답 필드 allowlist와 전체 E2E fixture를 확정하지 않는다.
+- 인증·소유권, 상태 전이, 동시성, 파일 정책과 MySQL·CI 검증은 payload 세부 구조와 독립적으로 계속 보강할 수 있다.
 
 ### 2026-07-28 맞춤 훈련 데이터 생성 결정
 
