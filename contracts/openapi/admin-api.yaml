@@ -3910,6 +3910,255 @@
           }
         ]
       }
+    },
+    "/api/admin/training/{studentId}/current": {
+      "get": {
+        "operationId": "get_admin_training_by_studentId_current",
+        "summary": "수정 가능한 현재 커리큘럼 조회",
+        "tags": [
+          "training"
+        ],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "아동 식별자"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "현재 커리큘럼 조회 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/AdminDailyCurriculum"
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "수정 가능한 현재 커리큘럼이 없음",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": "NEXT_CURRICULUM_NOT_FOUND",
+                    "message": "수정 가능한 커리큘럼을 찾을 수 없습니다."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-feature-ids": [
+          "CU-DSP-01"
+        ],
+        "x-contract-origin": "repository",
+        "description": "인증된 교사가 소유한 아동의 NOT_STARTED 커리큘럼을 반환한다. 해당 커리큘럼이 없으면 NEXT_CURRICULUM_NOT_FOUND를 반환한다.",
+        "x-notion-request-summary": "studentId(path)",
+        "x-notion-response-summary": "curriculumId\nstatus\ntrainings[] { trainingId, trainingTemplateId, sequence, unitName, trainingName, status }",
+        "x-review-status": "reviewed",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/student/{studentId}/reading-speed-trend": {
+      "get": {
+        "operationId": "get_admin_student_by_studentId_reading_speed_trend",
+        "summary": "아동 읽기 속도 추이 조회",
+        "tags": [
+          "student"
+        ],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "아동 식별자"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "조회 시작일"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "조회 종료일"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "읽기 속도 추이 조회 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "from": {
+                              "type": "string",
+                              "format": "date"
+                            },
+                            "to": {
+                              "type": "string",
+                              "format": "date"
+                            },
+                            "unit": {
+                              "type": "string",
+                              "enum": [
+                                "WORDS_PER_MINUTE"
+                              ]
+                            },
+                            "voiceChangeRate": {
+                              "type": "number",
+                              "nullable": true
+                            },
+                            "gazeChangeRate": {
+                              "type": "number",
+                              "nullable": true
+                            },
+                            "points": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "date": {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  "voiceSpeed": {
+                                    "type": "number",
+                                    "nullable": true
+                                  },
+                                  "gazeSpeed": {
+                                    "type": "number",
+                                    "nullable": true
+                                  },
+                                  "voiceWordCount": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                  },
+                                  "gazeWordCount": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                  },
+                                  "voiceDurationMs": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                  },
+                                  "gazeDurationMs": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                  },
+                                  "trainingCount": {
+                                    "type": "integer"
+                                  }
+                                },
+                                "required": [
+                                  "date",
+                                  "trainingCount"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "from",
+                            "to",
+                            "unit",
+                            "points"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "x-feature-ids": [
+          "TH-STAT-01"
+        ],
+        "x-contract-origin": "repository",
+        "description": "완료된 훈련을 날짜별로 집계해 음성 및 시선 기준 읽기 속도와 기간 변화율을 반환한다.",
+        "x-notion-request-summary": "studentId(path)\nfrom(query, optional)\nto(query, optional)",
+        "x-notion-response-summary": "from\nto\nunit\nvoiceChangeRate\ngazeChangeRate\npoints[]",
+        "x-review-status": "reviewed",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -3921,6 +4170,70 @@
       }
     },
     "schemas": {
+      "AdminDailyCurriculum": {
+        "type": "object",
+        "properties": {
+          "curriculumId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NOT_STARTED",
+              "IN_PROGRESS",
+              "COMPLETED"
+            ]
+          },
+          "trainings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "trainingId": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "trainingTemplateId": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "sequence": {
+                  "type": "integer"
+                },
+                "unitName": {
+                  "type": "string"
+                },
+                "trainingName": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "NOT_READY",
+                    "NOT_STARTED",
+                    "IN_PROGRESS",
+                    "COMPLETED"
+                  ]
+                }
+              },
+              "required": [
+                "trainingId",
+                "trainingTemplateId",
+                "sequence",
+                "unitName",
+                "trainingName",
+                "status"
+              ]
+            }
+          }
+        },
+        "required": [
+          "curriculumId",
+          "status",
+          "trainings"
+        ]
+      },
       "ErrorDetail": {
         "type": "object",
         "properties": {
