@@ -8,7 +8,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 # 프로젝트 컨텍스트
 
 - 상태: draft
-- 최종 검토일: 2026-07-24
+- 최종 검토일: 2026-07-29
 - 서비스명: `iRead`
 
 ## 저장소 목적
@@ -27,6 +27,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 - 기술 기준선은 [ADR-0002](../decisions/ADR-0002-technology-baseline.md)에 기록되어 있다.
 - 주 데이터베이스는 [ADR-0006](../decisions/ADR-0006-mysql-primary-database.md)에 따라 MySQL 8.4.x LTS를 사용한다.
 - 현재 산출물은 실제 운영하지 않는 데모 버전이며, 데이터 보관, 로컬·Docker MySQL과 API 보안 범위는 [ADR-0008](../decisions/ADR-0008-demo-data-and-runtime-policy.md)을 따른다.
+- 교수자 비밀번호 재설정은 [ADR-0014](../decisions/ADR-0014-email-password-reset.md)에 따라 10분 만료 일회용 이메일 링크를 사용하고, 로컬 데모 메일은 Mailpit으로 확인한다.
 - 문서와 명세 기준 원본은 [ADR-0007](../decisions/ADR-0007-okf-and-specification-sources.md)과 [명세 관리 워크플로](../workflows/specification-management.md)를 따른다.
 - GitHub `iRead-B105/iRead` 저장소에 `main`, `develop` 브랜치가 구성되어 있으며 기본 브랜치는 `develop`이다.
 - 여섯 저장소는 모두 공개 상태이며 서비스 저장소의 기본 브랜치도 `develop`이다.

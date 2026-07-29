@@ -76,6 +76,14 @@ erDiagram
         TIMESTAMP revoked_at "nullable"
         TIMESTAMP created_at "required"
     }
+    password_reset_tokens {
+        BIGINT id PK "required"
+        BIGINT teacher_id FK "required"
+        CHAR_64 token_hash "required"
+        TIMESTAMP expires_at "required"
+        TIMESTAMP used_at "nullable"
+        TIMESTAMP created_at "required"
+    }
     curriculum_units {
         BIGINT id PK "required"
         VARCHAR_50 unit_name "required"
@@ -260,6 +268,7 @@ erDiagram
     reading_features ||--o{ student_feature_profiles : "reading_features_id"
     teachers ||--o{ auth_refresh_sessions : "teacher_id"
     students o|--o{ auth_refresh_sessions : "student_id"
+    teachers ||--o{ password_reset_tokens : "teacher_id"
     curriculum_units ||--o{ training_templates : "curriculum_unit_id"
     stories ||--o{ story_scenes : "story_id"
     words ||--o{ word_categories : "word_id"

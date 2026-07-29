@@ -3,12 +3,12 @@ type: Implementation Backlog
 title: "Backend·Frontend 구현 백로그"
 description: "AI server를 제외한 Backend와 교수자 Frontend·아동 App 구현 작업, 우선순위와 의존성을 관리합니다."
 tags: [planning, implementation, backend, frontend, app, demo]
-timestamp: 2026-07-28T00:00:00+09:00
+timestamp: 2026-07-29T00:00:00+09:00
 ---
 # Backend·Frontend 구현 백로그
 
 - 상태: active
-- 최종 검토일: 2026-07-28
+- 최종 검토일: 2026-07-29
 - 적용 범위: `services/backend`, `services/frontend-web`, `services/frontend-app`
 - 계약 기준: [OpenAPI](../../contracts/openapi/index.md), [MySQL 스키마](../../contracts/database/index.md), [기능 카탈로그](../product/features/catalog/index.md)
 
@@ -58,6 +58,8 @@ timestamp: 2026-07-28T00:00:00+09:00
 | BE-028 | P0 | 아동 App 실행 payload JSON 계약 확정 | 검사·훈련·이야기의 `generatedData`, `question`, `result` 요청·응답 구조 | BE-008, BE-009, BE-013 | blocked |
 | BE-029 | P0 | 갱신 ERD 단어 수행 스키마 정합화 | 발음 정확도, 문항·토큰 위치, 최종 시도, 인식 문자열 제거 | BE-014, BE-021 | in-progress |
 | BE-030 | P0 | Azure Speech 단어 발음 평가 연동 | `ko-KR` scripted assessment, Backend–AI 계약, 장애·보안 정책 | BE-020, BE-029 | todo |
+| BE-031 | P0 | 교수자 보고서·프로필·계정 복구 계약 정합화 | 보고서 불변성·메모 2,000자, 이메일 읽기 전용, JPG·PNG 5MB, 일회용 재설정 링크 | BE-002, BE-004, BE-006 | done |
+| BE-032 | P1 | 교수자 검사 비교 요약·영역 통계 계약 및 계산 구현 | `TI-DSP-02`, `TI-STAT-01`, `TI-STAT-02` | BE-005, BE-028 | deferred |
 
 ### 아동 App JSON 계약 상태
 
@@ -65,6 +67,13 @@ timestamp: 2026-07-28T00:00:00+09:00
 - `BE-028`은 아동 App이 직접 소비·제출하는 검사·훈련·이야기 payload의 세부 구조를 별도로 관리한다.
 - 팀 합의 전에는 OpenAPI의 자유 형식 객체를 강타입 DTO로 고정하거나 Vue 매핑, 정답 필드 allowlist와 전체 E2E fixture를 확정하지 않는다.
 - 인증·소유권, 상태 전이, 동시성, 파일 정책과 MySQL·CI 검증은 payload 세부 구조와 독립적으로 계속 보강할 수 있다.
+
+### 교수자 검사 비교 통계 보류 메모
+
+- `[TBD]` 종합 점수, 이전 검사 대비 변화, 영역별 환산 점수, 강점·보완 영역, 권장 과정과 다음 검사 시점의 계산 규칙을 확정해야 한다.
+- 현재 Backend 비교 응답은 정확도, 읽기·풀이 시간, 시선 이탈 횟수와 문항 결과만 제공하므로 교수자 Frontend의 종합 영역과 영역별 차트가 실제 API에서 비어 있다.
+- 판정과 계산은 Backend가 담당하고 Frontend는 결과만 표시하는 방향을 권장한다. `tests.result` 계약이 확정되는 `BE-028` 이후 재개한다.
+- ERD 변경 없이 `tests.result`, `tests.accuracy`와 이전 완료 검사 조회로 구현하는 것을 우선 검토한다.
 
 ### 2026-07-28 맞춤 훈련 데이터 생성 결정
 
@@ -207,7 +216,7 @@ timestamp: 2026-07-28T00:00:00+09:00
 ### 2026-07-27 BE-008 완료
 
 - App 훈련 7개 operation을 별도 이력 식별자 없이 `trainings.id`를 세션 식별자로 사용하는 ERD 중심 계약으로 정리했다.
-- 안내·문항은 `training_datas.generated_data`를 조회하며 App에는 `questionType`, `responseType`, `content`만 반환한다.
+- 안내·문항은 `training_datas.generated_data`를 조회하며 App에는 `questionType`, `responseType`, `content`와 선택적 `requiredInputs`만 반환한다.
 - 비음성 훈련 제출은 App이 보낸 `submissionId`, `responseType`, 원시 `response`를 Backend가 저장된 `answer`와 비교한다. 최대 3회, 힌트, 3회차 정답 공개와 동일 `submissionId` 재전송 멱등성을 `trainings.result`에서 처리한다.
 - App 검사 7개 operation은 `tests.id`를 세션 식별자로 사용하고 최신 `test_datas.generated_data`의 문항을 같은 표시용 문항 계약으로 변환한다.
 - 비음성 검사는 문항당 최초 제출만 `tests.result`에 저장하고 App에는 정답·점수 없이 진행률만 반환한다. 제거된 문항별 완료 API 대신 제출 자체를 완료 단위로 사용한다.
@@ -225,11 +234,11 @@ timestamp: 2026-07-28T00:00:00+09:00
 
 | ID | 경로 | 우선순위 | 작업 | 계약·영역 | 선행 작업 | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
-| FE-001 | `services/frontend-web` | P0 | Vue 3·TypeScript·Vite·pnpm 애플리케이션 기반 구성 | 라우팅, 상태, API client, 환경변수 | 없음 | todo |
-| FE-002 | `services/frontend-web` | P0 | 교수자 인증과 공통 레이아웃 구현 | Auth Admin operation | FE-001, BE-002 | todo |
-| FE-003 | `services/frontend-web` | P0 | 학생 목록·요약·등록·상세·수정 화면 구현 | Admin `student`, `teacher` | FE-002, BE-004 | todo |
-| FE-004 | `services/frontend-web` | P0 | 훈련 교안·이력·통계와 검사 비교 화면 구현 | Admin `training`, `test` | FE-003, BE-005 | todo |
-| FE-005 | `services/frontend-web` | P1 | 보고서·시선 결과·교수자 프로필 화면 구현 | Admin `report`, gaze, `teacher` | FE-003, FE-004, BE-006 | todo |
+| FE-001 | `services/frontend-web` | P0 | Vue 3·TypeScript·Vite·pnpm 애플리케이션 기반 구성 | 라우팅, 상태, API client, 환경변수 | 없음 | done |
+| FE-002 | `services/frontend-web` | P0 | 교수자 인증과 공통 레이아웃 구현 | Auth Admin operation | FE-001, BE-002 | done |
+| FE-003 | `services/frontend-web` | P0 | 학생 목록·요약·등록·상세·수정 화면 구현 | Admin `student`, `teacher` | FE-002, BE-004 | done |
+| FE-004 | `services/frontend-web` | P0 | 훈련 교안·이력·통계와 검사 비교 화면 구현 | Admin `training`, `test` | FE-003, BE-005 | done |
+| FE-005 | `services/frontend-web` | P1 | 보고서·시선 결과·교수자 프로필 화면 구현 | Admin `report`, gaze, `teacher` | FE-003, FE-004, BE-006 | done |
 | FE-006 | `services/frontend-app` | P0 | 아동 App 기술 스택 확정과 애플리케이션 기반 구성 | 라우팅, 상태, API client, 미디어 권한 | 없음 | todo |
 | FE-007 | `services/frontend-app` | P0 | 교수자 로그인·연결 아동 프로필 선택과 홈·성장·캐릭터 화면 구현 | Auth App, App `student`, `mypage` | FE-006, BE-007 | todo |
 | FE-008 | `services/frontend-app` | P0 | 검사·훈련 안내, 문항, 녹음·응답과 완료 흐름 구현 | App `test`, `training` | FE-007, BE-008 | todo |
@@ -237,6 +246,7 @@ timestamp: 2026-07-28T00:00:00+09:00
 | FE-010 | `services/frontend-app` | P1 | 시선 장치 안내, 세션 시작·종료·실패 흐름 구현 | App `gaze` | FE-006, BE-009 | todo |
 | FE-011 | 두 저장소 | P1 | 공통 로딩·빈 상태·오류·재인증 UX 정리 | 공통 오류 응답, 401·403·404·409 | FE-002, FE-007, BE-012 | todo |
 | FE-012 | 두 저장소 | P1 | 핵심 데모 시나리오와 접근성·반응형 마무리 | 교수자 관리, 아동 검사·훈련·이야기 | FE-003~FE-011 | todo |
+| FE-013 | `services/frontend-web` | P0 | 교수자 이메일 기반 계정 복구와 보고서·프로필 계약 정합화 | Auth, Admin `teacher`, `report` | FE-002, FE-005, BE-031 | done |
 
 ### Frontend 수용 기준
 

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Training question response data",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "trainingId": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "questionNumber": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "totalQuestions": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "question": {
+      "$ref": "app-learning-question.schema.json"
+    }
+  },
+  "required": [
+    "trainingId",
+    "questionNumber",
+    "totalQuestions",
+    "question"
+  ]
+}

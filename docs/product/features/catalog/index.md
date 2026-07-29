@@ -2,8 +2,8 @@
 
 Notion 기능 명세를 도메인별 OKF 개념 문서로 이전한 카탈로그다.
 
-* [auth](auth.md) - 38개 기능 항목
-* [deprecated](deprecated.md) - 30개 기능 항목
+* [auth](auth.md) - 35개 기능 항목
+* [deprecated](deprecated.md) - 33개 기능 항목
 * [gaze](gaze.md) - 15개 기능 항목
 * [mypage](mypage.md) - 2개 기능 항목
 * [report](report.md) - 15개 기능 항목

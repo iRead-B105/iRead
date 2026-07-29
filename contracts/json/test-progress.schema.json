@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Test progress",
+  "description": "검사 제출 직후 App에 반환하는 저장 완료 및 진행률 정보입니다. 정답, 점수와 분석 정보는 포함하지 않습니다.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "feedbackType": {
+      "const": "TEST_PROGRESS"
+    },
+    "submissionId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "accepted": {
+      "const": true
+    },
+    "questionNumber": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "completedQuestions": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "totalQuestions": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "progressPercent": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "nextQuestionNumber": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "testCompleted": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "feedbackType",
+    "submissionId",
+    "accepted",
+    "questionNumber",
+    "completedQuestions",
+    "totalQuestions",
+    "progressPercent",
+    "nextQuestionNumber",
+    "testCompleted"
+  ]
+}

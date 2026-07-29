@@ -66,6 +66,9 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
           }
         },
         "x-notion-page-id": "3a4027df-9053-80ae-95bc-fcf02c9d9773",
@@ -76,7 +79,7 @@
           "RP-GEN-03",
           "RP-GEN-01"
         ],
-        "description": "보고서는 비동기 작업 없이 요청 안에서 동기 생성하고 reports.snapshot_data에 분석 결과를 저장한다. teacherMemo는 reports.teacher_memo에 저장하며 선택 입력이다. reports.created_at을 생성일로 사용한다. 초안·게시·버전·외부 공유 상태를 사용하지 않는다.",
+        "description": "완료된 훈련 또는 검사가 한 건 이상 있어야 생성한다. 학습 기록이 없으면 REPORT_DATA_NOT_FOUND, 동일 아동·시작일·종료일 보고서가 있으면 REPORT_PERIOD_ALREADY_EXISTS와 기존 reportId를 반환한다. 교수자 의견은 최대 2,000자이며 저장된 보고서는 삭제하지 않는다.",
         "x-notion-request-summary": "studentId(body)\nstartDate(body)\nendDate(body)\nteacherMemo(body, optional)",
         "x-notion-response-summary": "reportId\ncreatedAt",
         "x-review-status": "reviewed",
@@ -88,22 +91,24 @@
                 "type": "object",
                 "properties": {
                   "studentId": {
-                    "type": "string",
+                    "type": "integer",
+                    "format": "int64",
                     "description": "아동 식별자"
                   },
                   "startDate": {
                     "type": "string",
                     "format": "date",
-                    "description": "보고서 집계 시작일(YYYY-MM-DD)"
+                    "description": "보고서 집계 시작일"
                   },
                   "endDate": {
                     "type": "string",
                     "format": "date",
-                    "description": "보고서 집계 종료일(YYYY-MM-DD)"
+                    "description": "보고서 집계 종료일"
                   },
                   "teacherMemo": {
                     "type": "string",
-                    "description": "보고서에 포함할 교수자 의견"
+                    "maxLength": 2000,
+                    "description": "최대 2,000자의 교수자 의견"
                   }
                 },
                 "required": [
@@ -163,8 +168,14 @@
                           "type": "object",
                           "properties": {
                             "reportId": {
-                              "type": "string",
+                              "type": "integer",
+                              "format": "int64",
                               "description": "보고서 식별자"
+                            },
+                            "studentId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "아동 식별자"
                             },
                             "startDate": {
                               "type": "string",
@@ -181,65 +192,24 @@
                               "format": "date-time",
                               "description": "보고서 생성일시"
                             },
-                            "learningDays": {
-                              "type": "number",
-                              "description": "학습일수"
-                            },
-                            "totalTrainingTime": {
-                              "type": "number",
-                              "description": "총 훈련시간"
-                            },
-                            "completedTrainingCount": {
-                              "type": "number",
-                              "description": "완료 훈련 수"
-                            },
-                            "averageAccuracy": {
-                              "type": "number",
-                              "description": "평균 정확도"
-                            },
-                            "averageReadingSpeed": {
-                              "type": "number",
-                              "description": "평균 읽기속도"
-                            },
-                            "growthByPeriod": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "additionalProperties": true
-                              },
-                              "description": "기간별 성장 데이터"
-                            },
-                            "achievementByDomain": {
+                            "snapshot": {
                               "type": "object",
                               "additionalProperties": true,
-                              "description": "영역별 성취도"
-                            },
-                            "frequentErrorWords": {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              },
-                              "description": "자주 틀리는 단어"
-                            },
-                            "improvedPatterns": {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              },
-                              "description": "개선된 패턴"
-                            },
-                            "persistentDifficulties": {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              },
-                              "description": "계속 어려워하는 패턴"
+                              "description": "생성 시점에 저장한 보고서 분석 스냅샷"
                             },
                             "teacherMemo": {
                               "type": "string",
                               "description": "교수자 의견"
                             }
-                          }
+                          },
+                          "required": [
+                            "reportId",
+                            "studentId",
+                            "startDate",
+                            "endDate",
+                            "createdAt",
+                            "snapshot"
+                          ]
                         }
                       },
                       "required": [
@@ -290,9 +260,9 @@
           "RP-DSP-03",
           "RP-DSP-07"
         ],
-        "description": "reports의 저장된 snapshot_data와 teacher_memo를 조회한다. createdAt은 reports.created_at이며 게시일이나 버전이 아니다. 외부 공유 링크와 게시 상태를 반환하지 않는다.",
+        "description": "reports.snapshot_data를 snapshot 객체로 반환한다. studentId는 보고서가 속한 아동 식별자이며 teacherMemo는 null일 수 있다.",
         "x-notion-request-summary": "reportId(path)",
-        "x-notion-response-summary": "reportId\nstartDate\nendDate\ncreatedAt\nlearningDays\ntotalTrainingTime\ncompletedTrainingCount\naverageAccuracy\naverageReadingSpeed\ngrowthByPeriod\nachievementByDomain\nfrequentErrorWords\nimprovedPatterns\npersistentDifficulties\nteacherMemo",
+        "x-notion-response-summary": "reportId\nstudentId\nstartDate\nendDate\ncreatedAt\nsnapshot\nteacherMemo",
         "x-review-status": "reviewed",
         "security": [
           {
@@ -314,9 +284,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "reportId 식별자"
+            "description": "보고서 식별자"
           }
         ],
         "responses": {
@@ -336,10 +307,14 @@
                           "type": "object",
                           "properties": {
                             "reportId": {
-                              "type": "string",
-                              "description": "보고서id"
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "갱신한 보고서 식별자"
                             }
-                          }
+                          },
+                          "required": [
+                            "reportId"
+                          ]
                         }
                       },
                       "required": [
@@ -372,32 +347,10 @@
         "x-feature-ids": [
           "RP-GAZE-01"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
-        "x-notion-request-summary": "reportId(path)\n시선분석결과id",
-        "x-notion-response-summary": "보고서id",
+        "description": "보고서의 아동과 기간에 속한 시선 분석 결과를 훈련·검사로 분리해 시간순 추이로 저장한다. 이야기 결과는 제외하고 실패 세션은 건수만 포함한다.",
+        "x-notion-request-summary": "reportId(path)",
+        "x-notion-response-summary": "reportId",
         "x-review-status": "reviewed",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "gazeAnalysisResultId": {
-                    "type": "string",
-                    "description": "시선분석결과id 식별자"
-                  }
-                },
-                "required": [
-                  "gazeAnalysisResultId"
-                ]
-              },
-              "example": {
-                "gazeAnalysisResultId": "1001"
-              }
-            }
-          }
-        },
         "security": [
           {
             "bearerAuth": []
@@ -418,9 +371,10 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "reportId 식별자"
+            "description": "보고서 식별자"
           }
         ],
         "responses": {
@@ -487,6 +441,7 @@
         "x-feature-ids": [
           "RP-DSP-02"
         ],
+        "description": "저장된 보고서의 교수자 의견만 수정하며 보고서 스냅샷과 생성일은 변경하지 않는다.",
         "x-notion-request-summary": "reportId(path)\nteacherMemo(body)",
         "x-notion-response-summary": "reportId\nteacherMemo\ncreatedAt",
         "x-review-status": "reviewed",
@@ -499,7 +454,8 @@
                 "properties": {
                   "teacherMemo": {
                     "type": "string",
-                    "description": "teacherMemo"
+                    "maxLength": 2000,
+                    "description": "최대 2,000자의 교수자 의견"
                   }
                 },
                 "required": [
@@ -657,7 +613,57 @@
         "tags": [
           "student"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "keyword",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "이름 또는 학교 검색어"
+          },
+          {
+            "name": "age",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "6~12세 만 나이 정확 일치 필터"
+          },
+          {
+            "name": "recentDays",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "7 또는 30. 오늘을 포함한 최근 학습 기간"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "0부터 시작하는 페이지 번호. 기본 0"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "1~100 페이지 크기. 기본 10"
+          }
+        ],
         "responses": {
           "200": {
             "description": "요청 성공",
@@ -678,34 +684,88 @@
                               "type": "array",
                               "items": {
                                 "type": "object",
-                                "additionalProperties": true,
                                 "properties": {
+                                  "studentId": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "아동 식별자"
+                                  },
                                   "name": {
                                     "type": "string",
                                     "description": "이름"
                                   },
+                                  "school": {
+                                    "type": "string",
+                                    "description": "학교"
+                                  },
                                   "age": {
-                                    "type": "string",
-                                    "description": "나이"
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "만 나이"
                                   },
-                                  "lastLearningDate": {
+                                  "imageUrl": {
                                     "type": "string",
-                                    "format": "date",
-                                    "description": "최근학습일"
-                                  },
-                                  "totalLearningTime": {
-                                    "type": "number",
-                                    "description": "총 학습 시간"
+                                    "description": "프로필 이미지 URL"
                                   },
                                   "recentTraining": {
                                     "type": "string",
-                                    "description": "최근 진행한 훈련"
+                                    "description": "최근 완료 훈련"
+                                  },
+                                  "recentLearningDate": {
+                                    "type": "string",
+                                    "format": "date",
+                                    "description": "최근 학습일"
+                                  },
+                                  "weeklyScheduledCount": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "이번 주 예정 수"
+                                  },
+                                  "weeklyCompletedCount": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "이번 주 완료 수"
+                                  },
+                                  "weeklyParticipationRate": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "0~100 참여율. 예정이 없으면 null"
+                                  },
+                                  "totalLearningMinutes": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "누적 학습 시간(분)"
                                   }
                                 }
-                              },
-                              "description": "학생"
+                              }
+                            },
+                            "page": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "현재 0-based 페이지"
+                            },
+                            "size": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "페이지 크기"
+                            },
+                            "totalElements": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "필터 결과 총 개수"
+                            },
+                            "totalPages": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "전체 페이지 수"
                             }
-                          }
+                          },
+                          "required": [
+                            "page",
+                            "size",
+                            "totalElements",
+                            "totalPages"
+                          ]
                         }
                       },
                       "required": [
@@ -749,8 +809,9 @@
           "DB-FLT-02",
           "DB-FLT-01"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
-        "x-notion-response-summary": "학생[] {\n  이름\n  나이\n  최근학습일\n  총 학습 시간\n  최근 진행한 훈련\n}",
+        "description": "이름·학교 검색, 정확 나이, 최근 7일 또는 30일 학습 여부로 필터링한 뒤 0-based 페이지를 반환한다.",
+        "x-notion-request-summary": "keyword(query, optional)\nage(query, optional)\nrecentDays(query, optional)\npage(query, optional)\nsize(query, optional)",
+        "x-notion-response-summary": "students[]\npage\nsize\ntotalElements\ntotalPages",
         "x-review-status": "reviewed",
         "security": [
           {
@@ -1298,10 +1359,10 @@
             "schema": {
               "type": "string",
               "enum": [
-                "test",
-                "training",
-                "story",
-                "gaze"
+                "TEST",
+                "TRAINING",
+                "STORY",
+                "GAZE"
               ]
             },
             "description": "학습 이벤트 원본 유형"
@@ -1341,10 +1402,10 @@
                             "eventType": {
                               "type": "string",
                               "enum": [
-                                "test",
-                                "training",
-                                "story",
-                                "gaze"
+                                "TEST",
+                                "TRAINING",
+                                "STORY",
+                                "GAZE"
                               ],
                               "description": "학습 이벤트 유형"
                             },
@@ -1762,8 +1823,8 @@
                             "gender": {
                               "type": "string",
                               "enum": [
-                                "male",
-                                "female"
+                                "MALE",
+                                "FEMALE"
                               ],
                               "description": "성별"
                             },
@@ -1862,13 +1923,13 @@
                             },
                             "email": {
                               "type": "string",
-                              "description": "교수자 이메일"
+                              "description": "읽기 전용 로그인 이메일"
                             },
                             "gender": {
                               "type": "string",
                               "enum": [
-                                "male",
-                                "female"
+                                "MALE",
+                                "FEMALE"
                               ],
                               "description": "성별"
                             },
@@ -1906,8 +1967,8 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
+          "404": {
+            "$ref": "#/components/responses/NotFound"
           }
         },
         "x-notion-page-id": "3a6027df-9053-816b-a11b-de7d6ad251d2",
@@ -1919,8 +1980,8 @@
           "SB-SAVE-03",
           "SB-SAVE-02"
         ],
-        "description": "인증된 교수자 자신의 프로필만 수정한다. 프로필 이미지는 multipart 전용 /api/admin/teacher/profile/image에서 변경한다.",
-        "x-notion-request-summary": "email(body)\nname(body)\norganization(body, optional)\ngender(body, optional)",
+        "description": "인증된 교수자 자신의 이름, 소속과 성별만 수정한다. 로그인 식별자인 이메일은 읽기 전용이며 프로필 이미지는 multipart 전용 /api/admin/teacher/profile/image에서 변경한다.",
+        "x-notion-request-summary": "name(body)\norganization(body, optional)\ngender(body, optional)",
         "x-notion-response-summary": "name\norganization\nemail\ngender\nprofileImageUrl",
         "x-review-status": "reviewed",
         "requestBody": {
@@ -1930,35 +1991,146 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
-                    "type": "string",
-                    "description": "교수자 이메일, 최대 50자"
-                  },
                   "name": {
                     "type": "string",
+                    "maxLength": 10,
                     "description": "교수자 이름, 최대 10자"
                   },
                   "organization": {
                     "type": "string",
+                    "maxLength": 100,
                     "description": "소속, 최대 100자"
                   },
                   "gender": {
                     "type": "string",
                     "enum": [
-                      "male",
-                      "female"
+                      "MALE",
+                      "FEMALE"
                     ],
                     "description": "성별"
                   }
                 },
                 "required": [
-                  "email",
                   "name"
                 ]
               },
               "example": {
                 "profileInfo": {},
                 "profileImage": "string"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/teacher/profile/image": {
+      "patch": {
+        "operationId": "patch_admin_teacher_profile_image",
+        "summary": "교수자 프로필 이미지 선택, 교수자 프로필 입력값 검증, 교수자 프로필 저장",
+        "tags": [
+          "teacher"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "description": "교수자 이름"
+                            },
+                            "organization": {
+                              "type": "string",
+                              "description": "소속"
+                            },
+                            "email": {
+                              "type": "string",
+                              "description": "읽기 전용 로그인 이메일"
+                            },
+                            "gender": {
+                              "type": "string",
+                              "enum": [
+                                "MALE",
+                                "FEMALE"
+                              ],
+                              "description": "성별"
+                            },
+                            "profileImageUrl": {
+                              "type": "string",
+                              "description": "프로필 이미지 URL"
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "email"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "x-notion-page-id": "git-admin-teacher-profile-image-v1",
+        "x-notion-url": "https://app.notion.com/p/api-admin-teacher-profile-save-state-3a6027df9053816ba11bde7d6ad251d2",
+        "x-feature-ids": [
+          "SB-SEL-01",
+          "SB-SAVE-01",
+          "SB-SAVE-02",
+          "SB-SAVE-03",
+          "SB-SAVE-04"
+        ],
+        "description": "JPG 또는 PNG 형식의 5MB 이하 이미지만 multipart image part로 받는다. 인증된 교수자 자신의 기존 이미지는 새 이미지 저장이 성공한 뒤 삭제한다.",
+        "x-notion-request-summary": "image(body)",
+        "x-notion-response-summary": "name\norganization\nemail\ngender\nprofileImageUrl",
+        "x-review-status": "reviewed",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "JPG 또는 PNG 형식의 5MB 이하 프로필 이미지"
+                  }
+                },
+                "required": [
+                  "image"
+                ]
               }
             }
           }
@@ -2461,9 +2633,30 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int64"
             },
-            "description": "studentId 식별자"
+            "description": "아동 식별자"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "완료일 조회 시작일(포함)"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "완료일 조회 종료일(포함)"
           }
         ],
         "responses": {
@@ -2482,36 +2675,40 @@
                         "data": {
                           "type": "object",
                           "properties": {
-                            "date": {
-                              "type": "string",
-                              "format": "date",
-                              "description": "일자"
-                            },
-                            "achievementRate": {
-                              "type": "number",
-                              "description": "달성률"
-                            },
-                            "trainings": {
+                            "curriculumLogs": {
                               "type": "array",
                               "items": {
                                 "type": "object",
-                                "additionalProperties": true,
                                 "properties": {
-                                  "trainingId": {
-                                    "type": "string",
-                                    "description": "훈련id"
+                                  "curriculumId": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "일일 커리큘럼 식별자"
                                   },
-                                  "unitName": {
+                                  "date": {
+                                    "type": "string",
+                                    "format": "date",
+                                    "description": "완료일"
+                                  },
+                                  "achievementRate": {
+                                    "type": "number",
+                                    "description": "완료 훈련의 평균 정확도"
+                                  },
+                                  "trainings[].trainingId": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "훈련 식별자"
+                                  },
+                                  "trainings[].unitName": {
                                     "type": "string",
                                     "description": "단원명"
                                   },
-                                  "trainingName": {
+                                  "trainings[].trainingName": {
                                     "type": "string",
                                     "description": "훈련명"
                                   }
                                 }
-                              },
-                              "description": "훈련"
+                              }
                             }
                           }
                         }
@@ -2545,6 +2742,9 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
@@ -2554,9 +2754,9 @@
         "x-feature-ids": [
           "TH-DSP-01"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
-        "x-notion-request-summary": "studentId(path)",
-        "x-notion-response-summary": "일자\n달성률\n훈련[] {\n  훈련id\n  단원명\n  훈련명\n}",
+        "description": "from과 to는 완료일 기준의 포함 범위다. 둘 다 생략하면 전체 기록을 반환하며 from은 to보다 늦을 수 없다.",
+        "x-notion-request-summary": "studentId(path)\nfrom(query, optional)\nto(query, optional)",
+        "x-notion-response-summary": "curriculumLogs[] {\n  curriculumId\n  date\n  achievementRate\n  trainings[] {\n    trainingId\n    unitName\n    trainingName\n  }\n}",
         "x-review-status": "reviewed",
         "security": [
           {
@@ -2752,7 +2952,7 @@
           "CU-SAVE-12"
         ],
         "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
-        "x-notion-request-summary": "studentId(path)\ncurriculumId(path)\ntrainingTemplateIds(body, exactly 5)",
+        "x-notion-request-summary": "studentId(path)\ncurriculumId(path)\n훈련id[]",
         "x-notion-response-summary": "ok",
         "x-review-status": "reviewed",
         "requestBody": {
@@ -2762,28 +2962,21 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "trainingTemplateIds": {
+                  "trainingId": {
                     "type": "array",
-                    "minItems": 5,
-                    "maxItems": 5,
                     "items": {
-                      "type": "integer",
-                      "format": "int64"
+                      "type": "string"
                     },
-                    "description": "순서대로 배정할 training_templates.id 5개"
+                    "description": "훈련id 식별자"
                   }
                 },
                 "required": [
-                  "trainingTemplateIds"
+                  "trainingId"
                 ]
               },
               "example": {
-                "trainingTemplateIds": [
-                  1,
-                  7,
-                  19,
-                  25,
-                  30
+                "trainingId": [
+                  "1001"
                 ]
               }
             }
@@ -3160,10 +3353,10 @@
                             "status": {
                               "type": "string",
                               "enum": [
-                                "not_ready",
-                                "not_started",
-                                "in_progress",
-                                "completed"
+                                "NOT_READY",
+                                "NOT_STARTED",
+                                "IN_PROGRESS",
+                                "COMPLETED"
                               ],
                               "description": "훈련 상태"
                             },
@@ -3553,8 +3746,8 @@
             "schema": {
               "type": "string",
               "enum": [
-                "csv",
-                "json"
+                "CSV",
+                "JSON"
               ]
             },
             "description": "내보내기 파일 형식"
