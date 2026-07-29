@@ -131,7 +131,7 @@
       "post": {
         "operationId": "analyzePronunciation",
         "summary": "학습자 발음 분석",
-        "description": "Backend가 일시 수신한 음성과 기준 텍스트를 전달한다. AI server는 Azure Speech의 ko-KR scripted Pronunciation Assessment를 호출하고 원본 음성을 보관하지 않은 채 단어 정확도 점수와 오류 유형을 반환한다.",
+        "description": "Backend가 30초 미만의 일시 수신 음성과 전체 기준 텍스트를 전달한다. AI server는 Azure Speech의 ko-KR scripted Pronunciation Assessment를 HundredMark, Word, EnableMiscue=true로 호출하고 원본 음성을 보관하지 않은 채 전체 발화 점수와 순서가 보존된 단어별 점수·오류·구간을 반환한다.",
         "tags": ["speech"],
         "security": [{"apiKeyAuth": []}],
         "parameters": [{"$ref": "#/components/parameters/IdempotencyKey"}],
@@ -156,6 +156,7 @@
           "400": {"$ref": "#/components/responses/BadRequest"},
           "401": {"$ref": "#/components/responses/Unauthorized"},
           "409": {"$ref": "#/components/responses/Conflict"},
+          "413": {"description": "음성 파일 크기 제한 초과"},
           "422": {"$ref": "#/components/responses/Unprocessable"},
           "502": {"$ref": "#/components/responses/UpstreamFailure"},
           "504": {"$ref": "#/components/responses/Timeout"}
@@ -308,8 +309,8 @@
           "requestId",
           "pronunciationAccuracyScore",
           "confidence",
-          "errorType",
-          "analysisVersion"
+          "analysisVersion",
+          "words"
         ],
         "properties": {
           "requestId": {"type": "string"},
@@ -317,11 +318,44 @@
             "type": "number",
             "minimum": 0,
             "maximum": 100,
-            "description": "Azure 단어별 AccuracyScore"
+            "description": "Azure 전체 발화 AccuracyScore"
           },
+          "fluencyScore": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+          "completenessScore": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+          "pronScore": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
           "confidence": {"type": "number", "minimum": 0, "maximum": 1},
-          "errorType": {"type": "string"},
-          "analysisVersion": {"type": "string", "minLength": 1}
+          "analysisVersion": {"type": "string", "minLength": 1},
+          "words": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "resultIndex",
+                "word",
+                "accuracyScore",
+                "errorType",
+                "offsetMs",
+                "durationMs"
+              ],
+              "properties": {
+                "resultIndex": {"type": "integer", "minimum": 0},
+                "word": {"type": "string", "minLength": 1},
+                "accuracyScore": {
+                  "type": ["number", "null"],
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Omission은 null, Backend 저장 시 0점으로 환산"
+                },
+                "errorType": {
+                  "type": "string",
+                  "enum": ["None", "Mispronunciation", "Omission", "Insertion"]
+                },
+                "offsetMs": {"type": "integer", "minimum": 0},
+                "durationMs": {"type": "integer", "minimum": 0}
+              }
+            }
+          }
         }
       },
       "TrainingEvaluateRequest": {
