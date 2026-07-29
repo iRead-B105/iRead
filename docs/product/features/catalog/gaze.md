@@ -3,7 +3,7 @@ type: Feature Catalog
 title: "기능 카탈로그: gaze"
 description: "gaze 도메인의 기능 식별자, 설명과 API 관계를 정리합니다."
 tags: [feature, catalog, gaze]
-timestamp: 2026-07-28T10:14:54+09:00
+timestamp: 2026-07-29T11:17:47+09:00
 ---
 # 기능 카탈로그: gaze
 
@@ -28,7 +28,3 @@ timestamp: 2026-07-28T10:14:54+09:00
 # Sources
 
 [Notion 기능 명세](https://app.notion.com/p/de0027df905383e98fb00120c64321fc)
-
-## 계약 초안
-
-- [Eye Tracker API 연동 초안](../../../../contracts/gaze/eyetracker-api-contract.md)

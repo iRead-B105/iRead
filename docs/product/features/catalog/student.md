@@ -3,7 +3,7 @@ type: Feature Catalog
 title: "기능 카탈로그: student"
 description: "student 도메인의 기능 식별자, 설명과 API 관계를 정리합니다."
 tags: [feature, catalog, student]
-timestamp: 2026-07-27T12:19:48+09:00
+timestamp: 2026-07-29T11:17:47+09:00
 ---
 # 기능 카탈로그: student
 

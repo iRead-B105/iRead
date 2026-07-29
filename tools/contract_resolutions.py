@@ -18,6 +18,8 @@ def load_resolutions(path: Path) -> dict[str, Any]:
         raise ValueError("api resolutions must be a list")
     if not isinstance(document.get("feature_resolutions", []), list):
         raise ValueError("feature resolutions must be a list")
+    if not isinstance(document.get("additional_apis", []), list):
+        raise ValueError("additional apis must be a list")
     return document
 
 
@@ -58,6 +60,15 @@ def resolve_snapshot(
                 ]
                 feature["contract_domain"] = source["domain"]
                 feature["contract_responsibility"] = "client"
+        elif action == "deprecate":
+            for feature in source_features:
+                feature["api_page_ids"] = [
+                    page_id
+                    for page_id in feature["api_page_ids"]
+                    if page_id != source_page_id
+                ]
+                feature["contract_domain"] = "deprecated"
+                feature.pop("contract_responsibility", None)
         elif action == "merge":
             target_key = resolution.get("target", "")
             if target_key not in api_by_key:
@@ -90,6 +101,36 @@ def resolve_snapshot(
                 raise ValueError(
                     f"api update changes immutable fields: {sorted(present)}"
                 )
+            replacement_feature_ids = resolution.get("replace_feature_ids")
+            if replacement_feature_ids is not None:
+                if not isinstance(replacement_feature_ids, list):
+                    raise ValueError(
+                        f"api update feature ids must be a list: {source_key}"
+                    )
+                unknown_features = [
+                    page_id
+                    for page_id in replacement_feature_ids
+                    if page_id not in feature_by_page
+                ]
+                if unknown_features:
+                    raise ValueError(
+                        f"api update has unknown features: {unknown_features}"
+                    )
+                for feature in source_features:
+                    if feature["page_id"] not in replacement_feature_ids:
+                        feature["api_page_ids"] = [
+                            page_id
+                            for page_id in feature["api_page_ids"]
+                            if page_id != source_page_id
+                        ]
+                for feature_page_id in replacement_feature_ids:
+                    feature = feature_by_page[feature_page_id]
+                    feature["api_page_ids"] = list(
+                        dict.fromkeys(
+                            feature["api_page_ids"] + [source_page_id]
+                        )
+                    )
+                source["feature_ids"] = list(replacement_feature_ids)
             source.update(copy.deepcopy(changes))
             updated_key = api_key(source)
             if updated_key != source_key:
@@ -107,6 +148,52 @@ def resolve_snapshot(
 
         apis.remove(source)
         del api_by_key[source_key]
+
+    for addition in resolution_document.get("additional_apis", []):
+        required = {
+            "page_id",
+            "url",
+            "method",
+            "path",
+            "domain",
+            "feature_ids",
+            "request_parameters",
+            "response_fields",
+            "response_codes",
+        }
+        missing = required.difference(addition)
+        if missing:
+            raise ValueError(
+                f"additional api is missing fields: {sorted(missing)}"
+            )
+        addition_copy = copy.deepcopy(addition)
+        addition_key = api_key(addition_copy)
+        if addition_key in api_by_key:
+            raise ValueError(f"additional api collides: {addition_key}")
+        if addition_copy["page_id"] in {
+            api["page_id"] for api in apis
+        }:
+            raise ValueError(
+                f"additional api page_id collides: {addition_copy['page_id']}"
+            )
+        unknown_features = [
+            page_id
+            for page_id in addition_copy["feature_ids"]
+            if page_id not in feature_by_page
+        ]
+        if unknown_features:
+            raise ValueError(
+                f"additional api has unknown features: {unknown_features}"
+            )
+        apis.append(addition_copy)
+        api_by_key[addition_key] = addition_copy
+        for feature_page_id in addition_copy["feature_ids"]:
+            feature = feature_by_page[feature_page_id]
+            feature["api_page_ids"] = list(
+                dict.fromkeys(
+                    feature["api_page_ids"] + [addition_copy["page_id"]]
+                )
+            )
 
     feature_by_id = {feature["feature_id"]: feature for feature in features}
     active_api_by_page = {api["page_id"]: api for api in apis}

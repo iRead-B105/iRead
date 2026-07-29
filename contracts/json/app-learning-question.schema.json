@@ -1,0 +1,1416 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "App learning question",
+  "description": "훈련과 검사가 공통으로 사용하는 아동 App 표시용 문항입니다. 정답과 분석 정보는 포함하지 않습니다.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "questionType": {
+      "type": "string",
+      "enum": [
+        "VOWEL_TRACE",
+        "CONSONANT_TRACE",
+        "SYLLABLE_TRACE",
+        "CONSONANT_SOUND_CHOICE",
+        "VOWEL_SOUND_CHOICE",
+        "CONSONANT_VOWEL_CLASSIFICATION",
+        "SYLLABLE_INITIAL_CHOICE",
+        "WORD_INITIAL_CHOICE",
+        "SAME_INITIAL_WORD_CHOICE",
+        "FINAL_CONSONANT_CHOICE",
+        "WORD_FINAL_SOUND_CHOICE",
+        "FINAL_CONSONANT_COMPARISON",
+        "SIMILAR_SOUND_CHOICE",
+        "PHONEME_BLEND",
+        "SYLLABLE_BLEND",
+        "BASIC_SYLLABLE_BUILD",
+        "FINAL_SYLLABLE_BUILD",
+        "DOUBLE_FINAL_BUILD",
+        "FINAL_CONSONANT_DELETE",
+        "SYLLABLE_DELETE",
+        "SYLLABLE_REPLACE",
+        "WORD_READING",
+        "NONWORD_READING",
+        "DIFFICULT_WORD_PREVIEW",
+        "SENTENCE_READING",
+        "SHORT_PASSAGE_READING",
+        "SENTENCE_ASSEMBLY",
+        "FILL_IN_THE_BLANK",
+        "IMAGE_SENTENCE_MATCH",
+        "SENTENCE_REPEAT",
+        "WORD_CHAIN_READING",
+        "PHRASE_READING",
+        "REPEATED_SENTENCE_READING",
+        "SHORT_STORY_READING"
+      ]
+    },
+    "responseType": {
+      "type": "string",
+      "enum": [
+        "TRACE",
+        "SINGLE_CHOICE",
+        "ORDERING",
+        "COMPONENT_BUILD",
+        "TEXT_INPUT",
+        "AUDIO"
+      ]
+    },
+    "requiredInputs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "VOICE",
+          "GAZE"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "content": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "questionType",
+    "responseType",
+    "content"
+  ],
+  "allOf": [
+    {
+      "$ref": "#/$defs/vowelTraceRule"
+    },
+    {
+      "$ref": "#/$defs/consonantTraceRule"
+    },
+    {
+      "$ref": "#/$defs/syllableTraceRule"
+    },
+    {
+      "$ref": "#/$defs/simpleChoiceRules"
+    },
+    {
+      "$ref": "#/$defs/sameInitialChoiceRule"
+    },
+    {
+      "$ref": "#/$defs/similarSoundChoiceRule"
+    },
+    {
+      "$ref": "#/$defs/blendRules"
+    },
+    {
+      "$ref": "#/$defs/basicBuildRule"
+    },
+    {
+      "$ref": "#/$defs/finalBuildRules"
+    },
+    {
+      "$ref": "#/$defs/finalDeleteRule"
+    },
+    {
+      "$ref": "#/$defs/syllableDeleteRule"
+    },
+    {
+      "$ref": "#/$defs/syllableReplaceRule"
+    },
+    {
+      "$ref": "#/$defs/wordReadingRule"
+    },
+    {
+      "$ref": "#/$defs/nonwordReadingRule"
+    },
+    {
+      "$ref": "#/$defs/difficultWordPreviewRule"
+    },
+    {
+      "$ref": "#/$defs/sentenceReadingRule"
+    },
+    {
+      "$ref": "#/$defs/shortPassageReadingRule"
+    },
+    {
+      "$ref": "#/$defs/sentenceAssemblyRule"
+    },
+    {
+      "$ref": "#/$defs/fillBlankRule"
+    },
+    {
+      "$ref": "#/$defs/imageSentenceMatchRule"
+    },
+    {
+      "$ref": "#/$defs/sentenceRepeatRule"
+    },
+    {
+      "$ref": "#/$defs/wordChainReadingRule"
+    },
+    {
+      "$ref": "#/$defs/phraseReadingRule"
+    },
+    {
+      "$ref": "#/$defs/repeatedSentenceReadingRule"
+    },
+    {
+      "$ref": "#/$defs/shortStoryReadingRule"
+    },
+    {
+      "$ref": "#/$defs/fillBlankChoiceResponseRule"
+    },
+    {
+      "$ref": "#/$defs/fillBlankTextResponseRule"
+    },
+    {
+      "$ref": "#/$defs/fillBlankVoiceResponseRule"
+    },
+    {
+      "$ref": "#/$defs/fillBlankHandwritingResponseRule"
+    }
+  ],
+  "x-iread-response-type-map": {
+    "VOWEL_TRACE": "TRACE",
+    "CONSONANT_TRACE": "TRACE",
+    "SYLLABLE_TRACE": "TRACE",
+    "CONSONANT_SOUND_CHOICE": "SINGLE_CHOICE",
+    "VOWEL_SOUND_CHOICE": "SINGLE_CHOICE",
+    "CONSONANT_VOWEL_CLASSIFICATION": "SINGLE_CHOICE",
+    "SYLLABLE_INITIAL_CHOICE": "SINGLE_CHOICE",
+    "WORD_INITIAL_CHOICE": "SINGLE_CHOICE",
+    "SAME_INITIAL_WORD_CHOICE": "SINGLE_CHOICE",
+    "FINAL_CONSONANT_CHOICE": "SINGLE_CHOICE",
+    "WORD_FINAL_SOUND_CHOICE": "SINGLE_CHOICE",
+    "FINAL_CONSONANT_COMPARISON": "SINGLE_CHOICE",
+    "SIMILAR_SOUND_CHOICE": "SINGLE_CHOICE",
+    "PHONEME_BLEND": "ORDERING",
+    "SYLLABLE_BLEND": "ORDERING",
+    "BASIC_SYLLABLE_BUILD": "COMPONENT_BUILD",
+    "FINAL_SYLLABLE_BUILD": "COMPONENT_BUILD",
+    "DOUBLE_FINAL_BUILD": "COMPONENT_BUILD",
+    "FINAL_CONSONANT_DELETE": "SINGLE_CHOICE",
+    "SYLLABLE_DELETE": "SINGLE_CHOICE",
+    "SYLLABLE_REPLACE": "SINGLE_CHOICE",
+    "WORD_READING": "AUDIO",
+    "NONWORD_READING": "AUDIO",
+    "DIFFICULT_WORD_PREVIEW": "AUDIO",
+    "SENTENCE_READING": "AUDIO",
+    "SHORT_PASSAGE_READING": "AUDIO",
+    "SENTENCE_ASSEMBLY": "ORDERING",
+    "FILL_IN_THE_BLANK": "DYNAMIC",
+    "IMAGE_SENTENCE_MATCH": "SINGLE_CHOICE",
+    "SENTENCE_REPEAT": "AUDIO",
+    "WORD_CHAIN_READING": "AUDIO",
+    "PHRASE_READING": "AUDIO",
+    "REPEATED_SENTENCE_READING": "AUDIO",
+    "SHORT_STORY_READING": "AUDIO"
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stringList": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/nonEmptyString"
+      }
+    },
+    "choiceList": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "$ref": "#/$defs/nonEmptyString"
+      }
+    },
+    "vowelTraceContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "vowelType": {
+          "type": "string",
+          "enum": [
+            "BASIC",
+            "COMPLEX"
+          ]
+        },
+        "target": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "soundText": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "traceAssetKey": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        }
+      },
+      "required": [
+        "vowelType",
+        "target",
+        "soundText",
+        "traceAssetKey"
+      ]
+    },
+    "consonantTraceContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "consonantType": {
+          "type": "string",
+          "enum": [
+            "BASIC",
+            "TENSE",
+            "ASPIRATED"
+          ]
+        },
+        "target": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "soundText": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "traceAssetKey": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        }
+      },
+      "required": [
+        "consonantType",
+        "target",
+        "soundText",
+        "traceAssetKey"
+      ]
+    },
+    "syllableTraceContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "syllableType": {
+          "type": "string",
+          "enum": [
+            "WITHOUT_FINAL",
+            "WITH_FINAL",
+            "COMPLEX_VOWEL",
+            "TENSE_CONSONANT"
+          ]
+        },
+        "target": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "soundText": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "traceAssetKey": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        }
+      },
+      "required": [
+        "syllableType",
+        "target",
+        "soundText",
+        "traceAssetKey"
+      ]
+    },
+    "simpleChoiceContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "audioText": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "choices": {
+          "$ref": "#/$defs/choiceList"
+        }
+      },
+      "required": [
+        "audioText",
+        "choices"
+      ]
+    },
+    "sameInitialChoiceContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "targetType": {
+          "type": "string",
+          "enum": [
+            "SYLLABLE",
+            "WORD"
+          ]
+        },
+        "targetAudioText": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "choiceType": {
+          "type": "string",
+          "enum": [
+            "WORD",
+            "IMAGE_WORD"
+          ]
+        },
+        "choices": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "text": {
+                "$ref": "#/$defs/nonEmptyString"
+              },
+              "imagePrompt": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "text",
+              "imagePrompt"
+            ]
+          }
+        }
+      },
+      "required": [
+        "targetType",
+        "targetAudioText",
+        "choiceType",
+        "choices"
+      ]
+    },
+    "similarSoundChoiceContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "soundGroup": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "audioText": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "choices": {
+          "$ref": "#/$defs/choiceList"
+        }
+      },
+      "required": [
+        "soundGroup",
+        "audioText",
+        "choices"
+      ]
+    },
+    "blendContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "audioParts": {
+          "$ref": "#/$defs/stringList"
+        },
+        "cards": {
+          "$ref": "#/$defs/choiceList"
+        }
+      },
+      "required": [
+        "audioParts",
+        "cards"
+      ]
+    },
+    "basicBuildContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "targetAudioText": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "initialChoices": {
+          "$ref": "#/$defs/choiceList"
+        },
+        "medialChoices": {
+          "$ref": "#/$defs/choiceList"
+        }
+      },
+      "required": [
+        "targetAudioText",
+        "initialChoices",
+        "medialChoices"
+      ]
+    },
+    "finalBuildContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "targetAudioText": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "initialChoices": {
+          "$ref": "#/$defs/choiceList"
+        },
+        "medialChoices": {
+          "$ref": "#/$defs/choiceList"
+        },
+        "finalChoices": {
+          "$ref": "#/$defs/choiceList"
+        }
+      },
+      "required": [
+        "targetAudioText",
+        "initialChoices",
+        "medialChoices",
+        "finalChoices"
+      ]
+    },
+    "finalDeleteContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "targetAudioText": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "removableUnits": {
+          "$ref": "#/$defs/choiceList"
+        }
+      },
+      "required": [
+        "source",
+        "targetAudioText",
+        "removableUnits"
+      ]
+    },
+    "syllableDeleteContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "targetAudioText": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "syllables": {
+          "$ref": "#/$defs/choiceList"
+        }
+      },
+      "required": [
+        "source",
+        "targetAudioText",
+        "syllables"
+      ]
+    },
+    "syllableReplaceContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "targetAudioText": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "replaceIndex": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "choices": {
+          "$ref": "#/$defs/choiceList"
+        }
+      },
+      "required": [
+        "source",
+        "targetAudioText",
+        "replaceIndex",
+        "choices"
+      ]
+    },
+    "wordReadingContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "readingOrder": {
+          "type": "string",
+          "enum": [
+            "FREE",
+            "SEQUENTIAL"
+          ]
+        },
+        "words": {
+          "$ref": "#/$defs/stringList"
+        }
+      },
+      "required": [
+        "readingOrder",
+        "words"
+      ]
+    },
+    "nonwordReadingContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "words": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "text": {
+                "$ref": "#/$defs/nonEmptyString"
+              },
+              "isNonword": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "text",
+              "isNonword"
+            ]
+          }
+        }
+      },
+      "required": [
+        "words"
+      ]
+    },
+    "difficultWordPreviewContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "difficultWords": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "word": {
+                "$ref": "#/$defs/nonEmptyString"
+              },
+              "syllables": {
+                "$ref": "#/$defs/stringList"
+              }
+            },
+            "required": [
+              "word",
+              "syllables"
+            ]
+          }
+        },
+        "sentence": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      },
+      "required": [
+        "difficultWords",
+        "sentence"
+      ]
+    },
+    "sentenceReadingContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sentence": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "tokens": {
+          "$ref": "#/$defs/stringList"
+        }
+      },
+      "required": [
+        "sentence",
+        "tokens"
+      ]
+    },
+    "shortPassageReadingContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sentences": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 3,
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        }
+      },
+      "required": [
+        "sentences"
+      ]
+    },
+    "sentenceAssemblyContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cards": {
+          "$ref": "#/$defs/choiceList"
+        }
+      },
+      "required": [
+        "cards"
+      ]
+    },
+    "fillBlankContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sentence": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\{\\{blank\\}\\}"
+        },
+        "inputType": {
+          "type": "string",
+          "enum": [
+            "CHOICE",
+            "TEXT",
+            "VOICE",
+            "HANDWRITING"
+          ]
+        },
+        "choices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        }
+      },
+      "required": [
+        "sentence",
+        "inputType",
+        "choices"
+      ]
+    },
+    "imageSentenceMatchContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "imagePrompt": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "choices": {
+          "$ref": "#/$defs/choiceList"
+        }
+      },
+      "required": [
+        "imagePrompt",
+        "choices"
+      ]
+    },
+    "sentenceRepeatContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sentence": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "emotion": {
+          "type": "string",
+          "enum": [
+            "NEUTRAL",
+            "HAPPY",
+            "SAD",
+            "ANGRY",
+            "EXCITED",
+            "CALM"
+          ]
+        }
+      },
+      "required": [
+        "sentence",
+        "emotion"
+      ]
+    },
+    "wordChainReadingContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "words": {
+          "$ref": "#/$defs/stringList"
+        },
+        "requiredOrder": {
+          "const": "SEQUENTIAL"
+        }
+      },
+      "required": [
+        "words",
+        "requiredOrder"
+      ]
+    },
+    "phraseReadingContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sentence": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "phrases": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 4,
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        }
+      },
+      "required": [
+        "sentence",
+        "phrases"
+      ]
+    },
+    "repeatedSentenceReadingContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sentence": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "repeatCount": {
+          "type": "integer",
+          "minimum": 2
+        }
+      },
+      "required": [
+        "sentence",
+        "repeatCount"
+      ]
+    },
+    "shortStoryReadingContent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "sentences": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "speaker": {
+                "type": "string",
+                "enum": [
+                  "NARRATOR",
+                  "CHARACTER"
+                ]
+              },
+              "text": {
+                "$ref": "#/$defs/nonEmptyString"
+              },
+              "emotion": {
+                "type": "string",
+                "enum": [
+                  "NEUTRAL",
+                  "HAPPY",
+                  "SAD",
+                  "ANGRY",
+                  "SURPRISED",
+                  "EXCITED",
+                  "CALM"
+                ]
+              }
+            },
+            "required": [
+              "speaker",
+              "text",
+              "emotion"
+            ]
+          }
+        }
+      },
+      "required": [
+        "title",
+        "sentences"
+      ]
+    },
+    "vowelTraceRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "VOWEL_TRACE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "TRACE"
+          },
+          "content": {
+            "$ref": "#/$defs/vowelTraceContent"
+          }
+        }
+      }
+    },
+    "consonantTraceRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "CONSONANT_TRACE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "TRACE"
+          },
+          "content": {
+            "$ref": "#/$defs/consonantTraceContent"
+          }
+        }
+      }
+    },
+    "syllableTraceRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "SYLLABLE_TRACE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "TRACE"
+          },
+          "content": {
+            "$ref": "#/$defs/syllableTraceContent"
+          }
+        }
+      }
+    },
+    "simpleChoiceRules": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "enum": [
+              "CONSONANT_SOUND_CHOICE",
+              "VOWEL_SOUND_CHOICE",
+              "CONSONANT_VOWEL_CLASSIFICATION",
+              "SYLLABLE_INITIAL_CHOICE",
+              "WORD_INITIAL_CHOICE",
+              "FINAL_CONSONANT_CHOICE",
+              "WORD_FINAL_SOUND_CHOICE",
+              "FINAL_CONSONANT_COMPARISON"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "SINGLE_CHOICE"
+          },
+          "content": {
+            "$ref": "#/$defs/simpleChoiceContent"
+          }
+        }
+      }
+    },
+    "sameInitialChoiceRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "SAME_INITIAL_WORD_CHOICE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "SINGLE_CHOICE"
+          },
+          "content": {
+            "$ref": "#/$defs/sameInitialChoiceContent"
+          }
+        }
+      }
+    },
+    "similarSoundChoiceRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "SIMILAR_SOUND_CHOICE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "SINGLE_CHOICE"
+          },
+          "content": {
+            "$ref": "#/$defs/similarSoundChoiceContent"
+          }
+        }
+      }
+    },
+    "blendRules": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "enum": [
+              "PHONEME_BLEND",
+              "SYLLABLE_BLEND"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "ORDERING"
+          },
+          "content": {
+            "$ref": "#/$defs/blendContent"
+          }
+        }
+      }
+    },
+    "basicBuildRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "BASIC_SYLLABLE_BUILD"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "COMPONENT_BUILD"
+          },
+          "content": {
+            "$ref": "#/$defs/basicBuildContent"
+          }
+        }
+      }
+    },
+    "finalBuildRules": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "enum": [
+              "FINAL_SYLLABLE_BUILD",
+              "DOUBLE_FINAL_BUILD"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "COMPONENT_BUILD"
+          },
+          "content": {
+            "$ref": "#/$defs/finalBuildContent"
+          }
+        }
+      }
+    },
+    "finalDeleteRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "FINAL_CONSONANT_DELETE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "SINGLE_CHOICE"
+          },
+          "content": {
+            "$ref": "#/$defs/finalDeleteContent"
+          }
+        }
+      }
+    },
+    "syllableDeleteRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "SYLLABLE_DELETE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "SINGLE_CHOICE"
+          },
+          "content": {
+            "$ref": "#/$defs/syllableDeleteContent"
+          }
+        }
+      }
+    },
+    "syllableReplaceRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "SYLLABLE_REPLACE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "SINGLE_CHOICE"
+          },
+          "content": {
+            "$ref": "#/$defs/syllableReplaceContent"
+          }
+        }
+      }
+    },
+    "wordReadingRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "WORD_READING"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "AUDIO"
+          },
+          "content": {
+            "$ref": "#/$defs/wordReadingContent"
+          }
+        }
+      }
+    },
+    "nonwordReadingRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "NONWORD_READING"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "AUDIO"
+          },
+          "content": {
+            "$ref": "#/$defs/nonwordReadingContent"
+          }
+        }
+      }
+    },
+    "difficultWordPreviewRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "DIFFICULT_WORD_PREVIEW"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "AUDIO"
+          },
+          "content": {
+            "$ref": "#/$defs/difficultWordPreviewContent"
+          }
+        }
+      }
+    },
+    "sentenceReadingRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "SENTENCE_READING"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "AUDIO"
+          },
+          "content": {
+            "$ref": "#/$defs/sentenceReadingContent"
+          }
+        }
+      }
+    },
+    "shortPassageReadingRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "SHORT_PASSAGE_READING"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "AUDIO"
+          },
+          "content": {
+            "$ref": "#/$defs/shortPassageReadingContent"
+          }
+        }
+      }
+    },
+    "sentenceAssemblyRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "SENTENCE_ASSEMBLY"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "ORDERING"
+          },
+          "content": {
+            "$ref": "#/$defs/sentenceAssemblyContent"
+          }
+        }
+      }
+    },
+    "fillBlankRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "FILL_IN_THE_BLANK"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "$ref": "#/$defs/fillBlankContent"
+          }
+        }
+      }
+    },
+    "imageSentenceMatchRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "IMAGE_SENTENCE_MATCH"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "SINGLE_CHOICE"
+          },
+          "content": {
+            "$ref": "#/$defs/imageSentenceMatchContent"
+          }
+        }
+      }
+    },
+    "sentenceRepeatRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "SENTENCE_REPEAT"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "AUDIO"
+          },
+          "content": {
+            "$ref": "#/$defs/sentenceRepeatContent"
+          }
+        }
+      }
+    },
+    "wordChainReadingRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "WORD_CHAIN_READING"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "AUDIO"
+          },
+          "content": {
+            "$ref": "#/$defs/wordChainReadingContent"
+          }
+        }
+      }
+    },
+    "phraseReadingRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "PHRASE_READING"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "AUDIO"
+          },
+          "content": {
+            "$ref": "#/$defs/phraseReadingContent"
+          }
+        }
+      }
+    },
+    "repeatedSentenceReadingRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "REPEATED_SENTENCE_READING"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "AUDIO"
+          },
+          "content": {
+            "$ref": "#/$defs/repeatedSentenceReadingContent"
+          }
+        }
+      }
+    },
+    "shortStoryReadingRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "SHORT_STORY_READING"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "AUDIO"
+          },
+          "content": {
+            "$ref": "#/$defs/shortStoryReadingContent"
+          }
+        }
+      }
+    },
+    "fillBlankChoiceResponseRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "FILL_IN_THE_BLANK"
+          },
+          "content": {
+            "properties": {
+              "inputType": {
+                "const": "CHOICE"
+              }
+            },
+            "required": [
+              "inputType"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "SINGLE_CHOICE"
+          }
+        }
+      }
+    },
+    "fillBlankTextResponseRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "FILL_IN_THE_BLANK"
+          },
+          "content": {
+            "properties": {
+              "inputType": {
+                "const": "TEXT"
+              }
+            },
+            "required": [
+              "inputType"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "TEXT_INPUT"
+          }
+        }
+      }
+    },
+    "fillBlankVoiceResponseRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "FILL_IN_THE_BLANK"
+          },
+          "content": {
+            "properties": {
+              "inputType": {
+                "const": "VOICE"
+              }
+            },
+            "required": [
+              "inputType"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "AUDIO"
+          }
+        }
+      }
+    },
+    "fillBlankHandwritingResponseRule": {
+      "if": {
+        "properties": {
+          "questionType": {
+            "const": "FILL_IN_THE_BLANK"
+          },
+          "content": {
+            "properties": {
+              "inputType": {
+                "const": "HANDWRITING"
+              }
+            },
+            "required": [
+              "inputType"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "responseType": {
+            "const": "TRACE"
+          }
+        }
+      }
+    }
+  }
+}

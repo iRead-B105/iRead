@@ -105,4 +105,9 @@ Backend 엔티티를 현재 계약에 맞춰 정합화했고 공식 MySQL 8.4.10
 - 스키마 규모는 애플리케이션 테이블 25개, 외래 키 34개, UNIQUE 11개, CHECK 7개다.
 - 갱신 ERD에 따라 `word_attempt_logs.has_gaze_data`, `recognized_text`를 제거했다.
 - `pronunciation_accuracy_score`, `question_no`, `target_index`, `token_index`, `is_final`을 추가해 단어 발음 정확도와 최종 시도를 행 자체에서 식별한다.
-- 점수·위치 CHECK 추가로 CHECK 개수는 MySQL 실행 검증 후 다시 확정한다.
+- 점수·위치 CHECK를 추가했다.
+
+## 2026-07-29 보고서 기간 중복 방지
+
+- `reports(student_id, start_date, end_date)`에 `UQ_REPORTS_STUDENT_PERIOD` UNIQUE 제약을 추가해 동일 아동·동일 기간 보고서가 동시 요청에서도 한 건만 저장되도록 했다.
+- 현재 스키마 규모는 애플리케이션 테이블 26개, 외래 키 35개, UNIQUE 13개, CHECK 11개다.

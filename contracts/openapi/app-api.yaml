@@ -1371,8 +1371,8 @@
                             "status": {
                               "type": "string",
                               "enum": [
-                                "in_progress",
-                                "completed"
+                                "IN_PROGRESS",
+                                "COMPLETED"
                               ],
                               "description": "이야기 상태"
                             },
@@ -1651,9 +1651,9 @@
                             "readingStatus": {
                               "type": "string",
                               "enum": [
-                                "recognized",
-                                "low_confidence",
-                                "failed"
+                                "RECOGNIZED",
+                                "LOW_CONFIDENCE",
+                                "FAILED"
                               ],
                               "description": "음성 인식 및 검증 상태"
                             }
@@ -3448,7 +3448,7 @@
         "x-feature-ids": [
           "CU-DSP-01"
         ],
-        "x-contract-source": "git",
+        "x-contract-origin": "repository",
         "description": "인증 토큰의 아동 식별자와 경로 studentId가 같고 해당 아동이 인증된 교수자에게 속하는지 확인한다. NOT_STARTED 또는 IN_PROGRESS인 최신 커리큘럼 한 건의 훈련을 sequenceNo 순서로 반환한다.",
         "x-notion-request-summary": "studentId(path)",
         "x-notion-response-summary": "curriculumId\ncurriculumStatus\ntrainings[] {\n  trainingId\n  trainingTemplateId\n  sequenceNo\n  unitName\n  trainingName\n  status\n}",
@@ -3693,10 +3693,10 @@
                             "status": {
                               "type": "string",
                               "enum": [
-                                "not_ready",
-                                "not_started",
-                                "in_progress",
-                                "completed"
+                                "NOT_READY",
+                                "NOT_STARTED",
+                                "IN_PROGRESS",
+                                "COMPLETED"
                               ],
                               "description": "trainings.status"
                             },
