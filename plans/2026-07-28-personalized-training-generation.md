@@ -75,6 +75,7 @@ AI 후보 응답은 유효한 JSON `{type, data[]}` 하나다. Backend는 후보
     {
       "questionNo": 1,
       "type": "SENTENCE_READING",
+      "requiredInputs": ["VOICE", "GAZE"],
       "content": {},
       "answer": {},
       "analysisTargets": []
@@ -85,6 +86,7 @@ AI 후보 응답은 유효한 JSON `{type, data[]}` 하나다. Backend는 후보
 ```
 
 - `analysisTargets`는 목표, 문장 토큰, 선택지와 카드를 포함하는 모든 화면 텍스트를 `targetIndex`, `role`, `text`, `featureCodes`, `featureOccurrences`로 정규화한다.
+- `requiredInputs`는 중복 없는 `VOICE`, `GAZE` 배열이며 템플릿 정책과 정확히 일치해야 한다. 기존 V2 문항에 필드가 없으면 `type`의 확정 정책으로 복원한다.
 - 정답 근거는 정답 목표와 학생이 실제 선택한 항목에만 반영한다.
 - 시선 근거는 실제 응시한 모든 항목에 반영한다.
 - 읽어야 하는 항목을 건너뛴 경우에만 건너뛰기를 실패 근거로 반영한다.
@@ -106,10 +108,13 @@ AI 후보 응답은 유효한 JSON `{type, data[]}` 하나다. Backend는 후보
 각 `training_templates.prompt` JSON은 다음 값을 포함한다.
 
 - `trainingType`
+- `requiredInputs`
 - `additionalPrompt`
 - `outputTemplate`
 - `supportedFeatureCategories`
 - `supportedScopes`
+
+입력 정책은 글자 따라 보기·글 해독·문장 완성 및 이해·유창성에 `VOICE`, `GAZE`, 글자 만들기·자르기·대치에 `VOICE`, 소리 듣고 고르기에 빈 배열을 사용한다. 완료 시 `VOICE` 문항은 문항당 최종 녹음 한 건, `GAZE` 훈련은 원시 데이터가 있는 완료 시선 세션 한 건을 요구한다.
 
 공통 프롬프트는 출력 필드·자료형 준수, `data` 길이, JSON 전용 응답, 인덱스 규칙, 정답 위치, 중복 방지, 아동 안전 어휘, 한글 정확성, 임의 ID·URL·경로 금지와 자체 점검을 강제한다.
 

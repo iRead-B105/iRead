@@ -44,7 +44,8 @@
       "3a3027df-9053-806b-82dd-d2ddcac5e323"
     ],
     "operation_ids": [
-      "get_admin_training_by_studentId"
+      "get_admin_training_by_studentId",
+      "get_app_training_by_studentId"
     ]
   },
   {

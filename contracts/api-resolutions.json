@@ -2085,8 +2085,8 @@
       "action": "update",
       "reason": "녹음 분석 결과를 확정 ERD의 word_attempt_logs에 저장한다.",
       "changes": {
-        "note": "음성 원본은 저장하지 않는다. 문항 위치와 서버 발음 분석 점수를 word_attempt_logs에 저장하고 training_id로 훈련에 연결한다.",
-        "request_summary": "studentId(path)\ntrainingId(path)\nquestionNumber(path)\nwordId(body)\ntargetIndex(body)\ntokenIndex(body, optional)\nexpectedText(body)\naudioFile(body)\nspeechStartOffsetMs(body, optional)\nspeechEndOffsetMs(body, optional)",
+        "note": "requiredInputs에 VOICE가 포함된 문항에서만 녹음을 허용한다. 30초 미만 문장 음성을 전체 기준 텍스트로 한 번 분석하고 단어별 결과를 원자 저장하며 원본 음성과 인식 문자열은 보관하지 않는다.",
+        "request_summary": "studentId(path)\ntrainingId(path)\nquestionNumber(path)\nwordId(body, single-word optional)\ntargetIndex(body, optional)\ntokenIndex(body, single-word optional)\nexpectedText(body)\naudioFile(body)\nspeechStartOffsetMs(body, optional)\nspeechEndOffsetMs(body, optional)",
         "request_parameters": [
           {
             "name": "studentId",
@@ -2113,29 +2113,29 @@
             "name": "wordId",
             "type": "long",
             "in": "Body",
-            "required": true,
-            "description": "words.id"
+            "required": false,
+            "description": "단일 단어 녹음의 기존 words.id"
           },
           {
             "name": "targetIndex",
             "type": "integer",
             "in": "Body",
-            "required": true,
-            "description": "분석 대상 위치"
+            "required": false,
+            "description": "분석 대상 위치. 전체 문장과 정확히 일치하는 대상이 하나면 생략 가능"
           },
           {
             "name": "tokenIndex",
             "type": "integer",
             "in": "Body",
             "required": false,
-            "description": "단어 토큰 위치"
+            "description": "단일 단어 녹음의 토큰 위치"
           },
           {
             "name": "expectedText",
             "type": "string",
             "in": "Body",
             "required": true,
-            "description": "기준 텍스트"
+            "description": "단일 단어 또는 30초 미만 전체 문장 기준 텍스트"
           },
           {
             "name": "audioFile",
@@ -2159,14 +2159,8 @@
             "description": "음성 종료 오프셋(ms)"
           }
         ],
-        "response_summary": "attemptId\ntrainingId\nwordId\npronunciationAccuracyScore\npronunciationConfidence\npronunciationErrorType\ntotalScore\ncreatedAt",
+        "response_summary": "trainingId\nquestionNumber\npronunciationAccuracyScore\nfluencyScore\ncompletenessScore\npronScore\npronunciationConfidence\nanalysisVersion\nwords[]\ncreatedAt",
         "response_fields": [
-          {
-            "name": "attemptId",
-            "type": "long",
-            "required": true,
-            "description": "word_attempt_logs.id"
-          },
           {
             "name": "trainingId",
             "type": "long",
@@ -2174,16 +2168,34 @@
             "description": "trainings.id"
           },
           {
-            "name": "wordId",
-            "type": "long",
+            "name": "questionNumber",
+            "type": "integer",
             "required": true,
-            "description": "words.id"
+            "description": "문항 번호"
           },
           {
             "name": "pronunciationAccuracyScore",
             "type": "number",
             "required": true,
-            "description": "Azure 단어별 AccuracyScore 0~100"
+            "description": "Azure 전체 발화 AccuracyScore 0~100"
+          },
+          {
+            "name": "fluencyScore",
+            "type": "number",
+            "required": false,
+            "description": "Azure 전체 발화 FluencyScore"
+          },
+          {
+            "name": "completenessScore",
+            "type": "number",
+            "required": false,
+            "description": "Azure 전체 발화 CompletenessScore"
+          },
+          {
+            "name": "pronScore",
+            "type": "number",
+            "required": false,
+            "description": "Azure 전체 발화 PronScore"
           },
           {
             "name": "pronunciationConfidence",
@@ -2192,16 +2204,16 @@
             "description": "분석 신뢰도 0~1"
           },
           {
-            "name": "pronunciationErrorType",
+            "name": "analysisVersion",
             "type": "string",
             "required": true,
-            "description": "Azure 단어별 오류 유형"
+            "description": "발음 분석 버전"
           },
           {
-            "name": "totalScore",
-            "type": "integer",
+            "name": "words",
+            "type": "array",
             "required": true,
-            "description": "0~1000 단어 점수"
+            "description": "단어별 시도 ID, 점수, 오류 유형과 음성 구간"
           },
           {
             "name": "createdAt",
@@ -2405,7 +2417,7 @@
       "action": "update",
       "reason": "Backend 구현과 같이 원시 결과를 AI 평가한 뒤 서버가 정확도와 완료 상태를 결정한다.",
       "changes": {
-        "note": "클라이언트는 정확도나 상태를 입력하지 않는다. Backend가 AI 평가 결과를 검증하고 훈련 결과·정확도·완료 시각을 한 트랜잭션으로 저장한다.",
+        "note": "클라이언트는 정확도나 상태를 입력하지 않는다. VOICE 문항별 최종 녹음 한 건과 GAZE 훈련의 완료 원시 시선 세션을 검증한 뒤 Backend가 AI 평가 결과·정확도·완료 시각을 한 트랜잭션으로 저장한다.",
         "request_summary": "studentId(path)\ntrainingId(path)\nresult(body)\ncompletedAt(body)",
         "request_parameters": [
           {
