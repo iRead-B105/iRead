@@ -3303,6 +3303,163 @@
         ]
       }
     },
+    "/api/app/training/{studentId}": {
+      "get": {
+        "operationId": "get_app_training_by_studentId",
+        "summary": "현재 커리큘럼 훈련 목록 조회",
+        "tags": [
+          "training"
+        ],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "인증된 아동 식별자"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "현재 커리큘럼 훈련 목록 조회 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "curriculumId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "현재 일일 커리큘럼 식별자"
+                            },
+                            "curriculumStatus": {
+                              "type": "string",
+                              "enum": [
+                                "NOT_STARTED",
+                                "IN_PROGRESS"
+                              ],
+                              "description": "현재 커리큘럼 상태"
+                            },
+                            "trainings": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "trainingId": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                  },
+                                  "trainingTemplateId": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                  },
+                                  "sequenceNo": {
+                                    "type": "integer",
+                                    "minimum": 1,
+                                    "description": "커리큘럼 내 훈련 순서"
+                                  },
+                                  "unitName": {
+                                    "type": "string",
+                                    "description": "커리큘럼 영역명"
+                                  },
+                                  "trainingName": {
+                                    "type": "string",
+                                    "description": "훈련명"
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "enum": [
+                                      "NOT_READY",
+                                      "NOT_STARTED",
+                                      "IN_PROGRESS",
+                                      "COMPLETED"
+                                    ],
+                                    "description": "훈련 진행 상태"
+                                  }
+                                },
+                                "required": [
+                                  "trainingId",
+                                  "trainingTemplateId",
+                                  "sequenceNo",
+                                  "unitName",
+                                  "trainingName",
+                                  "status"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "curriculumId",
+                            "curriculumStatus",
+                            "trainings"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "curriculumId": 1001,
+                    "curriculumStatus": "NOT_STARTED",
+                    "trainings": [
+                      {
+                        "trainingId": 2001,
+                        "trainingTemplateId": 301,
+                        "sequenceNo": 1,
+                        "unitName": "유창성",
+                        "trainingName": "문장 따라 읽기",
+                        "status": "NOT_STARTED"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "x-feature-ids": [
+          "CU-DSP-01"
+        ],
+        "x-contract-source": "git",
+        "description": "인증 토큰의 아동 식별자와 경로 studentId가 같고 해당 아동이 인증된 교수자에게 속하는지 확인한다. NOT_STARTED 또는 IN_PROGRESS인 최신 커리큘럼 한 건의 훈련을 sequenceNo 순서로 반환한다.",
+        "x-notion-request-summary": "studentId(path)",
+        "x-notion-response-summary": "curriculumId\ncurriculumStatus\ntrainings[] {\n  trainingId\n  trainingTemplateId\n  sequenceNo\n  unitName\n  trainingName\n  status\n}",
+        "x-review-status": "reviewed",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/api/app/training/{studentId}/{trainingId}/complete": {
       "post": {
         "operationId": "post_app_training_by_studentId_by_trainingId_complete",

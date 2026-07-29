@@ -9,7 +9,7 @@ timestamp: 2026-07-27T12:19:48+09:00
 
 | 기능 ID | 기능 | 설명 | 책임 | API operationId |
 | --- | --- | --- | --- | --- |
-| CU-DSP-01 | 훈련 목록 표시 | 전체 훈련의 카테고리, 순서, 훈련명과 학습자 진행률을 표시한다. | server | `get_admin_training_by_studentId` |
+| CU-DSP-01 | 훈련 목록 표시 | 교수자에게 전체 훈련 카탈로그를 표시하고, 인증된 아동에게 현재 커리큘럼의 훈련 순서·영역·이름·상태를 표시한다. | server | `get_admin_training_by_studentId`, `get_app_training_by_studentId` |
 | CU-DSP-02 | 차회 커리큘럼 표시 | 선택한 학습자가 다음 회차에 수행할 커리큘럼을 표시한다. | server | `get_admin_training_by_studentId_by_curriculumId` |
 | CU-DSP-03 | 교안 학습 자료 목록 표시 | 선택한 훈련 교안의 학습 자료 목록과 배치 순서를 표시한다. | server | `get_admin_training_by_studentId_by_trainingId_expected_word` |
 | CU-DSP-04 | 선택 훈련 상세 표시 | 선택한 훈련의 정확도, 학습 판단, 권장 시간과 학습 목표를 표시한다. | server | `get_admin_training_by_studentId_by_trainingId_detail` |
