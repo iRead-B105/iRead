@@ -268,6 +268,9 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
           }
         },
         "x-notion-page-id": "3a5027df-9053-8051-a2a3-e23b7781fc59",
@@ -277,7 +280,7 @@
           "TR-GAZE-01",
           "ST-GAZE-01"
         ],
-        "description": "testId, trainingId, storyId 중 contentType과 일치하는 식별자 하나만 전달한다.",
+        "description": "testId, trainingId, storyId 중 contentType과 일치하는 식별자 하나만 전달한다. TRAINING 시선 세션은 생성 문항의 requiredInputs에 GAZE가 포함된 훈련에서만 시작할 수 있다.",
         "x-notion-request-summary": "studentId(body)\ncontentType(body)\ntestId(body, conditional)\ntrainingId(body, conditional)\nstoryId(body, conditional)\ncalibrationStatus(body)",
         "x-notion-response-summary": "gazeSessionId\ncontentType\ncollectionStatus\ncalibrationStatus\nstartedAt\nendedAt",
         "x-review-status": "reviewed",
@@ -601,7 +604,7 @@
           "TR-GAZE-02",
           "ST-GAZE-04"
         ],
-        "description": "RUNNING 세션만 종료할 수 있다. data는 초당 5~10프레임으로 수집한 원시 시선 데이터이며 내부 JSON 컬럼에 저장한다.",
+        "description": "RUNNING 세션만 종료할 수 있다. COMPLETED 종료에는 한 건 이상의 data가 필수이며, FAILED 종료에는 생략할 수 있다. data는 초당 5~10프레임으로 수집한 원시 시선 데이터이며 내부 JSON 컬럼에 저장한다.",
         "x-notion-request-summary": "gazeSessionId(path)\nstudentId(body)\nendStatus(body)\ndata(body, optional)",
         "x-notion-response-summary": "gazeSessionId\ncontentType\ncollectionStatus\ncalibrationStatus\nstartedAt\nendedAt",
         "x-review-status": "reviewed",
@@ -3421,7 +3424,7 @@
           "TR-SAVE-05",
           "TR-SAVE-04"
         ],
-        "description": "클라이언트는 정확도나 상태를 입력하지 않는다. Backend가 AI 평가 결과를 검증하고 훈련 결과·정확도·완료 시각을 한 트랜잭션으로 저장한다.",
+        "description": "클라이언트는 정확도나 상태를 입력하지 않는다. VOICE 문항은 문항당 최종 녹음 한 건, GAZE 훈련은 원시 데이터가 있는 완료 시선 세션 한 건이 있어야 완료할 수 있다. Backend가 AI 평가 결과를 검증하고 훈련 결과·정확도·완료 시각을 한 트랜잭션으로 저장한다.",
         "x-notion-request-summary": "studentId(path)\ntrainingId(path)\nresult(body)\ncompletedAt(body)",
         "x-notion-response-summary": "trainingId\nstatus\naccuracy\ncompletedAt",
         "x-review-status": "reviewed",
@@ -3695,6 +3698,18 @@
                             },
                             "question": {
                               "type": "object",
+                              "properties": {
+                                "requiredInputs": {
+                                  "type": "array",
+                                  "uniqueItems": true,
+                                  "items": {
+                                    "type": "string",
+                                    "enum": ["VOICE", "GAZE"]
+                                  },
+                                  "description": "문항 완료에 필요한 학습자 센서 입력"
+                                }
+                              },
+                              "required": ["requiredInputs"],
                               "additionalProperties": true,
                               "description": "generated_data.questions의 현재 문항"
                             }
@@ -3760,7 +3775,7 @@
           "TR-COM-03",
           "TR-DSP-04"
         ],
-        "description": "questionNumber는 1부터 시작하며 training_datas.generated_data.questions 범위를 벗어나면 404를 반환한다.",
+        "description": "questionNumber는 1부터 시작하며 training_datas.generated_data.questions 범위를 벗어나면 404를 반환한다. question.requiredInputs는 VOICE와 GAZE 중 문항 완료에 필요한 센서 입력을 나타낸다.",
         "x-notion-request-summary": "studentId(path)\ntrainingId(path)\nquestionNumber(path)",
         "x-notion-response-summary": "trainingId\nquestionNumber\ntotalQuestions\nquestion",
         "x-review-status": "reviewed",
@@ -3988,7 +4003,7 @@
           "TR-REC-03",
           "TR-REC-07"
         ],
-        "description": "Backend는 multipart 음성을 발음 분석 adapter에 일시 전달하고 원본을 보관하지 않는다. word_attempt_logs에는 문항·대상·토큰 위치, Azure 단어 정확도와 최종 시도를 저장하고 공급자 메타데이터는 trainings.result에 연결한다.",
+        "description": "requiredInputs에 VOICE가 포함된 문항에서만 녹음을 허용한다. Backend는 multipart 음성을 발음 분석 adapter에 일시 전달하고 원본을 보관하지 않는다. word_attempt_logs에는 문항·대상·토큰 위치, Azure 단어 정확도와 최종 시도를 저장하고 공급자 메타데이터는 trainings.result에 연결한다.",
         "x-notion-request-summary": "studentId(path)\ntrainingId(path)\nquestionNumber(path)\nwordId(body)\ntargetIndex(body)\ntokenIndex(body, optional)\nexpectedText(body)\naudioFile(body)\nspeechStartOffsetMs(body, optional)\nspeechEndOffsetMs(body, optional)",
         "x-notion-response-summary": "attemptId\ntrainingId\nwordId\npronunciationAccuracyScore\npronunciationConfidence\npronunciationErrorType\ntotalScore\ncreatedAt",
         "x-review-status": "reviewed",

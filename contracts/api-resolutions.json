@@ -2085,7 +2085,7 @@
       "action": "update",
       "reason": "녹음 분석 결과를 확정 ERD의 word_attempt_logs에 저장한다.",
       "changes": {
-        "note": "음성 원본은 저장하지 않는다. 문항 위치와 서버 발음 분석 점수를 word_attempt_logs에 저장하고 training_id로 훈련에 연결한다.",
+        "note": "requiredInputs에 VOICE가 포함된 문항에서만 녹음을 허용한다. 음성 원본은 저장하지 않고 문항 위치와 서버 발음 분석 점수를 word_attempt_logs에 저장해 training_id로 연결한다.",
         "request_summary": "studentId(path)\ntrainingId(path)\nquestionNumber(path)\nwordId(body)\ntargetIndex(body)\ntokenIndex(body, optional)\nexpectedText(body)\naudioFile(body)\nspeechStartOffsetMs(body, optional)\nspeechEndOffsetMs(body, optional)",
         "request_parameters": [
           {
@@ -2405,7 +2405,7 @@
       "action": "update",
       "reason": "Backend 구현과 같이 원시 결과를 AI 평가한 뒤 서버가 정확도와 완료 상태를 결정한다.",
       "changes": {
-        "note": "클라이언트는 정확도나 상태를 입력하지 않는다. Backend가 AI 평가 결과를 검증하고 훈련 결과·정확도·완료 시각을 한 트랜잭션으로 저장한다.",
+        "note": "클라이언트는 정확도나 상태를 입력하지 않는다. VOICE 문항별 최종 녹음 한 건과 GAZE 훈련의 완료 원시 시선 세션을 검증한 뒤 Backend가 AI 평가 결과·정확도·완료 시각을 한 트랜잭션으로 저장한다.",
         "request_summary": "studentId(path)\ntrainingId(path)\nresult(body)\ncompletedAt(body)",
         "request_parameters": [
           {
