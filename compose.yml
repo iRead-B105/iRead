@@ -1,0 +1,152 @@
+name: iread-demo
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: iread-mysql
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: iread_demo
+      MYSQL_USER: iread
+      MYSQL_PASSWORD: iread-demo
+      MYSQL_ROOT_PASSWORD: iread-root-demo
+      TZ: Asia/Seoul
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-piread-root-demo"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: iread-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ai-mock:
+    image: wiremock/wiremock:3.13.2
+    container_name: iread-ai-mock
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./services/backend/mock-ai:/home/wiremock
+    command: ["--global-response-templating", "--verbose"]
+
+  mailpit:
+    image: axllent/mailpit:v1.27
+    container_name: iread-mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  backend:
+    image: eclipse-temurin:21-jdk
+    container_name: iread-backend
+    restart: unless-stopped
+    working_dir: /workspace
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: demo
+      SPRING_DATASOURCE_URL: jdbc:mysql://iread-mysql:3306/iread_demo?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: iread
+      SPRING_DATASOURCE_PASSWORD: iread-demo
+      AUTH_JWT_SECRET: local-demo-secret-key-for-iread-at-least-32-bytes
+      AUTH_COOKIE_SECURE: "false"
+      SMTP_HOST: iread-mailpit
+      SMTP_PORT: "1025"
+      AI_BASE_URL: http://iread-ai-mock:8080
+      GRADLE_USER_HOME: /gradle-cache
+    volumes:
+      - ./services/backend:/workspace
+      - gradle-cache:/gradle-cache
+    command: ["sh", "./gradlew", "bootRun", "--no-daemon"]
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      ai-mock:
+        condition: service_healthy
+      mailpit:
+        condition: service_healthy
+
+  frontend-web:
+    image: node:24-bookworm-slim
+    container_name: iread-frontend-web
+    restart: unless-stopped
+    working_dir: /workspace
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_AUTH_SOURCE: api
+      VITE_DATA_SOURCE: api
+      VITE_API_BASE_URL: ""
+      VITE_BACKEND_URL: http://iread-backend:8080
+    volumes:
+      - ./services/frontend-web:/workspace
+      - frontend-web-node-modules:/workspace/node_modules
+      - pnpm-store:/pnpm-store
+    command:
+      - sh
+      - -c
+      - corepack enable && pnpm config set store-dir /pnpm-store && pnpm install --frozen-lockfile && pnpm dev --host 0.0.0.0
+    depends_on:
+      - backend
+
+  frontend-app:
+    image: node:24-bookworm-slim
+    container_name: iread-frontend-app
+    restart: unless-stopped
+    working_dir: /workspace
+    ports:
+      - "5174:5174"
+    environment:
+      VITE_LEARNER_DATA_SOURCE: api
+      VITE_API_BASE_URL: ""
+      VITE_BACKEND_URL: http://iread-backend:8080
+    volumes:
+      - ./services/frontend-app:/workspace
+      - frontend-app-node-modules:/workspace/node_modules
+    command:
+      - sh
+      - -c
+      - npm ci && npm run dev -- --host 0.0.0.0 --port 5174
+    depends_on:
+      - backend
+
+networks:
+  default:
+    name: iread-network
+
+volumes:
+  mysql-data:
+    name: iread-demo-mysql-data
+  redis-data:
+    name: backend_redis-data
+  gradle-cache:
+    name: iread-demo-gradle-cache
+  pnpm-store:
+    name: iread-demo-pnpm-store
+  frontend-web-node-modules:
+    name: iread-demo-frontend-node-modules
+  frontend-app-node-modules:
+    name: iread-demo-frontend-app-node-modules

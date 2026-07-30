@@ -37,6 +37,27 @@ git submodule update --init --recursive
 
 각 서비스의 실행 방법과 개발 환경은 해당 서비스 디렉터리의 README를 확인해 주세요.
 
+## 통합 데모 환경
+
+Backend, 데이터베이스, 개발 인프라와 두 Frontend를 하나의 Docker 네트워크에서 실행합니다.
+
+```bash
+docker compose up -d
+```
+
+| 서비스 | 주소 |
+| --- | --- |
+| 교수자 앱 (`frontend-web`) | `http://localhost:5173` |
+| 아동 앱 (`frontend-app`) | `http://localhost:5174` |
+| Backend API | `http://localhost:8080` |
+| MySQL | `localhost:3307` |
+| Redis | `localhost:6379` |
+| AI Mock | `http://localhost:8081` |
+| Mailpit | `http://localhost:8025` |
+
+모든 컨테이너는 `iread-network`에 연결됩니다. 종료할 때는 데이터 볼륨을 보존하는
+`docker compose down`을 사용합니다.
+
 ## 프로젝트 문서
 
 | 알고 싶은 내용 | 문서 |
