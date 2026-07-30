@@ -11,6 +11,10 @@
 | 문제의 근거와 검증할 가설은 무엇인가? | [문제 및 근거 조사](product/research-basis.md) | 비전과 범위, 백로그 |
 | 문제 가설을 어떻게 검증하는가? | [문제 가설 검증 계획](product/problem-validation-plan.md) | 문제 및 근거 조사, 백로그 |
 | 진단·선별·훈련·치료를 어떻게 구분하는가? | [제품 용어 및 책임 경계](product/product-responsibility-boundary.md) | 비전과 범위, 용어집 |
+| 아동용 앱 화면과 리소스는 어떤 기준으로 만드는가? | [아이리드 앱 디자인 가이드](product/iread-app-design-guide.md) | 아동 앱 구현, 제품 요구사항 |
+| 앱 리소스를 어떤 화풍·파일·상태로 제작하는가? | [아이리드 앱 리소스 가이드](product/iread-app-resource-guide.md) | [Frontend 리소스 정비 계획](planning/frontend-resource-plan.md), `frontend-app` |
+| 현재 frontend 에셋은 무엇이고 어떤 조치가 필요한가? | [Frontend 에셋 인벤토리](product/frontend-asset-inventory.md) | 앱 리소스 가이드, Frontend 리소스 정비 계획 |
+| 아동용 앱의 세부 디자인 정책을 어떻게 결정하는가? | [아이리드 앱 디자인 정책 의사결정 질문서](product/iread-app-design-decision-questionnaire.md) | 앱 디자인 가이드, `frontend-app` 구현 |
 | 용어가 무엇을 뜻하는가? | [용어집](context/glossary.md) | 관련 제품 문서 |
 | 시스템과 저장소 경계는 무엇인가? | [시스템 컨텍스트](architecture/system-context.md) | [저장소 전략](architecture/repository-strategy.md) |
 | 서비스는 어떻게 통신하는가? | [인터페이스 원칙](architecture/interface-principles.md) | 요구사항, ADR |

@@ -5,3 +5,4 @@
 * [로드맵](roadmap.md) - 단계별 목표와 완료 기준
 * [시작 준비 기준](definition-of-ready.md) - 작업 시작 전 체크리스트
 * [완료 기준](definition-of-done.md) - 작업 완료 전 체크리스트
+* [Frontend 리소스 정비 계획](frontend-resource-plan.md) - 아동 UI 리소스 인벤토리, 신규 제작, Vue 교체와 최적화 순서
