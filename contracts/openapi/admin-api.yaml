@@ -515,7 +515,7 @@
         "x-feature-ids": [
           "SM-SAVE-01"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다. trainings가 모두 NOT_READY인 생성 전 커리큘럼만 수정할 수 있다. 사전 생성이 완료되어 NOT_STARTED로 전환됐거나 IN_PROGRESS 또는 COMPLETED 훈련이 포함되어 있으면 409를 반환한다.",
+        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
         "x-notion-request-summary": "이름\n학생코드\n생년월일\n성별\n학교\n보호자명\n보호자연락처\n보호자이메일\n주소\n프로필사진",
         "x-notion-response-summary": "ok",
         "x-review-status": "reviewed",
@@ -2946,6 +2946,9 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
           }
         },
         "x-notion-page-id": "3a3027df-9053-8099-94a3-e56e34618adb",
@@ -2966,7 +2969,7 @@
           "CU-SAVE-14",
           "CU-SAVE-12"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
+        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다. NOT_READY 또는 NOT_STARTED인 학습 시작 전 훈련만 수정할 수 있다. 수정 시 기존 생성 자료를 무효화하고 새 훈련을 NOT_READY로 저장한다. IN_PROGRESS 또는 COMPLETED 훈련이 포함되어 있으면 409를 반환한다.",
         "x-notion-request-summary": "studentId(path)\ncurriculumId(path)\n훈련id[]",
         "x-notion-response-summary": "ok",
         "x-review-status": "reviewed",

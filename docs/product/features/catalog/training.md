@@ -14,7 +14,7 @@ timestamp: 2026-07-29T11:17:47+09:00
 | CU-DSP-03 | 교안 학습 자료 목록 표시 | 선택한 훈련 교안의 학습 자료 목록과 배치 순서를 표시한다. | server | `get_admin_training_by_studentId_by_trainingId_expected_word` |
 | CU-DSP-04 | 선택 훈련 상세 표시 | 선택한 훈련의 정확도, 학습 판단, 권장 시간과 학습 목표를 표시한다. | server | `get_admin_training_by_studentId_by_trainingId_detail` |
 | CU-DSP-05 | 아동 화면 미리보기 표시 | 편집 중인 교안이 아동 화면에 표시될 모습을 미리보기로 표시한다. | server | `get_admin_training_by_studentId_by_trainingId_detail` |
-| CU-SAVE-01 | 차회 커리큘럼 저장 | 훈련 자료 생성 전인 차회 커리큘럼의 구성과 순서를 저장한다. 생성 완료 후에는 편집을 잠근다. | server | `patch_admin_training_by_studentId_by_curriculumId` |
+| CU-SAVE-01 | 차회 커리큘럼 저장 | 학습 시작 전인 차회 커리큘럼의 구성과 순서를 저장한다. 생성 자료가 있으면 무효화하고 새 구성을 생성 대기 상태로 전환한다. | server | `patch_admin_training_by_studentId_by_curriculumId` |
 | CU-SAVE-02 | 교안 학습 자료 추가 | 입력한 자료를 선택한 훈련의 아동별 교안에 추가한다. | server | `post_admin_training_by_studentId_by_trainingId_expected_word` |
 | CU-SAVE-03 | 교안 학습 자료 삭제 | 선택한 훈련 교안의 학습 자료를 삭제한다. | server | `delete_admin_training_by_studentId_by_trainingId_expected_word_by_wordId` |
 | CU-SAVE-04 | 차회 커리큘럼 입력값 검증 | 수정한 차회 커리큘럼의 훈련 구성과 순서를 검증한다. | server | `patch_admin_training_by_studentId_by_curriculumId` |
