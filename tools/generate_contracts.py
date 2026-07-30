@@ -54,8 +54,11 @@ def api_prefix(path: str) -> str:
 
 
 def schema_for_type(raw_type: str, field_name: str = "") -> dict[str, Any]:
-    value = html.unescape(raw_type).strip().lower().replace(" ", "")
-    array_match = re.fullmatch(r"(?:array<(.+)>|(.+)\[\])", value)
+    raw_value = html.unescape(raw_type).strip().replace(" ", "")
+    value = raw_value.lower()
+    array_match = re.fullmatch(
+        r"(?:array<(.+)>|(.+)\[\])", raw_value, flags=re.IGNORECASE
+    )
     if array_match:
         inner = array_match.group(1) or array_match.group(2) or "object"
         return {"type": "array", "items": schema_for_type(inner)}
@@ -69,12 +72,15 @@ def schema_for_type(raw_type: str, field_name: str = "") -> dict[str, Any]:
         return {"type": "object", "additionalProperties": True}
     if value in {"file", "binary"}:
         return {"type": "string", "format": "binary"}
-    string_match = re.fullmatch(r"string\(([^)]+)\)", value)
+    string_match = re.fullmatch(
+        r"string\(([^)]+)\)", raw_value, flags=re.IGNORECASE
+    )
     if string_match:
         qualifier = string_match.group(1)
         schema = {"type": "string"}
-        if qualifier in {"date", "date-time", "uuid"}:
-            schema["format"] = qualifier
+        lowered_qualifier = qualifier.lower()
+        if lowered_qualifier in {"date", "date-time", "uuid"}:
+            schema["format"] = lowered_qualifier
         elif "|" in qualifier:
             schema["enum"] = qualifier.split("|")
         return schema
@@ -86,6 +92,20 @@ def schema_for_type(raw_type: str, field_name: str = "") -> dict[str, Any]:
     if lowered_name.endswith(("at", "datetime")):
         schema["format"] = "date-time"
     return schema
+
+
+def apply_schema_constraints(
+    schema: dict[str, Any], source: dict[str, Any]
+) -> None:
+    for key in (
+        "minLength",
+        "maxLength",
+        "minimum",
+        "maximum",
+        "pattern",
+    ):
+        if key in source:
+            schema[key] = source[key]
 
 
 def add_response_field(
@@ -103,6 +123,7 @@ def add_response_field(
             "properties", {}
         )
         child_schema = schema_for_type(field.get("type", "string"), child)
+        apply_schema_constraints(child_schema, field)
         if description:
             child_schema["description"] = description
         item_properties[child] = child_schema
@@ -110,6 +131,7 @@ def add_response_field(
 
     normalized = name.removesuffix("[]")
     schema = schema_for_type(field.get("type", "string"), normalized)
+    apply_schema_constraints(schema, field)
     if name.endswith("[]") and schema.get("type") != "array":
         schema = {"type": "array", "items": schema}
     if description:
@@ -140,6 +162,7 @@ def request_body(api: dict[str, Any]) -> dict[str, Any] | None:
     binary = False
     for parameter in body_parameters:
         schema = schema_for_type(parameter["type"], parameter["name"])
+        apply_schema_constraints(schema, parameter)
         if schema.get("format") == "binary":
             binary = True
         if parameter.get("description"):
@@ -183,6 +206,7 @@ def openapi_parameters(api: dict[str, Any]) -> list[dict[str, Any]]:
             "required": True if location == "path" else parameter["required"],
             "schema": schema_for_type(parameter["type"], parameter["name"]),
         }
+        apply_schema_constraints(item["schema"], parameter)
         if parameter.get("description"):
             item["description"] = parameter["description"]
         parameters.append(item)

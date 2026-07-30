@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Training feedback",
+  "description": "훈련 비음성 제출을 Backend가 평가한 직후 App에 반환하는 피드백입니다.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "feedbackType": {
+      "const": "TRAINING_FEEDBACK"
+    },
+    "submissionId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "attemptNo": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3
+    },
+    "maxAttempts": {
+      "const": 3
+    },
+    "remainingAttempts": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2
+    },
+    "correct": {
+      "type": "boolean"
+    },
+    "questionCompleted": {
+      "type": "boolean"
+    },
+    "canRetry": {
+      "type": "boolean"
+    },
+    "errorLocations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/errorLocation"
+      }
+    },
+    "hint": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "correctResponse": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "app-learning-submission.schema.json#/$defs/responseValue"
+        }
+      ]
+    }
+  },
+  "required": [
+    "feedbackType",
+    "submissionId",
+    "attemptNo",
+    "maxAttempts",
+    "remainingAttempts",
+    "correct",
+    "questionCompleted",
+    "canRetry",
+    "errorLocations",
+    "hint",
+    "correctResponse"
+  ],
+  "$defs": {
+    "errorLocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "targetIndex": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "tokenIndex": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "errorCode": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "targetIndex",
+        "tokenIndex",
+        "errorCode"
+      ]
+    }
+  }
+}

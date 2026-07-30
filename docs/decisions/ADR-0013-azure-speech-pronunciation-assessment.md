@@ -46,10 +46,13 @@ Azure Speech Pronunciation Assessment는 `ko-KR`을 지원하고 scripted assess
 - Backend는 소유권, 훈련·검사 상태, 대상 단어와 파일 형식을 검증한 후 AI server의 발음 분석 API를 호출한다.
 - AI server는 Azure Speech 자격증명을 보유하고 `ko-KR` scripted Pronunciation Assessment를 실행한다.
 - Azure 설정은 `referenceText`, `GradingSystem=HundredMark`, `Granularity=Word`, `EnableMiscue=true`를 기준으로 한다.
+- 녹음은 30초 미만 단일 발화만 지원하고 문장 전체를 한 번 요청한다. continuous mode는 현재 범위에 포함하지 않는다.
 - 단어별 `AccuracyScore`는 API에서 `0~100`, MySQL `word_attempt_logs.pronunciation_accuracy_score`에서 반올림한 `0~1000` 정수로 저장한다.
 - `word_attempt_logs.total_score`는 발음·시선·읽기 수행을 결합한 종합 단어 점수로 유지하며 Azure 점수를 그대로 대입하는 전용 컬럼으로 사용하지 않는다.
 - `recognized_text`, 예상 발음과 관찰 발음 문자열은 단어 수행 근거로 저장하지 않는다.
 - Azure 단어 `Offset`과 `Duration`은 100ns 단위에서 ms로 변환해 음성 시작·종료 위치에 저장한다.
+- Backend는 `Insertion`을 제외한 Azure 단어 배열을 생성 문항의 기준 단어와 순서·문자열로 정확히 정렬한 뒤 한 트랜잭션으로 저장한다. 정렬할 수 없으면 어떤 단어 시도도 저장하지 않는다.
+- `Omission`은 음성 입력 자체는 성공한 읽기 누락이므로 단어 발음 정확도 0점과 `is_skipped=true`로 저장한다. `Insertion`은 기준 단어가 없으므로 단어 수행 행을 만들지 않고 부모 분석 결과에 개수만 저장한다.
 - 전체 발화의 `AccuracyScore`, `FluencyScore`, `CompletenessScore`, `PronScore`가 필요하면 `trainings.result` 또는 `tests.result`에 분석 메타데이터로 저장하며 단어 점수 컬럼에 복제하지 않는다.
 - 한국어에서는 en-US 전용 음절명·음소명·Prosody 기능을 계약 필수값으로 사용하지 않는다.
 - Azure 또는 AI server 호출이 실패하거나 시간 초과되면 단어 시도 행과 최종 시도 상태를 저장하지 않는다.
@@ -74,7 +77,6 @@ Azure Speech Pronunciation Assessment는 `ko-KR`을 지원하고 scripted assess
 
 - [TBD] Azure `Mispronunciation` 기준과 제품 정답 기준 700점의 최종 관계
 - [TBD] `total_score`에서 발음·시선·읽기 시간·정답의 최종 가중치
-- [TBD] `Insertion`, `Omission`과 Azure 단어 분리 불일치의 상세 저장 형식
 
 ## 검증 및 재검토 조건
 

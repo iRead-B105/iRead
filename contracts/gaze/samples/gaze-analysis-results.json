@@ -15,6 +15,31 @@
       "lastGazeOffsetMs": 5400
     }
   ],
+  "wordAttempts": [
+    {
+      "wordId": 23,
+      "storyLineId": 5,
+      "wordIndex": 0,
+      "surfaceText": "개미는",
+      "hasAudioData": false,
+      "fixationDurationMs": 620,
+      "fixationCount": 2,
+      "gazeStartOffsetMs": 1200,
+      "gazeEndOffsetMs": 1820,
+      "isRead": true,
+      "isFixated": false,
+      "isSkipped": false,
+      "isRegressed": false,
+      "regressionCount": 0
+    }
+  ],
+  "regressions": [
+    {
+      "fromWordIndex": 5,
+      "toWordIndex": 2,
+      "offsetMs": 6800
+    }
+  ],
   "analysisMeta": {
     "contentType": "STORY",
     "storyId": 10,

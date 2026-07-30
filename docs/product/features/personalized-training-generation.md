@@ -26,7 +26,7 @@ Backend는 마지막 확정 수행 결과를 읽기 특징별로 집계하고, �
 - 초성·중성·종성·음절 구조·형태소·단어·문장·주요 음운 규칙 특징
 - 학생별 읽기 특징 프로필과 `WEAKNESS_V1` 취약도
 - 커리큘럼 전체 완료 직후 다음 훈련 목록 5개 편성
-- 생성 전 교수자 편집과 생성 성공 후 잠금
+- 학습 시작 전 교수자 편집과 편집 시 기존 생성 자료 무효화
 - 매일 03:00 `Asia/Seoul` 기준 문항 생성
 - AI 훈련 후보·발음 분석과 시선 분석의 Mock adapter
 - Azure Speech 단어 단위 발음 평가를 위한 저장·API 계약
@@ -43,16 +43,17 @@ Backend는 마지막 확정 수행 결과를 읽기 특징별로 집계하고, �
 1. 학습자가 현재 커리큘럼의 훈련 약 5개를 모두 완료한다.
 2. Backend가 `training_datas.generated_data`, `trainings.result`, 마지막 확정 `word_attempt_logs`를 결합해 특징별 프로필을 갱신한다.
 3. Backend가 직접 보완 3개, 확장 1개, 복습·유창성 1개로 다음 커리큘럼 목록을 편성한다.
-4. 교수자는 03:00 데이터 생성 전까지 훈련 유형과 순서를 편집한다.
+4. 교수자는 학습자가 실제 훈련을 시작하기 전까지 훈련 유형과 순서를 편집한다.
 5. 03:00 배치가 각 훈련에 후보 문항 5개를 요청하고 Backend가 분석·검증한다.
 6. 부족한 문항은 통과 문항을 유지한 채 최대 3회 보충 생성한다.
-7. 목록의 모든 훈련이 성공하면 `training_datas`를 한 번에 저장하고 편집을 잠근다.
-8. 하나라도 실패하면 전체를 저장하거나 잠그지 않고 다음 배치 대상으로 유지한다.
+7. 목록의 모든 훈련이 성공하면 `training_datas`를 한 번에 저장하고 `NOT_STARTED`로 전환한다.
+8. 하나라도 실패하면 전체를 저장하지 않고 다음 배치 대상으로 유지한다.
+9. 교수자가 생성 완료 후 커리큘럼을 수정하면 기존 `training_datas`를 폐기하고 새 훈련 목록을 `NOT_READY`로 전환해 다시 생성한다.
 
 ## 요구사항과 수용 기준
 
 - `PTG-001`: Backend는 34개 `trainingType`을 각각 별도 `training_templates` 행으로 관리한다.
-- `PTG-002`: `training_templates.prompt` JSON은 `trainingType`, `additionalPrompt`, `outputTemplate`, `supportedFeatureCategories`, `supportedScopes`를 포함한다.
+- `PTG-002`: `training_templates.prompt` JSON은 `trainingType`, `requiredInputs`, `additionalPrompt`, `outputTemplate`, `supportedFeatureCategories`, `supportedScopes`를 포함한다.
 - `PTG-003`: AI 생성 요청은 `requestId`, `schemaVersion`, `trainingType`, `count`, `difficulty`, 목표·제외 특징, 타입별 프롬프트와 출력 템플릿만 포함한다.
 - `PTG-004`: AI 생성 요청에는 `studentId`, 이름, 생년월일, 연락처, 원본 음성, 원시 시선 좌표를 포함하지 않는다.
 - `PTG-005`: AI 후보는 `{type,data}` 형식이며 `data`에 요청한 `count=5` 항목을 포함한다.
@@ -61,14 +62,36 @@ Backend는 마지막 확정 수행 결과를 읽기 특징별로 집계하고, �
 - `PTG-008`: 정답 근거는 정답 목표와 실제 선택 항목에만, 시선 근거는 실제 응시한 모든 항목에 반영한다.
 - `PTG-009`: AI 후보는 목표 특징, 제외 특징, 길이, 형식과 정답 일치를 모두 통과해야 한다.
 - `PTG-010`: 최종 `generated_data`는 `schemaVersion`, `generationMetadata`, `profileSnapshot`, `questions`, `validationResult`를 포함한다.
-- `PTG-011`: 문항은 공통 `questionNo`, `type`, `content`, `answer`, `analysisTargets`, `targetFeatureCodes`를 포함하고 읽기 문항은 `text`, `words`를 추가한다.
+- `PTG-011`: 문항은 공통 `questionNo`, `type`, `requiredInputs`, `content`, `answer`, `analysisTargets`, `targetFeatureCodes`를 포함하고 읽기 문항은 `text`, `words`를 추가한다.
 - `PTG-012`: 학생용 문항 응답에는 서버 평가용 `answer`, 프로필 스냅샷과 내부 검증 정보를 노출하지 않는다.
 - `PTG-013`: 같은 문항·대상·토큰 위치의 여러 시도 중 `word_attempt_logs.is_final=true`인 마지막 성공 시도만 프로필 근거로 사용한다.
 - `PTG-014`: `question_no`, `target_index`, `token_index`, `pronunciation_accuracy_score`, `is_final`을 `word_attempt_logs`에 저장하고 공급자 메타데이터와 오류 상세만 부모 `result` JSON에 저장한다.
 - `PTG-015`: 음성은 multipart로 일시 수신해 발음 분석 adapter에 전달하고 성공·실패와 관계없이 영구 저장하지 않는다.
 - `PTG-016`: 프로필 상태는 저장하지 않고 취약도에서 계산하며 분석 버전은 Backend 상수와 생성 스냅샷에 기록한다.
 - `PTG-017`: Azure 단어별 `AccuracyScore`는 API `0~100`, DB `pronunciation_accuracy_score` `0~1000`을 사용하고 `total_score`는 종합 단어 점수로 분리한다.
-- `PTG-018`: 목록의 모든 훈련이 검증에 성공한 경우에만 데이터를 저장하고 `NOT_READY`에서 `NOT_STARTED`로 전환한다.
+- `PTG-018`: `requiredInputs`는 중복 없는 `VOICE`, `GAZE` 배열이다. 소리 재생은 출력이므로 포함하지 않는다.
+- `PTG-019`: `VOICE` 문항은 문항당 최종 발음 녹음 한 건, `GAZE` 훈련은 원시 데이터가 있는 완료 시선 세션 한 건이 있어야 완료할 수 있다.
+- `PTG-020`: 센서 인식 실패는 정오·시도 횟수로 기록하지 않고 성공한 입력만 완료 근거로 사용한다.
+- `PTG-021`: 목록의 모든 훈련이 검증에 성공한 경우에만 데이터를 저장하고 `NOT_READY`에서 `NOT_STARTED`로 전환한다.
+- `PTG-022`: 30초 미만 문장 녹음은 전체 문장을 한 번 분석하고 Azure 단어 결과를 `words[].wordIndex`에 정렬해 단어마다 최종 시도를 저장한다.
+- `PTG-023`: 읽지 않은 기준 단어는 발음 정확도 0점과 건너뛰기로 저장하고 삽입 단어는 부모 분석 결과의 개수로만 기록한다. 단어 정렬 실패 시 어떤 수행 행도 저장하지 않는다.
+- `PTG-024`: 인증된 아동은 본인의 현재 진행 가능한 커리큘럼에 포함된 훈련 목록을 커리큘럼 순서와 훈련 상태를 포함해 조회할 수 있다.
+- `PTG-025`: 교수자는 `NOT_READY`와 `NOT_STARTED` 훈련으로만 구성된 커리큘럼을 수정할 수 있다. 수정 시 기존 생성 자료를 폐기하고 새 훈련을 `NOT_READY`로 저장하며, `IN_PROGRESS` 또는 `COMPLETED` 훈련이 하나라도 있으면 거부한다.
+
+## 훈련 입력 정책
+
+| 훈련 영역 | `requiredInputs` |
+| --- | --- |
+| 글자 따라 보기 | `VOICE`, `GAZE` |
+| 소리 듣고 고르기 | 없음 |
+| 글자 만들기 | `VOICE` |
+| 글자 자르기 | `VOICE` |
+| 글자 대치 | `VOICE` |
+| 글 해독 | `VOICE`, `GAZE` |
+| 문장 완성 및 이해 | `VOICE`, `GAZE` |
+| 유창하게 읽기 | `VOICE`, `GAZE` |
+
+글자 만들기·자르기·대치는 조작 완료 후 결과를 소리 내어 읽은 발음점수를 평가한다. 문장 완성 및 이해는 선택·조립 완료 후 완성 문장을 읽는 동안 발음과 시선을 함께 수집한다.
 
 ## 서비스와 데이터 영향
 

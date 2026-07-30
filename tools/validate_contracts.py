@@ -123,12 +123,29 @@ def validate_openapi(
                 operation_ids.append(operation_id)
 
                 if path in NOTION_OPENAPI_FILES:
-                    notion_page_id = operation.get("x-notion-page-id", "")
-                    if not notion_page_id:
+                    legacy_source = operation.get("x-contract-source")
+                    contract_origin = operation.get(
+                        "x-contract-origin",
+                        {
+                            "git": "repository",
+                            "notion": "notion",
+                        }.get(legacy_source, "notion"),
+                    )
+                    if contract_origin not in {"notion", "repository"}:
                         errors.append(
-                            f"{operation_id}: missing x-notion-page-id"
+                            f"{operation_id}: invalid x-contract-origin"
                         )
-                    notion_page_ids.append(notion_page_id)
+                    notion_page_id = operation.get("x-notion-page-id", "")
+                    if contract_origin == "notion":
+                        if not notion_page_id:
+                            errors.append(
+                                f"{operation_id}: missing x-notion-page-id"
+                            )
+                        notion_page_ids.append(notion_page_id)
+                    elif notion_page_id:
+                        errors.append(
+                            f"{operation_id}: repository contract must not set x-notion-page-id"
+                        )
 
                     status = operation.get("x-review-status", "")
                     if status not in {"reviewed", "needs-review"}:

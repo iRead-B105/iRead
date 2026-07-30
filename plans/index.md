@@ -1,5 +1,7 @@
 # 실행 계획
 
+- [교수자 UI 페르소나 데이터 완성도 보강](2026-07-30-teacher-persona-data-completeness.md) - 최신 교수자 UI 계약에 맞춘 검사·훈련·추이·메모 데이터 보강
+
 긴 작업의 실행 계획을 저장한다. 형식과 운영 규칙은 루트의 `PLANS.md`를 따른다.
 
 현재 진행 대상 계획:
@@ -8,6 +10,8 @@
 
 완료된 계획은 결정과 검증 이력이 필요할 때 보존한다.
 
+* [데모 Flyway 기준선 통합](2026-07-30-demo-flyway-squash.md) - completed
+* [교수자 앱 보고서·계정 계약 정합화](2026-07-29-teacher-app-contract-alignment.md) - completed
 * [맞춤 훈련 데이터 생성 파이프라인](2026-07-28-personalized-training-generation.md) - completed
 * [OKF·명세 관리 체계 도입](2026-07-24-okf-spec-management.md) - completed
 * [Notion 명세 계약 이전](2026-07-24-notion-contract-migration.md) - completed

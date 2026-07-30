@@ -1,0 +1,385 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "App learning submission",
+  "description": "아동 App이 비음성 훈련·검사 문항에 제출하는 원시 사용자 입력입니다. 정답과 점수는 포함하지 않습니다.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/traceSubmission"
+    },
+    {
+      "$ref": "#/$defs/singleChoiceSubmission"
+    },
+    {
+      "$ref": "#/$defs/orderingSubmission"
+    },
+    {
+      "$ref": "#/$defs/componentBuildSubmission"
+    },
+    {
+      "$ref": "#/$defs/textInputSubmission"
+    }
+  ],
+  "$defs": {
+    "submissionId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "App이 문항 제출 시 생성하며 네트워크 재전송에도 동일하게 유지하는 멱등성 식별자입니다."
+    },
+    "point": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "type": "number",
+          "minimum": 0
+        },
+        "y": {
+          "type": "number",
+          "minimum": 0
+        },
+        "elapsedMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pressure": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "elapsedMs"
+      ]
+    },
+    "stroke": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "points": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/point"
+          }
+        }
+      },
+      "required": [
+        "points"
+      ]
+    },
+    "traceResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "canvasWidth": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "canvasHeight": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "strokes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/stroke"
+          }
+        }
+      },
+      "required": [
+        "canvasWidth",
+        "canvasHeight",
+        "strokes"
+      ]
+    },
+    "singleChoiceResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "selectedIndex": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "selectedIndex"
+      ]
+    },
+    "orderingResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "orderedIndexes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "required": [
+        "orderedIndexes"
+      ]
+    },
+    "componentSelection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "slot": {
+          "type": "string",
+          "enum": [
+            "INITIAL",
+            "MEDIAL",
+            "FINAL"
+          ]
+        },
+        "selectedIndex": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "slot",
+        "selectedIndex"
+      ]
+    },
+    "componentBuildResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "selections": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 3,
+          "items": {
+            "$ref": "#/$defs/componentSelection"
+          }
+        }
+      },
+      "required": [
+        "selections"
+      ]
+    },
+    "textInputResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "text"
+      ]
+    },
+    "traceResponseValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "responseType": {
+          "const": "TRACE"
+        },
+        "response": {
+          "$ref": "#/$defs/traceResponse"
+        }
+      },
+      "required": [
+        "responseType",
+        "response"
+      ]
+    },
+    "singleChoiceResponseValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "responseType": {
+          "const": "SINGLE_CHOICE"
+        },
+        "response": {
+          "$ref": "#/$defs/singleChoiceResponse"
+        }
+      },
+      "required": [
+        "responseType",
+        "response"
+      ]
+    },
+    "orderingResponseValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "responseType": {
+          "const": "ORDERING"
+        },
+        "response": {
+          "$ref": "#/$defs/orderingResponse"
+        }
+      },
+      "required": [
+        "responseType",
+        "response"
+      ]
+    },
+    "componentBuildResponseValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "responseType": {
+          "const": "COMPONENT_BUILD"
+        },
+        "response": {
+          "$ref": "#/$defs/componentBuildResponse"
+        }
+      },
+      "required": [
+        "responseType",
+        "response"
+      ]
+    },
+    "textInputResponseValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "responseType": {
+          "const": "TEXT_INPUT"
+        },
+        "response": {
+          "$ref": "#/$defs/textInputResponse"
+        }
+      },
+      "required": [
+        "responseType",
+        "response"
+      ]
+    },
+    "responseValue": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/traceResponseValue"
+        },
+        {
+          "$ref": "#/$defs/singleChoiceResponseValue"
+        },
+        {
+          "$ref": "#/$defs/orderingResponseValue"
+        },
+        {
+          "$ref": "#/$defs/componentBuildResponseValue"
+        },
+        {
+          "$ref": "#/$defs/textInputResponseValue"
+        }
+      ]
+    },
+    "traceSubmission": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "submissionId": {
+          "$ref": "#/$defs/submissionId"
+        },
+        "responseType": {
+          "const": "TRACE"
+        },
+        "response": {
+          "$ref": "#/$defs/traceResponse"
+        }
+      },
+      "required": [
+        "submissionId",
+        "responseType",
+        "response"
+      ]
+    },
+    "singleChoiceSubmission": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "submissionId": {
+          "$ref": "#/$defs/submissionId"
+        },
+        "responseType": {
+          "const": "SINGLE_CHOICE"
+        },
+        "response": {
+          "$ref": "#/$defs/singleChoiceResponse"
+        }
+      },
+      "required": [
+        "submissionId",
+        "responseType",
+        "response"
+      ]
+    },
+    "orderingSubmission": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "submissionId": {
+          "$ref": "#/$defs/submissionId"
+        },
+        "responseType": {
+          "const": "ORDERING"
+        },
+        "response": {
+          "$ref": "#/$defs/orderingResponse"
+        }
+      },
+      "required": [
+        "submissionId",
+        "responseType",
+        "response"
+      ]
+    },
+    "componentBuildSubmission": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "submissionId": {
+          "$ref": "#/$defs/submissionId"
+        },
+        "responseType": {
+          "const": "COMPONENT_BUILD"
+        },
+        "response": {
+          "$ref": "#/$defs/componentBuildResponse"
+        }
+      },
+      "required": [
+        "submissionId",
+        "responseType",
+        "response"
+      ]
+    },
+    "textInputSubmission": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "submissionId": {
+          "$ref": "#/$defs/submissionId"
+        },
+        "responseType": {
+          "const": "TEXT_INPUT"
+        },
+        "response": {
+          "$ref": "#/$defs/textInputResponse"
+        }
+      },
+      "required": [
+        "submissionId",
+        "responseType",
+        "response"
+      ]
+    }
+  }
+}
