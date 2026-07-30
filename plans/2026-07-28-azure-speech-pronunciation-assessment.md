@@ -9,7 +9,7 @@ timestamp: 2026-07-28T00:00:00+09:00
 
 - 상태: active
 - 작성일: 2026-07-28
-- 수정일: 2026-07-29
+- 수정일: 2026-07-30
 - 관련 결정: [ADR-0013](../docs/decisions/ADR-0013-azure-speech-pronunciation-assessment.md)
 - 대상: `services/backend`, `services/ai`, `services/app`
 
@@ -51,7 +51,7 @@ App이 업로드한 한국어 읽기 음성을 AI server가 Azure Speech `ko-KR`
 
 ## 작업
 
-- [ ] **AZ-SP-001** 확정 ERD의 단어 발음 정확도·문항 위치·최종 시도 컬럼을 MySQL 계약과 Backend 엔티티에 동기화한다.
+- [x] **AZ-SP-001** 확정 ERD의 단어 발음 정확도·문항 위치·최종 시도 컬럼을 MySQL 계약과 Backend 엔티티에 동기화한다.
 - [x] **AZ-SP-002** App 녹음 계약에서 `recognizedText`, 예상·관찰 발음 문자열과 클라이언트 제출 점수를 제거한다.
 - [x] **AZ-SP-003** Backend–AI 응답을 전체 발화 결과와 `words[]` 단어 결과로 확장하고 토큰 정렬 오류 계약을 확정한다.
 - [x] **AZ-SP-004** AI server에 Azure Speech SDK adapter와 `ko-KR`, `HundredMark`, `Word`, miscue 설정을 구현한다.
@@ -111,9 +111,17 @@ App이 업로드한 한국어 읽기 음성을 AI server가 Azure Speech `ko-KR`
 
 ### 해야 하는 일
 
-- `AZ-SP-001`: 실제 MySQL 8.4 환경에서 Flyway와 Hibernate 스키마 정합성을 검증한다.
 - `AZ-SP-008`: 발음·시선·읽기 시간·정답을 결합하는 `total_score` 최종 가중치를 확정한다.
 - `AZ-SP-009`: App 녹음 화면을 새 multipart 요청·단어별 결과 응답에 연결하고 30초 미만 녹음 제한을 확인한다.
 - `AZ-SP-010`: 실제 Azure sandbox에서 한국어 정상·누락·삽입·낮은 점수와 401·429·5xx·timeout을 검증한다.
 - AI 배포 환경에 압축 음성 입력용 GStreamer를 설치하고 WebM·MP3·MP4/M4A 입력을 기동 검증한다.
 - Azure region, 데모 사용량·비용 상한과 `Mispronunciation` 제품 판정 임계값을 확정한다.
+
+## 2026-07-30 AZ-SP-001 완료
+
+- `word_attempt_logs`의 발음 정확도, 문항·분석 대상·토큰 위치와 최종 시도 컬럼이 Flyway V1, 계약 SQL과 Backend 엔티티에서 일치하는지 확인했다.
+- `recognized_text`, `has_gaze_data`가 물리 스키마와 엔티티에 남아 있지 않은지 확인했다.
+- MySQL 스키마 통합 테스트를 데모 seed에서 분리해 확정 V1만 독립적으로 검증하도록 수정했다.
+- MySQL 8.4의 빈 DB에서 Flyway V1 적용과 Hibernate `validate`에 성공했다.
+- `pronunciation_accuracy_score`, `total_score`, `question_no`, `target_index`, `token_index` CHECK의 실제 거부 동작과 `is_final=true` 기본값을 INSERT로 검증했다.
+- `.\gradlew.bat test --tests com.iread.backend.MySqlFlywayIntegrationTest --rerun-tasks --no-daemon`: 4개 성공, 실패 0개.

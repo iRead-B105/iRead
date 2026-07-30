@@ -56,7 +56,7 @@ timestamp: 2026-07-29T00:00:00+09:00
 | BE-026 | P1 | 단어 단위 시선 분석 연동·Mock adapter 구현 | 응시 시간·횟수·회귀·건너뛰기, 원시 좌표 비전달 | BE-009, BE-010, BE-013 | done |
 | BE-027 | P0 | 맞춤 생성 파이프라인 계약·통합·보안 회귀 테스트 | MySQL, 34개 타입, 분석 규칙, 배치 원자성, 개인정보 차단 | BE-013~BE-026 | done |
 | BE-028 | P0 | 아동 App 실행 payload JSON 계약 확정 | 검사·훈련·이야기의 `generatedData`, `question`, `result` 요청·응답 구조 | BE-008, BE-009, BE-013 | blocked |
-| BE-029 | P0 | 갱신 ERD 단어 수행 스키마 정합화 | 발음 정확도, 문항·토큰 위치, 최종 시도, 인식 문자열 제거 | BE-014, BE-021 | in-progress |
+| BE-029 | P0 | 갱신 ERD 단어 수행 스키마 정합화 | 발음 정확도, 문항·토큰 위치, 최종 시도, 인식 문자열 제거 | BE-014, BE-021 | done |
 | BE-030 | P0 | Azure Speech 단어 발음 평가 연동 | `ko-KR` scripted assessment, Backend–AI 계약, 장애·보안 정책 | BE-020, BE-029 | todo |
 | BE-031 | P0 | 교수자 보고서·프로필·계정 복구 계약 정합화 | 보고서 불변성·메모 2,000자, 이메일 읽기 전용, JPG·PNG 5MB, 일회용 재설정 링크 | BE-002, BE-004, BE-006 | done |
 | BE-032 | P1 | 교수자 검사 비교 요약·영역 통계 계약 및 계산 구현 | `TI-DSP-02`, `TI-STAT-01`, `TI-STAT-02` | BE-005, BE-028 | deferred |
@@ -93,6 +93,14 @@ timestamp: 2026-07-29T00:00:00+09:00
 - 커리큘럼 완료 직후 직접 보완 3개·확장 1개·복습·유창성 1개의 목록을 편성하고, 교사 편집은 정확히 5개를 유지하며 생성 전까지만 허용한다.
 - `Asia/Seoul` 03:00 배치는 커리큘럼 행 잠금과 상태 확인 후 5개를 모두 생성·검증하고, 전체 성공 시에만 한 트랜잭션으로 저장한다.
 - Backend 전체 테스트, 34개 타입 계약, 개인정보 비전달, 배치 실패·중복 실행, MySQL 8.4 Flyway·JPA 매핑, 계약·문서 하네스와 `git diff --check`를 검증했다.
+
+### 2026-07-30 BE-029 완료
+
+- 확정 ERD의 `word_attempt_logs` 기준으로 `pronunciation_accuracy_score`, `question_no`, `target_index`, `token_index`, `is_final`과 Backend 엔티티 매핑을 재검토했다.
+- 인식 문자열 `recognized_text`와 중복 시선 존재값 `has_gaze_data`가 Flyway·엔티티·계약에서 제거된 상태를 확인했다.
+- 훈련·검사 녹음 저장이 문항·분석 대상·토큰 위치를 기록하고 같은 위치의 이전 성공 시도를 `is_final=false`로 전환하는지 서비스와 회귀 테스트를 확인했다.
+- MySQL 스키마 테스트를 데모 seed와 분리하고, MySQL 8.4에서 V1 적용과 Hibernate `validate`, 점수·위치 CHECK 5개, `is_final=true` 기본값을 실제 INSERT로 검증했다.
+- `.\gradlew.bat test --tests com.iread.backend.MySqlFlywayIntegrationTest --rerun-tasks --no-daemon`: 4개 성공, 실패 0개.
 
 ### 2026-07-25 Backend 구현 검토
 
