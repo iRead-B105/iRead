@@ -128,6 +128,9 @@ erDiagram
         INT total_visited_count "required"
         INT reverse_read_count "required"
         INT avg_visited_duration "nullable"
+        JSON sentence_metrics "nullable"
+        JSON regressions "nullable"
+        JSON analysis_meta "nullable"
         TIMESTAMP created_at "required"
     }
     gaze_sessions {
