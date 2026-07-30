@@ -10,6 +10,7 @@
 
 완료된 계획은 결정과 검증 이력이 필요할 때 보존한다.
 
+* [데모 Flyway 기준선 통합](2026-07-30-demo-flyway-squash.md) - completed
 * [교수자 앱 보고서·계정 계약 정합화](2026-07-29-teacher-app-contract-alignment.md) - completed
 * [맞춤 훈련 데이터 생성 파이프라인](2026-07-28-personalized-training-generation.md) - completed
 * [OKF·명세 관리 체계 도입](2026-07-24-okf-spec-management.md) - completed
