@@ -2201,15 +2201,12 @@
                           "type": "object",
                           "properties": {
                             "currentTest": {
-                              "type": "object",
-                              "additionalProperties": true,
-                              "description": "기준 검사의 날짜, 정확도, 소요 시간, 시선 이탈 횟수와 문항 결과"
+                              "$ref": "#/components/schemas/AdminTestDetail"
                             },
                             "comparisonTests": {
                               "type": "array",
                               "items": {
-                                "type": "object",
-                                "additionalProperties": true
+                                "$ref": "#/components/schemas/AdminTestDetail"
                               },
                               "description": "비교 검사 상세 목록"
                             }
@@ -2229,23 +2226,36 @@
                 "example": {
                   "success": true,
                   "data": {
-                    "statistics": [
-                      {
-                        "isCurrent": true,
-                        "readingTime": 85.5,
-                        "solvingTime": 85.5,
-                        "accuracyRate": 85.5,
-                        "gazeDepartureCount": 1
-                      }
-                    ],
-                    "testResults": [
-                      {
-                        "questionNumber": 1,
-                        "question": "string",
-                        "correctChoice": "string",
-                        "selectedChoice": "string"
-                      }
-                    ]
+                    "currentTest": {
+                      "testId": 5503,
+                      "date": "2026-07-24",
+                      "overallScore": 86,
+                      "changeFromPrevious": 8,
+                      "strengthAreas": [
+                        "음절 읽기"
+                      ],
+                      "improvementAreas": [
+                        "긴 문장 호흡"
+                      ],
+                      "recommendedCourse": "긴 문장 호흡 집중 훈련",
+                      "nextTestRecommendation": "2주 후 같은 영역의 재검사를 권장합니다.",
+                      "areaScores": [
+                        {
+                          "area": "음절 읽기",
+                          "score": 91
+                        },
+                        {
+                          "area": "긴 문장 호흡",
+                          "score": 74
+                        }
+                      ],
+                      "readingTimeSeconds": 92,
+                      "solvingTimeSeconds": 168,
+                      "accuracy": 86,
+                      "gazeDepartureCount": 1,
+                      "questions": []
+                    },
+                    "comparisonTests": []
                   }
                 }
               }
@@ -2432,11 +2442,13 @@
                           "type": "object",
                           "properties": {
                             "gazeSessionId": {
-                              "type": "string",
+                              "type": "integer",
+                              "format": "int64",
                               "description": "시선트래킹세션id"
                             },
                             "gazeAnalysisId": {
-                              "type": "string",
+                              "type": "integer",
+                              "format": "int64",
                               "description": "시선트래킹분석id"
                             },
                             "totalDwellTime": {
@@ -2467,8 +2479,8 @@
                 "example": {
                   "success": true,
                   "data": {
-                    "gazeSessionId": "1001",
-                    "gazeAnalysisId": "1001",
+                    "gazeSessionId": 1001,
+                    "gazeAnalysisId": 1001,
                     "totalDwellTime": 85.5,
                     "dwellCount": 1,
                     "regressionCount": 1,
@@ -3839,11 +3851,13 @@
                           "type": "object",
                           "properties": {
                             "gazeSessionId": {
-                              "type": "string",
+                              "type": "integer",
+                              "format": "int64",
                               "description": "시선트래킹세션id"
                             },
                             "gazeAnalysisId": {
-                              "type": "string",
+                              "type": "integer",
+                              "format": "int64",
                               "description": "시선트래킹분석id"
                             },
                             "totalDwellTime": {
@@ -3874,8 +3888,8 @@
                 "example": {
                   "success": true,
                   "data": {
-                    "gazeSessionId": "1001",
-                    "gazeAnalysisId": "1001",
+                    "gazeSessionId": 1001,
+                    "gazeAnalysisId": 1001,
                     "totalDwellTime": 85.5,
                     "dwellCount": 1,
                     "regressionCount": 1,
@@ -4232,6 +4246,141 @@
           "curriculumId",
           "status",
           "trainings"
+        ]
+      },
+      "AdminTestDetail": {
+        "type": "object",
+        "description": "교수자 검사 이력 화면에 표시하는 검사 결과와 학습 해석",
+        "properties": {
+          "testId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "overallScore": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "nullable": true
+          },
+          "changeFromPrevious": {
+            "type": "number",
+            "nullable": true,
+            "description": "직전 검사 대비 종합 점수 변화량"
+          },
+          "strengthAreas": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "improvementAreas": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "recommendedCourse": {
+            "type": "string",
+            "nullable": true
+          },
+          "nextTestRecommendation": {
+            "type": "string",
+            "nullable": true
+          },
+          "areaScores": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "area": {
+                  "type": "string"
+                },
+                "score": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                }
+              },
+              "required": [
+                "area",
+                "score"
+              ]
+            }
+          },
+          "readingTimeSeconds": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "solvingTimeSeconds": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "accuracy": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "nullable": true
+          },
+          "gazeDepartureCount": {
+            "type": "integer",
+            "nullable": true
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "questionNumber": {
+                  "type": "integer"
+                },
+                "question": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "isCorrect": {
+                  "type": "boolean",
+                  "nullable": true
+                },
+                "correctAnswer": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "selectedAnswer": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "required": [
+                "questionNumber",
+                "question",
+                "isCorrect",
+                "correctAnswer",
+                "selectedAnswer"
+              ]
+            }
+          }
+        },
+        "required": [
+          "testId",
+          "date",
+          "overallScore",
+          "changeFromPrevious",
+          "strengthAreas",
+          "improvementAreas",
+          "recommendedCourse",
+          "nextTestRecommendation",
+          "areaScores",
+          "readingTimeSeconds",
+          "solvingTimeSeconds",
+          "accuracy",
+          "gazeDepartureCount",
+          "questions"
         ]
       },
       "ErrorDetail": {
