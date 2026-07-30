@@ -87,7 +87,7 @@ start "iRead Eye Tracker - 8765" cmd /k "".venv\Scripts\python.exe" -m uvicorn m
 popd
 
 pushd "services\frontend-app"
-start "iRead Learner Vue - 5173" cmd /k "set VITE_LEARNER_DATA_SOURCE=api&& set VITE_BACKEND_URL=%BACKEND_URL%&& npm run dev -- --host 127.0.0.1 --port 5173 --strictPort"
+start "iRead Learner Vue - 5173" cmd /k "set VITE_LEARNER_DATA_SOURCE=&& set VITE_API_BASE_URL=&& set VITE_BACKEND_URL=&& npm run dev -- --host 127.0.0.1 --port 5173 --strictPort"
 popd
 
 pushd "services\frontend-web"
