@@ -19,7 +19,7 @@ Backend, OpenAPI, SSE 클라이언트, 이벤트별 선택 재조회, 화면 복
 ## 시작 기준
 
 - orchestration: `feature/realtime-sync-handoff`의 최신 커밋. 해당 PR 병합 후에는 `develop`
-- Backend: `feature/realtime-sync-hardening`의 최신 커밋. 해당 PR 병합 후에는 `develop`
+- Backend: `develop`의 최신 커밋(Backend PR #50 병합 완료)
 - 교수자 Web: `develop`의 최신 커밋
 - 아동 App: `develop`의 최신 커밋
 - 데모 계정: `demo@iread.local` / `demo1234`
