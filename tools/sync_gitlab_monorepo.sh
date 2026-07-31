@@ -8,6 +8,7 @@ readonly ORCHESTRATION_URL="https://github.com/iRead-B105/iRead.git"
 readonly ORCHESTRATION_BRANCH="develop"
 readonly REQUESTED_ORCHESTRATION_SHA="${SYNC_ORCHESTRATION_SHA:-}"
 readonly REBUILD_HISTORY="${REBUILD_GITLAB_HISTORY:-false}"
+readonly RECONCILE_UPSTREAM_REFS="${RECONCILE_GITLAB_UPSTREAM_REFS:-}"
 readonly TARGET_BRANCH="main"
 readonly SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 readonly GITLAB_ASKPASS="$SCRIPT_DIR/gitlab_askpass.sh"
@@ -81,6 +82,79 @@ push_source_refs() {
   fi
 }
 
+is_known_source() {
+  local requested_name="$1"
+  local name
+
+  if [[ "$requested_name" == "orchestration" ]]; then
+    return 0
+  fi
+  for name in "${SERVICE_NAMES[@]}"; do
+    if [[ "$requested_name" == "$name" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+reconcile_source_ref() {
+  local spec="$1"
+  local name="${spec%%/*}"
+  local branch="${spec#*/}"
+  local source_ref
+  local target_ref
+  local remote_line
+  local remote_sha
+
+  if [[ "$spec" != */* ]] || ! is_known_source "$name"; then
+    echo "Invalid upstream reconciliation ref: $spec" >&2
+    exit 1
+  fi
+  if [[ ! "$branch" =~ ^[A-Za-z0-9][A-Za-z0-9._/-]*$ ]] ||
+    [[ "$branch" == *..* ]] ||
+    [[ "$branch" == *//* ]] ||
+    [[ "$branch" == */ ]]; then
+    echo "Invalid upstream reconciliation branch: $spec" >&2
+    exit 1
+  fi
+
+  source_ref="refs/remotes/source/$name/heads/$branch"
+  target_ref="refs/heads/upstream/$name/$branch"
+  git -C "$AGGREGATE_DIR" cat-file -e "$source_ref^{commit}"
+
+  remote_line="$(
+    git_auth -C "$AGGREGATE_DIR" ls-remote --heads origin "$target_ref"
+  )"
+  if [[ -z "$remote_line" ]]; then
+    echo "GitLab upstream ref does not exist: $target_ref" >&2
+    exit 1
+  fi
+  remote_sha="${remote_line%%[[:space:]]*}"
+
+  echo "Reconciling $target_ref to the GitHub source with force-with-lease."
+  git_auth -C "$AGGREGATE_DIR" push origin \
+    "--force-with-lease=$target_ref:$remote_sha" \
+    "$source_ref:$target_ref"
+}
+
+reconcile_requested_source_refs() {
+  local raw
+  local spec
+  local -a requested_refs
+
+  [[ -n "$RECONCILE_UPSTREAM_REFS" ]] || return 0
+  IFS=',' read -r -a requested_refs <<<"$RECONCILE_UPSTREAM_REFS"
+  for raw in "${requested_refs[@]}"; do
+    spec="${raw#"${raw%%[![:space:]]*}"}"
+    spec="${spec%"${spec##*[![:space:]]}"}"
+    if [[ -z "$spec" ]]; then
+      echo "Empty upstream reconciliation ref" >&2
+      exit 1
+    fi
+    reconcile_source_ref "$spec"
+  done
+}
+
 fetch_notes_if_present() {
   local ref="$1"
 
@@ -123,6 +197,8 @@ fetch_source orchestration "$ORCHESTRATION_URL"
 for name in "${SERVICE_NAMES[@]}"; do
   fetch_source "$name" "${SERVICE_URLS[$name]}"
 done
+
+reconcile_requested_source_refs
 
 push_source_refs orchestration
 for name in "${SERVICE_NAMES[@]}"; do
