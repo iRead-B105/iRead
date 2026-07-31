@@ -15,6 +15,11 @@ on:
         required: false
         default: false
         type: boolean
+      reconcile_upstream_refs:
+        description: "정합화할 GitLab 미러 ref (쉼표로 구분한 repository/branch)"
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: read
@@ -64,4 +69,7 @@ jobs:
           REBUILD_GITLAB_HISTORY: >-
             ${{ github.event_name == 'workflow_dispatch' &&
                 inputs.rebuild_history || false }}
+          RECONCILE_GITLAB_UPSTREAM_REFS: >-
+            ${{ github.event_name == 'workflow_dispatch' &&
+                inputs.reconcile_upstream_refs || '' }}
         run: bash tools/sync_gitlab_monorepo.sh
