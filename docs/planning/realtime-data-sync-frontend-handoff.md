@@ -82,7 +82,8 @@ node tools/verify_realtime_demo.mjs
 
 - `trainingTemplateMapping.ts`에 세 의미 타입과 숫자 ID fallback을 추가한다.
 - `LearnerTrainingResponseType`에 `BATTLE_ROUNDS`를 추가한다.
-- 조회 응답의 `content.opponent`, `content.rounds[]`와 `answer.answerOrders[]`를 `battleOpponent`, `battleRounds[]`로 변환한다.
+- 조회 응답의 `content.opponent`, `content.rounds[]`를 `battleOpponent`, `battleRounds[]`로 변환한다.
+- [TBD] 기존 Backend 구현은 `answer.answerOrders[]`를 함께 반환하지만 승인된 App JSON 계약은 정답 비노출을 요구한다. Vue 코드가 `answer`에 새로 의존하기 전에 Backend가 화면 조립에 필요한 라운드 자모 순서를 정답이 아닌 표시 메타데이터로 `content`에 제공할지 확정한다.
 - 각 타일은 라운드 안에서 안정적인 ID를 부여하고, `opponent`의 `RABBIT`, `TURTLE`, `ANT`는 Vue 타입의 소문자 값으로 변환한다.
 - 제출 시 `responseType: BATTLE_ROUNDS`, `response: { roundOrders: string[][] }`를 전송한다. 각 배열은 아동이 라운드에서 배치한 자모 순서다.
 - 같은 `submissionId` 재전송은 Backend가 기존 피드백을 반환하므로 네트워크 재시도 때 새 UUID를 만들지 않는다.

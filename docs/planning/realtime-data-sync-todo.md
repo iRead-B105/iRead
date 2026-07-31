@@ -32,6 +32,7 @@
 - [x] 저장 커밋부터 UI 자동 반영까지 3초 이하 수용 기준을 OpenAPI와 기능 계약에 기록한다.
 - [x] 아동 API에 안정적인 `trainingType`을 추가하고 숫자 템플릿 ID 매핑 의존성을 제거한다.
 - [x] 학생별 `NOT_STARTED`·`IN_PROGRESS` 교육과정을 각각 최대 한 건으로 제한하고 활성 조회 우선순위를 `IN_PROGRESS` → `NOT_STARTED`로 고정한다.
+- [TBD] 한글 대결 화면 조립에 필요한 라운드 자모 순서를 정답 비노출 원칙을 지키는 `content` 표시 메타데이터로 제공할지 확정한다.
 
 ### 2. Backend
 

@@ -4013,10 +4013,6 @@
                                   "type": "object",
                                   "additionalProperties": true
                                 },
-                                "answer": {
-                                  "type": "object",
-                                  "additionalProperties": true
-                                },
                                 "requiredInputs": {
                                   "type": "array",
                                   "uniqueItems": true,
@@ -4031,7 +4027,6 @@
                                 "questionType",
                                 "responseType",
                                 "content",
-                                "answer",
                                 "requiredInputs"
                               ],
                               "additionalProperties": true,

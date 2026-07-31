@@ -133,6 +133,7 @@ timestamp: 2026-07-31T00:00:00+09:00
 - [x] 교수자와 아동의 교육과정 상태 전이표를 OpenAPI와 기능 계약에 기록한다.
 - [x] 한 학생에게 `IN_PROGRESS`와 `NOT_STARTED`를 각각 최대 한 건 허용하고 활성 조회 우선순위를 `IN_PROGRESS` → `NOT_STARTED`로 Backend와 DB에서 검증한다.
 - [x] `NOT_READY`·`NOT_STARTED`만 편집 가능하고 `IN_PROGRESS`·`COMPLETED`는 편집할 수 없다는 기존 규칙을 Admin API 계약에 명시한다.
+- [TBD] 한글 대결 라운드 자모 순서를 정답 비노출 원칙을 지키는 App 표시 메타데이터로 제공하는 계약을 확정한다.
 - [x] 훈련·검사·이야기의 시작, 재시도, 완료 요청에 대한 중복 호출 처리 규칙을 명시한다.
 - [x] SSE 연결 API, 동기화 이벤트 스키마, 3초 최신성 목표와 재연결 규칙을 OpenAPI에 정의한다.
 
