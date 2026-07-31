@@ -446,7 +446,7 @@ def validate_schema() -> tuple[list[str], dict[str, int]]:
         "`scene_id` bigint NOT NULL",
         "`has_choices` boolean NOT NULL",
         "`use_location` varchar(10) NOT NULL",
-        "`data` json NULL",
+        "`data_url` varchar(255) NULL",
         "`start_date` timestamp NOT NULL",
         "`end_date` timestamp NOT NULL",
         "UK_STORY_LINES_SEQUENCE",

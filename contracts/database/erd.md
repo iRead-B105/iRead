@@ -142,7 +142,7 @@ erDiagram
         VARCHAR_20 content_type "required"
         TIMESTAMP started_at "required"
         TIMESTAMP ended_at "nullable"
-        JSON data "nullable"
+        VARCHAR_255 data_url "nullable"
         VARCHAR_20 status "required"
         VARCHAR_20 calibration_status "required"
         TIMESTAMP created_at "required"
@@ -189,6 +189,7 @@ erDiagram
         BIGINT test_id FK "nullable"
         VARCHAR_10 use_location "required"
         VARCHAR_50 surface_text "nullable"
+        BOOLEAN has_gaze_data "required"
         BOOLEAN has_audio_data "required"
         INT fixation_duration_ms "nullable"
         INT fixation_count "nullable"
@@ -207,11 +208,11 @@ erDiagram
         INT token_index "nullable"
         BOOLEAN is_final "required"
     }
-    character {
+    characters {
         BIGINT id PK "required"
         BIGINT student_id FK "required"
         BIGINT story_id FK "required"
-        VARCHAR_255 image_url "nullable"
+        TEXT image_url "nullable"
         TIMESTAMP created_at "required"
         VARCHAR_50 name "nullable"
     }
@@ -290,8 +291,8 @@ erDiagram
     story_lines o|--o{ word_attempt_logs : "story_line_id"
     trainings o|--o{ word_attempt_logs : "training_id"
     tests o|--o{ word_attempt_logs : "test_id"
-    students ||--o{ character : "student_id"
-    stories ||--o{ character : "story_id"
+    students ||--o{ characters : "student_id"
+    stories ||--o{ characters : "story_id"
     story_lines ||--o{ story_choices : "story_line_id"
     training_templates ||--o{ trainings : "training_template_id"
     daily_curriculums ||--o{ trainings : "daily_curriculum_id"

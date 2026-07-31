@@ -9,13 +9,13 @@ timestamp: 2026-07-27T00:00:00+09:00
 
 - 상태: active
 - 비교 기준: 2026-07-28 확정 ERD, `contracts/database/schema.sql`, 현재 Backend 작업 트리
-- 최종 검토일: 2026-07-28
+- 최종 검토일: 2026-07-31
 
 ## 결론
 
 사용자가 확정한 25개 테이블 ERD를 현재 MySQL 계약으로 채택했다. 실행 가능한 DDL은 Flyway `V1__baseline_schema.sql`에 반영하고 `contracts/database/schema.sql`과 동일하게 유지한다.
 
-Backend 엔티티를 현재 계약에 맞춰 정합화했고 공식 MySQL 8.4.10의 빈 데이터베이스에서 Flyway V1과 Hibernate schema validation을 완료했다.
+Backend 엔티티를 현재 계약에 맞춰 정합화했다. 최종 스키마는 Flyway V1 하나에 유지하고 데모 데이터는 V2 하나에 통합하며, 빈 MySQL에서 V1 단독과 V1+V2 적용을 각각 검증한다.
 
 ## 확정된 물리 명칭
 
@@ -30,6 +30,7 @@ Backend 엔티티를 현재 계약에 맞춰 정합화했고 공식 MySQL 8.4.10
 - `reading_features`
 - `student_feature_profiles.reading_features_id`
 - `student_feature_profiles.avg_pronunciation_scor`
+- `characters`
 
 `training_contents`, `training_id`로의 물리 FK 변경, `test_questions`, `requires_branch_input`, `teachers.login_id`, `auth_revoked_access_tokens`는 사용하지 않는다.
 
@@ -43,7 +44,7 @@ Backend 엔티티를 현재 계약에 맞춰 정합화했고 공식 MySQL 8.4.10
 | 검사 커리큘럼 | `test_curriculums` 추가 | 학생별 검사 커리큘럼과 순서 기반 검사 엔티티 추가 |
 | 검사 | `test_curriculum_id`, `training_template_id`, 세션 시각과 순서 | 기존 학생 직접 FK 기반 검사 엔티티 교체 |
 | 검사 생성 데이터 | `id bigint`, `generated_data`, `created_at` | 기존 질문 ID·질문 JSON 매핑 교체 |
-| 시선 세션 | 조건부 대상 FK와 `data` JSON | 원시 시선 데이터 컬럼 및 조건부 관계 반영 |
+| 시선 세션 | 조건부 대상 FK와 `data_url` | 원시 시선 JSON은 파일로 저장하고 DB에는 파일 URL과 조건부 관계를 반영 |
 | 보고서 | 기간 `timestamp`, nullable `snapshot_data` | `LocalDate` 및 필수 snapshot 매핑 교체 |
 | 누적 통계 | 별도 누적 통계 테이블 없음 | `student_word_stats`, `student_study_progresses` 매핑 제거 |
 | 훈련 점수 | `accuracy` 0~1000 | 기존 0~100 소수 정밀도 매핑 교체 |
@@ -67,11 +68,13 @@ Backend 엔티티를 현재 계약에 맞춰 정합화했고 공식 MySQL 8.4.10
 - `story_choices.story_line_id`는 분기 대사당 최종 선택 하나를 보장하도록 UNIQUE로 보호했다.
 - `word_attempt_logs.pronunciation_accuracy_score`와 `total_score`는 각각 `0~1000` CHECK를 적용한다.
 - `word_attempt_logs.question_no`는 1 이상, `target_index`와 `token_index`는 0 이상 CHECK를 적용한다.
+- `daily_curriculums`는 생성 컬럼과 UNIQUE 제약으로 학생별 `NOT_STARTED` 최대 1건과 `IN_PROGRESS` 최대 1건을 각각 보장한다.
 
 ## 적용 경계
 
 - 이번 V1은 신규·빈 데이터베이스 기준이다.
-- 신규·빈 데이터베이스 기준선이므로 V2를 만들지 않고 V1을 유지한다.
+- 신규·빈 데이터베이스의 최종 스키마는 V1에 유지한다.
+- 데모 데이터는 demo 프로필에서만 적용되는 V2 하나에 통합하고 V3 이후 데모 migration은 사용하지 않는다.
 - Backend 엔티티와 저장소 정합화를 완료했으며 Hibernate schema validation이 MySQL 8.4.10에서 통과한다.
 - 다른 환경에 기존 스키마나 데이터가 있으면 V1을 직접 적용하지 않고 별도 baseline 및 데이터 변환 migration을 작성해야 한다.
 
@@ -103,7 +106,7 @@ Backend 엔티티를 현재 계약에 맞춰 정합화했고 공식 MySQL 8.4.10
 - 확정 ERD의 `reading_features`, `student_feature_profiles`를 V1과 JPA 엔티티에 추가했다.
 - `training_templates.form`을 최종 ERD 물리 명칭인 `prompt` text로 교체했다.
 - 스키마 규모는 애플리케이션 테이블 25개, 외래 키 34개, UNIQUE 11개, CHECK 7개다.
-- 갱신 ERD에 따라 `word_attempt_logs.has_gaze_data`, `recognized_text`를 제거했다.
+- 당시 갱신 ERD에 따라 `word_attempt_logs.has_gaze_data`, `recognized_text`를 제거했다.
 - `pronunciation_accuracy_score`, `question_no`, `target_index`, `token_index`, `is_final`을 추가해 단어 발음 정확도와 최종 시도를 행 자체에서 식별한다.
 - 점수·위치 CHECK를 추가했다.
 
@@ -111,3 +114,15 @@ Backend 엔티티를 현재 계약에 맞춰 정합화했고 공식 MySQL 8.4.10
 
 - `reports(student_id, start_date, end_date)`에 `UQ_REPORTS_STUDENT_PERIOD` UNIQUE 제약을 추가해 동일 아동·동일 기간 보고서가 동시 요청에서도 한 건만 저장되도록 했다.
 - 현재 스키마 규모는 애플리케이션 테이블 26개, 외래 키 35개, UNIQUE 13개, CHECK 11개다.
+
+## 2026-07-31 Flyway 기준선과 활성 교육과정 정리
+
+- `character`를 최종 물리 명칭 `characters`로 바꾸고 `image_url`을 `text`로 확장한 결과를 V1에 통합했다. 별도 V4·V5 migration은 제거했다.
+- 모든 Flyway 데모 seed를 V2에 통합하고 V3 데모 migration은 제거했다.
+- 학생별 `NOT_STARTED` 최대 1건과 `IN_PROGRESS` 최대 1건을 DB UNIQUE 제약으로 보장한다. 두 상태는 학생 한 명에게 각각 한 건씩 동시에 존재할 수 있다.
+- 활성 교육과정 조회 우선순위는 `IN_PROGRESS` 다음 `NOT_STARTED`이며, 교수자 편집은 `NOT_STARTED` 교육과정에만 허용한다.
+- 학생 행 잠금으로 교육과정 생성과 훈련 시작의 동시 요청을 직렬화해 애플리케이션 검증과 DB 제약이 같은 정책을 보장한다.
+- 빈 MySQL에서 V1 단독과 V1+V2 적용, Hibernate 검증, 데모 초기화와 중복 제약 검증을 통과했다.
+- 현재 스키마 규모는 애플리케이션 테이블 26개, 외래 키 35개, UNIQUE 15개, CHECK 11개다.
+- 최신 Backend의 시선 원본 파일 저장 계약에 맞춰 `gaze_sessions.data` JSON을 `data_url`로 교체하고 `word_attempt_logs.has_gaze_data`를 명시적 저장 값으로 복원했다.
+- 읽기 특징 분류는 현재 enum과 일치하도록 `MORPH`를 제외했다.

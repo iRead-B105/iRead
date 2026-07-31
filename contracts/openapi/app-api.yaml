@@ -6,6 +6,42 @@
     "description": "Notion API 명세에서 이전한 계약이다. x-notion-* 확장 필드는 원본 추적에 사용한다."
   },
   "paths": {
+    "/api/app/realtime/events": {
+      "get": {
+        "operationId": "get_app_realtime_events",
+        "summary": "현재 학생 데이터 변경 이벤트 구독",
+        "description": "현재 인증된 학생의 교수자 편집과 데이터 변경 이벤트를 SSE로 전달한다. 클라이언트는 별도 사용자 알림 없이 관련 조회 API를 다시 호출하며, 저장 커밋부터 화면 반영까지 3초 이내를 목표로 한다.",
+        "tags": [
+          "realtime"
+        ],
+        "responses": {
+          "200": {
+            "description": "SSE 연결 성공",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "id: 36a09ada-0a57-41cf-9e8f-7bb2ce4aa98d\nevent: student-data-changed\ndata: {\"eventId\":\"36a09ada-0a57-41cf-9e8f-7bb2ce4aa98d\",\"studentId\":2001,\"resource\":\"CURRICULUM\",\"resourceId\":190001,\"changeType\":\"UPDATED\",\"occurredAt\":\"2026-07-31T10:00:00+09:00\",\"version\":1785469200000}\n\n"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-contract-origin": "repository",
+        "x-review-status": "reviewed"
+      }
+    },
     "/api/app/gaze/calibration-guide": {
       "get": {
         "operationId": "get_app_gaze_calibration_guide",
@@ -2125,6 +2161,96 @@
         ]
       }
     },
+    "/api/app/student/{studentId}/profile": {
+      "get": {
+        "operationId": "get_app_student_by_studentId_profile",
+        "summary": "현재 아동 프로필 조회",
+        "description": "교수자가 수정한 아동 이름, 생년월일 기반 만 나이, 프로필 이미지를 아동 앱에 동기화한다.",
+        "tags": [
+          "student"
+        ],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "아동 프로필 조회 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "studentId": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "age": {
+                              "type": [
+                                "integer",
+                                "null"
+                              ]
+                            },
+                            "profileImageUrl": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "studentId",
+                            "name",
+                            "age",
+                            "profileImageUrl"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-contract-origin": "repository",
+        "x-review-status": "reviewed"
+      }
+    },
     "/api/app/student/{studentId}/growth": {
       "get": {
         "operationId": "get_app_student_by_studentId_growth",
@@ -3364,6 +3490,9 @@
                                     "type": "integer",
                                     "format": "int64"
                                   },
+                                  "trainingType": {
+                                    "$ref": "#/components/schemas/TrainingType"
+                                  },
                                   "sequenceNo": {
                                     "type": "integer",
                                     "minimum": 1,
@@ -3391,6 +3520,7 @@
                                 "required": [
                                   "trainingId",
                                   "trainingTemplateId",
+                                  "trainingType",
                                   "sequenceNo",
                                   "unitName",
                                   "trainingName",
@@ -3421,6 +3551,7 @@
                       {
                         "trainingId": 2001,
                         "trainingTemplateId": 301,
+                        "trainingType": "SENTENCE_REPEAT",
                         "sequenceNo": 1,
                         "unitName": "유창성",
                         "trainingName": "문장 따라 읽기",
@@ -3449,9 +3580,9 @@
           "CU-DSP-01"
         ],
         "x-contract-origin": "repository",
-        "description": "인증 토큰의 아동 식별자와 경로 studentId가 같고 해당 아동이 인증된 교수자에게 속하는지 확인한다. NOT_STARTED 또는 IN_PROGRESS인 최신 커리큘럼 한 건의 훈련을 sequenceNo 순서로 반환한다.",
+        "description": "인증 토큰의 아동 식별자와 경로 studentId가 같고 해당 아동이 인증된 교수자에게 속하는지 확인한다. IN_PROGRESS 커리큘럼을 우선하고, 없으면 NOT_STARTED 커리큘럼 한 건의 훈련을 sequenceNo 순서로 반환한다. 아동별 IN_PROGRESS와 NOT_STARTED 커리큘럼은 상태별 최대 한 건이다.",
         "x-notion-request-summary": "studentId(path)",
-        "x-notion-response-summary": "curriculumId\ncurriculumStatus\ntrainings[] {\n  trainingId\n  trainingTemplateId\n  sequenceNo\n  unitName\n  trainingName\n  status\n}",
+        "x-notion-response-summary": "curriculumId\ncurriculumStatus\ntrainings[] {\n  trainingId\n  trainingTemplateId\n  trainingType\n  sequenceNo\n  unitName\n  trainingName\n  status\n}",
         "x-review-status": "reviewed",
         "security": [
           {
@@ -3680,6 +3811,9 @@
                               "format": "int64",
                               "description": "훈련 템플릿 식별자"
                             },
+                            "trainingType": {
+                              "$ref": "#/components/schemas/TrainingType"
+                            },
                             "dailyCurriculumId": {
                               "type": "integer",
                               "format": "int64",
@@ -3723,6 +3857,7 @@
                           "required": [
                             "trainingId",
                             "trainingTemplateId",
+                            "trainingType",
                             "dailyCurriculumId",
                             "sequenceNo",
                             "status",
@@ -3741,6 +3876,7 @@
                   "data": {
                     "trainingHistoryId": "1001",
                     "trainingTemplateId": "1001",
+                    "trainingType": "SENTENCE_REPEAT",
                     "curriculumId": "1001",
                     "trainingOrder": "string",
                     "trainingStatus": "COMPLETED",
@@ -3774,7 +3910,7 @@
         ],
         "description": "trainingId는 trainings.id다. 훈련 문항은 training_datas.generated_data에서 조회하며 학생 소유 관계를 검증한다.",
         "x-notion-request-summary": "studentId(path)\ntrainingId(path)",
-        "x-notion-response-summary": "trainingId\ntrainingTemplateId\ndailyCurriculumId\nsequenceNo\nstatus\ntrainingName\ngeneratedData\nstartedAt\nfinishedAt",
+        "x-notion-response-summary": "trainingId\ntrainingTemplateId\ntrainingType\ndailyCurriculumId\nsequenceNo\nstatus\ntrainingName\ngeneratedData\nstartedAt\nfinishedAt",
         "x-review-status": "reviewed",
         "security": [
           {
@@ -4666,6 +4802,95 @@
       }
     },
     "schemas": {
+      "TrainingType": {
+        "type": "string",
+        "description": "아동 앱의 훈련 화면과 제출 계약을 선택하는 안정적인 의미 식별자",
+        "enum": [
+          "VOWEL_TRACE",
+          "CONSONANT_TRACE",
+          "SYLLABLE_TRACE",
+          "CONSONANT_SOUND_CHOICE",
+          "VOWEL_SOUND_CHOICE",
+          "CONSONANT_VOWEL_CLASSIFICATION",
+          "SYLLABLE_INITIAL_CHOICE",
+          "WORD_INITIAL_CHOICE",
+          "SAME_INITIAL_WORD_CHOICE",
+          "FINAL_CONSONANT_CHOICE",
+          "WORD_FINAL_SOUND_CHOICE",
+          "FINAL_CONSONANT_COMPARISON",
+          "SIMILAR_SOUND_CHOICE",
+          "PHONEME_BLEND",
+          "SYLLABLE_BLEND",
+          "BASIC_SYLLABLE_BUILD",
+          "FINAL_SYLLABLE_BUILD",
+          "DOUBLE_FINAL_BUILD",
+          "FINAL_CONSONANT_DELETE",
+          "SYLLABLE_DELETE",
+          "SYLLABLE_REPLACE",
+          "WORD_READING",
+          "NONWORD_READING",
+          "DIFFICULT_WORD_PREVIEW",
+          "SENTENCE_READING",
+          "SHORT_PASSAGE_READING",
+          "SENTENCE_ASSEMBLY",
+          "FILL_IN_THE_BLANK",
+          "IMAGE_SENTENCE_MATCH",
+          "SENTENCE_REPEAT",
+          "WORD_CHAIN_READING",
+          "PHRASE_READING",
+          "REPEATED_SENTENCE_READING",
+          "SHORT_STORY_READING"
+        ]
+      },
+      "RealtimeEvent": {
+        "type": "object",
+        "properties": {
+          "eventId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "studentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "resource": {
+            "type": "string",
+            "enum": [
+              "STUDENT",
+              "CURRICULUM",
+              "TRAINING",
+              "TEST",
+              "STORY",
+              "GAZE"
+            ]
+          },
+          "resourceId": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "changeType": {
+            "type": "string"
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "eventId",
+          "studentId",
+          "resource",
+          "resourceId",
+          "changeType",
+          "occurredAt",
+          "version"
+        ]
+      },
       "ErrorDetail": {
         "type": "object",
         "properties": {
