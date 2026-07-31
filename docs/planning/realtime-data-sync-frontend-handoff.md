@@ -1,21 +1,25 @@
-# 교수자 Web–아동 App 실시간 연동 Frontend 인수
+# 교수자 Web–아동 App 실시간 연동 Vue Frontend 인수
 
 - 상태: ready
-- 기준 브랜치: 각 저장소 `develop`
+- 담당 저장소: `services/frontend-web`, `services/frontend-app`
+- 기술 기준: Vue 3, TypeScript, Pinia, Vue Router, Vite
+- 기준 브랜치: 두 Frontend 저장소의 최신 `develop`
 - 관련 작업: [실시간 데이터 연동 TODO](realtime-data-sync-todo.md)
 - 관련 계획: [교수자 Web–아동 App 실시간 데이터 연동](../../plans/2026-07-31-teacher-learner-data-linkage.md)
 
 ## 결론
 
-Backend, OpenAPI, SSE 클라이언트, 이벤트별 선택 재조회, 화면 복귀 재조회와 3초 안전 재검증은 구현되어 있다. Frontend 담당자는 기존 동기화 코드를 다시 작성하지 않고 다음 두 결과를 완성한다.
+Backend, OpenAPI, SSE 클라이언트, 이벤트별 선택 재조회, 화면 복귀 재조회와 3초 안전 재검증은 구현되어 있다. Vue 담당자는 기존 동기화 코드를 다시 작성하지 않고 다음 네 결과를 완성한다.
 
-1. 교수자 화면에서 3초 이상 최신화에 실패했을 때만 데이터가 오래되었음을 알리고 수동 재시도를 제공한다.
-2. 교수자 Web과 아동 App을 실제 브라우저로 동시에 열어 주요 데이터 흐름이 새로고침 없이 3초 이내 반영되는지 검증한다.
+1. Backend에 추가된 한글 대결 3종을 아동 App의 기존 `hangul-battle` 화면과 실제 제출 API에 연결한다.
+2. 교수자 화면에서 3초 이상 최신화에 실패했을 때만 데이터가 오래되었음을 알리고 수동 재시도를 제공한다.
+3. 교수자 보고서 화면에 생성 시점의 완료 데이터 스냅샷이라는 점을 표시한다.
+4. 교수자 Web과 아동 App을 실제 브라우저로 동시에 열어 주요 데이터 흐름이 새로고침 없이 3초 이내 반영되는지 검증한다.
 
 ## 시작 기준
 
-- orchestration: `develop`의 최신 커밋
-- Backend: `develop`의 최신 커밋
+- orchestration: `feature/realtime-sync-handoff`의 최신 커밋. 해당 PR 병합 후에는 `develop`
+- Backend: `feature/realtime-sync-hardening`의 최신 커밋. 해당 PR 병합 후에는 `develop`
 - 교수자 Web: `develop`의 최신 커밋
 - 아동 App: `develop`의 최신 커밋
 - 데모 계정: `demo@iread.local` / `demo1234`
@@ -53,7 +57,8 @@ node tools/verify_realtime_demo.mjs
 - 교수자 학생 정보 변경 시 세션 프로필 재조회
 - 교육과정·훈련 변경 시 현재 교육과정 재조회
 - 화면 복귀와 교육과정 화면의 3초 안전 재검증
-- 34개 `trainingType` 기반 훈련 화면 매핑
+- 기존 34개 `trainingType` 기반 훈련 화면 매핑
+- 한글 대결 Vue 화면·타입·이미지 리소스(`HangulBattleActivity.vue`, `hangul-battle`)
 - 지원하지 않는 훈련 유형의 계약 오류 노출
 
 주요 파일:
@@ -65,7 +70,33 @@ node tools/verify_realtime_demo.mjs
 
 ## 구현할 Frontend 범위
 
-### 1. 교수자 데이터 최신성 안내
+### 1. 아동 App 한글 대결 3종 API 연결
+
+최신 Backend는 템플릿 35~37과 `BATTLE_ROUNDS` 응답 계약을 제공하지만 현재 아동 App `develop`은 기존 34개만 매핑한다. 따라서 지금 상태로 새 훈련을 열면 지원하지 않는 `trainingType` 또는 `responseType` 계약 오류가 발생한다.
+
+| 템플릿 ID | `trainingType` | 기존 Vue 화면 |
+|---:|---|---|
+| 35 | `HANGUL_BATTLE_BASIC` | `phonics` / `battle-rabbit` |
+| 36 | `HANGUL_BATTLE_FINAL` | `phonics` / `battle-turtle` |
+| 37 | `HANGUL_BATTLE_DOUBLE_FINAL` | `phonics` / `battle-ant` |
+
+- `trainingTemplateMapping.ts`에 세 의미 타입과 숫자 ID fallback을 추가한다.
+- `LearnerTrainingResponseType`에 `BATTLE_ROUNDS`를 추가한다.
+- 조회 응답의 `content.opponent`, `content.rounds[]`와 `answer.answerOrders[]`를 `battleOpponent`, `battleRounds[]`로 변환한다.
+- 각 타일은 라운드 안에서 안정적인 ID를 부여하고, `opponent`의 `RABBIT`, `TURTLE`, `ANT`는 Vue 타입의 소문자 값으로 변환한다.
+- 제출 시 `responseType: BATTLE_ROUNDS`, `response: { roundOrders: string[][] }`를 전송한다. 각 배열은 아동이 라운드에서 배치한 자모 순서다.
+- 같은 `submissionId` 재전송은 Backend가 기존 피드백을 반환하므로 네트워크 재시도 때 새 UUID를 만들지 않는다.
+- `allTrainingTypes.test.ts`를 37개 연속 ID와 세 한글 대결 fixture까지 검증하도록 확장한다.
+
+주요 수정 위치:
+
+- `services/frontend-app/src/features/learner/content/trainingTemplateMapping.ts`
+- `services/frontend-app/src/features/learner/training/repository.ts`
+- `services/frontend-app/src/features/learner/training/trainingQuestionMapper.ts`
+- `services/frontend-app/src/features/learner/training/allTrainingTypes.test.ts`
+- 제출 값을 노출해야 한다면 `services/frontend-app/src/components/training/activities/HangulBattleActivity.vue`
+
+### 2. 교수자 데이터 최신성 안내
 
 상시 연결 아이콘이나 `SSE connected` 같은 기술 상태는 표시하지 않는다.
 
@@ -90,7 +121,21 @@ node tools/verify_realtime_demo.mjs
 - `services/frontend-web/src/layouts/TeacherLayout.vue`
 - 필요하면 실시간 최신성만 담당하는 작은 store 또는 composable을 추가한다.
 
-### 2. 실제 브라우저 교차 앱 E2E
+### 3. 보고서 스냅샷 안내
+
+보고서 화면은 실시간 이벤트를 구독하거나 자동 재생성하지 않는다.
+
+- 생성 시각 또는 보고서 기준 기간과 함께 `완료된 학습 데이터를 기준으로 생성된 보고서입니다.` 수준의 안내를 표시한다.
+- 교수자 메모 수정과 사용자가 직접 요청하는 시선 추이 갱신은 기존 동작을 유지한다.
+- 최신성 경고와 수동 재시도 UI를 보고서 화면에는 표시하지 않는다.
+- SSE 이벤트를 받았다는 이유로 보고서 조회 또는 생성 API를 다시 호출하지 않는다.
+
+권장 수정 위치:
+
+- `services/frontend-web/src/views/students/StudentReportView.vue`
+- 실제 보고서 화면 경로가 다르면 라우터에서 연결된 현재 컴포넌트를 기준으로 적용한다.
+
+### 4. 실제 브라우저 교차 앱 E2E
 
 다음 시나리오를 교수자 Web `http://localhost:5173`과 아동 App `http://localhost:5174`에서 검증한다.
 
@@ -105,6 +150,14 @@ node tools/verify_realtime_demo.mjs
 - 다른 교수자·학생 데이터가 화면에 섞이지 않음
 
 각 시나리오는 Backend 저장 완료부터 상대 화면 표시 완료까지 시간을 측정하고 3초 이하임을 기록한다.
+
+## 명시적 제외 범위
+
+- 아동 App에는 연결 상태, 마지막 갱신 시각, 재시도 버튼을 추가하지 않는다.
+- 교수자 Web에도 정상 연결 중인 `SSE connected` 아이콘이나 상시 연결 상태를 표시하지 않는다.
+- 진행 중인 훈련의 교수자 편집 알림, 팝업 또는 배너를 아동 App에 추가하지 않는다.
+- 보고서를 실시간으로 재생성하거나 이미 생성된 보고서 내용을 자동 변경하지 않는다.
+- SSE 이벤트 본문을 화면 데이터로 직접 렌더링하지 않는다.
 
 ## 변경하지 않을 계약
 
@@ -135,6 +188,9 @@ node tools/verify_realtime_demo.mjs
 - 정상 연결 중에는 불필요한 상태 표시가 없다.
 - 3초 이상 최신화 실패 시에만 경고, 마지막 성공 시각과 `다시 시도`가 나타난다.
 - 복구 성공 후 경고가 사라지고 최신 데이터가 표시된다.
+- 보고서 화면에 완료 데이터 기반 생성 시점 스냅샷 안내가 표시되고 실시간 재조회는 발생하지 않는다.
+- 아동 App에는 연결 상태나 교수자 편집 알림 UI가 추가되지 않는다.
+- 37개 `trainingType`이 모두 화면에 매핑되고 한글 대결 3종의 조회·제출이 API 모드에서 통과한다.
 - 위 교차 앱 시나리오가 새로고침 없이 3초 이내 통과한다.
 - Frontend 단위 테스트와 프로덕션 빌드가 통과한다.
 - 측정 결과와 실패한 시나리오를 [실시간 데이터 연동 TODO](realtime-data-sync-todo.md)에 반영한다.

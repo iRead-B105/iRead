@@ -22,13 +22,13 @@
 }
 ```
 
-- `questionType`은 생성·저장된 34개 훈련 타입이다. 검사는 연결된 `training_template_id`의 같은 타입을 사용한다.
+- `questionType`은 생성·저장된 37개 훈련 타입이다. 검사는 연결된 `training_template_id`의 같은 타입을 사용한다.
 - `responseType`은 App이 사용할 입력 컴포넌트와 제출 API를 결정한다.
 - `content`에는 표시와 입력 수집에 필요한 필드만 포함한다.
 - `answer`, `answerIndex`, `answerOrder`, 기대 발음, 분석 대상과 특징 코드는 Backend 내부 문항에만 보관한다.
 - App은 `questionType`을 다시 분류하지 않고 Backend가 제공한 `responseType`을 사용한다.
 
-### 34개 타입 매핑
+### 37개 타입 매핑
 
 | `responseType` | `questionType` |
 | --- | --- |
@@ -36,6 +36,7 @@
 | `SINGLE_CHOICE` | `CONSONANT_SOUND_CHOICE`, `VOWEL_SOUND_CHOICE`, `CONSONANT_VOWEL_CLASSIFICATION`, `SYLLABLE_INITIAL_CHOICE`, `WORD_INITIAL_CHOICE`, `SAME_INITIAL_WORD_CHOICE`, `FINAL_CONSONANT_CHOICE`, `WORD_FINAL_SOUND_CHOICE`, `FINAL_CONSONANT_COMPARISON`, `SIMILAR_SOUND_CHOICE`, `FINAL_CONSONANT_DELETE`, `SYLLABLE_DELETE`, `SYLLABLE_REPLACE`, `IMAGE_SENTENCE_MATCH` |
 | `ORDERING` | `PHONEME_BLEND`, `SYLLABLE_BLEND`, `SENTENCE_ASSEMBLY` |
 | `COMPONENT_BUILD` | `BASIC_SYLLABLE_BUILD`, `FINAL_SYLLABLE_BUILD`, `DOUBLE_FINAL_BUILD` |
+| `BATTLE_ROUNDS` | `HANGUL_BATTLE_BASIC`, `HANGUL_BATTLE_FINAL`, `HANGUL_BATTLE_DOUBLE_FINAL` |
 | `AUDIO` | `WORD_READING`, `NONWORD_READING`, `DIFFICULT_WORD_PREVIEW`, `SENTENCE_READING`, `SHORT_PASSAGE_READING`, `SENTENCE_REPEAT`, `WORD_CHAIN_READING`, `PHRASE_READING`, `REPEATED_SENTENCE_READING`, `SHORT_STORY_READING` |
 | 동적 | `FILL_IN_THE_BLANK`: `CHOICE→SINGLE_CHOICE`, `TEXT→TEXT_INPUT`, `VOICE→AUDIO`, `HANDWRITING→TRACE` |
 
@@ -80,6 +81,7 @@
 | `SINGLE_CHOICE` | 선택한 보기의 0 기반 인덱스 | 듣고 고르기, 삭제·대치, 선택형 빈칸 |
 | `ORDERING` | 사용자가 확정한 보기 인덱스 순서 | 음소·음절 합성, 문장 조립 |
 | `COMPONENT_BUILD` | 초성·중성·종성 슬롯별 선택 인덱스 | 기본·받침·겹받침 글자 만들기 |
+| `BATTLE_ROUNDS` | 각 라운드에서 확정한 자모 순서 배열 | 기본·받침·겹받침 한글 대결 |
 | `TEXT_INPUT` | 사용자가 직접 입력한 문자열 | 텍스트형 빈칸 |
 
 문항에 없는 인덱스, 중복 슬롯, 문항과 다른 `responseType`은 Backend가 `400`으로 거절한다.
