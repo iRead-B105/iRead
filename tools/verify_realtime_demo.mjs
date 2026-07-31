@@ -86,8 +86,28 @@ if (current.trainings.length < 2) {
 
 const editableTraining = current.trainings[1]
 const firstTraining = current.trainings[0]
-const wordName = `sync-check-${Date.now()}`
-let addedWordId = null
+const lessonPath = `/api/admin/training/${studentId}/${editableTraining.trainingId}/lesson-material`
+const originalLesson = (await api(lessonPath, { token: admin.accessToken })).data
+if (!originalLesson.materials.length) {
+  throw new Error('The editable demo training needs generated lesson materials')
+}
+const syncMarker = `sync-check-${Date.now()}`
+const editableMaterials = (materials) => materials.map((material) => ({
+  questionNo: material.questionNo,
+  questionType: material.questionType,
+  presentation: material.presentation,
+  content: material.content,
+  answer: material.answer,
+}))
+const updatedMaterials = editableMaterials(originalLesson.materials)
+updatedMaterials[0] = {
+  ...updatedMaterials[0],
+  presentation: {
+    ...(updatedMaterials[0].presentation ?? {}),
+    syncCheck: syncMarker,
+  },
+}
+let restoreRevision = null
 
 const learnerWait = nextEvent(
   '/api/app/realtime/events',
@@ -99,21 +119,20 @@ await new Promise((resolve) => setTimeout(resolve, 250))
 const teacherWriteAt = Date.now()
 
 try {
-  await api(
-    `/api/admin/training/${studentId}/${editableTraining.trainingId}/expected-word`,
-    {
-      token: admin.accessToken,
-      method: 'POST',
-      body: { wordName },
+  const savedLesson = (await api(lessonPath, {
+    token: admin.accessToken,
+    method: 'PUT',
+    body: {
+      revision: originalLesson.revision,
+      materials: updatedMaterials,
     },
-  )
+  })).data
+  restoreRevision = savedLesson.revision
   const learnerEvent = await learnerWait
-  const words = (await api(
-    `/api/admin/training/${studentId}/${editableTraining.trainingId}/expected-word`,
-    { token: admin.accessToken },
-  )).data.words
-  addedWordId = words.find((word) => word.word === wordName)?.wordId ?? null
-  if (addedWordId === null) throw new Error('The temporary expected word was not found')
+  const refreshedLesson = (await api(lessonPath, { token: admin.accessToken })).data
+  if (refreshedLesson.materials[0]?.presentation?.syncCheck !== syncMarker) {
+    throw new Error('The edited lesson material was not found')
+  }
 
   const adminWait = nextEvent(
     '/api/admin/realtime/events',
@@ -148,14 +167,14 @@ try {
     throw new Error(`Realtime propagation exceeded ${limitMs}ms`)
   }
 } finally {
-  if (addedWordId !== null) {
-    await api(
-      `/api/admin/training/${studentId}/${editableTraining.trainingId}`
-        + `/expected-word/${addedWordId}`,
-      {
-        token: admin.accessToken,
-        method: 'DELETE',
+  if (restoreRevision !== null) {
+    await api(lessonPath, {
+      token: admin.accessToken,
+      method: 'PUT',
+      body: {
+        revision: restoreRevision,
+        materials: editableMaterials(originalLesson.materials),
       },
-    )
+    })
   }
 }

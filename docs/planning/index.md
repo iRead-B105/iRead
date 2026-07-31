@@ -6,3 +6,4 @@
 * [로드맵](roadmap.md) - 단계별 목표와 완료 기준
 * [시작 준비 기준](definition-of-ready.md) - 작업 시작 전 체크리스트
 * [완료 기준](definition-of-done.md) - 작업 완료 전 체크리스트
+* [이야기 분기·교안 편집 작업 인계](story-lesson-material-handoff.md) - Vue와 AI server 담당자 구현 기준 및 로컬 데모 검증 시점

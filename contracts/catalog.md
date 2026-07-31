@@ -17,7 +17,7 @@ timestamp: 2026-07-27T00:00:00+09:00
 | 공통 인증 API | `contracts/openapi/auth-api.yaml` | Orchestration | 이전·검토 완료 | Notion 이관 스냅샷, Backend·소비 앱 |
 | Backend–AI API | `contracts/openapi/ai-api.yaml` | Orchestration | Azure Speech 발음 평가 전환 계약 작성, 단어 배열 확장·AI adapter 구현 필요 | Backend·AI |
 | Eye Tracker API 연동 초안 | `contracts/gaze/eyetracker-api-contract.md` | Orchestration | draft, 팀 합의 필요 | Backend·Frontend·Eyetracking |
-| MySQL 실행 스키마 | `services/backend` Flyway migration | Backend | 최종 스키마 V1·데모 seed V2, 시선 원본 파일 URL과 활성 교육과정 UNIQUE 제약 동기화, 빈 MySQL 실행 검증 완료 | `contracts/database/schema.sql`, `contracts/database/erd.png`, `contracts/database/erd.md` |
+| MySQL 실행 스키마 | `services/backend` Flyway migration | Backend | 2026-07-31 V1 최종 스키마·V2 데모 통합, 시선 원본 파일 URL과 활성 교육과정 UNIQUE 제약 동기화, MySQL 8.4.11 Flyway·JPA·데모 seed 검증 완료 | `contracts/database/schema.sql`, `contracts/database/erd.png`, `contracts/database/erd.md` |
 
 ## 전환 원칙
 

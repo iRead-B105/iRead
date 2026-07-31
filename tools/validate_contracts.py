@@ -28,6 +28,7 @@ ERD = ROOT / "contracts/database/erd.md"
 FLYWAY_MIGRATIONS = (
     ROOT / "services/backend/src/main/resources/db/migration"
 )
+FLYWAY_DEMO = ROOT / "services/backend/src/main/resources/db/demo"
 BACKEND_JAVA = ROOT / "services/backend/src/main/java"
 HTTP_METHODS = {"get", "post", "put", "patch", "delete"}
 OBSOLETE_PATHS = {
@@ -347,26 +348,26 @@ def validate_schema() -> tuple[list[str], dict[str, int]]:
             "database ERD is out of date; run python tools/generate_erd.py"
         )
     flyway_baseline = FLYWAY_MIGRATIONS / "V1__baseline_schema.sql"
-    if not flyway_baseline.is_file():
-        errors.append("missing backend Flyway V1 baseline")
-    else:
-        baseline_sql = flyway_baseline.read_text(encoding="utf-8-sig")
-        baseline_tables = set(re.findall(r"CREATE TABLE `([^`]+)`", baseline_sql))
-        current_tables = set(re.findall(r"CREATE TABLE `([^`]+)`", sql))
-        if baseline_sql != sql:
-            errors.append(
-                "schema contract must exactly match the single Flyway V1 baseline"
-            )
     migration_files = sorted(FLYWAY_MIGRATIONS.glob("V*__*.sql"))
+    demo_files = sorted(FLYWAY_DEMO.glob("V*__*.sql"))
+    all_flyway_files = migration_files + demo_files
     migration_versions = [
         re.match(r"V(\d+)__", path.name).group(1)
-        for path in migration_files
+        for path in all_flyway_files
         if re.match(r"V(\d+)__", path.name)
     ]
     if len(migration_versions) != len(set(migration_versions)):
         errors.append("duplicate backend Flyway migration version")
     if [path.name for path in migration_files] != ["V1__baseline_schema.sql"]:
-        errors.append("backend Flyway must use a single V1 baseline before DB rollout")
+        errors.append("backend schema must be consolidated into the Flyway V1 baseline")
+    if [path.name for path in demo_files] != ["V2__demo_seed.sql"]:
+        errors.append("backend demo data must be consolidated into Flyway V2")
+    if not flyway_baseline.is_file():
+        errors.append("missing backend Flyway V1 baseline")
+    else:
+        baseline_sql = flyway_baseline.read_text(encoding="utf-8-sig")
+        if baseline_sql != sql:
+            errors.append("schema contract must exactly match the Flyway V1 baseline")
     tables = re.findall(r"CREATE TABLE `([^`]+)` \((.*?)\);", sql, re.DOTALL)
     primary_keys = re.findall(r"\bPRIMARY KEY\b", sql, re.IGNORECASE)
     foreign_keys = re.findall(r"\bFOREIGN KEY\s*\(", sql, re.IGNORECASE)

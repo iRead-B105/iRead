@@ -8,7 +8,7 @@ timestamp: 2026-07-29T00:00:00+09:00
 # Backend·Frontend 구현 백로그
 
 - 상태: active
-- 최종 검토일: 2026-07-29
+- 최종 검토일: 2026-07-31
 - 적용 범위: `services/backend`, `services/frontend-web`, `services/frontend-app`
 - 계약 기준: [OpenAPI](../../contracts/openapi/index.md), [MySQL 스키마](../../contracts/database/index.md), [기능 카탈로그](../product/features/catalog/index.md)
 
@@ -255,6 +255,7 @@ timestamp: 2026-07-29T00:00:00+09:00
 | FE-011 | 두 저장소 | P1 | 공통 로딩·빈 상태·오류·재인증 UX 정리 | 공통 오류 응답, 401·403·404·409 | FE-002, FE-007, BE-012 | todo |
 | FE-012 | 두 저장소 | P1 | 핵심 데모 시나리오와 접근성·반응형 마무리 | 교수자 관리, 아동 검사·훈련·이야기 | FE-003~FE-011 | todo |
 | FE-013 | `services/frontend-web` | P0 | 교수자 이메일 기반 계정 복구와 보고서·프로필 계약 정합화 | Auth, Admin `teacher`, `report` | FE-002, FE-005, BE-031 | done |
+| FE-014 | `services/frontend-web` | P0 | 예상 단어 UI를 제거하고 생성 교안 전체 편집으로 전환 | Admin `lesson-material` GET/PUT, revision·409·422 | FE-004 | todo |
 
 ### Frontend 수용 기준
 

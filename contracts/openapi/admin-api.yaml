@@ -42,274 +42,6 @@
         "x-review-status": "reviewed"
       }
     },
-    "/api/admin/report": {
-      "post": {
-        "operationId": "post_admin_report",
-        "summary": "보고서 저장, 보고서 분석 결과 생성 성공 처리, 보고서 분석 결과 생성 실패 처리",
-        "tags": [
-          "report"
-        ],
-        "parameters": [],
-        "responses": {
-          "201": {
-            "description": "요청 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/SuccessResponse"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "reportId": {
-                              "type": "string",
-                              "description": "생성된 보고서 식별자"
-                            },
-                            "createdAt": {
-                              "type": "string",
-                              "format": "date-time",
-                              "description": "보고서 생성일시(ISO 8601)"
-                            }
-                          }
-                        }
-                      },
-                      "required": [
-                        "data"
-                      ]
-                    }
-                  ]
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "reportId": "5001",
-                    "createdAt": "2026-07-24T12:00:00+09:00"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          }
-        },
-        "x-notion-page-id": "3a4027df-9053-80ae-95bc-fcf02c9d9773",
-        "x-notion-url": "https://app.notion.com/p/api-admin-report-3a4027df905380ae95bcfcf02c9d9773",
-        "x-feature-ids": [
-          "RP-SAVE-01",
-          "RP-GEN-02",
-          "RP-GEN-03",
-          "RP-GEN-01"
-        ],
-        "description": "완료된 훈련 또는 검사가 한 건 이상 있어야 생성한다. 학습 기록이 없으면 REPORT_DATA_NOT_FOUND, 동일 아동·시작일·종료일 보고서가 있으면 REPORT_PERIOD_ALREADY_EXISTS와 기존 reportId를 반환한다. 교수자 의견은 최대 2,000자이며 저장된 보고서는 삭제하지 않는다.",
-        "x-notion-request-summary": "studentId(body)\nstartDate(body)\nendDate(body)\nteacherMemo(body, optional)",
-        "x-notion-response-summary": "reportId\ncreatedAt",
-        "x-review-status": "reviewed",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "studentId": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "아동 식별자"
-                  },
-                  "startDate": {
-                    "type": "string",
-                    "format": "date",
-                    "description": "보고서 집계 시작일"
-                  },
-                  "endDate": {
-                    "type": "string",
-                    "format": "date",
-                    "description": "보고서 집계 종료일"
-                  },
-                  "teacherMemo": {
-                    "type": "string",
-                    "maxLength": 2000,
-                    "description": "최대 2,000자의 교수자 의견"
-                  }
-                },
-                "required": [
-                  "studentId",
-                  "startDate",
-                  "endDate"
-                ]
-              },
-              "example": {
-                "studentId": "1001",
-                "startDate": "2026-07-01",
-                "endDate": "2026-07-31",
-                "teacherMemo": "읽기 자신감이 향상되었습니다."
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/api/admin/report/{reportId}": {
-      "get": {
-        "operationId": "get_admin_report_by_reportId",
-        "summary": "보고서 상세 조회, 보고서 상세 표시, 보고서 조회 실패 처리",
-        "tags": [
-          "report"
-        ],
-        "parameters": [
-          {
-            "name": "reportId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "보고서 식별자"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "요청 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/SuccessResponse"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "reportId": {
-                              "type": "integer",
-                              "format": "int64",
-                              "description": "보고서 식별자"
-                            },
-                            "studentId": {
-                              "type": "integer",
-                              "format": "int64",
-                              "description": "아동 식별자"
-                            },
-                            "startDate": {
-                              "type": "string",
-                              "format": "date",
-                              "description": "집계 시작일"
-                            },
-                            "endDate": {
-                              "type": "string",
-                              "format": "date",
-                              "description": "집계 종료일"
-                            },
-                            "createdAt": {
-                              "type": "string",
-                              "format": "date-time",
-                              "description": "보고서 생성일시"
-                            },
-                            "snapshot": {
-                              "type": "object",
-                              "additionalProperties": true,
-                              "description": "생성 시점에 저장한 보고서 분석 스냅샷"
-                            },
-                            "teacherMemo": {
-                              "type": "string",
-                              "description": "교수자 의견"
-                            }
-                          },
-                          "required": [
-                            "reportId",
-                            "studentId",
-                            "startDate",
-                            "endDate",
-                            "createdAt",
-                            "snapshot"
-                          ]
-                        }
-                      },
-                      "required": [
-                        "data"
-                      ]
-                    }
-                  ]
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "reportId": "5001",
-                    "startDate": "2026-07-01",
-                    "endDate": "2026-07-31",
-                    "createdAt": "2026-07-24T12:00:00+09:00",
-                    "learningDays": 12,
-                    "totalTrainingTime": 420,
-                    "completedTrainingCount": 18,
-                    "averageAccuracy": 86.5,
-                    "averageReadingSpeed": 72.0,
-                    "growthByPeriod": [],
-                    "achievementByDomain": {},
-                    "frequentErrorWords": [],
-                    "improvedPatterns": [],
-                    "persistentDifficulties": [],
-                    "teacherMemo": "읽기 자신감이 향상되었습니다."
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          }
-        },
-        "x-notion-page-id": "3a4027df-9053-801e-89df-cb44a0b67406",
-        "x-notion-url": "https://app.notion.com/p/api-admin-report-reportId-3a4027df9053801e89dfcb44a0b67406",
-        "x-feature-ids": [
-          "RP-DSP-01",
-          "RP-DSP-04",
-          "RP-DSP-05",
-          "RP-DSP-03",
-          "RP-DSP-07"
-        ],
-        "description": "reports.snapshot_data를 snapshot 객체로 반환한다. studentId는 보고서가 속한 아동 식별자이며 teacherMemo는 null일 수 있다.",
-        "x-notion-request-summary": "reportId(path)",
-        "x-notion-response-summary": "reportId\nstudentId\nstartDate\nendDate\ncreatedAt\nsnapshot\nteacherMemo",
-        "x-review-status": "reviewed",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
     "/api/admin/report/{reportId}/gaze-analysis": {
       "post": {
         "operationId": "post_admin_report_by_reportId_gaze_analysis",
@@ -3492,279 +3224,6 @@
         ]
       }
     },
-    "/api/admin/training/{studentId}/{trainingId}/expected-word": {
-      "get": {
-        "operationId": "get_admin_training_by_studentId_by_trainingId_expected_word",
-        "summary": "교안 학습 자료 목록 표시",
-        "tags": [
-          "training"
-        ],
-        "parameters": [
-          {
-            "name": "studentId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "studentId 식별자"
-          },
-          {
-            "name": "trainingId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "trainingId 식별자"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "요청 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/SuccessResponse"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "words": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "additionalProperties": true,
-                                "properties": {
-                                  "wordId": {
-                                    "type": "string",
-                                    "description": "단어id"
-                                  },
-                                  "word": {
-                                    "type": "string",
-                                    "description": "단어명"
-                                  }
-                                }
-                              },
-                              "description": "단어"
-                            }
-                          }
-                        }
-                      },
-                      "required": [
-                        "data"
-                      ]
-                    }
-                  ]
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "words": [
-                      {
-                        "wordId": "1001",
-                        "word": "string"
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          }
-        },
-        "x-notion-page-id": "3a3027df-9053-8088-b76e-e9538ba18df6",
-        "x-notion-url": "https://app.notion.com/p/api-admin-training-studentId-trainingId-expected-word-3a3027df90538088b76ee9538ba18df6",
-        "x-feature-ids": [
-          "CU-DSP-03"
-        ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
-        "x-notion-request-summary": "studentId(path)\ntrainingId(path)",
-        "x-notion-response-summary": "단어[] {\n  단어id\n  단어명\n}",
-        "x-review-status": "reviewed",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      },
-      "post": {
-        "operationId": "post_admin_training_by_studentId_by_trainingId_expected_word",
-        "summary": "교안 학습 자료 추가",
-        "tags": [
-          "training"
-        ],
-        "parameters": [
-          {
-            "name": "studentId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "studentId 식별자"
-          },
-          {
-            "name": "trainingId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "trainingId 식별자"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "요청 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SuccessResponse"
-                },
-                "example": {
-                  "success": true
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          }
-        },
-        "x-notion-page-id": "3a3027df-9053-8079-9eb8-f404600f0bc8",
-        "x-notion-url": "https://app.notion.com/p/api-admin-training-studentId-trainingId-expected-word-3a3027df905380799eb8f404600f0bc8",
-        "x-feature-ids": [
-          "CU-SAVE-02"
-        ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
-        "x-notion-request-summary": "studentId(path)\ntrainingId(path)\n추가할 단어명",
-        "x-notion-response-summary": "ok",
-        "x-review-status": "reviewed",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "wordName": {
-                    "type": "string",
-                    "description": "추가할 단어명"
-                  }
-                },
-                "required": [
-                  "wordName"
-                ]
-              },
-              "example": {
-                "wordName": "string"
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
-    "/api/admin/training/{studentId}/{trainingId}/expected-word/{wordId}": {
-      "delete": {
-        "operationId": "delete_admin_training_by_studentId_by_trainingId_expected_word_by_wordId",
-        "summary": "교안 학습 자료 삭제",
-        "tags": [
-          "training"
-        ],
-        "parameters": [
-          {
-            "name": "studentId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "studentId 식별자"
-          },
-          {
-            "name": "trainingId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "trainingId 식별자"
-          },
-          {
-            "name": "wordId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "wordId 식별자"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "요청 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SuccessResponse"
-                },
-                "example": {
-                  "success": true
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          }
-        },
-        "x-notion-page-id": "3a3027df-9053-8017-8692-f0b03c1e3d04",
-        "x-notion-url": "https://app.notion.com/p/api-admin-training-studentId-trainingId-expected-word-wordId-3a3027df905380178692f0b03c1e3d04",
-        "x-feature-ids": [
-          "CU-SAVE-03"
-        ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
-        "x-notion-request-summary": "studentId(path)\ntrainingId(path)\nwordId(path)",
-        "x-notion-response-summary": "ok",
-        "x-review-status": "reviewed",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
     "/api/admin/training/{studentId}/{trainingId}/export": {
       "post": {
         "operationId": "post_admin_training_by_studentId_by_trainingId_export",
@@ -4272,6 +3731,1377 @@
         "description": "완료된 훈련을 날짜별로 집계해 음성 및 시선 기준 읽기 속도와 기간 변화율을 반환한다.",
         "x-notion-request-summary": "studentId(path)\nfrom(query, optional)\nto(query, optional)",
         "x-notion-response-summary": "from\nto\nunit\nvoiceChangeRate\ngazeChangeRate\npoints[]",
+        "x-review-status": "reviewed",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/story/{studentId}/{storyId}/gaze-analysis": {
+      "get": {
+        "operationId": "get_admin_story_by_studentId_by_storyId_gaze_analysis",
+        "summary": "GET /api/admin/story/{studentId}/{storyId}/gaze-analysis",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Student identifier"
+          },
+          {
+            "name": "storyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Story identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "gazeSessionId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Latest completed story gaze session"
+                            },
+                            "gazeAnalysisId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Gaze analysis identifier"
+                            },
+                            "calibrationStatus": {
+                              "type": "string",
+                              "description": "Calibration status"
+                            },
+                            "startedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "Session start time"
+                            },
+                            "endedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "Session end time"
+                            },
+                            "totalDwellTime": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Total dwell time in milliseconds"
+                            },
+                            "dwellCount": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Total fixation count"
+                            },
+                            "regressionCount": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Total regression count"
+                            },
+                            "averageFixationTime": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Average fixation time in milliseconds"
+                            },
+                            "pageMetrics": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                              },
+                              "description": "Per-page gaze metrics"
+                            },
+                            "analysisMeta": {
+                              "type": "object",
+                              "additionalProperties": true,
+                              "description": "Analysis metadata"
+                            }
+                          },
+                          "required": [
+                            "gazeSessionId",
+                            "gazeAnalysisId",
+                            "calibrationStatus",
+                            "startedAt",
+                            "endedAt",
+                            "totalDwellTime",
+                            "dwellCount",
+                            "regressionCount",
+                            "pageMetrics"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "x-notion-page-id": "git-admin-story-gaze-analysis-v1",
+        "x-notion-url": "git:contracts/api-resolutions.json#admin-story-gaze-analysis",
+        "x-feature-ids": [],
+        "description": "Normalizes the latest completed STORY gaze result into page metrics. Raw gaze coordinates are never returned.",
+        "x-notion-request-summary": "studentId(path), storyId(path)",
+        "x-notion-response-summary": "gazeSessionId, gazeAnalysisId, calibrationStatus, startedAt, endedAt, totalDwellTime, dwellCount, regressionCount, averageFixationTime, pageMetrics, analysisMeta",
+        "x-review-status": "reviewed",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/student/{studentId}/learning-events/recent": {
+      "get": {
+        "operationId": "get_admin_student_by_studentId_learning_events_recent",
+        "summary": "GET /api/admin/student/{studentId}/learning-events/recent",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Student identifier"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "description": "Maximum event count"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "events": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                              },
+                              "description": "Recent learning events"
+                            }
+                          },
+                          "required": [
+                            "events"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "x-notion-page-id": "git-admin-learning-events-recent-v1",
+        "x-notion-url": "git:contracts/api-resolutions.json#admin-learning-events-recent",
+        "x-feature-ids": [],
+        "description": "Registers the existing backend recent learning events endpoint in the shared contract.",
+        "x-notion-request-summary": "studentId(path), limit(query)",
+        "x-notion-response-summary": "events",
+        "x-review-status": "reviewed",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/student/{studentId}/story-history": {
+      "get": {
+        "operationId": "get_admin_student_by_studentId_story_history",
+        "summary": "GET /api/admin/student/{studentId}/story-history",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Student identifier"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Activity start date"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Activity end date"
+          },
+          {
+            "name": "storyTemplateId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Story template filter"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 0
+            },
+            "description": "Zero-based page"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "description": "Page size"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "storyTemplates": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                              },
+                              "description": "Available story template filters"
+                            },
+                            "storyHistory": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                              },
+                              "description": "Story history summaries"
+                            },
+                            "page": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Current zero-based page"
+                            },
+                            "size": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Page size"
+                            },
+                            "totalElements": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Total history count"
+                            },
+                            "totalPages": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Total page count"
+                            }
+                          },
+                          "required": [
+                            "storyTemplates",
+                            "storyHistory",
+                            "page",
+                            "size",
+                            "totalElements",
+                            "totalPages"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "x-notion-page-id": "git-admin-story-history-v1",
+        "x-notion-url": "git:contracts/api-resolutions.json#admin-story-history",
+        "x-feature-ids": [],
+        "description": "Returns owned student story history without mutating read state. Filters use activity date and zero-based pagination.",
+        "x-notion-request-summary": "studentId(path), from(query), to(query), storyTemplateId(query), page(query), size(query)",
+        "x-notion-response-summary": "storyTemplates, storyHistory, page, size, totalElements, totalPages",
+        "x-review-status": "reviewed",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/student/{studentId}/story-history/{storyId}": {
+      "get": {
+        "operationId": "get_admin_student_by_studentId_story_history_by_storyId",
+        "summary": "GET /api/admin/student/{studentId}/story-history/{storyId}",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Student identifier"
+          },
+          {
+            "name": "storyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Story identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "story": {
+                              "type": "object",
+                              "additionalProperties": true,
+                              "description": "Story summary"
+                            },
+                            "pages": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                              },
+                              "description": "Ordered story pages"
+                            },
+                            "totalPages": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Total page count"
+                            }
+                          },
+                          "required": [
+                            "story",
+                            "pages",
+                            "totalPages"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "x-notion-page-id": "git-admin-story-history-detail-v1",
+        "x-notion-url": "git:contracts/api-resolutions.json#admin-story-history-detail",
+        "x-feature-ids": [],
+        "description": "Returns ordered story pages, branch records, and inferred scene image availability. Existing lines are used as the branch prompt fallback.",
+        "x-notion-request-summary": "studentId(path), storyId(path)",
+        "x-notion-response-summary": "story, pages, totalPages",
+        "x-review-status": "reviewed",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/training/{studentId}/curriculum": {
+      "post": {
+        "operationId": "post_admin_training_by_studentId_curriculum",
+        "summary": "POST /api/admin/training/{studentId}/curriculum",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Student identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "curriculumId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Created curriculum identifier"
+                            },
+                            "status": {
+                              "type": "string",
+                              "description": "Curriculum status"
+                            },
+                            "trainings": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                              },
+                              "description": "Created trainings"
+                            }
+                          },
+                          "required": [
+                            "curriculumId",
+                            "status",
+                            "trainings"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          }
+        },
+        "x-notion-page-id": "git-admin-training-curriculum-create-v1",
+        "x-notion-url": "git:contracts/api-resolutions.json#admin-training-curriculum-create",
+        "x-feature-ids": [],
+        "description": "Registers the existing backend daily curriculum creation endpoint in the shared contract.",
+        "x-notion-request-summary": "studentId(path), trainingTemplateIds(body)",
+        "x-notion-response-summary": "curriculumId, status, trainings",
+        "x-review-status": "reviewed",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "trainingTemplateIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "description": "Five ordered training template identifiers"
+                  }
+                },
+                "required": [
+                  "trainingTemplateIds"
+                ]
+              },
+              "example": {
+                "trainingTemplateIds": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/training/{studentId}/{trainingId}/generate": {
+      "post": {
+        "operationId": "post_admin_training_by_studentId_by_trainingId_generate",
+        "summary": "POST /api/admin/training/{studentId}/{trainingId}/generate",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Student identifier"
+          },
+          {
+            "name": "trainingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Training identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "schemaVersion": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Generated data schema version"
+                            },
+                            "revision": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "New revision"
+                            },
+                            "generationMetadata": {
+                              "type": "object",
+                              "additionalProperties": true,
+                              "description": "Generation metadata"
+                            },
+                            "profileSnapshot": {
+                              "type": "object",
+                              "additionalProperties": true,
+                              "description": "Reading profile snapshot"
+                            },
+                            "questions": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                              },
+                              "description": "Generated questions"
+                            },
+                            "validationResult": {
+                              "type": "object",
+                              "additionalProperties": true,
+                              "description": "Server validation result"
+                            }
+                          },
+                          "required": [
+                            "schemaVersion",
+                            "revision",
+                            "generationMetadata",
+                            "profileSnapshot",
+                            "questions",
+                            "validationResult"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "502": {
+            "$ref": "#/components/responses/BadGateway"
+          }
+        },
+        "x-notion-page-id": "git-admin-training-generate-v1",
+        "x-notion-url": "git:contracts/api-resolutions.json#admin-training-generate",
+        "x-feature-ids": [],
+        "description": "Regenerates AI lesson material from the student profile and increments revision. Teachers edit generated materials through the lesson-material API.",
+        "x-notion-request-summary": "studentId(path), trainingId(path)",
+        "x-notion-response-summary": "schemaVersion, revision, generationMetadata, profileSnapshot, questions, validationResult",
+        "x-review-status": "reviewed",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/training/{studentId}/{trainingId}/lesson-material": {
+      "get": {
+        "operationId": "get_admin_training_by_studentId_by_trainingId_lesson_material",
+        "summary": "GET /api/admin/training/{studentId}/{trainingId}/lesson-material",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Student identifier"
+          },
+          {
+            "name": "trainingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Training identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "trainingId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Training identifier"
+                            },
+                            "trainingTemplateId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Training template identifier"
+                            },
+                            "trainingName": {
+                              "type": "string",
+                              "description": "Training name"
+                            },
+                            "unitName": {
+                              "type": "string",
+                              "description": "Curriculum unit name"
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "NOT_READY",
+                                "NOT_STARTED",
+                                "IN_PROGRESS",
+                                "COMPLETED"
+                              ],
+                              "description": "Training status"
+                            },
+                            "schemaVersion": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Generated data schema version"
+                            },
+                            "revision": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Optimistic locking revision"
+                            },
+                            "editable": {
+                              "type": "boolean",
+                              "description": "Whether the material can be saved"
+                            },
+                            "materials": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                              },
+                              "description": "Normalized lesson materials"
+                            }
+                          },
+                          "required": [
+                            "trainingId",
+                            "trainingTemplateId",
+                            "trainingName",
+                            "unitName",
+                            "status",
+                            "schemaVersion",
+                            "revision",
+                            "editable",
+                            "materials"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "x-notion-page-id": "git-admin-lesson-material-get-v1",
+        "x-notion-url": "git:contracts/api-resolutions.json#admin-lesson-material-get",
+        "x-feature-ids": [
+          "CU-DSP-03"
+        ],
+        "description": "Returns only teacher-editable lesson material fields. Server-owned analysis fields remain hidden.",
+        "x-notion-request-summary": "studentId(path), trainingId(path)",
+        "x-notion-response-summary": "trainingId, trainingTemplateId, trainingName, unitName, status, schemaVersion, revision, editable, materials",
+        "x-review-status": "reviewed",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "put_admin_training_by_studentId_by_trainingId_lesson_material",
+        "summary": "PUT /api/admin/training/{studentId}/{trainingId}/lesson-material",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Student identifier"
+          },
+          {
+            "name": "trainingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Training identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "trainingId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Training identifier"
+                            },
+                            "revision": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Saved revision"
+                            },
+                            "savedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "Save time"
+                            },
+                            "source": {
+                              "type": "string",
+                              "description": "Material source"
+                            },
+                            "materials": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                              },
+                              "description": "Normalized saved materials"
+                            }
+                          },
+                          "required": [
+                            "trainingId",
+                            "revision",
+                            "savedAt",
+                            "source",
+                            "materials"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "description": "요청 실패",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-notion-page-id": "git-admin-lesson-material-put-v1",
+        "x-notion-url": "git:contracts/api-resolutions.json#admin-lesson-material-put",
+        "x-feature-ids": [
+          "CU-SAVE-02",
+          "CU-SAVE-03"
+        ],
+        "description": "Validates and atomically saves one to five materials. Revision conflicts return 409 and question validation failures return 422.",
+        "x-notion-request-summary": "studentId(path), trainingId(path), revision(body), materials(body)",
+        "x-notion-response-summary": "trainingId, revision, savedAt, source, materials",
+        "x-review-status": "reviewed",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "revision": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 0,
+                    "description": "Revision returned by GET"
+                  },
+                  "materials": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": true
+                    },
+                    "description": "Complete ordered material list with one to five items"
+                  }
+                },
+                "required": [
+                  "revision",
+                  "materials"
+                ]
+              },
+              "example": {
+                "revision": 0,
+                "materials": [
+                  {
+                    "questionNo": 1,
+                    "questionType": "WORD_READING",
+                    "presentation": {},
+                    "content": {
+                      "words": [
+                        "tree"
+                      ]
+                    },
+                    "answer": {
+                      "expectedText": "tree"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/report": {
+      "post": {
+        "operationId": "post_admin_report",
+        "summary": "보고서 저장, 보고서 분석 결과 생성 성공 처리, 보고서 분석 결과 생성 실패 처리",
+        "tags": [
+          "report"
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "reportId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Created report identifier"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "Report creation time"
+                            }
+                          },
+                          "required": [
+                            "reportId",
+                            "createdAt"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "reportId": 5001,
+                    "createdAt": "2026-07-24T12:00:00+09:00"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          }
+        },
+        "x-notion-page-id": "3a4027df-9053-80ae-95bc-fcf02c9d9773",
+        "x-notion-url": "https://app.notion.com/p/api-admin-report-3a4027df905380ae95bcfcf02c9d9773",
+        "x-feature-ids": [
+          "RP-SAVE-01",
+          "RP-GEN-02",
+          "RP-GEN-03",
+          "RP-GEN-01"
+        ],
+        "description": "완료 훈련의 finishedAt 기준 서로 다른 학습일이 2일 이상이어야 생성한다. 동일 날짜의 여러 훈련은 1일로 계산하고 완료 검사는 학습일에 포함하지 않는다. 조건 미충족 시 REPORT_INSUFFICIENT_LEARNING_DAYS와 requiredDays, actualDays를 반환한다. 동일 아동·시작일·종료일 보고서가 있으면 REPORT_PERIOD_ALREADY_EXISTS와 기존 reportId를 반환한다. 생성 시 교수자 의견은 입력받지 않으며 저장된 보고서는 삭제하지 않는다.",
+        "x-notion-request-summary": "studentId(body)\nstartDate(body)\nendDate(body)",
+        "x-notion-response-summary": "reportId\ncreatedAt",
+        "x-review-status": "reviewed",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "studentId": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "아동 식별자"
+                  },
+                  "startDate": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "보고서 집계 시작일"
+                  },
+                  "endDate": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "보고서 집계 종료일"
+                  }
+                },
+                "required": [
+                  "studentId",
+                  "startDate",
+                  "endDate"
+                ]
+              },
+              "example": {
+                "studentId": 1001,
+                "startDate": "2026-07-01",
+                "endDate": "2026-07-31"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/report/{reportId}": {
+      "get": {
+        "operationId": "get_admin_report_by_reportId",
+        "summary": "보고서 상세 조회, 보고서 상세 표시, 보고서 조회 실패 처리",
+        "tags": [
+          "report"
+        ],
+        "parameters": [
+          {
+            "name": "reportId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "보고서 식별자"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "reportId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "보고서 식별자"
+                            },
+                            "studentId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "아동 식별자"
+                            },
+                            "startDate": {
+                              "type": "string",
+                              "format": "date",
+                              "description": "집계 시작일"
+                            },
+                            "endDate": {
+                              "type": "string",
+                              "format": "date",
+                              "description": "집계 종료일"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "보고서 생성일시"
+                            },
+                            "snapshot": {
+                              "type": "object",
+                              "additionalProperties": true,
+                              "description": "생성 시점에 저장한 보고서 분석 스냅샷"
+                            },
+                            "teacherMemo": {
+                              "type": "string",
+                              "description": "교수자 의견"
+                            }
+                          },
+                          "required": [
+                            "reportId",
+                            "studentId",
+                            "startDate",
+                            "endDate",
+                            "createdAt",
+                            "snapshot"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "reportId": "5001",
+                    "startDate": "2026-07-01",
+                    "endDate": "2026-07-31",
+                    "createdAt": "2026-07-24T12:00:00+09:00",
+                    "learningDays": 12,
+                    "totalTrainingTime": 420,
+                    "completedTrainingCount": 18,
+                    "averageAccuracy": 86.5,
+                    "averageReadingSpeed": 72.0,
+                    "growthByPeriod": [],
+                    "achievementByDomain": {},
+                    "frequentErrorWords": [],
+                    "improvedPatterns": [],
+                    "persistentDifficulties": [],
+                    "teacherMemo": "읽기 자신감이 향상되었습니다."
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "x-notion-page-id": "3a4027df-9053-801e-89df-cb44a0b67406",
+        "x-notion-url": "https://app.notion.com/p/api-admin-report-reportId-3a4027df9053801e89dfcb44a0b67406",
+        "x-feature-ids": [
+          "RP-DSP-01",
+          "RP-DSP-04",
+          "RP-DSP-05",
+          "RP-DSP-03",
+          "RP-DSP-07"
+        ],
+        "description": "reports.snapshot_data를 snapshot 객체로 반환한다. studentId는 보고서가 속한 아동 식별자이며 teacherMemo는 null일 수 있다.",
+        "x-notion-request-summary": "reportId(path)",
+        "x-notion-response-summary": "reportId\nstudentId\nstartDate\nendDate\ncreatedAt\nsnapshot\nteacherMemo",
         "x-review-status": "reviewed",
         "security": [
           {

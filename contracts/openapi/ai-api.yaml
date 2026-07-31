@@ -72,7 +72,7 @@
     "/api/v1/story/continue": {
       "post": {
         "operationId": "continueStory",
-        "summary": "음성 분기 의도와 진행률 기반 다음 이야기 생성",
+        "summary": "확정 분기 의도와 진행률 기반 다음 이야기 생성",
         "tags": ["story"],
         "security": [{"apiKeyAuth": []}],
         "parameters": [{"$ref": "#/components/parameters/IdempotencyKey"}],
@@ -397,12 +397,40 @@
           "requiresBranchInput": {"type": "boolean"}
         }
       },
+      "StoryBranchOption": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["optionNo", "label"],
+        "properties": {
+          "optionNo": {"type": "integer", "minimum": 1, "maximum": 3, "description": "선택지 번호"},
+          "label": {"type": "string", "minLength": 1, "maxLength": 80, "description": "버튼에 표시할 AI 생성 선택 문구"}
+        }
+      },
+      "StoryBranchPrompt": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["options"],
+        "properties": {
+          "options": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "uniqueItems": true,
+            "items": {"$ref": "#/components/schemas/StoryBranchOption"},
+            "description": "아동에게 버튼으로 표시할 서로 다른 선택지 3개"
+          }
+        }
+      },
       "GeneratedStoryLine": {
         "type": "object",
-        "required": ["content", "requiresBranchInput"],
+        "required": ["content", "requiresBranchInput", "branchPrompt"],
         "properties": {
-          "content": {"type": "string"},
-          "requiresBranchInput": {"type": "boolean"}
+          "content": {"type": "string", "minLength": 1, "description": "이야기 문장. 분기 대사이면 아동에게 보여 줄 질문"},
+          "requiresBranchInput": {"type": "boolean", "description": "현재 대사 다음에 분기 선택이 필요한지 여부"},
+          "branchPrompt": {
+            "anyOf": [{"$ref": "#/components/schemas/StoryBranchPrompt"}, {"type": "null"}],
+            "description": "requiresBranchInput이 true이면 선택지 3개, false이면 null"
+          }
         }
       },
       "StoryGenerateRequest": {
