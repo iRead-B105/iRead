@@ -26,9 +26,6 @@
         "BASIC_SYLLABLE_BUILD",
         "FINAL_SYLLABLE_BUILD",
         "DOUBLE_FINAL_BUILD",
-        "HANGUL_BATTLE_BASIC",
-        "HANGUL_BATTLE_FINAL",
-        "HANGUL_BATTLE_DOUBLE_FINAL",
         "FINAL_CONSONANT_DELETE",
         "SYLLABLE_DELETE",
         "SYLLABLE_REPLACE",
@@ -54,7 +51,6 @@
         "SINGLE_CHOICE",
         "ORDERING",
         "COMPONENT_BUILD",
-        "BATTLE_ROUNDS",
         "TEXT_INPUT",
         "AUDIO"
       ]
@@ -106,9 +102,6 @@
     },
     {
       "$ref": "#/$defs/finalBuildRules"
-    },
-    {
-      "$ref": "#/$defs/battleRules"
     },
     {
       "$ref": "#/$defs/finalDeleteRule"
@@ -190,9 +183,6 @@
     "BASIC_SYLLABLE_BUILD": "COMPONENT_BUILD",
     "FINAL_SYLLABLE_BUILD": "COMPONENT_BUILD",
     "DOUBLE_FINAL_BUILD": "COMPONENT_BUILD",
-    "HANGUL_BATTLE_BASIC": "BATTLE_ROUNDS",
-    "HANGUL_BATTLE_FINAL": "BATTLE_ROUNDS",
-    "HANGUL_BATTLE_DOUBLE_FINAL": "BATTLE_ROUNDS",
     "FINAL_CONSONANT_DELETE": "SINGLE_CHOICE",
     "SYLLABLE_DELETE": "SINGLE_CHOICE",
     "SYLLABLE_REPLACE": "SINGLE_CHOICE",
@@ -462,52 +452,6 @@
         "initialChoices",
         "medialChoices",
         "finalChoices"
-      ]
-    },
-    "battleRound": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "word": {
-          "$ref": "#/$defs/nonEmptyString"
-        },
-        "tiles": {
-          "$ref": "#/$defs/stringList"
-        },
-        "opponentDurationMs": {
-          "type": "integer",
-          "minimum": 1
-        }
-      },
-      "required": [
-        "word",
-        "tiles",
-        "opponentDurationMs"
-      ]
-    },
-    "battleContent": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "opponent": {
-          "type": "string",
-          "enum": [
-            "RABBIT",
-            "TURTLE",
-            "ANT"
-          ]
-        },
-        "rounds": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#/$defs/battleRound"
-          }
-        }
-      },
-      "required": [
-        "opponent",
-        "rounds"
       ]
     },
     "finalDeleteContent": {
@@ -1059,29 +1003,6 @@
           },
           "content": {
             "$ref": "#/$defs/finalBuildContent"
-          }
-        }
-      }
-    },
-    "battleRules": {
-      "if": {
-        "properties": {
-          "questionType": {
-            "enum": [
-              "HANGUL_BATTLE_BASIC",
-              "HANGUL_BATTLE_FINAL",
-              "HANGUL_BATTLE_DOUBLE_FINAL"
-            ]
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "responseType": {
-            "const": "BATTLE_ROUNDS"
-          },
-          "content": {
-            "$ref": "#/$defs/battleContent"
           }
         }
       }

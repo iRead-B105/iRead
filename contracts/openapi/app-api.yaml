@@ -4508,7 +4508,7 @@
           "TR-SEL-03",
           "TR-SEL-02"
         ],
-        "description": "submissionId로 중복 제출을 멱등 처리하고 responseType별 응답을 평가한다. 한글 대결은 BATTLE_ROUNDS와 response.roundOrders를 사용한다.",
+        "description": "submissionId로 중복 제출을 멱등 처리하고 responseType별 응답을 평가한다.",
         "x-notion-request-summary": "studentId(path)\ntrainingId(path)\nquestionNumber(path)\nsubmissionId(body)\nresponseType(body)\nresponse(body)",
         "x-notion-response-summary": "feedbackType\nsubmissionId\nattemptNo\nmaxAttempts\nremainingAttempts\ncorrect\nquestionCompleted\ncanRetry\nerrorLocations[]\nhint\ncorrectResponse",
         "x-review-status": "reviewed",
@@ -4521,13 +4521,9 @@
               },
               "example": {
                 "submissionId": "c527f824-1a69-493c-a9dd-2dc76df8cc54",
-                "responseType": "BATTLE_ROUNDS",
+                "responseType": "SINGLE_CHOICE",
                 "response": {
-                  "roundOrders": [
-                    ["ㄱ", "ㅏ"],
-                    ["ㄴ", "ㅏ"],
-                    ["ㄷ", "ㅏ"]
-                  ]
+                  "selectedIndex": 0
                 }
               }
             }
@@ -4803,9 +4799,6 @@
           "BASIC_SYLLABLE_BUILD",
           "FINAL_SYLLABLE_BUILD",
           "DOUBLE_FINAL_BUILD",
-          "HANGUL_BATTLE_BASIC",
-          "HANGUL_BATTLE_FINAL",
-          "HANGUL_BATTLE_DOUBLE_FINAL",
           "FINAL_CONSONANT_DELETE",
           "SYLLABLE_DELETE",
           "SYLLABLE_REPLACE",
@@ -4831,7 +4824,6 @@
           "SINGLE_CHOICE",
           "ORDERING",
           "COMPONENT_BUILD",
-          "BATTLE_ROUNDS",
           "TEXT_INPUT",
           "AUDIO"
         ]
@@ -4849,7 +4841,7 @@
           "response": {
             "type": "object",
             "additionalProperties": true,
-            "description": "BATTLE_ROUNDS는 roundOrders: string[][]를 전달한다."
+            "description": "responseType에 맞는 원시 사용자 입력을 전달한다."
           }
         },
         "required": [

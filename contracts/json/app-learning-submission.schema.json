@@ -16,9 +16,6 @@
       "$ref": "#/$defs/componentBuildSubmission"
     },
     {
-      "$ref": "#/$defs/battleRoundsSubmission"
-    },
-    {
       "$ref": "#/$defs/textInputSubmission"
     }
   ],
@@ -171,27 +168,6 @@
         "selections"
       ]
     },
-    "battleRoundsResponse": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "roundOrders": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
-              "type": "string",
-              "minLength": 1
-            }
-          }
-        }
-      },
-      "required": [
-        "roundOrders"
-      ]
-    },
     "textInputResponse": {
       "type": "object",
       "additionalProperties": false,
@@ -270,22 +246,6 @@
         "response"
       ]
     },
-    "battleRoundsResponseValue": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "responseType": {
-          "const": "BATTLE_ROUNDS"
-        },
-        "response": {
-          "$ref": "#/$defs/battleRoundsResponse"
-        }
-      },
-      "required": [
-        "responseType",
-        "response"
-      ]
-    },
     "textInputResponseValue": {
       "type": "object",
       "additionalProperties": false,
@@ -315,9 +275,6 @@
         },
         {
           "$ref": "#/$defs/componentBuildResponseValue"
-        },
-        {
-          "$ref": "#/$defs/battleRoundsResponseValue"
         },
         {
           "$ref": "#/$defs/textInputResponseValue"
@@ -396,26 +353,6 @@
         },
         "response": {
           "$ref": "#/$defs/componentBuildResponse"
-        }
-      },
-      "required": [
-        "submissionId",
-        "responseType",
-        "response"
-      ]
-    },
-    "battleRoundsSubmission": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "submissionId": {
-          "$ref": "#/$defs/submissionId"
-        },
-        "responseType": {
-          "const": "BATTLE_ROUNDS"
-        },
-        "response": {
-          "$ref": "#/$defs/battleRoundsResponse"
         }
       },
       "required": [

@@ -22,7 +22,7 @@ Backend는 마지막 확정 수행 결과를 읽기 특징별로 집계하고, �
 
 ### 포함 범위
 
-- 37개 `trainingType`의 후보 생성과 타입별 출력 검증
+- 34개 `trainingType`의 후보 생성과 타입별 출력 검증
 - 초성·중성·종성·음절 구조·형태소·단어·문장·주요 음운 규칙 특징
 - 학생별 읽기 특징 프로필과 `WEAKNESS_V1` 취약도
 - 커리큘럼 전체 완료 직후 다음 훈련 목록 5개 편성
@@ -52,7 +52,7 @@ Backend는 마지막 확정 수행 결과를 읽기 특징별로 집계하고, �
 
 ## 요구사항과 수용 기준
 
-- `PTG-001`: Backend는 37개 `trainingType`을 각각 별도 `training_templates` 행으로 관리한다.
+- `PTG-001`: Backend는 34개 `trainingType`을 각각 별도 `training_templates` 행으로 관리한다.
 - `PTG-002`: `training_templates.prompt` JSON은 `trainingType`, `requiredInputs`, `additionalPrompt`, `outputTemplate`, `supportedFeatureCategories`, `supportedScopes`를 포함한다.
 - `PTG-003`: AI 생성 요청은 `requestId`, `schemaVersion`, `trainingType`, `count`, `difficulty`, 목표·제외 특징, 타입별 프롬프트와 출력 템플릿만 포함한다.
 - `PTG-004`: AI 생성 요청에는 `studentId`, 이름, 생년월일, 연락처, 원본 음성, 원시 시선 좌표를 포함하지 않는다.
@@ -120,7 +120,7 @@ Backend는 마지막 확정 수행 결과를 읽기 특징별로 집계하고, �
 
 ## 검증
 
-- 37개 타입의 정상·누락·중복·인덱스·정답 위치 검증
+- 34개 타입의 정상·누락·중복·인덱스·정답 위치 검증
 - 자모 전체와 주요 음운 규칙 7종의 양성·음성 사례
 - 마지막 확정 시도, 낮은 음성 신뢰도와 시선 부담의 프로필 반영
 - 부분 통과·최대 재시도·커리큘럼 전체 미저장
