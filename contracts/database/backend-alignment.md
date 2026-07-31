@@ -113,7 +113,7 @@ Backend 엔티티를 현재 계약에 맞춰 정합화했다. 최종 스키마�
 ## 2026-07-29 보고서 기간 중복 방지
 
 - `reports(student_id, start_date, end_date)`에 `UQ_REPORTS_STUDENT_PERIOD` UNIQUE 제약을 추가해 동일 아동·동일 기간 보고서가 동시 요청에서도 한 건만 저장되도록 했다.
-- 현재 스키마 규모는 애플리케이션 테이블 26개, 외래 키 35개, UNIQUE 13개, CHECK 11개다.
+- 현재 스키마 규모는 애플리케이션 테이블 26개, 외래 키 35개, UNIQUE 15개, CHECK 11개다.
 
 ## 2026-07-31 Flyway 기준선과 활성 교육과정 정리
 
