@@ -22,7 +22,7 @@ class ValidateSchemaTest(unittest.TestCase):
         self.assertEqual(26, counts["tables"])
         self.assertEqual(26, counts["primary_keys"])
         self.assertEqual(35, counts["foreign_keys"])
-        self.assertEqual(13, counts["unique_constraints"])
+        self.assertEqual(15, counts["unique_constraints"])
 
     def test_named_primary_key_constraint_is_rendered(self) -> None:
         sql = """

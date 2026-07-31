@@ -182,7 +182,8 @@ def main() -> int:
         return 0
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(rendered, encoding="utf-8")
+    with args.output.open("w", encoding="utf-8", newline="\n") as output:
+        output.write(rendered)
     tables, foreign_keys = parse_schema(
         args.schema.read_text(encoding="utf-8-sig")
     )

@@ -58,6 +58,39 @@ docker compose up -d
 모든 컨테이너는 `iread-network`에 연결됩니다. 종료할 때는 데이터 볼륨을 보존하는
 `docker compose down`을 사용합니다.
 
+### 데모 계정과 실시간 연동 확인
+
+- 교수자: `demo@iread.local` / `demo1234`
+- 기본 아동: 샛별 (`studentId=2001`)
+- 기본 교육과정: `curriculumId=190001`
+
+Backend가 준비된 뒤 다음 명령으로 교수자 → 아동과 아동 → 교수자 SSE 전달이 각각
+3초 이내인지 확인합니다.
+
+```bash
+node tools/verify_realtime_demo.mjs
+```
+
+Frontend는 소스 디렉터리를 컨테이너에 연결한 Vite 개발 서버이므로 일반 소스 변경은
+자동 반영됩니다. Backend Java 또는 설정 변경은 다음 명령으로 다시 컴파일해 실행합니다.
+
+```bash
+docker compose restart backend
+```
+
+Backend 재시작은 교육과정 `190001`의 학습 진행 상태를 데모 시작 상태로 복구합니다.
+교수자 이력·분석용 기존 fixture는 유지합니다.
+
+Flyway V1 또는 V2를 변경한 경우에는 기존 볼륨의 migration checksum과 맞지 않으므로
+데모 MySQL 볼륨을 재생성해야 합니다. 다음 명령은 로컬 데모 DB를 모두 삭제하므로
+보존할 데이터가 없는지 먼저 확인합니다.
+
+```bash
+docker compose down
+docker volume rm iread-demo-mysql-data
+docker compose up -d
+```
+
 ## 프로젝트 문서
 
 | 알고 싶은 내용 | 문서 |
@@ -69,6 +102,7 @@ docker compose up -d
 | 기능·API·데이터베이스 명세 | [계약 카탈로그](contracts/catalog.md) |
 | 주요 기술 결정과 배경 | [ADR 목록](docs/decisions/index.md) |
 | Backend·Frontend 작업 목록 | [구현 백로그](docs/planning/implementation-backlog.md) |
+| 실시간 연동 Frontend 인수 | [Frontend 인수 문서](docs/planning/realtime-data-sync-frontend-handoff.md) |
 | 전체 문서 탐색 | [문서 인덱스](docs/index.md) |
 
 ## 기술 구성

@@ -81,6 +81,22 @@ upstream/app/develop
 upstream/eyetracking/develop
 ```
 
+## upstream ref 정합화
+
+GitHub 원본 branch의 이력이 변경되어 GitLab `upstream/<repository>/<branch>` push가
+non-fast-forward로 거부되면 원본과 GitLab의 이력을 검토한 뒤 `GitLab Monorepo Sync`를
+수동 실행한다. `reconcile_upstream_refs`에는 정합화할 대상을
+`repository/branch` 형식으로 입력하며 여러 대상은 쉼표로 구분한다.
+
+```text
+backend/feat/example-one,backend/feat/example-two
+```
+
+수동 정합화는 입력한 ref에만 적용된다. 실행 시점의 GitLab SHA를 lease로 확인한 뒤
+해당 ref를 현재 GitHub 원본 branch로 갱신하므로, 검토 이후 GitLab ref가 다시 바뀌면
+덮어쓰지 않고 실패한다. `GitLab main`과 입력하지 않은 upstream ref에는 force push하지
+않는다. 이 작업에는 projection 이력을 교체하는 `rebuild_history`를 사용하지 않는다.
+
 ## 이력 재구성
 
 기존 mirror 이력에서 projection 이력으로 전환할 때만 GitHub Actions의 수동 실행에서 `rebuild_history`를 활성화한다. 이 실행은 현재 GitLab `main`을 원본 작업 commit의 1:1 projection 이력으로 교체한다. 일반 자동·예약·수동 실행은 force push하지 않고 기존 projection 이력에 새 작업 commit만 fast-forward로 추가한다.
@@ -95,6 +111,8 @@ projection 상태 note가 없는 동안 일반 실행은 GitLab `main`을 변경
 - push 권한 오류: GitLab token 역할과 보호 branch 허용 대상을 확인한다.
 - `Expected submodule gitlink`: 해당 서비스가 orchestration `develop`에 submodule로 병합됐는지 확인한다.
 - `moved non-fast-forward`: upstream force push 또는 gitlink 되돌림을 확인하고 자동 동기화를 재개하기 전에 이력을 검토한다.
+- upstream ref push의 `fetch first`: GitHub와 GitLab 이력을 검토한 뒤 수동 실행의
+  `reconcile_upstream_refs`에 충돌한 ref만 지정한다.
 - `Projection state is absent`: 수동 실행에서 `rebuild_history`를 활성화해 최초 projection 이력을 생성한다.
 - 포인터 PR 누락: 서비스 `develop`을 병합한 담당자가 orchestration
   submodule 참조 갱신과 PR 생성을 완료했는지 확인한다.

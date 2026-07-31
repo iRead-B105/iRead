@@ -79,17 +79,17 @@ story_templates
 - 같은 `story_line_id`의 네트워크 재시도는 AI를 다시 호출하거나 결과를 덮어쓰지 않고 최초 저장 결과를 반환한다.
 - 동시 요청이 UNIQUE 제약에서 경합하면 저장에 성공한 최초 결과를 다시 조회해 반환한다.
 - 생성된 장면·대사·선택지 저장과 `stories.progress` 갱신은 하나의 트랜잭션으로 처리한다.
-- `character`는 학생과 이야기에 연결하며 캐릭터 이름과 이미지를 저장한다.
+- `characters`는 학생과 이야기에 연결하며 캐릭터 이름과 이미지 URL을 `text`로 저장한다.
 - 확정 ERD에는 대표 캐릭터 상태가 없으므로 대표 캐릭터 서버 API를 사용하지 않는다.
 
 ## 시선·단어 시도·보고서
 
 - `gaze_sessions`는 검사·훈련·이야기 중 `content_type`에 해당하는 식별자 하나만 가진다.
-- 세션에서 초당 5~10프레임으로 수집한 시선 데이터는 `gaze_sessions.data` JSON에 저장한다.
+- 세션에서 초당 5~10프레임으로 수집한 시선 데이터는 파일로 저장하고 `gaze_sessions.data_url`에 파일 URL을 기록한다.
 - `gaze_analysis_results`는 시선 세션당 하나의 분석 결과를 가진다.
 - `word_attempt_logs`는 `use_location`에 해당하는 검사·훈련·이야기 대사 식별자 하나만 가진다.
 - `word_attempt_logs`는 문항 번호와 분석 대상·토큰 위치를 저장하며 같은 위치의 마지막 성공 시도만 `is_final=true`다.
-- 시선 데이터 존재 여부는 별도 boolean 대신 fixation·gaze offset·skip·regression 필드의 존재로 판정한다.
+- `word_attempt_logs.has_gaze_data`는 해당 시도에 시선 데이터가 있었는지 명시하고 fixation·gaze offset·skip·regression 필드에는 상세 지표를 저장한다.
 - 음성 분석 결과는 인식 문자열을 저장하지 않고 `pronunciation_accuracy_score`, 음성 offset과 정오 여부로 저장한다.
 - 보고서 기간은 `start_date <= end_date`를 만족해야 한다.
 - 보고서 기간은 확정 ERD에 따라 `timestamp`로 저장하고 `snapshot_data`는 NULL을 허용한다.

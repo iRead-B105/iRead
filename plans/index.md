@@ -7,6 +7,7 @@
 현재 진행 대상 계획:
 
 * [Azure Speech 단어 단위 발음 평가 연동](2026-07-28-azure-speech-pronunciation-assessment.md) - active
+* [교수자 Web–아동 App 실시간 데이터 연동](2026-07-31-teacher-learner-data-linkage.md) - draft
 
 완료된 계획은 결정과 검증 이력이 필요할 때 보존한다.
 

@@ -1,7 +1,7 @@
 # Eye Tracker API 연동 초안
 
 - 상태: draft
-- 최종 검토일: 2026-07-28
+- 최종 검토일: 2026-07-31
 - 관련 이슈: `S15P11B105-72`
 - 기준 원본: `contracts/openapi/app-api.yaml`, `contracts/database/schema.sql`
 
@@ -17,7 +17,7 @@
 | --- | --- |
 | 아동 앱 Frontend | 학습 화면 렌더링, 단어·문장 DOM 식별자 제공, gaze 결과를 API payload로 변환 |
 | 시선 추적 프로토타입 | Tobii 기기 연결, native gaze 수집, 보정, `valid`·`presence`·좌표 튐·blink cooldown 필터링 |
-| Backend | gaze session 저장, 분석 결과 저장, 관리자 조회·보고서 반영 |
+| Backend | gaze session 원본 파일 저장, 분석 결과 저장, 관리자 조회·보고서 반영 |
 | Database | `gaze_sessions`, `gaze_analysis_results`, `word_attempt_logs` 중심으로 저장 |
 
 ## 전체 흐름
@@ -55,9 +55,9 @@ Frontend와 시선 추적 프로토타입은 언어학적 분류를 직접 계�
 
 | 저장 대상 | 테이블 | 주요 컬럼 | Frontend/Eyetracking 입력 |
 | --- | --- | --- | --- |
-| 시선 추적 실행 단위 | `gaze_sessions` | `student_id`, `test_id`, `training_id`, `story_id`, `content_type`, `started_at`, `ended_at`, `data`, `status`, `calibration_status` | 콘텐츠 ID, 보정 상태, 세션 시작·종료 시각, 5~10fps 샘플 또는 요약 JSON |
+| 시선 추적 실행 단위 | `gaze_sessions` | `student_id`, `test_id`, `training_id`, `story_id`, `content_type`, `started_at`, `ended_at`, `data_url`, `status`, `calibration_status` | 콘텐츠 ID, 보정 상태, 세션 시작·종료 시각. 원본 JSON은 파일로 저장하고 DB에는 URL만 기록한다. |
 | 세션 분석 요약 | `gaze_analysis_results` | `gaze_session_id`, `total_visited_duration`, `total_visited_count`, `reverse_read_count`, `avg_visited_duration` | 세션 전체 체류 시간, 응시 횟수, 되돌아보기 횟수 |
-| 단어별 읽기 근거 | `word_attempt_logs` | `word_id`, `story_line_id`, `training_id`, `test_id`, `surface_text`, `has_audio_data`, `fixation_duration_ms`, `fixation_count`, `gaze_start_offset_ms`, `gaze_end_offset_ms`, `is_skipped`, `regression_count` | 단어 DOM hit test 결과, dwell 시간, skip 여부, regression 횟수. 시선 데이터 존재 여부는 관련 값의 존재로 판정한다. |
+| 단어별 읽기 근거 | `word_attempt_logs` | `word_id`, `story_line_id`, `training_id`, `test_id`, `surface_text`, `has_gaze_data`, `has_audio_data`, `fixation_duration_ms`, `fixation_count`, `gaze_start_offset_ms`, `gaze_end_offset_ms`, `is_skipped`, `regression_count` | 단어 DOM hit test 결과, 시선 데이터 존재 여부, dwell 시간, skip 여부와 regression 횟수 |
 
 ## Frontend에서 계산할 값
 
@@ -137,6 +137,6 @@ Frontend는 원시 좌표 전체를 Backend로 전송하지 않고, 학습 분�
 
 - [TBD] `wordId`를 Frontend가 직접 받을지, `surfaceText` 기반으로 Backend가 매핑할지 결정
 - [TBD] 단어별 gaze 결과를 `word_attempt_logs`로 직접 저장할 API를 별도로 둘지 결정
-- [TBD] `gaze_sessions.data`에 저장할 sample 수, 보관 기간, 개인정보 처리 범위
+- [TBD] `gaze_sessions.data_url`이 가리키는 원본 파일의 sample 수, 보관 기간, 접근 권한과 개인정보 처리 범위
 - [TBD] `gaze_analysis_results`를 Frontend 계산값으로 저장할지 Backend가 재계산할지 결정
 - [TBD] 시선 추적 실패 시 학습 흐름을 계속 진행할지, 대체 입력으로 전환할지 결정

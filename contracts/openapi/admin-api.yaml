@@ -6,6 +6,42 @@
     "description": "Notion API 명세에서 이전한 계약이다. x-notion-* 확장 필드는 원본 추적에 사용한다."
   },
   "paths": {
+    "/api/admin/realtime/events": {
+      "get": {
+        "operationId": "get_admin_realtime_events",
+        "summary": "연결 학생 데이터 변경 이벤트 구독",
+        "description": "교수자에게 연결된 학생의 데이터가 저장된 뒤 변경 이벤트를 SSE로 전달한다. 클라이언트는 이벤트 수신 후 관련 조회 API를 다시 호출하며, 저장 커밋부터 화면 반영까지 3초 이내를 목표로 한다.",
+        "tags": [
+          "realtime"
+        ],
+        "responses": {
+          "200": {
+            "description": "SSE 연결 성공",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "id: 36a09ada-0a57-41cf-9e8f-7bb2ce4aa98d\nevent: student-data-changed\ndata: {\"eventId\":\"36a09ada-0a57-41cf-9e8f-7bb2ce4aa98d\",\"studentId\":2001,\"resource\":\"TRAINING\",\"resourceId\":251136,\"changeType\":\"COMPLETED\",\"occurredAt\":\"2026-07-31T10:00:00+09:00\",\"version\":1785469200000}\n\n"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-contract-origin": "repository",
+        "x-review-status": "reviewed"
+      }
+    },
     "/api/admin/report": {
       "post": {
         "operationId": "post_admin_report",
@@ -4014,6 +4050,70 @@
         ]
       }
     },
+    "/api/admin/training/{studentId}/active": {
+      "get": {
+        "operationId": "get_admin_training_by_studentId_active",
+        "summary": "아동의 활성 커리큘럼 조회",
+        "description": "IN_PROGRESS 커리큘럼을 우선하고, 없으면 NOT_STARTED 커리큘럼을 반환한다. 아동별 IN_PROGRESS와 NOT_STARTED 커리큘럼은 상태별 최대 한 건이며, 교사가 편집할 수 있는 대상은 NOT_STARTED 한 건뿐이다.",
+        "tags": [
+          "training"
+        ],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "활성 커리큘럼 조회 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/AdminDailyCurriculum"
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-contract-origin": "repository",
+        "x-review-status": "reviewed"
+      }
+    },
     "/api/admin/student/{studentId}/reading-speed-trend": {
       "get": {
         "operationId": "get_admin_student_by_studentId_reading_speed_trend",
@@ -4387,6 +4487,55 @@
           "accuracy",
           "gazeDepartureCount",
           "questions"
+        ]
+      },
+      "RealtimeEvent": {
+        "type": "object",
+        "properties": {
+          "eventId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "studentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "resource": {
+            "type": "string",
+            "enum": [
+              "STUDENT",
+              "CURRICULUM",
+              "TRAINING",
+              "TEST",
+              "STORY",
+              "GAZE"
+            ]
+          },
+          "resourceId": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "changeType": {
+            "type": "string"
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "eventId",
+          "studentId",
+          "resource",
+          "resourceId",
+          "changeType",
+          "occurredAt",
+          "version"
         ]
       },
       "ErrorDetail": {
