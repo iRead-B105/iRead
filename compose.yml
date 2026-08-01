@@ -39,15 +39,26 @@ services:
       timeout: 5s
       retries: 5
 
+  # 이름(ai-mock)은 backend AI_BASE_URL=iread-ai-mock:8080 호환을 위해 유지.
+  # 내용은 services/ai 실제 FastAPI 서비스. 데모 프로필(ai.mock-*=true)에서는 backend가
+  # AI를 호출하지 않아 유휴하며, AI_MOCK_* 토글 false 전환 시 본 서비스가 응답한다.
   ai-mock:
-    image: wiremock/wiremock:3.13.2
+    build:
+      context: ./services/ai
+      dockerfile: Dockerfile
+    image: iread-ai:local
     container_name: iread-ai-mock
     restart: unless-stopped
     ports:
       - "8081:8080"
-    volumes:
-      - ./services/backend/mock-ai:/home/wiremock
-    command: ["--global-response-templating", "--verbose"]
+    env_file:
+      - path: ./services/ai/.env
+        required: false
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   mailpit:
     image: axllent/mailpit:v1.27
@@ -74,6 +85,7 @@ services:
       SMTP_HOST: iread-mailpit
       SMTP_PORT: "1025"
       AI_BASE_URL: http://iread-ai-mock:8080
+      AI_API_KEY: ${AI_API_KEY:-}
       GRADLE_USER_HOME: /gradle-cache
     volumes:
       - ./services/backend:/workspace

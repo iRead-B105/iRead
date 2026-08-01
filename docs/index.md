@@ -17,6 +17,7 @@
 | 아동용 앱의 세부 디자인 정책을 어떻게 결정하는가? | [아이리드 앱 디자인 정책 의사결정 질문서](product/iread-app-design-decision-questionnaire.md) | 앱 디자인 가이드, `frontend-app` 구현 |
 | 용어가 무엇을 뜻하는가? | [용어집](context/glossary.md) | 관련 제품 문서 |
 | 시스템과 저장소 경계는 무엇인가? | [시스템 컨텍스트](architecture/system-context.md) | [저장소 전략](architecture/repository-strategy.md) |
+| 5개 서브모듈 통합 작업을 하려면? | [시스템 통합 작업용 하네스](architecture/system-integration-harness.md) | 시스템 컨텍스트, 인터페이스 원칙, 계약 카탈로그 |
 | 서비스는 어떻게 통신하는가? | [인터페이스 원칙](architecture/interface-principles.md) | 요구사항, ADR |
 | 왜 이렇게 결정했는가? | [ADR 인덱스](decisions/index.md) | 프로젝트 컨텍스트 |
 | 다음에 무엇을 하는가? | [제품 탐색 백로그](planning/backlog.md), [Backend·Frontend 구현 백로그](planning/implementation-backlog.md), [실시간 데이터 연동 TODO](planning/realtime-data-sync-todo.md) | [로드맵](planning/roadmap.md) |
