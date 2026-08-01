@@ -135,6 +135,10 @@ services:
       VITE_LEARNER_DATA_SOURCE: api
       VITE_API_BASE_URL: ""
       VITE_BACKEND_URL: http://iread-backend:8080
+      VITE_GAZE_WS_URL: ws://host.docker.internal:8765/gaze
+      VITE_GAZE_MODE_URL: http://host.docker.internal:8765/api/mode
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./services/frontend-app:/workspace
       - frontend-app-node-modules:/workspace/node_modules
