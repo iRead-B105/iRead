@@ -363,7 +363,7 @@
           "words"
         ],
         "properties": {
-          "requestId": {"type": "string"},
+          "requestId": {"type": "string", "minLength": 1},
           "pronunciationAccuracyScore": {
             "type": "number",
             "minimum": 0,
@@ -412,7 +412,7 @@
         "type": "object",
         "required": ["requestId", "trainingId", "studentId", "trainingTemplateId", "schemaVersion", "result"],
         "properties": {
-          "requestId": {"type": "string"},
+          "requestId": {"type": "string", "minLength": 1},
           "trainingId": {"type": "integer", "format": "int64", "minimum": 1},
           "studentId": {"type": "integer", "format": "int64", "minimum": 1},
           "trainingTemplateId": {"type": "integer", "format": "int64", "minimum": 1},
@@ -424,7 +424,7 @@
         "type": "object",
         "required": ["requestId", "schemaVersion", "accuracy"],
         "properties": {
-          "requestId": {"type": "string"},
+          "requestId": {"type": "string", "minLength": 1},
           "schemaVersion": {"type": "integer", "minimum": 1},
           "accuracy": {"type": "number", "minimum": 0, "maximum": 100}
         }
@@ -487,7 +487,7 @@
         "type": "object",
         "required": ["requestId", "storyId", "studentId", "schemaVersion", "currentProgress", "storyTemplate"],
         "properties": {
-          "requestId": {"type": "string"},
+          "requestId": {"type": "string", "minLength": 1},
           "storyId": {"type": "integer", "format": "int64", "minimum": 1},
           "studentId": {"type": "integer", "format": "int64", "minimum": 1},
           "schemaVersion": {"type": "integer", "minimum": 1},
@@ -503,7 +503,7 @@
             "required": ["currentStoryLineId", "branchIntent", "history"],
             "properties": {
               "currentStoryLineId": {"type": "integer", "format": "int64", "minimum": 1},
-              "branchIntent": {"type": "string", "minLength": 1},
+              "branchIntent": {"type": "string", "minLength": 1, "description": "아동 음성에서 인식한 선택 의도. 이어지는 사건과 결말에 반드시 반영한다."},
               "history": {"type": "array", "items": {"$ref": "#/components/schemas/StoryHistoryLine"}}
             }
           }
@@ -515,8 +515,8 @@
         "properties": {
           "requestId": {"type": "string"},
           "schemaVersion": {"type": "integer", "minimum": 1},
-          "nextProgress": {"type": "integer", "minimum": 0, "maximum": 100},
-          "completed": {"type": "boolean"},
+          "nextProgress": {"type": "integer", "minimum": 0, "maximum": 100, "description": "누적 생성 페이지 수. 전체 100페이지에서 1페이지당 1씩 증가한다."},
+          "completed": {"type": "boolean", "description": "100번째 페이지를 생성한 경우에만 true"},
           "lines": {"type": "array", "items": {"$ref": "#/components/schemas/GeneratedStoryLine"}}
         }
       },
