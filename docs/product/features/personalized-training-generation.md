@@ -22,7 +22,8 @@ Backend는 마지막 확정 수행 결과를 읽기 특징별로 집계하고, �
 
 ### 포함 범위
 
-- 34개 `trainingType`의 후보 생성과 타입별 출력 검증
+- 33개 활성 `trainingType`의 후보 생성과 타입별 출력 검증
+- 폐기한 `PHONEME_BLEND` 완료 이력의 조회 호환
 - 초성·중성·종성·음절 구조·형태소·단어·문장·주요 음운 규칙 특징
 - 학생별 읽기 특징 프로필과 `WEAKNESS_V1` 취약도
 - 커리큘럼 전체 완료 직후 다음 훈련 목록 5개 편성
@@ -52,7 +53,7 @@ Backend는 마지막 확정 수행 결과를 읽기 특징별로 집계하고, �
 
 ## 요구사항과 수용 기준
 
-- `PTG-001`: Backend는 34개 `trainingType`을 각각 별도 `training_templates` 행으로 관리한다.
+- `PTG-001`: Backend는 33개 활성 `trainingType`을 신규 커리큘럼 후보로 관리한다. 폐기한 `PHONEME_BLEND` 템플릿은 기존 완료 이력 조회를 위해 비활성 상태로 보존한다.
 - `PTG-002`: `training_templates.prompt` JSON은 `trainingType`, `requiredInputs`, `additionalPrompt`, `outputTemplate`, `supportedFeatureCategories`, `supportedScopes`를 포함한다.
 - `PTG-003`: AI 생성 요청은 `requestId`, `schemaVersion`, `trainingType`, `count`, `difficulty`, 목표·제외 특징, 타입별 프롬프트와 출력 템플릿만 포함한다.
 - `PTG-004`: AI 생성 요청에는 `studentId`, 이름, 생년월일, 연락처, 원본 음성, 원시 시선 좌표를 포함하지 않는다.
@@ -93,6 +94,13 @@ Backend는 마지막 확정 수행 결과를 읽기 특징별로 집계하고, �
 
 글자 만들기·자르기·대치는 조작 완료 후 결과를 소리 내어 읽은 발음점수를 평가한다. 문장 완성 및 이해는 선택·조립 완료 후 완성 문장을 읽는 동안 발음과 시선을 함께 수집한다.
 
+## 학습 실행 UI 통합 정책
+
+- `PHONEME_BLEND`는 기본 글자 만들기와 목표·조작 구조가 중복되어 신규 커리큘럼에서 제거한다. 초성·중성·종성 조립은 `BASIC_SYLLABLE_BUILD`, `FINAL_SYLLABLE_BUILD`, `DOUBLE_FINAL_BUILD`가 담당한다.
+- `WORD_READING`, `NONWORD_READING`, `DIFFICULT_WORD_PREVIEW`, `SENTENCE_READING`, `SHORT_PASSAGE_READING`, `SENTENCE_REPEAT`, `WORD_CHAIN_READING`, `PHRASE_READING`, `REPEATED_SENTENCE_READING`, `SHORT_STORY_READING`은 난이도와 생성 내용은 구분하되 아동 앱에서는 하나의 눈으로 보고 읽기 실행 UI를 사용한다.
+- 학습 콘텐츠 유형은 개인화·통계의 의미 식별자이며, 화면 컴포넌트 종류와 일대일로 대응하지 않는다.
+- 글자 배틀 게임과 별도 자음·모음 합치기 화면은 활성 훈련 카탈로그에 포함하지 않는다.
+
 ## 서비스와 데이터 영향
 
 - 책임 서비스: Backend
@@ -120,7 +128,7 @@ Backend는 마지막 확정 수행 결과를 읽기 특징별로 집계하고, �
 
 ## 검증
 
-- 34개 타입의 정상·누락·중복·인덱스·정답 위치 검증
+- 33개 활성 타입의 정상·누락·중복·인덱스·정답 위치와 폐기 타입 미편성 검증
 - 자모 전체와 주요 음운 규칙 7종의 양성·음성 사례
 - 마지막 확정 시도, 낮은 음성 신뢰도와 시선 부담의 프로필 반영
 - 부분 통과·최대 재시도·커리큘럼 전체 미저장

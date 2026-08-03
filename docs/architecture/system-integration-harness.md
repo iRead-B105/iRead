@@ -97,17 +97,17 @@ flowchart LR
   - **(b) 집계 영속**: 레슨 종료 시 **프론트에서 word 메트릭(dwell/visit/read/skipped/regression) 계산** 후 `POST/PATCH /api/app/gaze/sessions`로 전송. `TrainingLessonView.vue:786-797`, `mockDeviceSubmissions.ts`
 - **ai 직접 호출**: 없음. STT/발음평가/TTS/스토리 분기는 모두 `/api/app/**`로 래핑.
 - **실시간**: SSE `/api/app/realtime/events` + 3초 폴백 폴링.
-- **위험**: (1) **`VITE_MOCK_DEVICE_SUBMISSIONS/VOICE/GAZE` 기본값 `true`** — api 모드여도 가짜 gaze/음성이 백엔드로 감(`mockDeviceSubmissions.ts:13-24`). (2) 8765 하드코딩 → 컨테이너 안 dev 서버는 `127.0.0.1`이 자기 자신이라 호스트 브릿지에 닿지 않음. (3) 시선 집계 로직이 프론트에 있어 eyetracking/백엔드 재집계 시 이중 계산.
+- **현재 통합 상태**: `VITE_MOCK_DEVICE_SUBMISSIONS/VOICE/GAZE` 기본값은 모두 `false`이며 테스트 환경에서만 명시적으로 켠다. 브라우저에서 실행되는 WebSocket 클라이언트는 `VITE_GAZE_WS_URL`·`VITE_GAZE_MODE_URL`로 호스트 브릿지 주소를 바꿀 수 있다. 시선 집계·Backend 저장은 Frontend App 한 경로만 사용하고 Eye Tracker의 Backend 직송은 비활성 상태로 유지한다.
 
 ### ai — 발음평가 + 생성 mock (FastAPI)
 
 - **스택**: Python ≥3.12, FastAPI + uvicorn, Pydantic v2, `azure-cognitiveservices-speech`. ML 프레임워크/로컬 모델 없음. `services/ai/pyproject.toml:5-11`
-- **역할**: (a) Azure Speech 단어별 발음평가(ko-KR), (b) 34개 훈련 타입 후보/스토리 대사/이미지(SVG) 결정적 생성 mock.
+- **역할**: (a) Azure Speech 단어별 발음평가·STT·TTS(ko-KR), (b) 활성 훈련 타입 후보/스토리 대사/이미지(SVG) 결정적 생성 adapter.
 - **진입점**: `iread_ai.app:app`. 로컬 `uv run uvicorn ... --port 8081`, 컨테이너 8080. `Dockerfile:10-12`
-- **엔드포인트**: `/health`, `/api/v1/trainings/{candidates,generate}`, `/api/v1/story/{generate,continue}`, `/api/v1/images/generate`, `/api/v1/speech/pronunciation/analyze`. `app.py:54-186`
+- **엔드포인트**: `/health`, `/api/v1/trainings/{candidates,generate,evaluate}`, `/api/v1/story/{generate,continue}`, `/api/v1/images/generate`, `/api/v1/speech/{pronunciation/analyze,transcribe,synthesize}`.
 - **들어오는 트래픽**: `backend`만 호출(`aiRestClient` + `X-API-Key`). 다른 서비스로 나가는 호출은 없고, 유일한 아웃바운드 = Azure Speech.
 - **계약**: `contracts/openapi/ai-api.yaml`. AI 키 `AI_INTERNAL_API_KEY` = backend `AI_API_KEY`(수동 일치 필요).
-- **위험**: (1) backend가 호출하지만 **AI에 없는 엔드포인트** `trainings/evaluate`, `speech/transcribe`, `speech/synthesize`(backend가 `AI_MOCK_*`로 자체 처리). (2) `generate` 엔드포인트 스키마가 계약과 불일치(legacy envelope). (3) 포트 문서 혼재(8080 vs 8081). (4) **compose에 실제 서비스로 등록되지 않음**(루트는 WireMock, backend compose는 `context: ../iRead-ai`로 경로 불일치).
+- **현재 통합 상태**: 루트 Compose가 실제 AI 이미지를 빌드하며 Backend의 `AI_MOCK_*`는 모두 `false`다. Backend와 AI는 공유 `X-API-Key`를 사용하고, 무키 직접 호출은 401로 거부한다. Azure의 실제 한국어 STT·TTS와 발음평가 경로를 사용하며 결정적 로컬 provider는 성공을 위조하지 않고 실패 폐쇄한다.
 
 ### eyetracking — Tobii 로컬 브릿지
 
@@ -158,8 +158,8 @@ flowchart TB
 frontend-app -- /api/app/{training,story,test,recording} --> backend --(AI_MOCK=false일 때)--> ai (X-API-Key)
 ```
 
-- backend `ai.mock-*` 플래그가 기본 `true` → 실제 AI 호출 안 하고 인메모리 mock으로 대체. 발음평가만 실AI 전환 권장.
-- backend가 호출하지만 **AI에 구현이 없는 엔드포인트**: `trainings/evaluate`, `speech/transcribe`, `speech/synthesize`(backend가 mock 처리 중).
+- 루트 Compose는 backend `AI_MOCK_*`를 모두 `false`로 고정해 실제 AI 서비스로 전달한다.
+- AI는 Backend가 사용하는 `trainings/evaluate`, `speech/transcribe`, `speech/synthesize`를 구현하며 모든 변경 요청에 공유 `X-API-Key`를 검증한다.
 - 계약: `contracts/openapi/ai-api.yaml`. 다만 `trainings/generate` 스키마가 계약(envelope `{type,data[]}`)과 구현(legacy `{trainingId,...inputData}`)이 다름 — 작업 전 DTO 비교 필수.
 
 ### 4. 실시간(SSE) / 메일
@@ -167,23 +167,20 @@ frontend-app -- /api/app/{training,story,test,recording} --> backend --(AI_MOCK=
 - SSE: backend가 `/api/admin|app/realtime/events`로 푸시. 리소스 종류 `STUDENT|CURRICULUM|TRAINING|TEST|STORY|GAZE`. 버전 기반 중복 제거. 프론트는 3초 폴백 폴링도 함께 동작.
 - 메일: backend → mailpit(SMTP 1025)로 비밀번호 재설정 메일(ADR-0014). UI `localhost:8025`.
 
-## 로컬 기동 — 두 경로가 충돌함
+## 로컬 기동 — 단일 통합 경로
 
-> **통합 작업 시작 전 가장 먼저 결정할 일: 어느 compose가 정본인가.** 아래 두 경로는 credentials·포트·JWT 시크릿·AI 구현이 모두 다릅니다.
+루트 `compose.yml`이 컨테이너 서비스의 기준 원본이다. `start-all-local.bat`도 다른
+Compose 파일을 호출하지 않고 루트 Compose를 빌드·기동한 뒤, Windows 전용 Eye Tracker
+bridge만 호스트의 `8765` 포트에서 추가 실행한다.
 
-| 항목 | 경로 A: 루트 `compose.yml` (README 권장) | 경로 B: `start-all-local.bat` → `services/backend/docker-compose.yml` |
-| --- | --- | --- |
-| MySQL 포트/DB/계정 | `3307` / `iread_demo` / `iread:iread-demo` | `3306` / `iread` / `ssafy:ssafy` (root `root1234`) |
-| AI 서비스 | `ai-mock` = **WireMock(빈 매핑)** | `ai-mock` = **실제 `services/ai` 빌드**(단 `context: ../iRead-ai` 경로 불일치) |
-| backend | `gradlew bootRun`으로 정상 기동 | **`backend` 서비스 정의도 `demo` profile도 없음 → 백엔드가 안 뜸**(bat 메시지와 불일치) |
-| JWT 시크릿 | `local-demo-secret-key-for-iread-at-least-32-bytes` | `iread-local-demo-only-jwt-secret-2026-07-29` (**다름**) |
-| frontend-web 포트 | `5173` | `5174` (**반대**) |
-| frontend-app 포트 | `5174` | `5173` (**반대**) |
-| eyetracking | compose에 없음 | bat에서 uvicorn `127.0.0.1:8765` 로컬 실행 |
-
-- 근거: `compose.yml:8-13,42-50,72,97-121` vs `services/backend/docker-compose.yml:5-12,40-53` vs `start-all-local.bat:6-7,26-27,84-102`.
-- **영향**: 두 경로를 같은 머신에서 번갈아 띄우면 (1) 포트 충돌, (2) 어느 backend가 발급한 JWT를 어느 frontend가 검증하느냐에 따라 토큰 검증 실패, (3) “AI 서비스” 정체가 WireMock이냐 실제 FastAPI냐로 갈림.
-- 권장(추정): **경로 A(compose.yml)를 정본으로 삼고**, 거기에 `eyetracking`·실제 `ai`를 추가하는 방향으로 통합. 단, 이 결정은 팀 합의 후 ADR로 남길 것.
+| 서비스 | 통합 주소 |
+| --- | --- |
+| 교수자 Frontend | `http://127.0.0.1:5173` |
+| 아동 Frontend | `http://127.0.0.1:5174` |
+| Backend | `http://127.0.0.1:8080` |
+| AI | `http://127.0.0.1:8081` |
+| Eye Tracker bridge | `http://127.0.0.1:8765` |
+| MySQL / Redis / Mailpit | `3307` / `6379` / `8025` |
 
 ### 공유 환경변수 연결점 (compose.yml 기준)
 
@@ -192,7 +189,7 @@ frontend-app -- /api/app/{training,story,test,recording} --> backend --(AI_MOCK=
 | `SPRING_DATASOURCE_URL` | `jdbc:mysql://iread-mysql:3306/iread_demo...` | mysql → backend |
 | `SPRING_DATASOURCE_USERNAME/PASSWORD` | `iread/iread-demo` | mysql ↔ backend |
 | `AUTH_JWT_SECRET` | `local-demo-secret-key-for-iread-at-least-32-bytes` | backend(토큰 발급/검증) |
-| `AI_BASE_URL` / `AI_API_KEY` | `http://iread-ai-mock:8080` / `AI_INTERNAL_API_KEY`와 일치 | backend → ai |
+| `AI_BASE_URL` / `AI_API_KEY` | `http://iread-ai:8080` / `AI_INTERNAL_API_KEY`와 일치 | backend → ai |
 | `SMTP_HOST/PORT` | `iread-mailpit` / `1025` | backend → mailpit |
 | `VITE_BACKEND_URL` | `http://iread-backend:8080` | frontend(web/app) → backend(컨테이너 내부) |
 | `VITE_*_SOURCE` | `api` | 두 프론트를 실 API 모드로 강제 |
@@ -208,14 +205,14 @@ frontend-app -- /api/app/{training,story,test,recording} --> backend --(AI_MOCK=
 | 아동 App ↔ Backend | `contracts/openapi/app-api.yaml` | 운영 |
 | 교수자 Web ↔ Backend | `contracts/openapi/admin-api.yaml` | 운영 |
 | 공통 인증 | `contracts/openapi/auth-api.yaml` | 운영 |
-| Backend ↔ AI(내부) | `contracts/openapi/ai-api.yaml` | **일부 미완**(발음평가 전환·단어 배열·스키마 불일치) |
+| Backend ↔ AI(내부) | `contracts/openapi/ai-api.yaml` | 운영(실제 Azure Speech 경로 포함) |
 | Gaze(아이트래커) | `contracts/gaze/eyetracker-api-contract.md` + `samples/` | **draft**(합의 전, OpenAPI에 미반영) |
 | MySQL 스키마 스냅샷 | `contracts/database/schema.sql`, `erd.md` | 검토용(실행 원본은 backend Flyway) |
 | 학습/검사 JSON 스키마 | `contracts/json/*.json`(8종) | 운영 |
 | 추적·해소 | `contracts/traceability.json`, `contracts/api-resolutions.json` | 운영 |
 
 - 검증: `tools/validate_contracts.py` + `.github/workflows/validate-contracts.yml`. 계약은 Notion 스냅샷(`contracts/notion/`)에서 이관됐고 **현재 계약으로 직접 수정 금지**(`docs/workflows/specification-management.md`).
-- 통합 시 최우선: `ai-api.yaml`과 AI 서비스 Pydantic 모델(`models.py`, `generation_models.py`)을 1:1 비교, 그리고 gaze 계약을 draft에서 확정으로 끌어올리기.
+- 다음 계약 작업은 사용하지 않는 AI gaze draft와 Eye Tracker draft의 소유 경계를 확정하는 것이다. 현재 실행 경로의 시선 집계는 Frontend App, 영속화는 Backend가 담당한다.
 
 ## 서브모듈 체크아웃 · 브랜치 현황
 
@@ -223,11 +220,11 @@ frontend-app -- /api/app/{training,story,test,recording} --> backend --(AI_MOCK=
 
 | 서브모듈 | `.gitmodules` | 현재 작업 트리 | 비고 |
 | --- | --- | --- | --- |
-| `backend` | develop | detached at origin/HEAD | 로컬에 `feature/learner-local-integration`, `feature/learner-ui-design-refresh` 존재 |
+| `backend` | develop | orchestration이 검증한 detached commit | 통합 변경 작업 트리 포함 |
 | `frontend-web` | develop | detached(`develop-19-g4a71325`) | |
-| `frontend-app` | develop | `feature/learner-ui-design-refresh` | **UI 리디자인 진행 중**(172파일 변경) |
-| `ai` | develop | detached at origin/HEAD | |
-| `eyetracking` | develop | detached `fe60fed` | **`feature/tobii-gaze-calibration-sync`가 4커밋 선행**(백엔드 연동 포함) — 통합 베이스 후보 |
+| `frontend-app` | develop | `feature/learner-ui-design-refresh` | 통합 UI와 API 연결 변경 포함 |
+| `ai` | develop | `develop` | 실제 Speech provider 변경 포함 |
+| `eyetracking` | develop | `feature/tobii-gaze-calibration-sync` | native bridge·보정 변경 포함 |
 
 ## 통합 위험 레지스터
 
@@ -235,28 +232,21 @@ frontend-app -- /api/app/{training,story,test,recording} --> backend --(AI_MOCK=
 
 ### P0 — 통합을 막거나 데이터 정합성을 깨뜨림
 
-| # | 위험 | 근거 |
-| --- | --- | --- |
-| P0-1 | 두 기동 경로(credentials/포트/JWT) 충돌 — 어느 compose가 정본인지 미확정 | `compose.yml:8-13` vs `services/backend/docker-compose.yml:5-12` |
-| P0-2 | JWT 시크릿 불일치 — 혼용 시 토큰 검증 실패 가능(추정, 미검증) | `compose.yml:72` vs `start-all-local.bat:6` |
-| P0-3 | `eyetracking`이 `compose.yml`에 누락 — 통합 환경에서 시선 추적이 빠짐 | `compose.yml` 전체 grep 무일치; `start-all-local.bat:84-87` |
-| P0-4 | 실제 `services/ai`가 compose에 없음 — WireMock(빈 매핑)이 대체, 백엔드 AI 호출이 404/오류 | `compose.yml:42-50`; `services/backend/docker-compose.yml:40-53` |
-| P0-5 | bat의 `--profile demo`/“Spring backend” 선언이 헛수 — 백엔드가 안 뜸 | `start-all-local.bat:26-27` vs `services/backend/docker-compose.yml:1-75` |
-| P0-6 | eyetracking 8765 하드코딩 + 컨테이너 `127.0.0.1` 문제 — compose 안 dev 서버는 호스트 브릿지에 닿지 않음 | `useTobiiGazeBridge.ts:94-95` |
-| P0-7 | 서브모듈 브랜치 불일치 — frontend-app은 feature 진행 중, eyetracking은 detached + feature 선행 | `git submodule status`; eyetracking git log |
-| P0-8 | `VITE_MOCK_DEVICE_SUBMISSIONS/VOICE/GAZE` 기본 `true` — api 모드여도 가짜 gaze/음성이 백엔드로 감 | `mockDeviceSubmissions.ts:13-24`, `TrainingLessonView.vue:786-789` |
-| P0-9 | AI에 구현 없는 엔드포인트(evaluate/transcribe/synthesize) — 실전환 시 404 | `app.py`(없음) vs `HttpAiClient.java:41-48` |
-| P0-10 | 식별자 타입 불일치 — eyetracking `student_id`(TEXT/`anonymous`) vs 백엔드 `studentId`(int) | `reading_storage.py:18` vs `gaze_payloads.py:8,57` |
+2026-08-02 통합 실행에서 기존 P0 항목을 모두 해소했다. 루트
+`compose.yml`을 정본으로 고정하고 실제 AI·Backend·두 Frontend·MySQL·Redis·Mailpit을
+기동하며, Windows Eye Tracker bridge는 `start-all-local.bat`가 호스트 서비스로 실행한다.
+Frontend 장치 mock 기본값은 `false`, AI mock은 Compose에서 `false`이고 실제 Azure
+STT·발음평가·TTS를 사용한다. 시선 영속 경로는 Frontend App → Backend 하나만 활성화한다.
 
 ### P1 — 통합 가능하지만 설계/설정 조정 필요
 
 | # | 위험 | 근거 |
 | --- | --- | --- |
-| P1-1 | 시선 집계 이중 계산 위험 — 집계 로직이 프론트에 있고 eyetracking feature가 백엔드 직송 추가 | `mockDeviceSubmissions.ts`, feature `backend_gaze_client.py` |
+| P1-1 | Eye Tracker의 선택적 Backend 직송 기능을 나중에 활성화하면 Frontend 집계 경로와 중복될 수 있음. 현재는 비활성 | `mockDeviceSubmissions.ts`, `backend_gaze_client.py` |
 | P1-2 | `gazeSessionId` 라운드트립 — 끊기면 백엔드 세션이 열려만 있음 | feature `main.py:104-111`, `reading.js:275,311` |
 | P1-3 | eyetracking 인증 = 평문 `sessionCookie`(JSESSIONID) 수동 주입, 갱신/만료 없음 | feature `backend_gaze_client.py:86-92` |
 | P1-4 | CORS/크로스오리진 — web/app이 백엔드와 다른 오리진, `credentials:'include'`, refresh 쿠키 SameSite/Secure 미정 | `SecurityConfig.java:80-87`, `apiClient.ts:184` |
-| P1-5 | AI `generate` 엔드포인트 스키마 불일치 — 계약(envelope) vs 구현(legacy) | `ai-api.yaml:249-295` vs `app.py:79` |
+| P1-5 | AI 생성은 현재 결정적 adapter이며 운영 LLM provider 전환 시 동일 계약을 유지해야 함 | `ai-api.yaml`, `app.py` |
 | P1-6 | 두 프론트 API 네임스페이스·인증 완전 독립 — 세션/토큰 연동 설계 필요 | `apiLearnerAuthRepository.ts`, `frontend-web` authApi |
 | P1-7 | SSE emitter 인메모리 — 다중 인스턴스 확장 시 sticky 세션/브로커 필요 | `RealtimeEventHub.java:17-18` |
 | P1-8 | 루트 `.env`/`.env.example` 부재 — 공유 시크릿/URL이 compose 평문 하드코딩 | `.gitignore:2-4`, `compose.yml` |
@@ -277,16 +267,16 @@ frontend-app -- /api/app/{training,story,test,recording} --> backend --(AI_MOCK=
 
 매 세션 시작 전 / PR 전에 확인합니다.
 
-- [ ] 어느 compose가 정본인지 합의했는가? (P0-1) → ADR 후보
+- [x] 루트 `compose.yml`을 통합 정본으로 사용한다.
 - [ ] 5개 서브모듈 모두 올바른 브랜치에 체크아웃했는가? (P0-7) 특히 eyetracking(feature 선행), frontend-app(UI 리디자인)
-- [ ] `VITE_MOCK_*`(frontend-app)과 `AI_MOCK_*`(backend) 토글이 의도한 값인가? (P0-8)
-- [ ] eyetracking/ai가 통합 환경에 포함되었는가? (P0-3, P0-4)
-- [ ] 8765 브릿지가 컨테이너 안에서도 닿는가? `host.docker.internal` 또는 별도 서비스화 (P0-6)
-- [ ] 시선 집계의 single source of truth가 한곳인가? (P1-1) 중복 경로 제거
-- [ ] `studentId`/`gazeSessionId` 식별자 정합성 확인 (P0-10, P1-2)
-- [ ] 계약(`ai-api.yaml`, gaze draft)과 구현을 1:1 비교했는가? (P0-9, P1-5, P2-3)
-- [ ] CORS/refresh 쿠키 SameSite/Secure, JWT 시크릿 일치 (P0-2, P1-4)
-- [ ] `docker compose up` 후 `node tools/verify_realtime_demo.mjs` 통과? (P2-1)
+- [x] `VITE_MOCK_*` 기본값은 false, Compose의 `AI_MOCK_*`는 false다.
+- [x] 실제 AI와 호스트 Eye Tracker bridge가 통합 환경에 포함된다.
+- [x] 브라우저가 8765 bridge에 연결하고 native 상태·WebSocket 전달을 확인했다.
+- [x] 시선 집계의 활성 single source of truth는 Frontend App이다.
+- [x] `studentId`/`gazeSessionId` 라운드트립과 종료·분석 저장을 확인했다.
+- [x] Backend가 사용하는 AI 엔드포인트와 공유 API key를 검증했다.
+- [x] 데모 CORS/refresh cookie/JWT 설정으로 두 단계 App 로그인을 확인했다.
+- [x] `node tools/verify_realtime_demo.mjs`가 양방향 3초 기준을 통과했다.
 
 ## 관련 문서
 

@@ -1111,6 +1111,38 @@
                         "data": {
                           "type": "object",
                           "properties": {
+                            "storyId": {
+                              "type": "string",
+                              "description": "스토리 id"
+                            },
+                            "storyStatus": {
+                              "type": "string",
+                              "enum": ["IN_PROGRESS", "COMPLETED"]
+                            },
+                            "currentDay": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 10,
+                              "description": "현재 읽는 일차"
+                            },
+                            "availableDay": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 10,
+                              "description": "스토리 생성일부터 오늘까지 열려 있는 최대 일차"
+                            },
+                            "totalDays": {
+                              "type": "integer",
+                              "enum": [10]
+                            },
+                            "pagesPerDay": {
+                              "type": "integer",
+                              "enum": [10]
+                            },
+                            "dayComplete": {
+                              "type": "boolean",
+                              "description": "오늘 일차의 10페이지를 모두 읽었는지 여부"
+                            },
                             "storyLines": {
                               "type": "array",
                               "items": {
@@ -1146,7 +1178,17 @@
                               },
                               "description": "스토리대사"
                             }
-                          }
+                          },
+                          "required": [
+                            "storyId",
+                            "storyStatus",
+                            "currentDay",
+                            "availableDay",
+                            "totalDays",
+                            "pagesPerDay",
+                            "dayComplete",
+                            "storyLines"
+                          ]
                         }
                       },
                       "required": [
@@ -1158,6 +1200,13 @@
                 "example": {
                   "success": true,
                   "data": {
+                    "storyId": "1001",
+                    "storyStatus": "IN_PROGRESS",
+                    "currentDay": 1,
+                    "availableDay": 1,
+                    "totalDays": 10,
+                    "pagesPerDay": 10,
+                    "dayComplete": false,
                     "storyLines": [
                       {
                         "lineId": "1001",
@@ -1189,9 +1238,9 @@
           "ST-READ-06",
           "ST-READ-07"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
+        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다. 이야기는 10일 동안 하루 10페이지씩 제공하며, 하루가 열릴 때 첫 4페이지를 준비한다.",
         "x-notion-request-summary": "studentId(path)\nstoryId(path)",
-        "x-notion-response-summary": "스토리대사[] {\n  스토리대사id\n  이전스토리대사id\n  스토리id\n  대사\n  대사순서\n  읽은일자\n}",
+        "x-notion-response-summary": "스토리id\n스토리상태\n현재일차\n공개일차\n전체일차\n일차당페이지\n당일완료여부\n스토리대사[] {\n  스토리대사id\n  이전스토리대사id\n  스토리id\n  대사\n  대사순서\n  읽은일자\n}",
         "x-review-status": "reviewed",
         "security": [
           {
@@ -4779,7 +4828,7 @@
     "schemas": {
       "TrainingType": {
         "type": "string",
-        "description": "아동 앱의 훈련 화면과 제출 계약을 선택하는 안정적인 의미 식별자",
+        "description": "훈련 콘텐츠와 제출 계약을 선택하는 안정적인 의미 식별자. 여러 읽기 유형은 아동 앱의 하나의 통합 읽기 UI를 공유한다. PHONEME_BLEND는 기존 이력 조회만 지원하는 폐기 값이며 신규 커리큘럼에는 편성하지 않는다.",
         "enum": [
           "VOWEL_TRACE",
           "CONSONANT_TRACE",
