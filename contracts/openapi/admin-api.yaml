@@ -4260,6 +4260,87 @@
         ]
       }
     },
+    "/api/admin/student/{studentId}/story-history/{storyId}/pages/{storyLineId}": {
+      "put": {
+        "operationId": "update_admin_unread_story_page",
+        "summary": "읽지 않은 AI 이야기 페이지 수정",
+        "tags": ["admin"],
+        "parameters": [
+          {"name": "studentId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}},
+          {"name": "storyId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}},
+          {"name": "storyLineId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}}
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {
+            "type": "object",
+            "required": ["revision"],
+            "properties": {
+              "revision": {"type": "integer", "format": "int64", "minimum": 0},
+              "subtitle": {"type": "string", "minLength": 1, "maxLength": 40},
+              "body": {"type": "string", "minLength": 1, "maxLength": 500, "description": "정확히 3문장, 문장당 한글 10~22음절(권장 13~19음절)"},
+              "choices": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "string", "minLength": 1, "maxLength": 40}}
+            }
+          }}}
+        },
+        "responses": {
+          "200": {"description": "수정된 페이지"},
+          "400": {"$ref": "#/components/responses/BadRequest"},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "403": {"$ref": "#/components/responses/Forbidden"},
+          "404": {"$ref": "#/components/responses/NotFound"},
+          "409": {"description": "이미 읽었거나 revision 충돌"}
+        },
+        "security": [{"bearerAuth": []}],
+        "x-review-status": "reviewed",
+        "x-feature-ids": ["ST-BRANCH-05"],
+        "x-notion-page-id": "git-admin-story-page-update-v1",
+        "x-notion-url": "git:contracts/api-resolutions.json#admin-story-page-update"
+      }
+    },
+    "/api/admin/student/{studentId}/story-history/{storyId}/pages/{storyLineId}/image": {
+      "post": {
+        "operationId": "upload_admin_unread_story_page_image",
+        "summary": "읽지 않은 AI 이야기 페이지 이미지 업로드",
+        "tags": ["admin"],
+        "parameters": [
+          {"name": "studentId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}},
+          {"name": "storyId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}},
+          {"name": "storyLineId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}}
+        ],
+        "requestBody": {"required": true, "content": {"multipart/form-data": {"schema": {
+          "type": "object", "required": ["revision", "image"], "properties": {
+            "revision": {"type": "integer", "format": "int64", "minimum": 0},
+            "image": {"type": "string", "format": "binary"}
+          }
+        }}}},
+        "responses": {"200": {"description": "수정된 페이지"}, "400": {"$ref": "#/components/responses/BadRequest"}, "401": {"$ref": "#/components/responses/Unauthorized"}, "403": {"$ref": "#/components/responses/Forbidden"}, "404": {"$ref": "#/components/responses/NotFound"}, "409": {"description": "이미 읽었거나 revision 충돌"}},
+        "security": [{"bearerAuth": []}],
+        "x-review-status": "reviewed",
+        "x-feature-ids": ["ST-BRANCH-05"],
+        "x-notion-page-id": "git-admin-story-page-image-upload-v1",
+        "x-notion-url": "git:contracts/api-resolutions.json#admin-story-page-image-upload"
+      }
+    },
+    "/api/admin/student/{studentId}/story-history/{storyId}/pages/{storyLineId}/image/regenerate": {
+      "post": {
+        "operationId": "regenerate_admin_unread_story_page_image",
+        "summary": "읽지 않은 AI 이야기 페이지 Gemini 이미지 재생성",
+        "tags": ["admin"],
+        "parameters": [
+          {"name": "studentId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}},
+          {"name": "storyId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}},
+          {"name": "storyLineId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}}
+        ],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["revision"], "properties": {"revision": {"type": "integer", "format": "int64", "minimum": 0}}}}}},
+        "responses": {"200": {"description": "수정된 페이지"}, "400": {"$ref": "#/components/responses/BadRequest"}, "401": {"$ref": "#/components/responses/Unauthorized"}, "403": {"$ref": "#/components/responses/Forbidden"}, "404": {"$ref": "#/components/responses/NotFound"}, "409": {"description": "이미 읽었거나 revision 충돌"}, "502": {"description": "Gemini 이미지 생성 실패"}},
+        "security": [{"bearerAuth": []}],
+        "x-review-status": "reviewed",
+        "x-feature-ids": ["ST-BRANCH-05"],
+        "x-notion-page-id": "git-admin-story-page-image-regenerate-v1",
+        "x-notion-url": "git:contracts/api-resolutions.json#admin-story-page-image-regenerate"
+      }
+    },
     "/api/admin/training/{studentId}/curriculum": {
       "post": {
         "operationId": "post_admin_training_by_studentId_curriculum",
