@@ -58,6 +58,12 @@ docker compose up -d
 모든 컨테이너는 `iread-network`에 연결됩니다. 종료할 때는 데이터 볼륨을 보존하는
 `docker compose down`을 사용합니다.
 
+### Tobii 시선 추적 실행
+
+Tobii Eye Tracker 5는 브라우저에서 직접 접근하지 않고, `services/eyetracking`의 로컬 FastAPI bridge를 통해 사용합니다. bridge 서버가 실행 중이면 아동 앱이 시선 WebSocket에 연결될 때 native bridge 자동 시작을 시도하며, Tobii가 없거나 실행에 실패하면 아동 앱은 마우스 포인터 기반 fallback으로 동작할 수 있습니다.
+
+자세한 설정과 native bridge 빌드 방법은 [services/eyetracking/README.md](services/eyetracking/README.md)를 확인합니다.
+
 ### 데모 계정과 실시간 연동 확인
 
 - 교수자: `demo@iread.local` / `demo1234`

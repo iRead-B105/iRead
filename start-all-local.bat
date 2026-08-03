@@ -46,5 +46,6 @@ echo Backend    : http://127.0.0.1:8080/
 echo AI         : http://127.0.0.1:8081/health
 echo Eye tracker: http://127.0.0.1:8765/api/status
 echo.
-echo The eye tracker starts in simulation mode. Select native mode after Tobii is ready.
+echo The eye tracker bridge auto-starts native Tobii mode when the learner app connects.
+echo If Tobii is not available, the learner app can still use mouse fallback.
 pause
