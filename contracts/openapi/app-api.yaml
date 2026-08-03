@@ -3965,6 +3965,15 @@
                               "additionalProperties": true,
                               "description": "training_datas.generated_data"
                             },
+                            "completedQuestionNumbers": {
+                              "type": "array",
+                              "items": {
+                                "type": "integer",
+                                "format": "int32",
+                                "minimum": 1
+                              },
+                              "description": "이미 완료된 훈련 문항 번호 목록"
+                            },
                             "startedAt": {
                               "type": "string",
                               "format": "date-time",
@@ -3983,7 +3992,8 @@
                             "dailyCurriculumId",
                             "sequenceNo",
                             "status",
-                            "trainingName"
+                            "trainingName",
+                            "completedQuestionNumbers"
                           ]
                         }
                       },

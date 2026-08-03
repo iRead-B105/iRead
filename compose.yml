@@ -91,12 +91,12 @@ services:
       SMTP_PORT: "1025"
       AI_BASE_URL: http://iread-ai:8080
       AI_API_KEY: ${AI_API_KEY:-iread-local-ai-key}
-      AI_MOCK_GENERATE: "false"
-      AI_MOCK_EVALUATE: "false"
-      AI_MOCK_SPEECH: "false"
-      AI_MOCK_PRONUNCIATION: "false"
-      AI_MOCK_TRANSCRIBE: "false"
-      AI_MOCK_TTS: "false"
+      AI_MOCK_GENERATE: "true"
+      AI_MOCK_EVALUATE: "true"
+      AI_MOCK_SPEECH: "true"
+      AI_MOCK_PRONUNCIATION: "true"
+      AI_MOCK_TRANSCRIBE: "true"
+      AI_MOCK_TTS: "true"
       GRADLE_USER_HOME: /gradle-cache
     volumes:
       - ./services/backend:/workspace
