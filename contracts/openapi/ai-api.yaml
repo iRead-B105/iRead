@@ -459,8 +459,14 @@
       "StoryBranchPrompt": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["options"],
+        "required": ["subtitle", "options"],
         "properties": {
+          "subtitle": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40,
+            "description": "현재 분기 사건을 요약한 AI 생성 소제목"
+          },
           "options": {
             "type": "array",
             "minItems": 3,

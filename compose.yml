@@ -56,6 +56,7 @@ services:
         required: false
     environment:
       AI_INTERNAL_API_KEY: ${AI_API_KEY:-iread-local-ai-key}
+      CHAPTER_CANDIDATE_COUNT: "1"
       AI_PRONUNCIATION_PROVIDER: ${AI_PRONUNCIATION_PROVIDER:-azure}
       AI_SPEECH_PROVIDER: ${AI_SPEECH_PROVIDER:-azure}
       AZURE_SPEECH_VOICE: ${AZURE_SPEECH_VOICE:-ko-KR-SunHiNeural}
@@ -91,7 +92,10 @@ services:
       SMTP_PORT: "1025"
       AI_BASE_URL: http://iread-ai:8080
       AI_API_KEY: ${AI_API_KEY:-iread-local-ai-key}
+      AI_READ_TIMEOUT: 210s
       AI_MOCK_GENERATE: "true"
+      AI_MOCK_STORY: "false"
+      AI_MOCK_IMAGE: "false"
       AI_MOCK_EVALUATE: "true"
       AI_MOCK_SPEECH: "true"
       AI_MOCK_PRONUNCIATION: "true"
