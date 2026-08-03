@@ -260,6 +260,7 @@ def validate_ai_contract() -> list[str]:
     errors: list[str] = []
     document = json.loads(AI_OPENAPI.read_text(encoding="utf-8"))
     expected_paths = {
+        "/api/v1/trainings/candidates",
         "/api/v1/trainings/generate",
         "/api/v1/trainings/evaluate",
         "/api/v1/story/generate",

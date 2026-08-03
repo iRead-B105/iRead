@@ -6,6 +6,27 @@
     "description": "Backend가 AI server를 호출하는 내부 HTTP 계약이다. 모든 요청은 X-API-Key와 Idempotency-Key를 사용하며 외부 클라이언트에 노출하지 않는다."
   },
   "paths": {
+    "/api/v1/trainings/candidates": {
+      "post": {
+        "operationId": "generateTrainingCandidates",
+        "summary": "개인화 훈련 문항 후보 생성",
+        "tags": ["training"],
+        "security": [{"apiKeyAuth": []}],
+        "parameters": [{"$ref": "#/components/parameters/IdempotencyKey"}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TrainingGenerateRequest"}}}},
+        "responses": {
+          "200": {"description": "훈련 후보 생성 성공", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TrainingGenerateResponse"}}}},
+          "400": {"$ref": "#/components/responses/BadRequest"},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "409": {"$ref": "#/components/responses/Conflict"},
+          "422": {"$ref": "#/components/responses/Unprocessable"},
+          "502": {"$ref": "#/components/responses/UpstreamFailure"},
+          "504": {"$ref": "#/components/responses/Timeout"}
+        },
+        "x-timeout-ms": 30000,
+        "x-retry-policy": "연결 실패와 502·503·504에 한해 같은 Idempotency-Key로 최대 1회 재시도"
+      }
+    },
     "/api/v1/trainings/generate": {
       "post": {
         "operationId": "generateTraining",
@@ -13,9 +34,9 @@
         "tags": ["training"],
         "security": [{"apiKeyAuth": []}],
         "parameters": [{"$ref": "#/components/parameters/IdempotencyKey"}],
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TrainingGenerateRequest"}}}},
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/LegacyTrainingGenerateRequest"}}}},
         "responses": {
-          "200": {"description": "훈련 데이터 생성 성공", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TrainingGenerateResponse"}}}},
+          "200": {"description": "훈련 데이터 생성 성공", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/LegacyTrainingGenerateResponse"}}}},
           "400": {"$ref": "#/components/responses/BadRequest"},
           "401": {"$ref": "#/components/responses/Unauthorized"},
           "409": {"$ref": "#/components/responses/Conflict"},
@@ -246,6 +267,36 @@
           "retryable": {"type": "boolean"}
         }
       },
+      "LegacyTrainingGenerateRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "requestId",
+          "trainingId",
+          "studentId",
+          "trainingTemplateId",
+          "schemaVersion",
+          "inputData"
+        ],
+        "properties": {
+          "requestId": {"type": "string", "minLength": 1},
+          "trainingId": {"type": "integer", "format": "int64", "minimum": 1},
+          "studentId": {"type": "integer", "format": "int64", "minimum": 1},
+          "trainingTemplateId": {"type": "integer", "format": "int64", "minimum": 1},
+          "schemaVersion": {"type": "integer", "minimum": 1},
+          "inputData": {"type": "object", "additionalProperties": true}
+        }
+      },
+      "LegacyTrainingGenerateResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["requestId", "schemaVersion", "generatedData"],
+        "properties": {
+          "requestId": {"type": "string", "minLength": 1},
+          "schemaVersion": {"type": "integer", "minimum": 1},
+          "generatedData": {"type": "object", "additionalProperties": true}
+        }
+      },
       "TrainingGenerateRequest": {
         "type": "object",
         "required": [
@@ -267,7 +318,6 @@
           "difficulty": {"type": "integer", "minimum": 1, "maximum": 5},
           "targetFeatures": {
             "type": "array",
-            "minItems": 1,
             "maxItems": 2,
             "items": {"$ref": "#/components/schemas/TrainingTargetFeature"}
           },
