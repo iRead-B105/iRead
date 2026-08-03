@@ -9,6 +9,14 @@ where docker >nul 2>nul || (
   exit /b 1
 )
 
+echo [0/3] Stopping stale local iRead Vite servers...
+powershell -NoProfile -Command ^
+  "$root = [IO.Path]::GetFullPath('%~dp0services');" ^
+  "Get-CimInstance Win32_Process | Where-Object {" ^
+  "  $_.Name -eq 'node.exe' -and $_.CommandLine -match 'vite' -and" ^
+  "  ($_.CommandLine -like ('*' + $root + '\frontend-app\*') -or $_.CommandLine -like ('*' + $root + '\frontend-web\*'))" ^
+  "} | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }"
+
 echo [1/3] Starting database, backend, AI, learner UI, and teacher UI...
 docker compose up -d --build
 if errorlevel 1 (
