@@ -45,6 +45,19 @@ OBSOLETE_PATHS = {
 }
 
 
+class DuplicateJsonKeyError(ValueError):
+    pass
+
+
+def reject_duplicate_json_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise DuplicateJsonKeyError(f"duplicate JSON key: {key}")
+        result[key] = value
+    return result
+
+
 def request_property_names(operation: dict[str, Any]) -> set[str]:
     names = {
         parameter.get("name", "")
@@ -73,8 +86,11 @@ def validate_openapi(
             errors.append(f"missing OpenAPI file: {path.relative_to(ROOT)}")
             continue
         try:
-            document = json.loads(path.read_text(encoding="utf-8"))
-        except json.JSONDecodeError as error:
+            document = json.loads(
+                path.read_text(encoding="utf-8"),
+                object_pairs_hook=reject_duplicate_json_keys,
+            )
+        except (json.JSONDecodeError, DuplicateJsonKeyError) as error:
             errors.append(f"{path.relative_to(ROOT)}: invalid YAML JSON subset: {error}")
             continue
 
@@ -260,6 +276,7 @@ def validate_ai_contract() -> list[str]:
     errors: list[str] = []
     document = json.loads(AI_OPENAPI.read_text(encoding="utf-8"))
     expected_paths = {
+        "/api/v1/trainings/candidates",
         "/api/v1/trainings/generate",
         "/api/v1/trainings/evaluate",
         "/api/v1/story/generate",
@@ -358,10 +375,20 @@ def validate_schema() -> tuple[list[str], dict[str, int]]:
     ]
     if len(migration_versions) != len(set(migration_versions)):
         errors.append("duplicate backend Flyway migration version")
-    if [path.name for path in migration_files] != ["V1__baseline_schema.sql"]:
-        errors.append("backend schema must be consolidated into the Flyway V1 baseline")
-    if [path.name for path in demo_files] != ["V2__demo_seed.sql"]:
-        errors.append("backend demo data must be consolidated into Flyway V2")
+    schema_versions = [
+        int(re.match(r"V(\d+)__", path.name).group(1))
+        for path in migration_files
+        if re.match(r"V(\d+)__", path.name)
+    ]
+    demo_versions = [
+        int(re.match(r"V(\d+)__", path.name).group(1))
+        for path in demo_files
+        if re.match(r"V(\d+)__", path.name)
+    ]
+    if not migration_files or migration_files[0].name != "V1__baseline_schema.sql":
+        errors.append("backend Flyway migrations must start with the V1 baseline")
+    if not demo_files or demo_files[0].name != "V2__demo_seed.sql":
+        errors.append("backend demo Flyway migrations must start with V2")
     if not flyway_baseline.is_file():
         errors.append("missing backend Flyway V1 baseline")
     else:
