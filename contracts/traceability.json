@@ -66,10 +66,10 @@
     "deprecated": false,
     "responsibility": "server",
     "api_page_ids": [
-      "3a3027df-9053-8088-b76e-e9538ba18df6"
+      "git-admin-lesson-material-get-v1"
     ],
     "operation_ids": [
-      "get_admin_training_by_studentId_by_trainingId_expected_word"
+      "get_admin_training_by_studentId_by_trainingId_lesson_material"
     ]
   },
   {
@@ -114,10 +114,10 @@
     "deprecated": false,
     "responsibility": "server",
     "api_page_ids": [
-      "3a3027df-9053-8079-9eb8-f404600f0bc8"
+      "git-admin-lesson-material-put-v1"
     ],
     "operation_ids": [
-      "post_admin_training_by_studentId_by_trainingId_expected_word"
+      "put_admin_training_by_studentId_by_trainingId_lesson_material"
     ]
   },
   {
@@ -126,10 +126,10 @@
     "deprecated": false,
     "responsibility": "server",
     "api_page_ids": [
-      "3a3027df-9053-8017-8692-f0b03c1e3d04"
+      "git-admin-lesson-material-put-v1"
     ],
     "operation_ids": [
-      "delete_admin_training_by_studentId_by_trainingId_expected_word_by_wordId"
+      "put_admin_training_by_studentId_by_trainingId_lesson_material"
     ]
   },
   {

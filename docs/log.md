@@ -1,5 +1,9 @@
 # 문서 업데이트 로그
 
+## 2026-07-31
+
+* **Flyway V1·V2 기준선 통합 검증**: 최종 스키마를 V1, 전체 데모 데이터를 V2로 통합하고 공식 MySQL Community Server 8.4.11의 빈 DB에서 Flyway·Hibernate mapping·제약조건·동시성·데모 seed 테스트 8건을 최신 `develop` 병합 전후 모두 통과했다.
+
 ## 2026-07-29
 
 * **훈련 입력 계약**: 34개 훈련 템플릿과 생성 문항에 `requiredInputs`를 추가해 `VOICE`, `GAZE` 사용 여부를 명시했다.

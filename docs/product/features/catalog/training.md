@@ -11,12 +11,12 @@ timestamp: 2026-07-29T11:17:47+09:00
 | --- | --- | --- | --- | --- |
 | CU-DSP-01 | 훈련 목록 표시 | 교수자에게 전체 훈련 카탈로그를 표시하고, 인증된 아동에게 현재 커리큘럼의 훈련 순서·영역·이름·상태를 표시한다. | server | `get_admin_training_by_studentId`, `get_app_training_by_studentId` |
 | CU-DSP-02 | 차회 커리큘럼 표시 | 선택한 학습자가 다음 회차에 수행할 커리큘럼을 표시한다. | server | `get_admin_training_by_studentId_by_curriculumId` |
-| CU-DSP-03 | 교안 학습 자료 목록 표시 | 선택한 훈련 교안의 학습 자료 목록과 배치 순서를 표시한다. | server | `get_admin_training_by_studentId_by_trainingId_expected_word` |
+| CU-DSP-03 | 교안 학습 자료 목록 표시 | AI가 생성하고 교수자가 편집할 수 있는 교안 자료 목록과 배치 순서를 표시한다. | server | `get_admin_training_by_studentId_by_trainingId_lesson_material` |
 | CU-DSP-04 | 선택 훈련 상세 표시 | 선택한 훈련의 정확도, 학습 판단, 권장 시간과 학습 목표를 표시한다. | server | `get_admin_training_by_studentId_by_trainingId_detail` |
 | CU-DSP-05 | 아동 화면 미리보기 표시 | 편집 중인 교안이 아동 화면에 표시될 모습을 미리보기로 표시한다. | server | `get_admin_training_by_studentId_by_trainingId_detail` |
 | CU-SAVE-01 | 차회 커리큘럼 저장 | 학습 시작 전인 차회 커리큘럼의 구성과 순서를 저장한다. 생성 자료가 있으면 무효화하고 새 구성을 생성 대기 상태로 전환한다. | server | `patch_admin_training_by_studentId_by_curriculumId` |
-| CU-SAVE-02 | 교안 학습 자료 추가 | 입력한 자료를 선택한 훈련의 아동별 교안에 추가한다. | server | `post_admin_training_by_studentId_by_trainingId_expected_word` |
-| CU-SAVE-03 | 교안 학습 자료 삭제 | 선택한 훈련 교안의 학습 자료를 삭제한다. | server | `delete_admin_training_by_studentId_by_trainingId_expected_word_by_wordId` |
+| CU-SAVE-02 | 교안 학습 자료 편집 | 생성된 교안의 제시 내용과 정답을 수정해 전체 교안 저장 API로 반영한다. | server | `put_admin_training_by_studentId_by_trainingId_lesson_material` |
+| CU-SAVE-03 | 교안 학습 자료 제거 | 삭제할 자료를 제외한 전체 교안 목록을 저장해 생성된 교안에서 제거한다. | server | `put_admin_training_by_studentId_by_trainingId_lesson_material` |
 | CU-SAVE-04 | 차회 커리큘럼 입력값 검증 | 수정한 차회 커리큘럼의 훈련 구성과 순서를 검증한다. | server | `patch_admin_training_by_studentId_by_curriculumId` |
 | CU-SAVE-05 | 차회 커리큘럼 저장 성공 처리 | 차회 커리큘럼 저장이 완료되면 저장 결과를 표시하고 커리큘럼을 갱신한다. | server | `patch_admin_training_by_studentId_by_curriculumId` |
 | CU-SAVE-06 | 차회 커리큘럼 저장 실패 처리 | 차회 커리큘럼 저장에 실패하면 실패 사유를 표시하고 다시 시도할 수 있도록 한다. | server | `patch_admin_training_by_studentId_by_curriculumId` |

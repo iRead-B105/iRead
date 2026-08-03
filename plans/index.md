@@ -6,6 +6,7 @@
 
 현재 진행 대상 계획:
 
+* [실력 도전 기준 데이터 정합화와 통합 검증](2026-08-02-skill-challenge-integration-validation.md) - active
 * [Azure Speech 단어 단위 발음 평가 연동](2026-07-28-azure-speech-pronunciation-assessment.md) - active
 * [교수자 Web–아동 App 실시간 데이터 연동](2026-07-31-teacher-learner-data-linkage.md) - draft
 * [5개 서브모듈 시스템 통합](2026-07-31-system-integration.md) - draft

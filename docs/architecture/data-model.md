@@ -23,7 +23,7 @@ ERDCloud가 COMMENT로 표현한 `AUTO_INCREMENT`, `UNIQUE`, `DEFAULT`, `CHECK` 
 - 확정 설계 이미지: [`contracts/database/erd.png`](../../contracts/database/erd.png)
 - 생성 관계도: [`contracts/database/erd.md`](../../contracts/database/erd.md)
 
-DB 적용 전이므로 별도 V2를 만들지 않고 V1을 교체한다. `schema.sql`은 V1과 바이트 단위로 동일하게 유지하고 `erd.md`는 `python tools/generate_erd.py`로 생성한다.
+최종 스키마는 V1, 데모 데이터는 V2에 통합한다. `schema.sql`은 V1과 바이트 단위로 동일하게 유지하고 `erd.md`는 `python tools/generate_erd.py`로 생성한다. 이후 변경은 V3부터 누적 migration으로 기록한다.
 
 ## 교사·학생·인증
 
@@ -73,7 +73,9 @@ story_templates
 - `stories.progress`는 이야기 진행률 `0~100`을 저장한다.
 - `story_scenes`는 이야기별 장면 이미지와 순서를 저장한다.
 - `story_lines.has_choices`는 해당 대사에 분기 선택이 있는지 나타낸다.
-- `story_choices`는 분기 대사에서 음성 입력을 STT로 복원한 최종 선택 텍스트를 저장한다.
+- `story_lines.content`는 분기점에서도 아동에게 보여 줄 질문 문장을 저장한다.
+- `story_lines.branch_prompt`는 분기 대사에 AI가 생성한 서로 다른 버튼 선택지 3개를 JSON으로 저장하며 일반 대사에서는 `NULL`이다.
+- `story_choices`는 음성 입력을 STT로 확정하거나 `branch_prompt` 버튼으로 선택한 최종 분기 텍스트를 저장한다.
 - `story_choices.story_line_id`는 UNIQUE이며 한 분기 대사에는 최종 선택 한 건만 저장한다.
 - STT 중간 실패와 재시도는 저장하지 않고, AI 생성 성공 후 선택 텍스트·다음 장면·대사·진행률을 하나의 DB 트랜잭션으로 저장한다.
 - 같은 `story_line_id`의 네트워크 재시도는 AI를 다시 호출하거나 결과를 덮어쓰지 않고 최초 저장 결과를 반환한다.

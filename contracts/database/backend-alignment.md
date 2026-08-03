@@ -1,7 +1,7 @@
 ---
 type: Contract Alignment
 title: "Backend 엔티티와 MySQL 계약 정합화"
-description: "2026-07-28 확정 ERD와 Backend 엔티티의 차이, V1 적용 경계와 후속 정합화 범위를 정리합니다."
+description: "확정 ERD와 Backend 엔티티의 차이, Flyway 적용 경계와 후속 정합화 범위를 정리합니다."
 tags: [contracts, backend, mysql, migration, alignment, erd]
 timestamp: 2026-07-27T00:00:00+09:00
 ---
@@ -13,9 +13,9 @@ timestamp: 2026-07-27T00:00:00+09:00
 
 ## 결론
 
-사용자가 확정한 25개 테이블 ERD를 현재 MySQL 계약으로 채택했다. 실행 가능한 DDL은 Flyway `V1__baseline_schema.sql`에 반영하고 `contracts/database/schema.sql`과 동일하게 유지한다.
+사용자가 확정한 ERD를 현재 MySQL 계약으로 채택했다. 최종 스키마는 Flyway `V1__baseline_schema.sql`에 통합하고 `contracts/database/schema.sql`과 바이트 단위로 동일하게 유지한다.
 
-Backend 엔티티를 현재 계약에 맞춰 정합화했다. 최종 스키마는 Flyway V1 하나에 유지하고 데모 데이터는 V2 하나에 통합하며, 빈 MySQL에서 V1 단독과 V1+V2 적용을 각각 검증한다.
+Backend 엔티티를 현재 계약에 맞춰 정합화했다. 전체 데모 데이터는 `V2__demo_seed.sql`에 통합하며 다음 변경 migration은 V3부터 순서대로 추가한다.
 
 ## 확정된 물리 명칭
 
@@ -24,6 +24,7 @@ Backend 엔티티를 현재 계약에 맞춰 정합화했다. 최종 스키마�
 - `test_datas`
 - `tests`
 - `story_lines.has_choices`
+- `story_lines.branch_prompt`
 - `teachers.email`
 - `auth_refresh_sessions`
 - `training_templates.prompt`
@@ -54,7 +55,7 @@ Backend 엔티티를 현재 계약에 맞춰 정합화했다. 최종 스키마�
 | 단어 수행 근거 | `word_attempt_logs` | 인식 문자열과 시선 존재 boolean 제거, 발음 정확도·문항 위치·최종 시도 컬럼 추가 |
 
 - 확정 ERD에 대표 캐릭터 상태가 없으므로 대표 캐릭터 변경 API를 제거하고 관련 표시 상태는 클라이언트 책임으로 변경했다.
-- `story_choices.content`에는 음성 입력을 STT로 복원한 최종 텍스트를 저장한다. `story_line_id`를 UNIQUE로 보호하고 STT 중간 실패는 저장하지 않는다. 같은 분기 대사의 재시도는 최초 저장 결과를 반환한다.
+- `story_choices.content`에는 음성 입력을 STT로 복원한 최종 텍스트 또는 저장된 `branch_prompt`에서 선택한 버튼 문구를 저장한다. `story_line_id`를 UNIQUE로 보호하고 STT 중간 실패는 저장하지 않는다. 같은 분기 대사의 재시도는 최초 저장 결과를 반환한다.
 - 성장 정보는 별도 컬럼 없이 완료된 `trainings` 행을 학생·훈련 템플릿별로 실시간 집계한다. 클라이언트는 `min(completedCount, 5)`로 성장 단계를 계산하며 5회에 만개 상태가 된다.
 
 ## V1 변환 규칙
@@ -72,11 +73,11 @@ Backend 엔티티를 현재 계약에 맞춰 정합화했다. 최종 스키마�
 
 ## 적용 경계
 
-- 이번 V1은 신규·빈 데이터베이스 기준이다.
-- 신규·빈 데이터베이스의 최종 스키마는 V1에 유지한다.
-- 데모 데이터는 demo 프로필에서만 적용되는 V2 하나에 통합하고 V3 이후 데모 migration은 사용하지 않는다.
+- V1 기준선은 신규·빈 데이터베이스 기준이다.
+- 신규·빈 데이터베이스는 V1 하나로 최종 스키마를 구성한다.
+- demo 프로필은 V1 적용 뒤 V2 하나로 최종 데모 데이터를 구성한다.
 - Backend 엔티티와 저장소 정합화를 완료했으며 Hibernate schema validation이 MySQL 8.4.10에서 통과한다.
-- 다른 환경에 기존 스키마나 데이터가 있으면 V1을 직접 적용하지 않고 별도 baseline 및 데이터 변환 migration을 작성해야 한다.
+- 통합 전 V6·V7·V8 이력을 적용한 개발 DB는 초기화 후 V1→V2로 다시 구성한다. 운영 데이터가 생긴 이후에는 기준선을 다시 쓰지 않고 V3부터 누적 migration을 사용한다.
 
 ## 인증 계약
 
@@ -88,7 +89,7 @@ Backend 엔티티를 현재 계약에 맞춰 정합화했다. 최종 스키마�
 ## 후속 검증
 
 - 기존 스키마나 데이터가 있는 환경에 적용할 때는 별도 baseline과 데이터 변환 migration을 검증한다.
-- V1을 변경하면 빈 MySQL에서 통합 테스트를 다시 실행한다.
+- V1·V2 또는 V3 이후 migration을 변경하면 빈 MySQL에서 전체 Flyway 순서와 demo 프로필을 다시 검증한다.
 
 ## 2026-07-27 검증 결과
 
@@ -126,3 +127,11 @@ Backend 엔티티를 현재 계약에 맞춰 정합화했다. 최종 스키마�
 - 현재 스키마 규모는 애플리케이션 테이블 26개, 외래 키 35개, UNIQUE 15개, CHECK 11개다.
 - 최신 Backend의 시선 원본 파일 저장 계약에 맞춰 `gaze_sessions.data` JSON을 `data_url`로 교체하고 `word_attempt_logs.has_gaze_data`를 명시적 저장 값으로 복원했다.
 - 읽기 특징 분류는 현재 enum과 일치하도록 `MORPH`를 제외했다.
+
+## 2026-07-31 이야기 대사·분기 선택지 기준선 통합
+
+- `story_lines.content`는 V1부터 `{"text": ..., "analysis": ...}` 구조의 JSON으로 생성한다.
+- `story_lines.branch_prompt`도 V1에 포함하며, 분기 대사는 AI가 생성한 서로 다른 선택지 3개를 저장하고 일반 대사는 NULL을 유지한다.
+- V2 데모 대사는 최종 JSON 구조와 선택지를 직접 삽입한다.
+- 기존 V6·V7·V8 파일은 V1·V2에 흡수했다. 다음 스키마 또는 데이터 변경은 V3부터 추가한다.
+- 이미지 생성은 현재 동기 호출이므로 성공한 `image_url`만 트랜잭션에 저장한다. 비동기 작업 큐를 도입하기 전에는 별도 생성 상태 컬럼을 두지 않는다.

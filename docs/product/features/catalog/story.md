@@ -9,11 +9,11 @@ timestamp: 2026-07-29T11:17:47+09:00
 
 | 기능 ID | 기능 | 설명 | 책임 | API operationId |
 | --- | --- | --- | --- | --- |
-| ST-BRANCH-01 | 이야기 분기 음성 입력 화면 표시 | AI 이야기 분기점에 도달하면 질문과 마이크 입력 화면을 표시한다. | server | `post_app_story_by_studentId_by_storyId_lines_by_lineId_branches` |
-| ST-BRANCH-02 | 이야기 분기 질문 표시 | 현재 장면과 AI가 이어갈 이야기에 필요한 분기 질문을 표시한다. 미리 정의된 선택지 카드는 사용하지 않는다. | server | `post_app_story_by_studentId_by_storyId_lines_by_lineId_branches` |
+| ST-BRANCH-01 | 이야기 분기 입력 화면 표시 | AI 이야기 분기점에 도달하면 질문, 선택지 3개와 마이크 입력 화면을 표시한다. | server | `post_app_story_by_studentId_by_storyId_lines_by_lineId_branches` |
+| ST-BRANCH-02 | 이야기 분기 질문·선택지 표시 | `content`의 분기 질문과 `branchPrompt`의 AI 생성 버튼 선택지 3개를 표시한다. | server | `post_app_story_by_studentId_by_storyId_lines_by_lineId_branches` |
 | ST-BRANCH-03 | 이야기 분기 음성 STT 처리 | 아동의 음성을 업로드하고 STT로 분기 의도를 나타내는 텍스트를 추출한다. | server | `post_app_story_by_studentId_by_storyId_lines_by_lineId_branches` |
-| ST-BRANCH-04 | 진행률 기반 AI 이야기 분기 생성 요청 | Backend가 stories.progress와 STT 텍스트를 AI 요청에 포함하여 현재 진행률에 적합한 다음 이야기 내용을 생성한다. | server | `post_app_story_by_studentId_by_storyId_lines_by_lineId_branches` |
-| ST-BRANCH-05 | AI 생성 분기 장면 저장 및 이동 | 최종 STT 텍스트와 AI 생성 장면을 저장한다. 같은 분기 대사의 재시도에는 최초 저장 결과를 변경하지 않고 반환한다. | server | `post_app_story_by_studentId_by_storyId_lines_by_lineId_branches` |
+| ST-BRANCH-04 | 진행률 기반 AI 이야기 분기 생성 요청 | Backend가 `stories.progress`와 음성 또는 버튼으로 확정한 분기 텍스트를 AI 요청에 포함하여 현재 진행률에 적합한 다음 이야기를 생성한다. | server | `post_app_story_by_studentId_by_storyId_lines_by_lineId_branches` |
+| ST-BRANCH-05 | AI 생성 분기 장면 저장 및 이동 | 최종 STT 텍스트 또는 선택한 AI 선택지 문구와 생성 장면을 저장한다. 같은 분기 대사의 재시도에는 최초 저장 결과를 변경하지 않고 반환한다. | server | `post_app_story_by_studentId_by_storyId_lines_by_lineId_branches` |
 | ST-DTL-01 | 이야기 상세 정보 조회 | 선택한 이야기의 표지, 제목, 설명, 예상 시간, 장면 수와 등장인물을 조회한다. | server | `get_app_story_by_studentId_by_storyTemplateId` |
 | ST-DTL-02 | 이야기 상세 정보 표시 | 조회한 이야기 정보를 상세 화면에 표시한다. | server | `get_app_story_by_studentId_by_storyTemplateId` |
 | ST-DTL-03 | 이야기 책장 화면 이동 | 책장으로 버튼을 선택하면 이야기 목록 화면으로 이동한다. | server | `get_app_story_by_studentId_by_storyTemplateId` |

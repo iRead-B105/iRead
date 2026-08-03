@@ -176,6 +176,7 @@ erDiagram
         BIGINT scene_id FK "required"
         BOOLEAN has_choices "required"
         JSON content "required"
+        JSON branch_prompt "nullable"
         INT sequence_no "required"
         TIMESTAMP created_at "required"
         TIMESTAMP read_at "nullable"

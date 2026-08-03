@@ -15,7 +15,7 @@ from contract_resolutions import resolve_snapshot
 
 
 class ValidateSchemaTest(unittest.TestCase):
-    def test_single_v1_schema_contract_is_valid(self) -> None:
+    def test_consolidated_v1_v2_flyway_contract_is_valid(self) -> None:
         errors, counts = validate_schema()
 
         self.assertEqual([], errors)

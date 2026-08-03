@@ -12,7 +12,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 
 ## 기대 결과
 
-아동이 분기 질문에 음성으로 답하면 시스템이 STT 텍스트와 현재 이야기 진행률을 AI에 전달하고, 진행률에 적합한 다음 장면을 생성해 보여준다.
+AI가 분기 질문과 서로 다른 선택지 3개를 생성한다. 아동이 음성으로 답하거나 버튼을 선택하면 시스템이 확정 텍스트와 현재 이야기 진행률을 AI에 전달하고, 진행률에 적합한 다음 장면을 생성해 보여준다.
 
 ## 수용 기준
 
@@ -23,8 +23,11 @@ timestamp: 2026-07-24T00:00:00+09:00
 - 다음 일차의 첫 4페이지는 해당 일차가 열린 뒤 생성한다.
 - 진행률은 총 100페이지 대비 생성·확정된 페이지 수를 사용하고, 10일차 100페이지에서만 `COMPLETED`가 된다.
 - AI는 `branchIntent`를 후속 장면의 사건과 결과에 명시적으로 반영해야 하며 반대 결과를 임의로 생성하지 않는다.
-- 미리 정의한 선택지 카드는 제공하지 않는다.
-- 분기점에서 아동의 음성을 STT로 복원하고 최종 텍스트를 `story_choices.content`에 저장한다.
+- AI 응답의 `content`는 아동에게 보여 줄 분기 질문이며 `branchPrompt.options`는 버튼으로 표시할 서로 다른 선택지 3개다.
+- `requiresBranchInput=true`인 대사에만 `branchPrompt`가 존재하고 일반 대사에서는 `null`이다.
+- 아동은 음성으로 답하거나 AI가 생성한 버튼 선택지 중 하나를 선택할 수 있다.
+- 버튼 제출은 저장된 `optionNo`만 받고 Backend가 해당 선택지 문구를 확정 텍스트로 복원한다.
+- 분기점에서 아동의 음성을 STT로 복원하거나 버튼 선택을 확정 텍스트로 변환해 `story_choices.content`에 저장한다.
 - 한 분기 대사에는 최종 선택 한 건만 저장하고 STT 중간 실패와 재시도 결과는 저장하지 않는다.
 - Backend가 `stories.progress`를 조회해 AI 요청의 `currentProgress`로 전달한다.
 - 클라이언트는 진행률을 요청값으로 입력하지 않는다.
@@ -42,6 +45,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 - `story_scenes`
 - `story_lines.has_choices`
 - `story_lines.content`
+- `story_lines.branch_prompt`
 - `story_choices.content`
 
 데이터 모델은 [MySQL 데이터 모델](../../architecture/data-model.md)을 따른다.

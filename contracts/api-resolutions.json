@@ -2,6 +2,20 @@
   "version": 1,
   "feature_resolutions": [
     {
+      "feature_id": "CU-DSP-03",
+      "description": "AI가 생성하고 교수자가 편집할 수 있는 교안 자료 목록과 배치 순서를 표시한다."
+    },
+    {
+      "feature_id": "CU-SAVE-02",
+      "name": "교안 학습 자료 편집",
+      "description": "생성된 교안의 제시 내용과 정답을 수정해 전체 교안 저장 API로 반영한다."
+    },
+    {
+      "feature_id": "CU-SAVE-03",
+      "name": "교안 학습 자료 제거",
+      "description": "삭제할 자료를 제외한 전체 교안 목록을 저장해 생성된 교안에서 제거한다."
+    },
+    {
       "feature_id": "GR-CHAR-01",
       "description": "서버에 대표 상태를 저장하지 않으며 필요한 표시 상태는 클라이언트에서 관리한다."
     },
@@ -226,9 +240,232 @@
       "response_codes": ["200", "400", "401", "404"],
       "request_example": "",
       "response_example": ""
+    },
+    {
+      "page_id": "git-admin-story-history-v1",
+      "url": "git:contracts/api-resolutions.json#admin-story-history",
+      "method": "GET",
+      "path": "/api/admin/student/{studentId}/story-history",
+      "domain": "admin",
+      "request_summary": "studentId(path), from(query), to(query), storyTemplateId(query), page(query), size(query)",
+      "response_summary": "storyTemplates, storyHistory, page, size, totalElements, totalPages",
+      "note": "Returns owned student story history without mutating read state. Filters use activity date and zero-based pagination.",
+      "feature_ids": [],
+      "request_parameters": [
+        {"name":"studentId","type":"long","in":"Path","required":true,"description":"Student identifier"},
+        {"name":"from","type":"string(date)","in":"Query","required":false,"description":"Activity start date"},
+        {"name":"to","type":"string(date)","in":"Query","required":false,"description":"Activity end date"},
+        {"name":"storyTemplateId","type":"long","in":"Query","required":false,"description":"Story template filter"},
+        {"name":"page","type":"integer","in":"Query","required":false,"description":"Zero-based page","minimum":0},
+        {"name":"size","type":"integer","in":"Query","required":false,"description":"Page size","minimum":1,"maximum":100}
+      ],
+      "response_fields": [
+        {"name":"storyTemplates","type":"array<object>","required":true,"description":"Available story template filters"},
+        {"name":"storyHistory","type":"array<object>","required":true,"description":"Story history summaries"},
+        {"name":"page","type":"integer","required":true,"description":"Current zero-based page"},
+        {"name":"size","type":"integer","required":true,"description":"Page size"},
+        {"name":"totalElements","type":"long","required":true,"description":"Total history count"},
+        {"name":"totalPages","type":"integer","required":true,"description":"Total page count"}
+      ],
+      "response_codes":["200","400","401","403","404"],
+      "request_example":"",
+      "response_example":""
+    },
+    {
+      "page_id":"git-admin-story-history-detail-v1",
+      "url":"git:contracts/api-resolutions.json#admin-story-history-detail",
+      "method":"GET",
+      "path":"/api/admin/student/{studentId}/story-history/{storyId}",
+      "domain":"admin",
+      "request_summary":"studentId(path), storyId(path)",
+      "response_summary":"story, pages, totalPages",
+      "note":"Returns ordered story pages, branch records, and inferred scene image availability. Existing lines are used as the branch prompt fallback.",
+      "feature_ids":[],
+      "request_parameters":[
+        {"name":"studentId","type":"long","in":"Path","required":true,"description":"Student identifier"},
+        {"name":"storyId","type":"long","in":"Path","required":true,"description":"Story identifier"}
+      ],
+      "response_fields":[
+        {"name":"story","type":"object","required":true,"description":"Story summary"},
+        {"name":"pages","type":"array<object>","required":true,"description":"Ordered story pages"},
+        {"name":"totalPages","type":"integer","required":true,"description":"Total page count"}
+      ],
+      "response_codes":["200","401","403","404"],
+      "request_example":"",
+      "response_example":""
+    },
+    {
+      "page_id":"git-admin-story-gaze-analysis-v1",
+      "url":"git:contracts/api-resolutions.json#admin-story-gaze-analysis",
+      "method":"GET",
+      "path":"/api/admin/story/{studentId}/{storyId}/gaze-analysis",
+      "domain":"admin",
+      "request_summary":"studentId(path), storyId(path)",
+      "response_summary":"gazeSessionId, gazeAnalysisId, calibrationStatus, startedAt, endedAt, totalDwellTime, dwellCount, regressionCount, averageFixationTime, pageMetrics, analysisMeta",
+      "note":"Normalizes the latest completed STORY gaze result into page metrics. Raw gaze coordinates are never returned.",
+      "feature_ids":[],
+      "request_parameters":[
+        {"name":"studentId","type":"long","in":"Path","required":true,"description":"Student identifier"},
+        {"name":"storyId","type":"long","in":"Path","required":true,"description":"Story identifier"}
+      ],
+      "response_fields":[
+        {"name":"gazeSessionId","type":"long","required":true,"description":"Latest completed story gaze session"},
+        {"name":"gazeAnalysisId","type":"long","required":true,"description":"Gaze analysis identifier"},
+        {"name":"calibrationStatus","type":"string","required":true,"description":"Calibration status"},
+        {"name":"startedAt","type":"string(date-time)","required":true,"description":"Session start time"},
+        {"name":"endedAt","type":"string(date-time)","required":true,"description":"Session end time"},
+        {"name":"totalDwellTime","type":"integer","required":true,"description":"Total dwell time in milliseconds"},
+        {"name":"dwellCount","type":"integer","required":true,"description":"Total fixation count"},
+        {"name":"regressionCount","type":"integer","required":true,"description":"Total regression count"},
+        {"name":"averageFixationTime","type":"integer","required":false,"description":"Average fixation time in milliseconds"},
+        {"name":"pageMetrics","type":"array<object>","required":true,"description":"Per-page gaze metrics"},
+        {"name":"analysisMeta","type":"object","required":false,"description":"Analysis metadata"}
+      ],
+      "response_codes":["200","401","403","404"],
+      "request_example":"",
+      "response_example":""
+    },
+    {
+      "page_id":"git-admin-lesson-material-get-v1",
+      "url":"git:contracts/api-resolutions.json#admin-lesson-material-get",
+      "method":"GET",
+      "path":"/api/admin/training/{studentId}/{trainingId}/lesson-material",
+      "domain":"training",
+      "request_summary":"studentId(path), trainingId(path)",
+      "response_summary":"trainingId, trainingTemplateId, trainingName, unitName, status, schemaVersion, revision, editable, materials",
+      "note":"Returns only teacher-editable lesson material fields. Server-owned analysis fields remain hidden.",
+      "feature_ids":["3a3027df-9053-80ef-b3cb-df1ce374ea47"],
+      "request_parameters":[
+        {"name":"studentId","type":"long","in":"Path","required":true,"description":"Student identifier"},
+        {"name":"trainingId","type":"long","in":"Path","required":true,"description":"Training identifier"}
+      ],
+      "response_fields":[
+        {"name":"trainingId","type":"long","required":true,"description":"Training identifier"},
+        {"name":"trainingTemplateId","type":"long","required":true,"description":"Training template identifier"},
+        {"name":"trainingName","type":"string","required":true,"description":"Training name"},
+        {"name":"unitName","type":"string","required":true,"description":"Curriculum unit name"},
+        {"name":"status","type":"string(NOT_READY|NOT_STARTED|IN_PROGRESS|COMPLETED)","required":true,"description":"Training status"},
+        {"name":"schemaVersion","type":"integer","required":true,"description":"Generated data schema version"},
+        {"name":"revision","type":"integer","required":true,"description":"Optimistic locking revision"},
+        {"name":"editable","type":"boolean","required":true,"description":"Whether the material can be saved"},
+        {"name":"materials","type":"array<object>","required":true,"description":"Normalized lesson materials"}
+      ],
+      "response_codes":["200","401","403","404"],
+      "request_example":"",
+      "response_example":""
+    },
+    {
+      "page_id":"git-admin-lesson-material-put-v1",
+      "url":"git:contracts/api-resolutions.json#admin-lesson-material-put",
+      "method":"PUT",
+      "path":"/api/admin/training/{studentId}/{trainingId}/lesson-material",
+      "domain":"training",
+      "request_summary":"studentId(path), trainingId(path), revision(body), materials(body)",
+      "response_summary":"trainingId, revision, savedAt, source, materials",
+      "note":"Validates and atomically saves one to five materials. Revision conflicts return 409 and question validation failures return 422.",
+      "feature_ids":["3a3027df-9053-809f-a3c3-fd47395d4907","3a3027df-9053-8041-a0ed-f20caa72eb7c"],
+      "request_parameters":[
+        {"name":"studentId","type":"long","in":"Path","required":true,"description":"Student identifier"},
+        {"name":"trainingId","type":"long","in":"Path","required":true,"description":"Training identifier"},
+        {"name":"revision","type":"integer","in":"Body","required":true,"description":"Revision returned by GET","minimum":0},
+        {"name":"materials","type":"array<object>","in":"Body","required":true,"description":"Complete ordered material list with one to five items"}
+      ],
+      "response_fields":[
+        {"name":"trainingId","type":"long","required":true,"description":"Training identifier"},
+        {"name":"revision","type":"integer","required":true,"description":"Saved revision"},
+        {"name":"savedAt","type":"string(date-time)","required":true,"description":"Save time"},
+        {"name":"source","type":"string(MANUAL)","required":true,"description":"Material source"},
+        {"name":"materials","type":"array<object>","required":true,"description":"Normalized saved materials"}
+      ],
+      "response_codes":["200","400","401","403","404","409","422"],
+      "request_example":"{\"revision\":0,\"materials\":[{\"questionNo\":1,\"questionType\":\"WORD_READING\",\"presentation\":{},\"content\":{\"words\":[\"tree\"]},\"answer\":{\"expectedText\":\"tree\"}}]}",
+      "response_example":""
+    },
+    {
+      "page_id":"git-admin-learning-events-recent-v1",
+      "url":"git:contracts/api-resolutions.json#admin-learning-events-recent",
+      "method":"GET",
+      "path":"/api/admin/student/{studentId}/learning-events/recent",
+      "domain":"admin",
+      "request_summary":"studentId(path), limit(query)",
+      "response_summary":"events",
+      "note":"Registers the existing backend recent learning events endpoint in the shared contract.",
+      "feature_ids":[],
+      "request_parameters":[
+        {"name":"studentId","type":"long","in":"Path","required":true,"description":"Student identifier"},
+        {"name":"limit","type":"integer","in":"Query","required":false,"description":"Maximum event count","minimum":1,"maximum":100}
+      ],
+      "response_fields":[{"name":"events","type":"array<object>","required":true,"description":"Recent learning events"}],
+      "response_codes":["200","400","401","403","404"],
+      "request_example":"",
+      "response_example":""
+    },
+    {
+      "page_id":"git-admin-training-curriculum-create-v1",
+      "url":"git:contracts/api-resolutions.json#admin-training-curriculum-create",
+      "method":"POST",
+      "path":"/api/admin/training/{studentId}/curriculum",
+      "domain":"admin",
+      "request_summary":"studentId(path), trainingTemplateIds(body)",
+      "response_summary":"curriculumId, status, trainings",
+      "note":"Registers the existing backend daily curriculum creation endpoint in the shared contract.",
+      "feature_ids":[],
+      "request_parameters":[
+        {"name":"studentId","type":"long","in":"Path","required":true,"description":"Student identifier"},
+        {"name":"trainingTemplateIds","type":"array<long>","in":"Body","required":true,"description":"Five ordered training template identifiers"}
+      ],
+      "response_fields":[
+        {"name":"curriculumId","type":"long","required":true,"description":"Created curriculum identifier"},
+        {"name":"status","type":"string","required":true,"description":"Curriculum status"},
+        {"name":"trainings","type":"array<object>","required":true,"description":"Created trainings"}
+      ],
+      "response_codes":["200","400","401","403","404","409"],
+      "request_example":"{\"trainingTemplateIds\":[1,2,3,4,5]}",
+      "response_example":""
+    },
+    {
+      "page_id":"git-admin-training-generate-v1",
+      "url":"git:contracts/api-resolutions.json#admin-training-generate",
+      "method":"POST",
+      "path":"/api/admin/training/{studentId}/{trainingId}/generate",
+      "domain":"training",
+      "request_summary":"studentId(path), trainingId(path)",
+      "response_summary":"schemaVersion, revision, generationMetadata, profileSnapshot, questions, validationResult",
+      "note":"Regenerates AI lesson material from the student profile and increments revision. Teachers edit generated materials through the lesson-material API.",
+      "feature_ids":[],
+      "request_parameters":[
+        {"name":"studentId","type":"long","in":"Path","required":true,"description":"Student identifier"},
+        {"name":"trainingId","type":"long","in":"Path","required":true,"description":"Training identifier"}
+      ],
+      "response_fields":[
+        {"name":"schemaVersion","type":"integer","required":true,"description":"Generated data schema version"},
+        {"name":"revision","type":"integer","required":true,"description":"New revision"},
+        {"name":"generationMetadata","type":"object","required":true,"description":"Generation metadata"},
+        {"name":"profileSnapshot","type":"object","required":true,"description":"Reading profile snapshot"},
+        {"name":"questions","type":"array<object>","required":true,"description":"Generated questions"},
+        {"name":"validationResult","type":"object","required":true,"description":"Server validation result"}
+      ],
+      "response_codes":["200","400","401","403","404","409","502"],
+      "request_example":"",
+      "response_example":""
     }
   ],
   "resolutions": [
+    {
+      "source": "GET /api/admin/training/{studentId}/{trainingId}/expected-word",
+      "action": "deprecate",
+      "reason": "교수자는 예상 단어를 별도로 편집하지 않고 생성된 교안 내용을 lesson-material API로 편집한다."
+    },
+    {
+      "source": "POST /api/admin/training/{studentId}/{trainingId}/expected-word",
+      "action": "deprecate",
+      "reason": "교수자 예상 단어 입력 기능을 폐기하고 생성 교안 전체 편집으로 대체한다."
+    },
+    {
+      "source": "DELETE /api/admin/training/{studentId}/{trainingId}/expected-word/{wordId}",
+      "action": "deprecate",
+      "reason": "교수자 예상 단어 삭제 기능을 폐기하고 생성 교안 전체 편집으로 대체한다."
+    },
     {
       "source": "POST /api/auth/admin/find-id",
       "action": "deprecate",
@@ -613,7 +850,25 @@
       "action": "update",
       "reason": "실제 보고서로 의미가 있는 완료 학습 기간만 저장하고 동일 아동·기간의 중복 생성을 차단한다.",
       "changes": {
-        "note": "완료된 훈련 또는 검사가 한 건 이상 있어야 생성한다. 학습 기록이 없으면 REPORT_DATA_NOT_FOUND, 동일 아동·시작일·종료일 보고서가 있으면 REPORT_PERIOD_ALREADY_EXISTS와 기존 reportId를 반환한다. 교수자 의견은 최대 2,000자이며 저장된 보고서는 삭제하지 않는다.",
+        "note": "완료 훈련의 finishedAt 기준 서로 다른 학습일이 2일 이상이어야 생성한다. 동일 날짜의 여러 훈련은 1일로 계산하고 완료 검사는 학습일에 포함하지 않는다. 조건 미충족 시 REPORT_INSUFFICIENT_LEARNING_DAYS와 requiredDays, actualDays를 반환한다. 동일 아동·시작일·종료일 보고서가 있으면 REPORT_PERIOD_ALREADY_EXISTS와 기존 reportId를 반환한다. 생성 시 교수자 의견은 입력받지 않으며 저장된 보고서는 삭제하지 않는다.",
+        "request_summary": "studentId(body)\nstartDate(body)\nendDate(body)",
+        "request_example": "{\"studentId\":1001,\"startDate\":\"2026-07-01\",\"endDate\":\"2026-07-31\"}",
+        "response_summary": "reportId\ncreatedAt",
+        "response_example": "{\"success\":true,\"data\":{\"reportId\":5001,\"createdAt\":\"2026-07-24T12:00:00+09:00\"}}",
+        "response_fields": [
+          {
+            "name": "reportId",
+            "type": "long",
+            "required": true,
+            "description": "Created report identifier"
+          },
+          {
+            "name": "createdAt",
+            "type": "string(date-time)",
+            "required": true,
+            "description": "Report creation time"
+          }
+        ],
         "request_parameters": [
           {
             "name": "studentId",
@@ -635,14 +890,6 @@
             "in": "Body",
             "required": true,
             "description": "보고서 집계 종료일"
-          },
-          {
-            "name": "teacherMemo",
-            "type": "string",
-            "in": "Body",
-            "required": false,
-            "description": "최대 2,000자의 교수자 의견",
-            "maxLength": 2000
           }
         ],
         "response_codes": ["201", "400", "401", "404", "409"]
