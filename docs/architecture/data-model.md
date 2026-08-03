@@ -68,6 +68,7 @@ story_templates
       └─ story_scenes
           └─ story_lines
               └─ story_choices
+              └─ story_page_edit_audits
 ```
 
 - `stories.progress`는 이야기 진행률 `0~100`을 저장한다.
@@ -75,6 +76,9 @@ story_templates
 - `story_lines.has_choices`는 해당 대사에 분기 선택이 있는지 나타낸다.
 - `story_lines.content`는 분기점에서도 아동에게 보여 줄 질문 문장을 저장한다.
 - `story_lines.branch_prompt`는 분기 대사에 AI가 생성한 서로 다른 버튼 선택지 3개를 JSON으로 저장하며 일반 대사에서는 `NULL`이다.
+- `story_lines.revision`은 읽기 전 교사 수정의 동시성 충돌을 방지한다.
+- `story_page_edit_audits`는 교사가 수정한 본문·소제목·선택지·이미지의 전후 값을 보존한다.
+- `story_lines.read_at`이 채워진 페이지와 확정된 `story_choices`는 교사가 수정할 수 없다.
 - `story_choices`는 음성 입력을 STT로 확정하거나 `branch_prompt` 버튼으로 선택한 최종 분기 텍스트를 저장한다.
 - `story_choices.story_line_id`는 UNIQUE이며 한 분기 대사에는 최종 선택 한 건만 저장한다.
 - STT 중간 실패와 재시도는 저장하지 않고, AI 생성 성공 후 선택 텍스트·다음 장면·대사·진행률을 하나의 DB 트랜잭션으로 저장한다.
