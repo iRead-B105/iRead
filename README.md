@@ -97,6 +97,7 @@ docker compose up -d
 | --- | --- |
 | 제품 목표와 대상 사용자 | [제품 비전과 범위](docs/product/vision-and-scope.md) |
 | 기능 요구사항 | [제품 요구사항](docs/product/requirements.md) |
+| 아동용 앱 UI·리소스 기준 | [아이리드 앱 디자인 가이드](docs/product/iread-app-design-guide.md) |
 | 전체 시스템 구성 | [시스템 컨텍스트](docs/architecture/system-context.md) |
 | 기능·API·데이터베이스 명세 | [계약 카탈로그](contracts/catalog.md) |
 | 주요 기술 결정과 배경 | [ADR 목록](docs/decisions/index.md) |
