@@ -111,6 +111,27 @@
         "x-retry-policy": "연결 실패와 502·503·504에 한해 같은 Idempotency-Key로 최대 1회 재시도"
       }
     },
+    "/api/v1/story/branch-input/review": {
+      "post": {
+        "operationId": "reviewStoryBranchInput",
+        "summary": "STT 분기 입력의 아동 안전성과 현재 질문 관련성 판정",
+        "description": "STT 원문을 교정하거나 재작성하지 않고 최소 문맥으로 구조화된 판정만 반환한다. 요청 본문과 원문은 로그에 기록하지 않는다.",
+        "tags": ["story"],
+        "security": [{"apiKeyAuth": []}],
+        "parameters": [{"$ref": "#/components/parameters/IdempotencyKey"}],
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/StoryBranchInputReviewRequest"}}}},
+        "responses": {
+          "200": {"description": "분기 입력 판정 성공", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/StoryBranchInputReviewResponse"}}}},
+          "400": {"$ref": "#/components/responses/BadRequest"},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "409": {"$ref": "#/components/responses/Conflict"},
+          "502": {"$ref": "#/components/responses/UpstreamFailure"},
+          "504": {"$ref": "#/components/responses/Timeout"}
+        },
+        "x-timeout-ms": 3000,
+        "x-retry-policy": "연결 실패와 502·503·504에 한해 같은 Idempotency-Key로 최대 1회 재시도"
+      }
+    },
     "/api/v1/speech/transcribe": {
       "post": {
         "operationId": "transcribeSpeech",
@@ -514,6 +535,28 @@
             }
           }
         ]
+      },
+      "StoryBranchInputReviewRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["requestId", "question", "options", "transcript"],
+        "properties": {
+          "requestId": {"type": "string", "minLength": 1},
+          "question": {"type": "string", "minLength": 1, "description": "아동에게 표시된 현재 분기 질문"},
+          "options": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "string", "minLength": 1}, "description": "현재 분기의 버튼 선택지 3개"},
+          "transcript": {"type": "string", "minLength": 1, "description": "교정하지 않은 STT 원문"}
+        }
+      },
+      "StoryBranchInputReviewResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["requestId", "decision", "reasonCode", "policyVersion"],
+        "properties": {
+          "requestId": {"type": "string"},
+          "decision": {"type": "string", "enum": ["ALLOW", "CONFIRM", "RETRY", "BLOCK"]},
+          "reasonCode": {"type": "string", "enum": ["OK", "AMBIGUOUS", "OFF_TOPIC", "SELF_HARM", "SEXUAL", "SEVERE_VIOLENCE", "THREAT", "HATE_HARASSMENT", "PII", "INJECTION"]},
+          "policyVersion": {"type": "string", "minLength": 1}
+        }
       },
       "StoryGenerateResponse": {
         "type": "object",

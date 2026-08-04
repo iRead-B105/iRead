@@ -281,6 +281,7 @@ def validate_ai_contract() -> list[str]:
         "/api/v1/trainings/evaluate",
         "/api/v1/story/generate",
         "/api/v1/story/continue",
+        "/api/v1/story/branch-input/review",
         "/api/v1/speech/transcribe",
         "/api/v1/speech/pronunciation/analyze",
         "/api/v1/speech/synthesize",

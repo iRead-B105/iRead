@@ -104,8 +104,8 @@ flowchart LR
 - **스택**: Python ≥3.12, FastAPI + uvicorn, Pydantic v2, `azure-cognitiveservices-speech`. ML 프레임워크/로컬 모델 없음. `services/ai/pyproject.toml:5-11`
 - **역할**: (a) Azure Speech 단어별 발음평가·STT·TTS(ko-KR), (b) 활성 훈련 타입 후보/스토리 대사/이미지(SVG) 결정적 생성 adapter.
 - **진입점**: `iread_ai.app:app`. 로컬 `uv run uvicorn ... --port 8081`, 컨테이너 8080. `Dockerfile:10-12`
-- **엔드포인트**: `/health`, `/api/v1/trainings/{candidates,generate,evaluate}`, `/api/v1/story/{generate,continue}`, `/api/v1/images/generate`, `/api/v1/speech/{pronunciation/analyze,transcribe,synthesize}`.
-- **들어오는 트래픽**: `backend`만 호출(`aiRestClient` + `X-API-Key`). 다른 서비스로 나가는 호출은 없고, 유일한 아웃바운드 = Azure Speech.
+- **엔드포인트**: `/health`, `/api/v1/trainings/{candidates,generate,evaluate}`, `/api/v1/story/{generate,continue,branch-input/review}`, `/api/v1/images/generate`, `/api/v1/speech/{pronunciation/analyze,transcribe,synthesize}`.
+- **들어오는 트래픽**: `backend`만 호출(`aiRestClient` + `X-API-Key`). 아웃바운드는 Azure Speech와 설정된 이야기·분기 검토 LLM provider로 제한한다.
 - **계약**: `contracts/openapi/ai-api.yaml`. AI 키 `AI_INTERNAL_API_KEY` = backend `AI_API_KEY`(수동 일치 필요).
 - **현재 통합 상태**: 루트 Compose가 실제 AI 이미지를 빌드하며 Backend의 `AI_MOCK_*`는 모두 `false`다. Backend와 AI는 공유 `X-API-Key`를 사용하고, 무키 직접 호출은 401로 거부한다. Azure의 실제 한국어 STT·TTS와 발음평가 경로를 사용하며 결정적 로컬 provider는 성공을 위조하지 않고 실패 폐쇄한다.
 

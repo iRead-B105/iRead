@@ -56,7 +56,9 @@
 - `requiresBranchInput=true`이면 `branchPrompt.options`에 서로 다른 선택지 3개를 제공한다.
 - 선택지 번호는 정확히 `1`, `2`, `3`이고 `label`은 공백을 제거한 1~80자 문구다.
 - `requiresBranchInput=false`이면 `branchPrompt`는 `null`이다.
-- `continue`의 `branchIntent`는 음성 STT 또는 버튼 선택 결과를 Backend가 확정한 문자열이다. AI server는 입력 출처를 구분하지 않는다.
+- `continue`의 `branchIntent`는 경량 LLM 검토와 아동 확인을 통과한 STT 원문 또는 버튼 선택 결과를 Backend가 확정한 문자열이다. 이야기 생성 AI는 입력 출처를 구분하지 않는다.
+- AI server는 `/api/v1/story/branch-input/review`에서 현재 질문·버튼 선택지·STT 원문만 받아 `ALLOW`, `CONFIRM`, `RETRY`, `BLOCK`과 제한된 사유 코드를 구조화해 반환한다.
+- 검토 모델은 STT 원문을 교정·재작성하지 않으며 자유 형식 설명을 반환하지 않는다.
 - 교수자 예상 단어는 AI 입력이 아니다. 교수자 교안 편집은 Backend의 `lesson-material` API와 `training_datas.generated_data`가 소유한다.
 - 이미지 생성은 현재 동기 응답으로 `imageUrl`만 반환한다. 비동기 작업을 도입하기 전에는 생성 상태값을 추가하지 않는다.
 
@@ -70,6 +72,7 @@
 - 같은 `Idempotency-Key` 요청은 같은 결과를 반환하도록 처리한다.
 - 요청·응답의 `requestId`, `schemaVersion`을 보존하고 `nextProgress`를 현재 진행률 이상 100 이하로 제한한다.
 - 아동 이름·음성·자격증명·전체 프롬프트를 로그에 기록하지 않는다.
+- 분기 검토 요청 본문, STT 원문과 차단 사유의 자유 형식 설명을 로그에 기록하지 않는다.
 
 ### 완료 기준
 
