@@ -669,11 +669,11 @@
         {"name":"to","type":"string(date)","required":true,"description":"Applied end date"},
         {"name":"unit","type":"string(PERCENT)","required":true,"description":"Accuracy unit"},
         {"name":"calculationVersion","type":"string","required":true,"description":"reading-metrics-v1"},
-        {"name":"records","type":"array<object>","required":true,"description":"Records with sourceType, sourceId, measuredAt, correctAttemptCount, attemptCount, accuracyRate, unit and calculationVersion"}
+        {"name":"records","type":"array<object>","required":true,"description":"Records with sourceType, sourceId, trainingName, measuredAt, correctAttemptCount, attemptCount, accuracyRate, unit and calculationVersion"}
       ],
       "response_codes":["200","400","401","403","404"],
       "request_example":"",
-      "response_example":"{\"success\":true,\"data\":{\"from\":\"2026-07-01\",\"to\":\"2026-07-31\",\"unit\":\"PERCENT\",\"calculationVersion\":\"reading-metrics-v1\",\"records\":[{\"sourceType\":\"TRAINING\",\"sourceId\":251136,\"measuredAt\":\"2026-07-10T10:00:00+09:00\",\"correctAttemptCount\":8,\"attemptCount\":10,\"accuracyRate\":80,\"unit\":\"PERCENT\",\"calculationVersion\":\"reading-metrics-v1\"}]}}"
+      "response_example":"{\"success\":true,\"data\":{\"from\":\"2026-07-01\",\"to\":\"2026-07-31\",\"unit\":\"PERCENT\",\"calculationVersion\":\"reading-metrics-v1\",\"records\":[{\"sourceType\":\"TRAINING\",\"sourceId\":251136,\"trainingName\":\"받침 소리 구분\",\"measuredAt\":\"2026-07-10T10:00:00+09:00\",\"correctAttemptCount\":8,\"attemptCount\":10,\"accuracyRate\":80,\"unit\":\"PERCENT\",\"calculationVersion\":\"reading-metrics-v1\"}]}}"
     },
     {
       "page_id":"git-admin-reading-speed-records-v1",
@@ -695,11 +695,11 @@
         {"name":"to","type":"string(date)","required":true,"description":"Applied end date"},
         {"name":"unit","type":"string(CORRECT_WORDS_PER_MINUTE)","required":true,"description":"Reading speed unit"},
         {"name":"calculationVersion","type":"string","required":true,"description":"reading-metrics-v1"},
-        {"name":"records","type":"array<object>","required":true,"description":"Records with sourceType, sourceId, measuredAt, correctWordCount, measuredDurationMs, readingSpeed, unit and calculationVersion"}
+        {"name":"records","type":"array<object>","required":true,"description":"Records with sourceType, sourceId, trainingName, measuredAt, correctWordCount, measuredDurationMs, readingSpeed, unit and calculationVersion"}
       ],
       "response_codes":["200","400","401","403","404"],
       "request_example":"",
-      "response_example":"{\"success\":true,\"data\":{\"from\":\"2026-07-01\",\"to\":\"2026-07-31\",\"unit\":\"CORRECT_WORDS_PER_MINUTE\",\"calculationVersion\":\"reading-metrics-v1\",\"records\":[{\"sourceType\":\"TRAINING\",\"sourceId\":251136,\"measuredAt\":\"2026-07-10T10:00:00+09:00\",\"correctWordCount\":60,\"measuredDurationMs\":60000,\"readingSpeed\":60,\"unit\":\"CORRECT_WORDS_PER_MINUTE\",\"calculationVersion\":\"reading-metrics-v1\"}]}}"
+      "response_example":"{\"success\":true,\"data\":{\"from\":\"2026-07-01\",\"to\":\"2026-07-31\",\"unit\":\"CORRECT_WORDS_PER_MINUTE\",\"calculationVersion\":\"reading-metrics-v1\",\"records\":[{\"sourceType\":\"TRAINING\",\"sourceId\":251136,\"trainingName\":\"짧은 이야기 읽기\",\"measuredAt\":\"2026-07-10T10:00:00+09:00\",\"correctWordCount\":60,\"measuredDurationMs\":60000,\"readingSpeed\":60,\"unit\":\"CORRECT_WORDS_PER_MINUTE\",\"calculationVersion\":\"reading-metrics-v1\"}]}}"
     },
     {
       "page_id":"git-admin-reading-speed-trend-v2",

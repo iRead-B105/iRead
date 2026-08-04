@@ -5658,7 +5658,7 @@
                                 "type": "object",
                                 "additionalProperties": true
                               },
-                              "description": "Records with sourceType, sourceId, measuredAt, correctAttemptCount, attemptCount, accuracyRate, unit and calculationVersion"
+                              "description": "Records with sourceType, sourceId, trainingName, measuredAt, correctAttemptCount, attemptCount, accuracyRate, unit and calculationVersion"
                             }
                           },
                           "required": [
@@ -5687,6 +5687,7 @@
                       {
                         "sourceType": "TRAINING",
                         "sourceId": 251136,
+                        "trainingName": "받침 소리 구분",
                         "measuredAt": "2026-07-10T10:00:00+09:00",
                         "correctAttemptCount": 8,
                         "attemptCount": 10,
@@ -5809,7 +5810,7 @@
                                 "type": "object",
                                 "additionalProperties": true
                               },
-                              "description": "Records with sourceType, sourceId, measuredAt, correctWordCount, measuredDurationMs, readingSpeed, unit and calculationVersion"
+                              "description": "Records with sourceType, sourceId, trainingName, measuredAt, correctWordCount, measuredDurationMs, readingSpeed, unit and calculationVersion"
                             }
                           },
                           "required": [
@@ -5838,6 +5839,7 @@
                       {
                         "sourceType": "TRAINING",
                         "sourceId": 251136,
+                        "trainingName": "짧은 이야기 읽기",
                         "measuredAt": "2026-07-10T10:00:00+09:00",
                         "correctWordCount": 60,
                         "measuredDurationMs": 60000,
