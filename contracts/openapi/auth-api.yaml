@@ -736,6 +736,80 @@
         "x-review-status": "reviewed"
       }
     },
+    "/api/auth/app/students/{studentId}/profile-image": {
+      "get": {
+        "operationId": "get_auth_app_student_profile_image",
+        "summary": "학습 앱 연결 아동 프로필 이미지 조회",
+        "description": "learning-bootstrap token으로 교수자의 연결 아동 이미지를 조회하거나 learning-app token으로 현재 아동 이미지를 조회한다. 다른 교수자 또는 다른 아동의 이미지는 반환하지 않는다.",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bearer {teacherSessionToken|learningAccessToken}"
+          },
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "조회할 연결 아동 ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "아동 프로필 이미지",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "private, max-age=300"
+              }
+            },
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "x-feature-ids": [
+          "LG-STU-01"
+        ],
+        "x-contract-origin": "repository",
+        "x-review-status": "reviewed"
+      }
+    },
     "/api/auth/app/student-login": {
       "post": {
         "operationId": "post_auth_app_student_login",

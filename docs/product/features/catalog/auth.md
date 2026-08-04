@@ -24,7 +24,7 @@ timestamp: 2026-07-29T11:17:47+09:00
 | LG-PW-02 | 비밀번호 재설정 링크 요청 | 계정 존재 여부를 노출하지 않는 동일 응답으로 가입 이메일에 일회용 링크 발송을 요청한다. | server | `post_auth_admin_password_reset_request` |
 | LG-PW-03 | 새 비밀번호 입력값 검증 | 일회용 링크의 토큰과 8~100자의 새 비밀번호 및 확인 값을 검증한다. | server | `post_auth_admin_password_reset_confirm` |
 | LG-PW-04 | 비밀번호 재설정 완료 처리 | 유효한 일회용 링크로 비밀번호를 변경하고 기존 refresh session을 모두 폐기한 뒤 로그인 화면으로 이동한다. | server | `post_auth_admin_password_reset_confirm` |
-| LG-STU-01 | 연결 아동 정보 조회 | 현재 교수자 세션을 기준으로 해당 교수자에게 연결된 아동 정보를 조회한다. | server | `post_auth_app_student_login` |
+| LG-STU-01 | 연결 아동 정보 조회 | 현재 교수자 세션을 기준으로 해당 교수자에게 연결된 아동 정보와 인증된 프로필 이미지를 조회한다. | server | `post_auth_app_student_login`, `get_auth_app_student_profile_image` |
 | LG-STU-02 | 아동 이름 입력 | 학습을 시작할 아동의 이름을 입력할 수 있도록 한다. | server | `post_auth_app_student_login` |
 | LG-STU-03 | 아동 이름 입력값 검증 | 아동 이름의 필수 입력 여부와 허용 형식을 검증한다. | server | `post_auth_app_student_login` |
 | LG-STU-04 | 연결 아동 식별 | 입력한 이름과 현재 교수자에게 연결된 아동 정보를 비교하여 대상 아동을 식별한다. | server | `post_auth_app_student_login` |

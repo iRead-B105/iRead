@@ -17,7 +17,7 @@ timestamp: 2026-07-29T11:17:47+09:00
 | ST-DTL-01 | 이야기 상세 정보 조회 | 선택한 이야기의 표지, 제목, 설명, 예상 시간, 장면 수와 등장인물을 조회한다. | server | `get_app_story_by_studentId_by_storyTemplateId` |
 | ST-DTL-02 | 이야기 상세 정보 표시 | 조회한 이야기 정보를 상세 화면에 표시한다. | server | `get_app_story_by_studentId_by_storyTemplateId` |
 | ST-DTL-03 | 이야기 책장 화면 이동 | 책장으로 버튼을 선택하면 이야기 목록 화면으로 이동한다. | server | `get_app_story_by_studentId_by_storyTemplateId` |
-| ST-DTL-04 | 신규 이야기 생성 | 읽기 시작 버튼 선택 시 해당 이야기의 읽기 세션을 생성한다. | server | `post_app_story_by_studentId_by_storyTemplateId_sessions` |
+| ST-DTL-04 | 신규 이야기 생성 | 읽기 시작 버튼 선택 시 템플릿 줄거리를 바탕으로 실제 AI 이야기와 장면 이미지를 생성한다. 페이지 품질 계약을 통과하지 못하면 최대 2회 다시 생성하며 계속 실패하면 세션 저장을 롤백한다. | server | `post_app_story_by_studentId_by_storyTemplateId_sessions` |
 | ST-DTL-05 | 이야기 읽기 진입 경로 결정 | 최초 읽기이면 조작 안내 화면으로, 기존 기록이 있으면 저장된 장면으로 이동한다. | server | `get_app_story_by_studentId_by_storyTemplateId` |
 | ST-DTL-06 | 이야기 읽기 세션 재개 | 저장된 마지막 장면부터 이야기를 다시 시작한다. | server | `get_app_story_by_studentId_by_storyId_resume` |
 | ST-DTL-07 | 이어보기 | 이전의 보던 책의 마지막으로 읽은 대사의 화면으로 이동한다. | server | `get_app_story_by_studentId_by_storyId_resume` |
@@ -37,7 +37,7 @@ timestamp: 2026-07-29T11:17:47+09:00
 | ST-LIB-11 | 이야기 진입 이미지 제공 | 책장 조회 시 진행 중 이야기는 첫 미열람 장면, 완료 이야기는 첫 장면 이미지 URL을 제공한다. | server | `get_app_story_by_studentId` |
 | ST-LIB-12 | 이야기 책장 사전 준비 | 아동 선택 로그인 시 책장 데이터와 진입 이미지를 미리 준비하고, 이야기 나라 첫 렌더부터 캐시된 실제 콘텐츠를 표시한다. 독서 진행 후에는 캐시를 갱신한다. | client | `get_app_story_by_studentId` |
 | ST-READ-01 | 이야기 장면 조회 | 현재 장면의 이미지, 제목, 본문, 음성과 음성 분기 입력 필요 여부를 조회한다. | server | `get_app_story_by_studentId_by_storyId_lines_by_lineId` |
-| ST-READ-02 | 이야기 장면 표시 | 현재 장면의 이미지와 본문을 화면에 표시한다. | server | `get_app_story_by_studentId_by_storyId_lines_by_lineId` |
+| ST-READ-02 | 이야기 장면 표시 | 현재 장면의 이미지와 본문을 화면에 표시하며, 장면 이미지는 인증된 아동이 소유한 이야기에서만 Blob으로 조회한다. | server | `get_app_story_by_studentId_by_storyId_lines_by_lineId`, `get_app_story_image` |
 | ST-READ-03 | 이야기 장면 진행 상태 표시 | 현재 장면 번호와 전체 장면 수를 표시한다. | server | `get_app_story_by_studentId_by_storyId_lines_by_lineId` |
 | ST-READ-04 | 이전 이야기 장면 이동 | 이전 장면이 존재하면 이전 장면으로 이동한다. | server | `get_app_story_by_studentId_by_storyId_lines_by_lineId` |
 | ST-READ-05 | 다음 이야기 장면 이동 | 다음 장면이 존재하면 다음 이야기 장면으로 이동한다. | server | `get_app_story_by_studentId_by_storyId_lines_by_lineId` |
@@ -45,6 +45,11 @@ timestamp: 2026-07-29T11:17:47+09:00
 | ST-READ-07 | 목차 장면 이동 | 목차에서 선택한 읽기 완료 장면으로 이동한다. | server | `get_app_story_by_studentId_by_storyId_lines` |
 | ST-READ-08 | 이야기 진행 상태 저장 | 현재 장면과 마지막 읽기 시각을 이야기 읽기 세션에 저장한다. | server | `post_app_story_by_studentId_by_storyId_lines_by_lineId_branches` |
 | ST-READ-09 | 이야기 완료 처리 | 마지막 장면까지 읽으면 이야기 읽기 세션을 완료 상태로 변경하고 완료 시각을 저장한다. | server | `post_app_story_by_studentId_by_storyId_lines_by_lineId_branches` |
+| ST-READ-10 | 읽은 장면 탐색 | 이전 장면은 언제든 이동하고 다음 장면은 이미 읽어 잠금 해제된 범위까지만 이동한다. 첫 미열람 장면은 기존 읽기 완료 조건을 유지한다. | client | `get_app_story_by_studentId_by_storyId_lines` |
+| ST-READ-11 | 글·그림 보기 전환 | 글 보기에서는 장면을 흐리게 하고 넓은 고대비 본문을, 그림 보기에서는 장면을 크게 하고 본문을 하단에 축소해 표시한다. | client | - |
+| ST-AI-01 | 이야기 AI 공급자 분리 | 텍스트와 이미지 생성 공급자·모델을 각각 GMS, Gemini 직접 API, OpenAI 직접 API 중 환경변수로 선택한다. | ai | - |
+| ST-AI-02 | 표지 기반 장면 생성 | 서버가 관리하는 원본 이야기 표지를 이미지 생성 참조로 첨부해 그림체와 등장인물 일관성을 유지한다. | ai | - |
+| ST-HISTORY-01 | 교사 이야기 장면 검토 | 교사 화면에 분기별 생성 배경, 하단 본문, 챕터명과 단어별 시선 강도를 표시하고 이미지 실패 시 플레이스홀더를 제공한다. | server | `get_admin_student_by_studentId_story_history_by_storyId` |
 | ST-STT-01 | 마이크 사용 권한 확인 | 소리 내어 읽기 시작 전에 마이크 권한과 장치 사용 가능 여부를 확인한다. | server | `post_app_story_by_studentId_by_storyId_speech` |
 | ST-STT-02 | 이야기 문장 음성 입력 시작 | 학습자가 현재 읽기 대상 문장을 소리 내어 읽을 수 있도록 음성 입력을 시작한다. | server | `post_app_story_by_studentId_by_storyId_speech` |
 | ST-STT-03 | 이야기 문장 음성 입력 종료 | 사용자의 읽기 완료 요청 또는 제한 시간 도달 시 음성 입력을 종료한다. | server | `post_app_story_by_studentId_by_storyId_speech` |

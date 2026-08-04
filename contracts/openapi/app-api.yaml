@@ -991,7 +991,7 @@
                                   "entryImageUrl": {
                                     "type": "string",
                                     "nullable": true,
-                                    "description": "책 진입 시 표시할 장면 이미지 URL. 진행 중 이야기는 첫 미열람 장면, 완료 이야기는 첫 장면"
+                                    "description": "책장에서 이어서 읽기에 표시할 가장 최근 생성 장면 이미지 URL"
                                   }
                                 }
                               },
@@ -1466,6 +1466,61 @@
             "bearerAuth": []
           }
         ]
+      }
+    },
+    "/api/app/story/{studentId}/{storyId}/images/{fileName}": {
+      "get": {
+        "operationId": "get_app_story_image",
+        "summary": "인증된 이야기 장면 이미지 조회",
+        "description": "access token의 교사·아동 관계와 이야기 소유권을 확인하고 해당 이야기에 저장된 생성 이미지만 바이너리로 반환한다.",
+        "tags": [
+          "story"
+        ],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "integer", "format": "int64"}
+          },
+          {
+            "name": "storyId",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "integer", "format": "int64"}
+          },
+          {
+            "name": "fileName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f-]{36}\\.(png|jpg|jpeg)$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "이야기 장면 이미지",
+            "headers": {
+              "Cache-Control": {
+                "schema": {"type": "string"},
+                "description": "private 캐시 정책"
+              }
+            },
+            "content": {
+              "image/png": {"schema": {"type": "string", "format": "binary"}},
+              "image/jpeg": {"schema": {"type": "string", "format": "binary"}}
+            }
+          },
+          "400": {"$ref": "#/components/responses/BadRequest"},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "404": {"$ref": "#/components/responses/NotFound"}
+        },
+        "x-contract-origin": "repository",
+        "x-feature-ids": ["ST-READ-02"],
+        "x-review-status": "reviewed",
+        "security": [{"bearerAuth": []}]
       }
     },
     "/api/app/story/{studentId}/{storyId}/lines/{lineId}/branches": {
@@ -2377,6 +2432,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Conflict"
+          },
+          "502": {
+            "$ref": "#/components/responses/BadGateway"
           }
         },
         "x-notion-page-id": "3a4027df-9053-8049-832f-cf2d2c2ee174",
@@ -2385,7 +2443,7 @@
           "ST-DTL-04",
           "ST-LIB-09"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다. COMPLETED와 DELETED를 제외한 진행 중 이야기가 15권이면 409 Conflict를 반환하며 같은 템플릿의 여러 진행 세션은 허용한다. 호출마다 별도 이야기 세션을 생성하는 비멱등 요청이므로 클라이언트는 응답을 받지 못했다는 이유만으로 자동 재전송하지 않는다. 결과가 불확실하면 이야기 책장 또는 이어하기 조회로 생성 여부를 확인한 뒤 사용자가 명시적으로 새 세션을 선택한 경우에만 다시 호출한다.",
+        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다. COMPLETED와 DELETED를 제외한 진행 중 이야기가 15권이면 409 Conflict를 반환하며 같은 템플릿의 여러 진행 세션은 허용한다. 실제 AI 공급자의 모든 생성 페이지가 품질 계약을 통과해야 저장하고, 실패하면 최대 2회 다시 생성한 뒤 502 Bad Gateway로 종료하며 트랜잭션을 롤백한다. 호출마다 별도 이야기 세션을 생성하는 비멱등 요청이므로 클라이언트는 응답을 받지 못했다는 이유만으로 자동 재전송하지 않는다. 결과가 불확실하면 이야기 책장 또는 이어하기 조회로 생성 여부를 확인한 뒤 사용자가 명시적으로 새 세션을 선택한 경우에만 다시 호출한다.",
         "x-notion-request-summary": "studentId(path)\nstoryTemplateId(path)",
         "x-notion-response-summary": "스토리id\n교육자id\n템플릿id\n생성일\n스토리상태",
         "x-review-status": "reviewed",

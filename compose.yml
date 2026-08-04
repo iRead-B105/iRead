@@ -56,10 +56,15 @@ services:
         required: false
     environment:
       AI_INTERNAL_API_KEY: ${AI_API_KEY:-iread-local-ai-key}
-      CHAPTER_CANDIDATE_COUNT: "1"
+      STORY_COVER_DIR: /app/story-covers
+      CHAPTER_CANDIDATE_COUNT: "3"
+      CHAPTER_QUALITY_RETRY_COUNT: "2"
+      CHAPTER_REQUIRE_CONTRACT_PASS: "true"
       AI_PRONUNCIATION_PROVIDER: ${AI_PRONUNCIATION_PROVIDER:-azure}
       AI_SPEECH_PROVIDER: ${AI_SPEECH_PROVIDER:-azure}
       AZURE_SPEECH_VOICE: ${AZURE_SPEECH_VOICE:-ko-KR-SunHiNeural}
+    volumes:
+      - ./services/frontend-app/src/assets/story/covers:/app/story-covers:ro
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
       interval: 10s

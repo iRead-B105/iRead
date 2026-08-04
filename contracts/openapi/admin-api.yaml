@@ -4260,6 +4260,36 @@
         ]
       }
     },
+    "/api/admin/student/{studentId}/story-history/{storyId}/images/{fileName}": {
+      "get": {
+        "operationId": "get_admin_story_history_image",
+        "summary": "교사 인증 이야기 장면 이미지 조회",
+        "description": "담당 아동과 이야기 소유권을 확인하고 해당 이야기에 저장된 생성 이미지만 바이너리로 반환한다.",
+        "tags": ["admin"],
+        "parameters": [
+          {"name": "studentId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}},
+          {"name": "storyId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}},
+          {"name": "fileName", "in": "path", "required": true, "schema": {"type": "string", "pattern": "^[0-9a-f-]{36}\\.(png|jpg|jpeg)$"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "이야기 장면 이미지",
+            "headers": {"Cache-Control": {"schema": {"type": "string"}}},
+            "content": {
+              "image/png": {"schema": {"type": "string", "format": "binary"}},
+              "image/jpeg": {"schema": {"type": "string", "format": "binary"}}
+            }
+          },
+          "400": {"$ref": "#/components/responses/BadRequest"},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "403": {"$ref": "#/components/responses/Forbidden"},
+          "404": {"$ref": "#/components/responses/NotFound"}
+        },
+        "x-contract-origin": "repository",
+        "x-review-status": "reviewed",
+        "security": [{"bearerAuth": []}]
+      }
+    },
     "/api/admin/student/{studentId}/story-history/{storyId}/pages/{storyLineId}": {
       "put": {
         "operationId": "update_admin_unread_story_page",

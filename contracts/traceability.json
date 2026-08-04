@@ -2374,10 +2374,12 @@
     "deprecated": false,
     "responsibility": "server",
     "api_page_ids": [
-      "3a4027df-9053-8020-bab8-ed3764429102"
+      "3a4027df-9053-8020-bab8-ed3764429102",
+      "git-app-story-image-v1"
     ],
     "operation_ids": [
-      "get_app_story_by_studentId_by_storyId_lines_by_lineId"
+      "get_app_story_by_studentId_by_storyId_lines_by_lineId",
+      "get_app_story_image"
     ]
   },
   {
