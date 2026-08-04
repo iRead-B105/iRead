@@ -924,7 +924,7 @@
     "/api/app/story/{studentId}": {
       "get": {
         "operationId": "get_app_story_by_studentId",
-        "summary": "이야기 목록 조회, 내 책장, 이야기 카드 진행 상태 표시",
+        "summary": "삭제되지 않은 이야기 목록 조회, 내 책장, 이야기 카드 진행 상태 표시",
         "tags": [
           "story"
         ],
@@ -987,6 +987,11 @@
                                     "minLength": 1,
                                     "maxLength": 40,
                                     "description": "가장 최근 AI 분기 소제목. 첫 분기 전에는 템플릿 제목"
+                                  },
+                                  "entryImageUrl": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "description": "책 진입 시 표시할 장면 이미지 URL. 진행 중 이야기는 첫 미열람 장면, 완료 이야기는 첫 장면"
                                   }
                                 }
                               },
@@ -1029,7 +1034,8 @@
                         "storyTemplateId": "1001",
                         "createdAt": "2026-07-24T12:00:00+09:00",
                         "storyStatus": "COMPLETED",
-                        "latestBranchSubtitle": "별빛 숲의 갈림길"
+                        "latestBranchSubtitle": "별빛 숲의 갈림길",
+                        "entryImageUrl": "/uploads/story/1001/entry.png"
                       }
                     ],
                     "storyTemplates": [
@@ -1062,7 +1068,9 @@
           "ST-LIB-05",
           "ST-LIB-04",
           "ST-LIB-02",
-          "ST-LIB-06"
+          "ST-LIB-06",
+          "ST-LIB-08",
+          "ST-LIB-11"
         ],
         "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
         "x-notion-request-summary": "studentId(path)",
@@ -1073,6 +1081,29 @@
             "bearerAuth": []
           }
         ]
+      }
+    },
+    "/api/app/story/{studentId}/sessions/{storyId}": {
+      "delete": {
+        "operationId": "delete_app_story_session",
+        "summary": "진행 중 이야기 책장 삭제",
+        "description": "소유한 IN_PROGRESS 이야기만 DELETED로 변경해 아동과 교사 책장에서 즉시 제외한다. 완료 이야기, 이야기 템플릿과 표지는 삭제하지 않는다.",
+        "tags": ["story"],
+        "parameters": [
+          {"name": "studentId", "in": "path", "required": true, "schema": {"type": "string"}},
+          {"name": "storyId", "in": "path", "required": true, "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "204": {"description": "이야기 소프트 삭제 완료"},
+          "401": {"$ref": "#/components/responses/Unauthorized"},
+          "404": {"$ref": "#/components/responses/NotFound"},
+          "409": {"$ref": "#/components/responses/Conflict"}
+        },
+        "security": [{"bearerAuth": []}],
+        "x-review-status": "reviewed",
+        "x-feature-ids": ["ST-LIB-10"],
+        "x-notion-page-id": "git-app-story-session-delete-v1",
+        "x-notion-url": "git:contracts/api-resolutions.json#app-story-session-delete"
       }
     },
     "/api/app/story/{studentId}/{storyId}/lines": {
@@ -2343,14 +2374,18 @@
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
           }
         },
         "x-notion-page-id": "3a4027df-9053-8049-832f-cf2d2c2ee174",
         "x-notion-url": "https://app.notion.com/p/api-app-story-studentId-storyTemplateId-sessions-3a4027df90538049832fcf2d2c2ee174",
         "x-feature-ids": [
-          "ST-DTL-04"
+          "ST-DTL-04",
+          "ST-LIB-09"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다. 호출마다 별도 이야기 세션을 생성하는 비멱등 요청이므로 클라이언트는 응답을 받지 못했다는 이유만으로 자동 재전송하지 않는다. 결과가 불확실하면 이야기 책장 또는 이어하기 조회로 생성 여부를 확인한 뒤 사용자가 명시적으로 새 세션을 선택한 경우에만 다시 호출한다.",
+        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다. COMPLETED와 DELETED를 제외한 진행 중 이야기가 15권이면 409 Conflict를 반환하며 같은 템플릿의 여러 진행 세션은 허용한다. 호출마다 별도 이야기 세션을 생성하는 비멱등 요청이므로 클라이언트는 응답을 받지 못했다는 이유만으로 자동 재전송하지 않는다. 결과가 불확실하면 이야기 책장 또는 이어하기 조회로 생성 여부를 확인한 뒤 사용자가 명시적으로 새 세션을 선택한 경우에만 다시 호출한다.",
         "x-notion-request-summary": "studentId(path)\nstoryTemplateId(path)",
         "x-notion-response-summary": "스토리id\n교육자id\n템플릿id\n생성일\n스토리상태",
         "x-review-status": "reviewed",

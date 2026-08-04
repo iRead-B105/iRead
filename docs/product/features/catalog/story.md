@@ -30,7 +30,12 @@ timestamp: 2026-07-29T11:17:47+09:00
 | ST-LIB-04 | 이야기 진행률 표시 | 읽는 중인 이야기의 현재 장면과 전체 장면 수를 표시한다. | server | `get_app_story_by_studentId` |
 | ST-LIB-05 | 이야기 상세 화면 이동 | 선택 가능한 이야기 카드를 선택하면 해당 이야기의 상세 화면으로 이동한다. | server | `get_app_story_by_studentId` |
 | ST-LIB-06 | 이야기 선택 안내 표시 | 대표 캐릭터를 통해 학습자가 읽을 이야기를 선택할 수 있도록 안내 문구를 표시한다. | server | `get_app_story_by_studentId` |
-| ST-LIB-07 | 내 책장 | 내가 이전에 읽은 기록이있는(진행중, 완결) 책의 목록을 확인한다. | server | `get_app_story_by_studentId` |
+| ST-LIB-07 | 내 책장 | 삭제되지 않은 진행 중·완료 이야기 목록을 확인한다. | server | `get_app_story_by_studentId` |
+| ST-LIB-08 | 이야기 상태 탭 분류 | 진행 중 이야기와 완료 이야기를 별도 탭으로 구분해 표시한다. | client | `get_app_story_by_studentId` |
+| ST-LIB-09 | 진행 중 이야기 보관 제한 | 완료·삭제 이야기를 제외하고 아동별 진행 중 이야기를 최대 15권까지 생성한다. | server | `post_app_story_by_studentId_by_storyTemplateId_sessions` |
+| ST-LIB-10 | 진행 중 이야기 삭제 | 제목과 진행률을 확인한 뒤 진행 중 이야기 상태를 `DELETED`로 변경해 아동·교사 책장에서 제외한다. | server | `delete_app_story_session` |
+| ST-LIB-11 | 이야기 진입 이미지 준비 | 책장 조회 시 진행 중 이야기는 첫 미열람 장면, 완료 이야기는 첫 장면 이미지를 제공해 독서 화면 진입 전에 미리 로딩한다. | server | `get_app_story_by_studentId` |
+| ST-LIB-11 | 이야기 진입 이미지 사전 로딩 | 아동 선택 직후 책장 응답의 진입 장면 이미지를 미리 로딩하고, 실제 이미지가 준비된 뒤 독서 화면을 표시한다. | client | `get_app_story_by_studentId` |
 | ST-READ-01 | 이야기 장면 조회 | 현재 장면의 이미지, 제목, 본문, 음성과 음성 분기 입력 필요 여부를 조회한다. | server | `get_app_story_by_studentId_by_storyId_lines_by_lineId` |
 | ST-READ-02 | 이야기 장면 표시 | 현재 장면의 이미지와 본문을 화면에 표시한다. | server | `get_app_story_by_studentId_by_storyId_lines_by_lineId` |
 | ST-READ-03 | 이야기 장면 진행 상태 표시 | 현재 장면 번호와 전체 장면 수를 표시한다. | server | `get_app_story_by_studentId_by_storyId_lines_by_lineId` |

@@ -1,0 +1,39 @@
+---
+type: Feature Specification
+title: 이야기 책장 관리
+description: 진행 중·완료 이야기를 구분해 보여 주고 진행 중 이야기를 안전하게 정리하는 기능입니다.
+tags: [feature, story, library, delete]
+timestamp: 2026-08-04T00:00:00+09:00
+---
+# 기능 명세: 이야기 책장 관리
+
+- 상태: accepted
+- 관련 기능: `ST-LIB-01`~`ST-LIB-11`, `ST-DTL-04`
+
+## 기대 결과
+
+아동은 진행 중인 이야기와 다 읽은 이야기를 별도 탭에서 구분해 보고, 진행 중인 이야기만 제목과 진행률을 확인한 뒤 책장에서 삭제할 수 있다. 여러 종류와 같은 종류의 이야기를 동시에 진행할 수 있지만 진행 중인 이야기는 아동별 최대 15권까지 보관한다.
+
+## 수용 기준
+
+- 읽던 책 화면은 `읽는 중`과 `다 읽은 책` 탭을 제공하며 기본 탭은 `읽는 중`이다.
+- `읽는 중` 탭에는 `IN_PROGRESS`, `다 읽은 책` 탭에는 `COMPLETED` 이야기만 표시한다.
+- `DELETED` 이야기는 아동 책장과 교사 이야기 조회에서 제외한다.
+- 아동별 `IN_PROGRESS` 이야기는 최대 15권이며 `COMPLETED`와 `DELETED`는 한도에 포함하지 않는다.
+- 같은 이야기 템플릿으로 여러 `IN_PROGRESS` 세션을 동시에 만들 수 있다.
+- 15권에 도달한 새 이야기 시작 요청은 `409 Conflict`로 거부하고 기존 이야기를 자동 삭제하지 않는다.
+- 아동은 `IN_PROGRESS` 이야기만 삭제할 수 있고 `COMPLETED` 이야기 삭제 요청은 `409 Conflict`로 거부한다.
+- 삭제 전 확인 팝업에 이야기 제목과 현재 진행률을 표시한다.
+- 삭제를 확정하면 이야기 상태를 `DELETED`로 변경하고 성공 응답 직후 현재 책장에서 제거한다.
+- 삭제는 이야기 세션에만 적용하며 `story_templates`와 템플릿 표지는 변경하거나 삭제하지 않는다.
+- 삭제 후 같은 템플릿으로 새 이야기 세션을 처음부터 시작할 수 있다.
+- 카드 목록은 그림자와 호버 상태가 목록 컨테이너 경계에서 잘리지 않아야 한다.
+- 아동 선택 직후 각 기존 이야기의 진입 장면 이미지를 브라우저에 미리 로딩한다.
+- 독서 화면은 실제 진입 장면 이미지가 준비되기 전에 정적 이야기 이미지를 노출하지 않는다.
+
+## API와 데이터
+
+- `GET /api/app/story/{studentId}`: `DELETED`를 제외한 이야기와 템플릿, 상태별 `entryImageUrl` 조회
+- `POST /api/app/story/{studentId}/{storyTemplateId}/sessions`: 진행 중 15권 제한을 확인한 뒤 새 세션 생성
+- `DELETE /api/app/story/{studentId}/sessions/{storyId}`: 소유한 진행 중 이야기 소프트 삭제
+- `stories.status`: `IN_PROGRESS`, `COMPLETED`, `DELETED`

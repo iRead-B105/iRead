@@ -309,6 +309,20 @@
       "request_example":"", "response_example":""
     },
     {
+      "page_id":"git-app-story-session-delete-v1",
+      "url":"git:contracts/api-resolutions.json#app-story-session-delete",
+      "method":"DELETE",
+      "path":"/api/app/story/{studentId}/sessions/{storyId}",
+      "domain":"app",
+      "request_summary":"studentId(path), storyId(path)",
+      "response_summary":"204 No Content",
+      "note":"Soft-deletes an owned IN_PROGRESS story session. COMPLETED sessions are rejected and templates or cover assets are not deleted.",
+      "feature_ids":["git-feature-story-library-delete-v1"],
+      "request_parameters":[], "response_fields":[],
+      "response_codes":["204","401","404","409"],
+      "request_example":"", "response_example":""
+    },
+    {
       "page_id":"git-admin-story-page-update-v1",
       "url":"git:contracts/api-resolutions.json#admin-story-page-update",
       "method":"PUT",

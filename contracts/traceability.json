@@ -2317,6 +2317,50 @@
     ]
   },
   {
+    "feature_id": "ST-LIB-08",
+    "feature_page_id": "git-feature-story-library-tabs-v1",
+    "deprecated": false,
+    "responsibility": "client",
+    "api_page_ids": [],
+    "operation_ids": []
+  },
+  {
+    "feature_id": "ST-LIB-09",
+    "feature_page_id": "git-feature-story-library-limit-v1",
+    "deprecated": false,
+    "responsibility": "server",
+    "api_page_ids": [
+      "3a4027df-9053-8049-832f-cf2d2c2ee174"
+    ],
+    "operation_ids": [
+      "post_app_story_by_studentId_by_storyTemplateId_sessions"
+    ]
+  },
+  {
+    "feature_id": "ST-LIB-10",
+    "feature_page_id": "git-feature-story-library-delete-v1",
+    "deprecated": false,
+    "responsibility": "server",
+    "api_page_ids": [
+      "git-app-story-session-delete-v1"
+    ],
+    "operation_ids": [
+      "delete_app_story_session"
+    ]
+  },
+  {
+    "feature_id": "ST-LIB-11",
+    "feature_page_id": "git-feature-story-entry-image-v1",
+    "deprecated": false,
+    "responsibility": "server",
+    "api_page_ids": [
+      "3a4027df-9053-8057-9ea8-dfce6b6f42bd"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId"
+    ]
+  },
+  {
     "feature_id": "ST-READ-01",
     "feature_page_id": "3a3027df-9053-803a-80c1-ee16715e04ba",
     "deprecated": false,
