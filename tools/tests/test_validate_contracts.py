@@ -8,13 +8,27 @@ from pathlib import Path
 TOOLS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(TOOLS))
 
-from validate_contracts import validate_schema
+from validate_contracts import flyway_sort_key, validate_schema
 from generate_erd import render_erd
-from generate_contracts import schema_for_type
+from generate_contracts import merge_existing_contracts, schema_for_type
 from contract_resolutions import resolve_snapshot
 
 
 class ValidateSchemaTest(unittest.TestCase):
+    def test_flyway_files_are_sorted_by_numeric_version(self) -> None:
+        files = [
+            Path("V10__backfill.sql"),
+            Path("V2__demo_seed.sql"),
+            Path("V6__refresh.sql"),
+        ]
+
+        ordered = sorted(files, key=flyway_sort_key)
+
+        self.assertEqual(
+            ["V2__demo_seed.sql", "V6__refresh.sql", "V10__backfill.sql"],
+            [path.name for path in ordered],
+        )
+
     def test_consolidated_v1_v2_flyway_contract_is_valid(self) -> None:
         errors, counts = validate_schema()
 
@@ -40,6 +54,77 @@ CREATE TABLE `samples` (
         self.assertEqual(
             {"type": "string", "enum": ["MALE", "FEMALE"]},
             schema_for_type("string(MALE|FEMALE)"),
+        )
+
+    def test_generation_replaces_only_changed_contracts(self) -> None:
+        generated = {
+            "paths": {
+                "/changed": {"get": {"operationId": "generated-changed"}},
+                "/unchanged": {"get": {"operationId": "generated-unchanged"}},
+            },
+            "components": {
+                "schemas": {"SuccessResponse": {"type": "object"}}
+            },
+        }
+        existing = {
+            "paths": {
+                "/repository": {
+                    "get": {
+                        "operationId": "repository",
+                        "x-contract-origin": "repository",
+                    }
+                },
+                "/changed": {
+                    "get": {
+                        "operationId": "existing-changed",
+                        "x-notion-page-id": "changed-page",
+                    }
+                },
+                "/unchanged": {
+                    "get": {
+                        "operationId": "existing-refined",
+                        "x-notion-page-id": "unchanged-page",
+                    }
+                },
+                "/deprecated": {
+                    "get": {
+                        "operationId": "deprecated",
+                        "x-notion-page-id": "deprecated-page",
+                    }
+                },
+            },
+            "components": {
+                "schemas": {
+                    "SuccessResponse": {"type": "string"},
+                    "RepositorySchema": {"type": "object"},
+                }
+            },
+        }
+
+        result = merge_existing_contracts(
+            generated,
+            existing,
+            {("get", "/changed")},
+            {"changed-page", "unchanged-page"},
+        )
+
+        self.assertEqual(
+            "repository", result["paths"]["/repository"]["get"]["operationId"]
+        )
+        self.assertEqual(
+            "generated-changed", result["paths"]["/changed"]["get"]["operationId"]
+        )
+        self.assertEqual(
+            "existing-refined", result["paths"]["/unchanged"]["get"]["operationId"]
+        )
+        self.assertNotIn("/deprecated", result["paths"])
+        self.assertEqual(
+            {"type": "string"},
+            result["components"]["schemas"]["SuccessResponse"],
+        )
+        self.assertEqual(
+            {"type": "object"},
+            result["components"]["schemas"]["RepositorySchema"],
         )
 
     def test_feature_resolution_can_move_feature_to_client(self) -> None:

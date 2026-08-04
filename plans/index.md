@@ -1,5 +1,7 @@
 # 실행 계획
 
+* [교수자 주요 화면 API 계약 정합화](2026-08-04-teacher-api-contract-alignment.md) - active
+
 - [교수자 UI 페르소나 데이터 완성도 보강](2026-07-30-teacher-persona-data-completeness.md) - 최신 교수자 UI 계약에 맞춘 검사·훈련·추이·메모 데이터 보강
 
 긴 작업의 실행 계획을 저장한다. 형식과 운영 규칙은 루트의 `PLANS.md`를 따른다.

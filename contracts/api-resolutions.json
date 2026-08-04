@@ -1,5 +1,19 @@
 {
   "version": 1,
+  "catalog_feature_ids": [
+    "TH-DSP-02",
+    "TI-DSP-01",
+    "TI-DSP-02",
+    "TI-GAZE-01",
+    "TI-STAT-02",
+    "MH-DSP-04",
+    "MH-STAT-01",
+    "TH-STAT-01",
+    "ST-GAZE-02",
+    "ST-GAZE-03",
+    "RP-GEN-01",
+    "RP-SAVE-01"
+  ],
   "feature_resolutions": [
     {
       "feature_id": "CU-DSP-03",
@@ -141,7 +155,39 @@
     },
     {
       "feature_id": "RP-SAVE-01",
-      "description": "완료 학습이 있는 선택 기간의 동기 분석 결과와 최대 2,000자의 교수자 의견을 reports에 저장한다. 동일 아동·시작일·종료일 보고서는 한 건만 허용하며 삭제 기능을 제공하지 않는다."
+      "description": "완료 훈련일이 1일 이상인 선택 기간의 동기 분석 결과를 버전이 있는 snapshot으로 reports에 저장한다. 동일 아동·시작일·종료일 보고서는 한 건만 허용하며 삭제 기능을 제공하지 않는다."
+    },
+    {
+      "feature_id": "TH-DSP-02",
+      "description": "선택한 완료 훈련의 모든 문항에 대해 문항 번호·유형·본문·응답 유형·학습자 답·정답·정오·점수를 표시한다."
+    },
+    {
+      "feature_id": "TI-DSP-02",
+      "description": "선택한 검사 커리큘럼의 종합 결과와 모든 문항을 testId + questionNo로 구분해 표시한다. 추천 커리큘럼 운영 상태는 검사 이력에서 표시하지 않는다."
+    },
+    {
+      "feature_id": "TI-GAZE-01",
+      "description": "testId + questionNo로 지정한 개별 검사 문항의 시선 분석 결과를 표시한다."
+    },
+    {
+      "feature_id": "MH-DSP-04",
+      "description": "선택한 실제 지표 source record의 출처·측정시각·값·단위와 근거 수치를 가로 상세로 표시한다."
+    },
+    {
+      "feature_id": "MH-STAT-01",
+      "description": "읽기 정확도 탭에서 정확도 source record만 조회하고 동일 calculationVersion으로 집계한 일별 추이를 표시한다."
+    },
+    {
+      "feature_id": "TH-STAT-01",
+      "description": "읽기 속도 탭에서 음성 읽기 속도 source record만 조회하고 CORRECT_WORDS_PER_MINUTE 단위의 일별 추이를 표시한다."
+    },
+    {
+      "feature_id": "ST-GAZE-02",
+      "description": "Backend가 calculationVersion에 따라 계산한 페이지·단어별 체류·건너뜀·되돌아보기 결과를 표시한다."
+    },
+    {
+      "feature_id": "RP-GEN-01",
+      "description": "학습 현황과 같은 source record·단위·calculationVersion으로 보고서 핵심 성과와 성장 값을 만들고 비교 시점이 부족하면 INSUFFICIENT_DATA 상태를 저장한다."
     }
   ],
   "additional_apis": [
@@ -276,7 +322,7 @@
       "url":"git:contracts/api-resolutions.json#admin-story-history-detail",
       "method":"GET",
       "path":"/api/admin/student/{studentId}/story-history/{storyId}",
-      "domain":"admin",
+      "domain":"gaze",
       "request_summary":"studentId(path), storyId(path)",
       "response_summary":"story, pages, totalPages",
       "note":"Returns ordered story pages, branch records, and inferred scene image availability. Existing lines are used as the branch prompt fallback.",
@@ -366,14 +412,15 @@
     },
     {
       "page_id":"git-admin-story-gaze-analysis-v1",
+      "replace_existing":true,
       "url":"git:contracts/api-resolutions.json#admin-story-gaze-analysis",
       "method":"GET",
       "path":"/api/admin/story/{studentId}/{storyId}/gaze-analysis",
-      "domain":"admin",
+      "domain":"gaze",
       "request_summary":"studentId(path), storyId(path)",
-      "response_summary":"gazeSessionId, gazeAnalysisId, calibrationStatus, startedAt, endedAt, totalDwellTime, dwellCount, regressionCount, averageFixationTime, pageMetrics, analysisMeta",
-      "note":"Normalizes the latest completed STORY gaze result into page metrics. Raw gaze coordinates are never returned.",
-      "feature_ids":[],
+      "response_summary":"gazeSessionId, gazeAnalysisId, calibrationStatus, startedAt, endedAt, totalDwellTime, dwellCount, regressionCount, averageFixationTime, pageMetrics, wordMetrics, replay, analysisMeta",
+      "note":"Backend returns authoritative pageMetrics and wordMetrics. analysisMeta includes calculationVersion=story-gaze-word-v1, calculationSource=BACKEND, heatmapScale=PAGE_RELATIVE_MAX, dwellThresholdMethod=PAGE_CHARACTER_AVERAGE, sampleTailMs=80, skipRequiresDwell=true and regressionRequiresDwell=true. The Frontend uses replay only for playback and never recalculates classifications. Raw gaze coordinates are never returned.",
+      "feature_ids":["3a5027df-9053-8090-9012-fddb0c1149b7","3a5027df-9053-80a0-8f00-d96adedd6152"],
       "request_parameters":[
         {"name":"studentId","type":"long","in":"Path","required":true,"description":"Student identifier"},
         {"name":"storyId","type":"long","in":"Path","required":true,"description":"Story identifier"}
@@ -389,11 +436,13 @@
         {"name":"regressionCount","type":"integer","required":true,"description":"Total regression count"},
         {"name":"averageFixationTime","type":"integer","required":false,"description":"Average fixation time in milliseconds"},
         {"name":"pageMetrics","type":"array<object>","required":true,"description":"Per-page gaze metrics"},
-        {"name":"analysisMeta","type":"object","required":false,"description":"Analysis metadata"}
+        {"name":"wordMetrics","type":"array<object>","required":true,"description":"Authoritative per-word metrics: storyLineId, pageNo, tokenIndex, text, dwellDurationMs, visitCount, skipped, regressionCount and firstSeenMs"},
+        {"name":"replay","type":"object","required":false,"description":"Playback-only normalized words and samples without raw coordinates"},
+        {"name":"analysisMeta","type":"object","required":true,"description":"Calculation version, source, heatmap scale and dwell/skip/regression rule metadata"}
       ],
       "response_codes":["200","401","403","404"],
       "request_example":"",
-      "response_example":""
+      "response_example":"{\"success\":true,\"data\":{\"gazeSessionId\":7001,\"gazeAnalysisId\":7101,\"calibrationStatus\":\"VALID\",\"startedAt\":\"2026-08-04T10:00:00+09:00\",\"endedAt\":\"2026-08-04T10:01:00+09:00\",\"totalDwellTime\":12000,\"dwellCount\":18,\"regressionCount\":2,\"averageFixationTime\":667,\"pageMetrics\":[],\"wordMetrics\":[{\"storyLineId\":1001,\"pageNo\":1,\"tokenIndex\":0,\"text\":\"어느\",\"dwellDurationMs\":900,\"visitCount\":1,\"skipped\":false,\"regressionCount\":0,\"firstSeenMs\":80}],\"replay\":null,\"analysisMeta\":{\"calculationVersion\":\"story-gaze-word-v1\",\"calculationSource\":\"BACKEND\",\"heatmapScale\":\"PAGE_RELATIVE_MAX\",\"dwellThresholdMethod\":\"PAGE_CHARACTER_AVERAGE\",\"sampleTailMs\":80,\"skipRequiresDwell\":true,\"regressionRequiresDwell\":true}}}"
     },
     {
       "page_id":"git-admin-lesson-material-get-v1",
@@ -518,9 +567,218 @@
       "response_codes":["200","400","401","403","404","409","502"],
       "request_example":"",
       "response_example":""
+    },
+    {
+      "page_id":"git-admin-test-curriculums-v1",
+      "url":"git:contracts/api-resolutions.json#admin-test-curriculums",
+      "method":"GET",
+      "path":"/api/admin/test/{studentId}/curriculums",
+      "domain":"test",
+      "request_summary":"studentId(path)",
+      "response_summary":"curriculums",
+      "note":"Returns test curriculum history. Each curriculum groups the ordered student tests completed in one skill-challenge session.",
+      "feature_ids":["3a3027df-9053-80b6-8c30-c8df40e243e8"],
+      "request_parameters":[
+        {"name":"studentId","type":"long","in":"Path","required":true,"description":"Student identifier"}
+      ],
+      "response_fields":[
+        {"name":"curriculums","type":"array<object>","required":true,"description":"Test curriculum summaries with testCurriculumId, status, createdAt, completedAt, completedQuestions, totalQuestions and overallScore"}
+      ],
+      "response_codes":["200","400","401","403","404"],
+      "request_example":"",
+      "response_example":"{\"success\":true,\"data\":{\"curriculums\":[{\"testCurriculumId\":\"9001\",\"status\":\"COMPLETED\",\"createdAt\":\"2026-08-04T09:00:00+09:00\",\"completedAt\":\"2026-08-04T09:20:00+09:00\",\"completedQuestions\":9,\"totalQuestions\":9,\"overallScore\":82.5}]}}"
+    },
+    {
+      "page_id":"git-admin-test-curriculum-detail-v1",
+      "url":"git:contracts/api-resolutions.json#admin-test-curriculum-detail",
+      "method":"GET",
+      "path":"/api/admin/test/{studentId}/curriculums/{testCurriculumId}",
+      "domain":"test",
+      "request_summary":"studentId(path), testCurriculumId(path)",
+      "response_summary":"testCurriculumId, status, createdAt, completedAt, completedQuestions, totalQuestions, overallScore, areaScores, solvingTimeSeconds, questions",
+      "note":"Returns all test questions. The stable question key is testId + questionNo; sequenceNo is display order only. Questions that share one testId must have distinct questionNo values. Recommendation generation and curriculum review fields are not part of the test-history screen contract.",
+      "feature_ids":["3a6027df-9053-814e-8f6f-e1a0099b9b75","3a4027df-9053-819b-b5ab-e4cb8d8b3c6a"],
+      "request_parameters":[
+        {"name":"studentId","type":"long","in":"Path","required":true,"description":"Student identifier"},
+        {"name":"testCurriculumId","type":"long","in":"Path","required":true,"description":"Test curriculum identifier"}
+      ],
+      "response_fields":[
+        {"name":"testCurriculumId","type":"long","required":true,"description":"Test curriculum identifier"},
+        {"name":"status","type":"string(NOT_STARTED|IN_PROGRESS|COMPLETED)","required":true,"description":"Test curriculum status"},
+        {"name":"createdAt","type":"string(date-time)","required":true,"description":"Creation time"},
+        {"name":"completedAt","type":"string(date-time)","required":false,"description":"Completion time"},
+        {"name":"completedQuestions","type":"integer","required":true,"description":"Completed question count"},
+        {"name":"totalQuestions","type":"integer","required":true,"description":"Total question count"},
+        {"name":"overallScore","type":"number","required":false,"description":"Overall score from 0 to 100"},
+        {"name":"areaScores","type":"array<object>","required":true,"description":"Area score summaries"},
+        {"name":"solvingTimeSeconds","type":"integer","required":false,"description":"Total solving time"},
+        {"name":"questions","type":"array<object>","required":true,"description":"Question results with testId, questionNo, sequenceNo, trackCode, questionType, question, responseType, selectedAnswer, correctAnswer, correct, score, pronunciationScore, solvingTimeSeconds and gazeDepartureCount"}
+      ],
+      "response_codes":["200","400","401","403","404"],
+      "request_example":"",
+      "response_example":"{\"success\":true,\"data\":{\"testCurriculumId\":\"9001\",\"status\":\"COMPLETED\",\"createdAt\":\"2026-08-04T09:00:00+09:00\",\"completedAt\":\"2026-08-04T09:20:00+09:00\",\"completedQuestions\":9,\"totalQuestions\":9,\"overallScore\":82.5,\"areaScores\":[],\"solvingTimeSeconds\":1200,\"questions\":[{\"testId\":\"9101\",\"questionNo\":1,\"sequenceNo\":1,\"trackCode\":\"WORD\",\"questionType\":\"WORD_READING\",\"question\":\"바다\",\"responseType\":\"AUDIO\",\"selectedAnswer\":null,\"correctAnswer\":\"바다\",\"correct\":true,\"score\":90,\"pronunciationScore\":90,\"solvingTimeSeconds\":120,\"gazeDepartureCount\":0}]}}"
+    },
+    {
+      "page_id":"git-admin-test-question-gaze-v1",
+      "url":"git:contracts/api-resolutions.json#admin-test-question-gaze",
+      "method":"GET",
+      "path":"/api/admin/test/{studentId}/{testId}/questions/{questionNo}/gaze-analysis",
+      "domain":"test",
+      "request_summary":"studentId(path), testId(path), questionNo(path)",
+      "response_summary":"testId, questionNo, gazeSessionId, gazeAnalysisId, totalDwellTime, dwellCount, regressionCount, averageFixationTime, wordMetrics, analysisMeta",
+      "note":"Returns gaze analysis for exactly one test question identified by testId + questionNo. The legacy test-level gaze endpoint remains temporarily compatible but must not be used for per-question selection.",
+      "feature_ids":["3a5027df-9053-8056-beb2-cca8fc2ba10b"],
+      "request_parameters":[
+        {"name":"studentId","type":"long","in":"Path","required":true,"description":"Student identifier"},
+        {"name":"testId","type":"long","in":"Path","required":true,"description":"Student test identifier"},
+        {"name":"questionNo","type":"integer","in":"Path","required":true,"description":"Question number within the test","minimum":1}
+      ],
+      "response_fields":[
+        {"name":"testId","type":"long","required":true,"description":"Student test identifier"},
+        {"name":"questionNo","type":"integer","required":true,"description":"Question number within the test"},
+        {"name":"gazeSessionId","type":"long","required":true,"description":"Gaze session identifier"},
+        {"name":"gazeAnalysisId","type":"long","required":true,"description":"Gaze analysis identifier"},
+        {"name":"totalDwellTime","type":"integer","required":true,"description":"Total dwell time in milliseconds"},
+        {"name":"dwellCount","type":"integer","required":true,"description":"Fixation count"},
+        {"name":"regressionCount","type":"integer","required":true,"description":"Regression count"},
+        {"name":"averageFixationTime","type":"integer","required":false,"description":"Average fixation time in milliseconds"},
+        {"name":"wordMetrics","type":"array<object>","required":true,"description":"Metrics limited to the requested question"},
+        {"name":"analysisMeta","type":"object","required":true,"description":"Calculation source and version"}
+      ],
+      "response_codes":["200","400","401","403","404"],
+      "request_example":"",
+      "response_example":"{\"success\":true,\"data\":{\"testId\":9101,\"questionNo\":1,\"gazeSessionId\":9201,\"gazeAnalysisId\":9301,\"totalDwellTime\":5000,\"dwellCount\":8,\"regressionCount\":1,\"averageFixationTime\":625,\"wordMetrics\":[],\"analysisMeta\":{\"calculationVersion\":\"gaze-word-v1\",\"calculationSource\":\"BACKEND\"}}}"
+    },
+    {
+      "page_id":"git-admin-accuracy-records-v1",
+      "url":"git:contracts/api-resolutions.json#admin-accuracy-records",
+      "method":"GET",
+      "path":"/api/admin/student/{studentId}/accuracy-records",
+      "domain":"student",
+      "request_summary":"studentId(path), from(query), to(query)",
+      "response_summary":"from, to, unit, calculationVersion, records",
+      "note":"Returns only reading-accuracy source records. Each record is keyed by sourceType + sourceId and exposes the numerator and denominator used for accuracyRate. Daily trend and report aggregation must reuse these records and calculationVersion.",
+      "feature_ids":["3a6027df-9053-81d2-81c6-c86f59bd3d75","3a6027df-9053-818d-a0df-feeada4e3a56"],
+      "request_parameters":[
+        {"name":"studentId","type":"long","in":"Path","required":true,"description":"Student identifier"},
+        {"name":"from","type":"string(date)","in":"Query","required":false,"description":"Start date"},
+        {"name":"to","type":"string(date)","in":"Query","required":false,"description":"End date"}
+      ],
+      "response_fields":[
+        {"name":"from","type":"string(date)","required":true,"description":"Applied start date"},
+        {"name":"to","type":"string(date)","required":true,"description":"Applied end date"},
+        {"name":"unit","type":"string(PERCENT)","required":true,"description":"Accuracy unit"},
+        {"name":"calculationVersion","type":"string","required":true,"description":"reading-metrics-v1"},
+        {"name":"records","type":"array<object>","required":true,"description":"Records with sourceType, sourceId, measuredAt, correctAttemptCount, attemptCount, accuracyRate, unit and calculationVersion"}
+      ],
+      "response_codes":["200","400","401","403","404"],
+      "request_example":"",
+      "response_example":"{\"success\":true,\"data\":{\"from\":\"2026-07-01\",\"to\":\"2026-07-31\",\"unit\":\"PERCENT\",\"calculationVersion\":\"reading-metrics-v1\",\"records\":[{\"sourceType\":\"TRAINING\",\"sourceId\":251136,\"measuredAt\":\"2026-07-10T10:00:00+09:00\",\"correctAttemptCount\":8,\"attemptCount\":10,\"accuracyRate\":80,\"unit\":\"PERCENT\",\"calculationVersion\":\"reading-metrics-v1\"}]}}"
+    },
+    {
+      "page_id":"git-admin-reading-speed-records-v1",
+      "url":"git:contracts/api-resolutions.json#admin-reading-speed-records",
+      "method":"GET",
+      "path":"/api/admin/student/{studentId}/reading-speed-records",
+      "domain":"training",
+      "request_summary":"studentId(path), from(query), to(query)",
+      "response_summary":"from, to, unit, calculationVersion, records",
+      "note":"Returns only voice reading-speed source records. readingSpeed is correctWordCount * 60000 / measuredDurationMs and is never mixed with gaze speed. Daily trend and report aggregation must reuse these records and calculationVersion.",
+      "feature_ids":["3a3027df-9053-8044-9a4b-d2a69db2193e","3a6027df-9053-818d-a0df-feeada4e3a56"],
+      "request_parameters":[
+        {"name":"studentId","type":"long","in":"Path","required":true,"description":"Student identifier"},
+        {"name":"from","type":"string(date)","in":"Query","required":false,"description":"Start date"},
+        {"name":"to","type":"string(date)","in":"Query","required":false,"description":"End date"}
+      ],
+      "response_fields":[
+        {"name":"from","type":"string(date)","required":true,"description":"Applied start date"},
+        {"name":"to","type":"string(date)","required":true,"description":"Applied end date"},
+        {"name":"unit","type":"string(CORRECT_WORDS_PER_MINUTE)","required":true,"description":"Reading speed unit"},
+        {"name":"calculationVersion","type":"string","required":true,"description":"reading-metrics-v1"},
+        {"name":"records","type":"array<object>","required":true,"description":"Records with sourceType, sourceId, measuredAt, correctWordCount, measuredDurationMs, readingSpeed, unit and calculationVersion"}
+      ],
+      "response_codes":["200","400","401","403","404"],
+      "request_example":"",
+      "response_example":"{\"success\":true,\"data\":{\"from\":\"2026-07-01\",\"to\":\"2026-07-31\",\"unit\":\"CORRECT_WORDS_PER_MINUTE\",\"calculationVersion\":\"reading-metrics-v1\",\"records\":[{\"sourceType\":\"TRAINING\",\"sourceId\":251136,\"measuredAt\":\"2026-07-10T10:00:00+09:00\",\"correctWordCount\":60,\"measuredDurationMs\":60000,\"readingSpeed\":60,\"unit\":\"CORRECT_WORDS_PER_MINUTE\",\"calculationVersion\":\"reading-metrics-v1\"}]}}"
+    },
+    {
+      "page_id":"git-admin-reading-speed-trend-v2",
+      "replace_existing":true,
+      "url":"git:contracts/api-resolutions.json#admin-reading-speed-trend",
+      "method":"GET",
+      "path":"/api/admin/student/{studentId}/reading-speed-trend",
+      "domain":"training",
+      "request_summary":"studentId(path), from(query), to(query)",
+      "response_summary":"from, to, unit, calculationVersion, voiceChangeRate, gazeChangeRate, points",
+      "note":"Aggregates daily voice reading speed from reading-speed-records using sum(correctWordCount) * 60000 / sum(measuredDurationMs). Gaze speed is an auxiliary metric and is never mixed into the primary voice speed. Returns unit=CORRECT_WORDS_PER_MINUTE and calculationVersion=reading-metrics-v1.",
+      "feature_ids":["3a3027df-9053-8044-9a4b-d2a69db2193e"],
+      "request_parameters":[
+        {"name":"studentId","type":"long","in":"Path","required":true,"description":"Student identifier"},
+        {"name":"from","type":"string(date)","in":"Query","required":false,"description":"Start date"},
+        {"name":"to","type":"string(date)","in":"Query","required":false,"description":"End date"}
+      ],
+      "response_fields":[
+        {"name":"from","type":"string(date)","required":true,"description":"Applied start date"},
+        {"name":"to","type":"string(date)","required":true,"description":"Applied end date"},
+        {"name":"unit","type":"string(CORRECT_WORDS_PER_MINUTE)","required":true,"description":"Voice reading speed unit"},
+        {"name":"calculationVersion","type":"string","required":true,"description":"reading-metrics-v1"},
+        {"name":"voiceChangeRate","type":"number","required":false,"description":"First-to-latest voice speed change rate"},
+        {"name":"gazeChangeRate","type":"number","required":false,"description":"First-to-latest gaze speed change rate"},
+        {"name":"points","type":"array<object>","required":true,"description":"Daily points with date, voiceSpeed, gazeSpeed, correctWordCount, voiceDurationMs, gazeWordCount, gazeDurationMs and trainingCount"}
+      ],
+      "response_codes":["200","400","401","403","404"],
+      "request_example":"",
+      "response_example":"{\"success\":true,\"data\":{\"from\":\"2026-07-01\",\"to\":\"2026-07-31\",\"unit\":\"CORRECT_WORDS_PER_MINUTE\",\"calculationVersion\":\"reading-metrics-v1\",\"voiceChangeRate\":20,\"gazeChangeRate\":null,\"points\":[{\"date\":\"2026-07-10\",\"voiceSpeed\":60,\"gazeSpeed\":null,\"correctWordCount\":60,\"voiceDurationMs\":60000,\"gazeWordCount\":0,\"gazeDurationMs\":0,\"trainingCount\":1}]}}"
     }
   ],
   "resolutions": [
+    {
+      "source": "GET /api/admin/training/{studentId}/{curriculumId}/training-log",
+      "action": "update",
+      "replace_existing": true,
+      "reason": "정답 문항을 포함한 모든 훈련 문항의 문제·학습자 답·정답을 하나의 배열로 제공한다.",
+      "changes": {
+        "note": "각 완료 훈련은 모든 문항을 questions에 반환한다. questionNo는 훈련 안에서 안정적인 문항 번호이며 questionType, question, responseType, selectedAnswer, correctAnswer, correct, score를 함께 제공한다. selectedAnswer와 correctAnswer는 responseType에 따라 scalar, array 또는 object일 수 있고 미제출·측정 불가는 null이다. 기존 questionResults와 incorrectItems는 전환 기간에 additive 호환 필드로 남길 수 있으나 신규 소비자는 questions만 사용한다.",
+        "response_summary": "trainings",
+        "response_fields": [
+          {"name":"trainings","type":"array<object>","required":true,"description":"Completed training results"},
+          {"name":"trainings[].trainingId","type":"long","required":true,"description":"Training identifier"},
+          {"name":"trainings[].trainingName","type":"string","required":true,"description":"Training name"},
+          {"name":"trainings[].startedAt","type":"string(date-time)","required":false,"description":"Training start time"},
+          {"name":"trainings[].endedAt","type":"string(date-time)","required":false,"description":"Training completion time"},
+          {"name":"trainings[].accuracyRate","type":"number","required":false,"description":"Training accuracy from 0 to 100"},
+          {"name":"trainings[].questions","type":"array<object>","required":true,"description":"All question results with questionNo, questionType, question, responseType, selectedAnswer, correctAnswer, correct and score"}
+        ],
+        "response_example": "{\"success\":true,\"data\":{\"trainings\":[{\"trainingId\":251136,\"trainingName\":\"낱말 읽기\",\"startedAt\":\"2026-08-04T10:00:00+09:00\",\"endedAt\":\"2026-08-04T10:10:00+09:00\",\"accuracyRate\":80,\"questions\":[{\"questionNo\":1,\"questionType\":\"WORD_READING\",\"question\":{\"text\":\"바다\"},\"responseType\":\"AUDIO\",\"selectedAnswer\":null,\"correctAnswer\":\"바다\",\"correct\":true,\"score\":90},{\"questionNo\":2,\"questionType\":\"SINGLE_CHOICE\",\"question\":{\"prompt\":\"같은 소리를 고르세요\",\"choices\":[\"가\",\"나\"]},\"responseType\":\"SINGLE_CHOICE\",\"selectedAnswer\":\"나\",\"correctAnswer\":\"가\",\"correct\":false,\"score\":0}]}]}}",
+        "response_codes": ["200", "400", "401", "403", "404"]
+      }
+    },
+    {
+      "source": "GET /api/admin/student/{studentId}/accuracy-trend",
+      "action": "update",
+      "replace_existing": true,
+      "reason": "정확도 source record와 같은 계산 버전으로 일별 추이를 집계한다.",
+      "changes": {
+        "note": "accuracy-records의 correctAttemptCount 합계 / attemptCount 합계 * 100으로 날짜별 정확도를 계산한다. 단순 record 평균을 사용하지 않는다. 값은 0~100 PERCENT이며 calculationVersion=reading-metrics-v1을 반환한다.",
+        "response_summary": "unit, calculationVersion, dailyAccuracy",
+        "response_fields": [
+          {"name":"unit","type":"string(PERCENT)","required":true,"description":"Accuracy unit"},
+          {"name":"calculationVersion","type":"string","required":true,"description":"reading-metrics-v1"},
+          {"name":"dailyAccuracy","type":"array<object>","required":true,"description":"Daily points with date, correctAttemptCount, attemptCount and accuracyRate"}
+        ],
+        "response_codes": ["200", "400", "401", "403", "404"]
+      }
+    },
+    {
+      "source": "GET /api/admin/test/{studentId}/{testId}/gaze-analysis",
+      "action": "update",
+      "replace_existing": true,
+      "reason": "기존 test 단위 시선 분석과 신규 문항별 시선 분석의 책임을 구분한다.",
+      "changes": {
+        "note": "하나의 testId 전체를 집계한 호환 조회다. 같은 testId 안의 개별 문항 선택에는 /questions/{questionNo}/gaze-analysis를 사용한다.",
+        "response_codes": ["200", "400", "401", "403", "404"]
+      }
+    },
     {
       "source": "GET /api/admin/training/{studentId}/{trainingId}/expected-word",
       "action": "deprecate",
@@ -835,9 +1093,10 @@
     {
       "source": "GET /api/admin/report/{reportId}",
       "action": "update",
+      "replace_existing": true,
       "reason": "저장된 snapshot_data의 구조를 보존해 Backend와 교수자 Frontend의 상세 보고서 계약을 통일한다.",
       "changes": {
-        "note": "reports.snapshot_data를 snapshot 객체로 반환한다. studentId는 보고서가 속한 아동 식별자이며 teacherMemo는 null일 수 있다.",
+        "note": "reports.snapshot_data를 snapshot 객체로 반환한다. 신규 snapshot은 snapshotVersion=teacher-report-v2, calculationVersion=reading-metrics-v1을 포함하며 학습 현황과 같은 accuracy-records와 reading-speed-records를 집계한다. growthComparisonStatus와 automaticAnalysis.status는 AVAILABLE, INSUFFICIENT_DATA, NO_DATA를 구분한다. 1개 시점은 현재 값과 핵심 성과를 표시하되 비교 분석은 INSUFFICIENT_DATA다. 제품 임계값이 필요한 persistentDifficultyPatterns는 [TBD] 확정 전 임의 생성하지 않는다. studentId는 보고서가 속한 아동 식별자이며 teacherMemo는 null일 수 있다.",
         "request_summary": "reportId(path)",
         "response_summary": "reportId\nstudentId\nstartDate\nendDate\ncreatedAt\nsnapshot\nteacherMemo",
         "response_fields": [
@@ -875,7 +1134,7 @@
             "name": "snapshot",
             "type": "object",
             "required": true,
-            "description": "생성 시점에 저장한 보고서 분석 스냅샷"
+            "description": "snapshotVersion, calculationVersion, 핵심 성과, 일별 growthHistory, growthComparisonStatus와 automaticAnalysis를 포함한 생성 시점 분석 스냅샷"
           },
           {
             "name": "teacherMemo",
@@ -884,15 +1143,17 @@
             "description": "교수자 의견"
           }
         ],
+        "response_example": "{\"success\":true,\"data\":{\"reportId\":5001,\"studentId\":1001,\"startDate\":\"2026-08-04\",\"endDate\":\"2026-08-04\",\"createdAt\":\"2026-08-04T12:00:00+09:00\",\"snapshot\":{\"snapshotVersion\":\"teacher-report-v2\",\"calculationVersion\":\"reading-metrics-v1\",\"learningDays\":1,\"totalTrainingTimeMinutes\":10,\"completedTrainingCount\":1,\"averageAccuracy\":80,\"averageReadingSpeed\":60,\"readingSpeedUnit\":\"CORRECT_WORDS_PER_MINUTE\",\"growthHistory\":[{\"date\":\"2026-08-04\",\"accuracy\":80,\"readingSpeed\":60,\"pronunciationScore\":null}],\"growthComparisonStatus\":\"INSUFFICIENT_DATA\",\"automaticAnalysis\":{\"status\":\"INSUFFICIENT_DATA\",\"metricChanges\":[],\"descriptions\":[\"비교할 기록이 부족합니다.\"]},\"areaAchievements\":[],\"frequentlyIncorrectWords\":[],\"improvedPatterns\":[],\"persistentDifficultyPatterns\":[]},\"teacherMemo\":null}}",
         "response_codes": ["200", "400", "401", "404"]
       }
     },
     {
       "source": "POST /api/admin/report/{reportId}/gaze-analysis",
       "action": "update",
+      "replace_existing": true,
       "reason": "교수자가 분석 결과 식별자를 선택하지 않고 보고서 기간의 저장 결과 전체를 갱신하도록 Frontend와 Backend 계약을 통일한다.",
       "changes": {
-        "note": "보고서의 아동과 기간에 속한 시선 분석 결과를 훈련·검사로 분리해 시간순 추이로 저장한다. 이야기 결과는 제외하고 실패 세션은 건수만 포함한다.",
+        "note": "보고서의 아동과 기간에 속한 시선 분석 결과를 훈련·검사로 분리해 시간순 추이로 저장한다. 두 시점 이상이면 최초·최신 값의 정확한 차이와 INCREASED, DECREASED, UNCHANGED 방향을 descriptions에 저장하고, 한 시점이면 INSUFFICIENT_DATA를 표시한다. 이야기 결과는 제외하고 실패 세션은 건수만 포함한다. 기존 snapshotVersion과 calculationVersion 및 시선 외 snapshot 값은 보존한다.",
         "request_summary": "reportId(path)",
         "request_parameters": [
           {
@@ -918,9 +1179,10 @@
     {
       "source": "POST /api/admin/report",
       "action": "update",
+      "replace_existing": true,
       "reason": "실제 보고서로 의미가 있는 완료 학습 기간만 저장하고 동일 아동·기간의 중복 생성을 차단한다.",
       "changes": {
-        "note": "완료 훈련의 finishedAt 기준 서로 다른 학습일이 2일 이상이어야 생성한다. 동일 날짜의 여러 훈련은 1일로 계산하고 완료 검사는 학습일에 포함하지 않는다. 조건 미충족 시 REPORT_INSUFFICIENT_LEARNING_DAYS와 requiredDays, actualDays를 반환한다. 동일 아동·시작일·종료일 보고서가 있으면 REPORT_PERIOD_ALREADY_EXISTS와 기존 reportId를 반환한다. 생성 시 교수자 의견은 입력받지 않으며 저장된 보고서는 삭제하지 않는다.",
+        "note": "완료 훈련의 finishedAt 기준 서로 다른 학습일이 1일 이상이면 생성한다. 동일 날짜의 여러 훈련은 1일로 계산하고 완료 검사는 학습일에 포함하지 않는다. 0일이면 REPORT_INSUFFICIENT_LEARNING_DAYS와 requiredDays=1, actualDays를 반환한다. 1일 보고서는 핵심 성과와 한 시점 growth를 저장하고 비교 상태만 INSUFFICIENT_DATA로 표시한다. 동일 아동·시작일·종료일 보고서가 있으면 REPORT_PERIOD_ALREADY_EXISTS와 existingReportId를 반환한다. 생성 시 교수자 의견은 입력받지 않으며 저장된 보고서는 삭제하지 않는다.",
         "request_summary": "studentId(body)\nstartDate(body)\nendDate(body)",
         "request_example": "{\"studentId\":1001,\"startDate\":\"2026-07-01\",\"endDate\":\"2026-07-31\"}",
         "response_summary": "reportId\ncreatedAt",

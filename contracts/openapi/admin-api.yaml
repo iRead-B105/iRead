@@ -118,7 +118,7 @@
         "x-feature-ids": [
           "RP-GAZE-01"
         ],
-        "description": "보고서의 아동과 기간에 속한 시선 분석 결과를 훈련·검사로 분리해 시간순 추이로 저장한다. 이야기 결과는 제외하고 실패 세션은 건수만 포함한다.",
+        "description": "보고서의 아동과 기간에 속한 시선 분석 결과를 훈련·검사로 분리해 시간순 추이로 저장한다. 두 시점 이상이면 최초·최신 값의 정확한 차이와 INCREASED, DECREASED, UNCHANGED 방향을 descriptions에 저장하고, 한 시점이면 INSUFFICIENT_DATA를 표시한다. 이야기 결과는 제외하고 실패 세션은 건수만 포함한다. 기존 snapshotVersion과 calculationVersion 및 시선 외 snapshot 값은 보존한다.",
         "x-notion-request-summary": "reportId(path)",
         "x-notion-response-summary": "reportId",
         "x-review-status": "reviewed",
@@ -1036,26 +1036,28 @@
                         "data": {
                           "type": "object",
                           "properties": {
+                            "unit": {
+                              "type": "string",
+                              "description": "Accuracy unit"
+                            },
+                            "calculationVersion": {
+                              "type": "string",
+                              "description": "reading-metrics-v1"
+                            },
                             "dailyAccuracy": {
                               "type": "array",
                               "items": {
                                 "type": "object",
-                                "additionalProperties": true,
-                                "properties": {
-                                  "date": {
-                                    "type": "string",
-                                    "format": "date",
-                                    "description": "날짜"
-                                  },
-                                  "accuracyRate": {
-                                    "type": "number",
-                                    "description": "정답률"
-                                  }
-                                }
+                                "additionalProperties": true
                               },
-                              "description": "일별정확도"
+                              "description": "Daily points with date, correctAttemptCount, attemptCount and accuracyRate"
                             }
-                          }
+                          },
+                          "required": [
+                            "unit",
+                            "calculationVersion",
+                            "dailyAccuracy"
+                          ]
                         }
                       },
                       "required": [
@@ -1084,6 +1086,9 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
@@ -1094,9 +1099,9 @@
           "TI-STAT-03",
           "MH-STAT-01"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
+        "description": "accuracy-records의 correctAttemptCount 합계 / attemptCount 합계 * 100으로 날짜별 정확도를 계산한다. 단순 record 평균을 사용하지 않는다. 값은 0~100 PERCENT이며 calculationVersion=reading-metrics-v1을 반환한다.",
         "x-notion-request-summary": "studentId(path)",
-        "x-notion-response-summary": "일별정확도[] {\n  날짜\n  정답률\n}",
+        "x-notion-response-summary": "unit, calculationVersion, dailyAccuracy",
         "x-review-status": "reviewed",
         "security": [
           {
@@ -2213,13 +2218,11 @@
                           "type": "object",
                           "properties": {
                             "gazeSessionId": {
-                              "type": "integer",
-                              "format": "int64",
+                              "type": "string",
                               "description": "시선트래킹세션id"
                             },
                             "gazeAnalysisId": {
-                              "type": "integer",
-                              "format": "int64",
+                              "type": "string",
                               "description": "시선트래킹분석id"
                             },
                             "totalDwellTime": {
@@ -2250,8 +2253,8 @@
                 "example": {
                   "success": true,
                   "data": {
-                    "gazeSessionId": 1001,
-                    "gazeAnalysisId": 1001,
+                    "gazeSessionId": "1001",
+                    "gazeAnalysisId": "1001",
                     "totalDwellTime": 85.5,
                     "dwellCount": 1,
                     "regressionCount": 1,
@@ -2267,6 +2270,9 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
@@ -2276,7 +2282,7 @@
         "x-feature-ids": [
           "TI-GAZE-01"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
+        "description": "하나의 testId 전체를 집계한 호환 조회다. 같은 testId 안의 개별 문항 선택에는 /questions/{questionNo}/gaze-analysis를 사용한다.",
         "x-notion-request-summary": "studentId(path)\ntestId(path)",
         "x-notion-response-summary": "시선트래킹세션id\n시선트래킹분석id\n총시선체류시간\n시선체류\n시선역행(되돌아보기)횟수\n평균응시시간",
         "x-review-status": "reviewed",
@@ -2957,56 +2963,44 @@
                                 "additionalProperties": true,
                                 "properties": {
                                   "trainingId": {
-                                    "type": "string",
-                                    "description": "훈련id"
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "Training identifier"
                                   },
                                   "trainingName": {
                                     "type": "string",
-                                    "description": "훈련명"
+                                    "description": "Training name"
                                   },
                                   "startedAt": {
                                     "type": "string",
                                     "format": "date-time",
-                                    "description": "훈련시작시간"
+                                    "description": "Training start time"
                                   },
                                   "endedAt": {
                                     "type": "string",
                                     "format": "date-time",
-                                    "description": "훈련 종료시간"
-                                  },
-                                  "questionResults": {
-                                    "type": "array",
-                                    "items": {
-                                      "type": "object",
-                                      "additionalProperties": true
-                                    },
-                                    "description": "문항별 정답여부"
-                                  },
-                                  "questionResults[].questionNumber": {
-                                    "type": "string",
-                                    "description": "문항번호"
-                                  },
-                                  "questionResults[].isCorrect": {
-                                    "type": "boolean",
-                                    "description": "정답여부"
+                                    "description": "Training completion time"
                                   },
                                   "accuracyRate": {
                                     "type": "number",
-                                    "description": "정답률"
+                                    "description": "Training accuracy from 0 to 100"
                                   },
-                                  "incorrectItems": {
+                                  "questions": {
                                     "type": "array",
                                     "items": {
                                       "type": "object",
                                       "additionalProperties": true
                                     },
-                                    "description": "틀린문항의 (문항, 옳은선지, 고른선지)"
+                                    "description": "All question results with questionNo, questionType, question, responseType, selectedAnswer, correctAnswer, correct and score"
                                   }
                                 }
                               },
-                              "description": "훈련"
+                              "description": "Completed training results"
                             }
-                          }
+                          },
+                          "required": [
+                            "trainings"
+                          ]
                         }
                       },
                       "required": [
@@ -3020,19 +3014,40 @@
                   "data": {
                     "trainings": [
                       {
-                        "trainingId": "1001",
-                        "trainingName": "string",
-                        "startedAt": "2026-07-24T12:00:00+09:00",
-                        "endedAt": "2026-07-24T12:00:00+09:00",
-                        "questionResults": [
+                        "trainingId": 251136,
+                        "trainingName": "낱말 읽기",
+                        "startedAt": "2026-08-04T10:00:00+09:00",
+                        "endedAt": "2026-08-04T10:10:00+09:00",
+                        "accuracyRate": 80,
+                        "questions": [
                           {
-                            "questionNumber": 1,
-                            "isCorrect": true
+                            "questionNo": 1,
+                            "questionType": "WORD_READING",
+                            "question": {
+                              "text": "바다"
+                            },
+                            "responseType": "AUDIO",
+                            "selectedAnswer": null,
+                            "correctAnswer": "바다",
+                            "correct": true,
+                            "score": 90
+                          },
+                          {
+                            "questionNo": 2,
+                            "questionType": "SINGLE_CHOICE",
+                            "question": {
+                              "prompt": "같은 소리를 고르세요",
+                              "choices": [
+                                "가",
+                                "나"
+                              ]
+                            },
+                            "responseType": "SINGLE_CHOICE",
+                            "selectedAnswer": "나",
+                            "correctAnswer": "가",
+                            "correct": false,
+                            "score": 0
                           }
-                        ],
-                        "accuracyRate": 85.5,
-                        "incorrectItems": [
-                          {}
                         ]
                       }
                     ]
@@ -3047,6 +3062,9 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
@@ -3056,9 +3074,9 @@
         "x-feature-ids": [
           "TH-DSP-02"
         ],
-        "description": "인증 주체와 자원 소유 관계는 access token에서 확인하며, teacherId는 클라이언트 입력으로 받지 않는다.",
+        "description": "각 완료 훈련은 모든 문항을 questions에 반환한다. questionNo는 훈련 안에서 안정적인 문항 번호이며 questionType, question, responseType, selectedAnswer, correctAnswer, correct, score를 함께 제공한다. selectedAnswer와 correctAnswer는 responseType에 따라 scalar, array 또는 object일 수 있고 미제출·측정 불가는 null이다. 기존 questionResults와 incorrectItems는 전환 기간에 additive 호환 필드로 남길 수 있으나 신규 소비자는 questions만 사용한다.",
         "x-notion-request-summary": "studentId(path)\ncurriculumId(path)",
-        "x-notion-response-summary": "훈련[] {\n  훈련id\n  훈련명\n  훈련시작시간\n  훈련 종료시간\n  문항별 정답여부[] {\n    문항번호\n    정답여부\n  }\n  정답률\n  틀린문항의 (문항, 옳은선지, 고른선지)\n}",
+        "x-notion-response-summary": "trainings",
         "x-review-status": "reviewed",
         "security": [
           {
@@ -3576,9 +3594,9 @@
     "/api/admin/student/{studentId}/reading-speed-trend": {
       "get": {
         "operationId": "get_admin_student_by_studentId_reading_speed_trend",
-        "summary": "아동 읽기 속도 추이 조회",
+        "summary": "읽기 속도 추이 표시",
         "tags": [
-          "student"
+          "training"
         ],
         "parameters": [
           {
@@ -3589,7 +3607,7 @@
               "type": "integer",
               "format": "int64"
             },
-            "description": "아동 식별자"
+            "description": "Student identifier"
           },
           {
             "name": "from",
@@ -3599,7 +3617,7 @@
               "type": "string",
               "format": "date"
             },
-            "description": "조회 시작일"
+            "description": "Start date"
           },
           {
             "name": "to",
@@ -3609,12 +3627,12 @@
               "type": "string",
               "format": "date"
             },
-            "description": "조회 종료일"
+            "description": "End date"
           }
         ],
         "responses": {
           "200": {
-            "description": "읽기 속도 추이 조회 성공",
+            "description": "요청 성공",
             "content": {
               "application/json": {
                 "schema": {
@@ -3630,74 +3648,44 @@
                           "properties": {
                             "from": {
                               "type": "string",
-                              "format": "date"
+                              "format": "date",
+                              "description": "Applied start date"
                             },
                             "to": {
                               "type": "string",
-                              "format": "date"
+                              "format": "date",
+                              "description": "Applied end date"
                             },
                             "unit": {
                               "type": "string",
-                              "enum": [
-                                "WORDS_PER_MINUTE"
-                              ]
+                              "description": "Voice reading speed unit"
+                            },
+                            "calculationVersion": {
+                              "type": "string",
+                              "description": "reading-metrics-v1"
                             },
                             "voiceChangeRate": {
                               "type": "number",
-                              "nullable": true
+                              "description": "First-to-latest voice speed change rate"
                             },
                             "gazeChangeRate": {
                               "type": "number",
-                              "nullable": true
+                              "description": "First-to-latest gaze speed change rate"
                             },
                             "points": {
                               "type": "array",
                               "items": {
                                 "type": "object",
-                                "properties": {
-                                  "date": {
-                                    "type": "string",
-                                    "format": "date"
-                                  },
-                                  "voiceSpeed": {
-                                    "type": "number",
-                                    "nullable": true
-                                  },
-                                  "gazeSpeed": {
-                                    "type": "number",
-                                    "nullable": true
-                                  },
-                                  "voiceWordCount": {
-                                    "type": "integer",
-                                    "format": "int64"
-                                  },
-                                  "gazeWordCount": {
-                                    "type": "integer",
-                                    "format": "int64"
-                                  },
-                                  "voiceDurationMs": {
-                                    "type": "integer",
-                                    "format": "int64"
-                                  },
-                                  "gazeDurationMs": {
-                                    "type": "integer",
-                                    "format": "int64"
-                                  },
-                                  "trainingCount": {
-                                    "type": "integer"
-                                  }
-                                },
-                                "required": [
-                                  "date",
-                                  "trainingCount"
-                                ]
-                              }
+                                "additionalProperties": true
+                              },
+                              "description": "Daily points with date, voiceSpeed, gazeSpeed, correctWordCount, voiceDurationMs, gazeWordCount, gazeDurationMs and trainingCount"
                             }
                           },
                           "required": [
                             "from",
                             "to",
                             "unit",
+                            "calculationVersion",
                             "points"
                           ]
                         }
@@ -3707,6 +3695,29 @@
                       ]
                     }
                   ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "from": "2026-07-01",
+                    "to": "2026-07-31",
+                    "unit": "CORRECT_WORDS_PER_MINUTE",
+                    "calculationVersion": "reading-metrics-v1",
+                    "voiceChangeRate": 20,
+                    "gazeChangeRate": null,
+                    "points": [
+                      {
+                        "date": "2026-07-10",
+                        "voiceSpeed": 60,
+                        "gazeSpeed": null,
+                        "correctWordCount": 60,
+                        "voiceDurationMs": 60000,
+                        "gazeWordCount": 0,
+                        "gazeDurationMs": 0,
+                        "trainingCount": 1
+                      }
+                    ]
+                  }
                 }
               }
             }
@@ -3724,13 +3735,14 @@
             "$ref": "#/components/responses/NotFound"
           }
         },
+        "x-notion-page-id": "git-admin-reading-speed-trend-v2",
+        "x-notion-url": "git:contracts/api-resolutions.json#admin-reading-speed-trend",
         "x-feature-ids": [
           "TH-STAT-01"
         ],
-        "x-contract-origin": "repository",
-        "description": "완료된 훈련을 날짜별로 집계해 음성 및 시선 기준 읽기 속도와 기간 변화율을 반환한다.",
-        "x-notion-request-summary": "studentId(path)\nfrom(query, optional)\nto(query, optional)",
-        "x-notion-response-summary": "from\nto\nunit\nvoiceChangeRate\ngazeChangeRate\npoints[]",
+        "description": "Aggregates daily voice reading speed from reading-speed-records using sum(correctWordCount) * 60000 / sum(measuredDurationMs). Gaze speed is an auxiliary metric and is never mixed into the primary voice speed. Returns unit=CORRECT_WORDS_PER_MINUTE and calculationVersion=reading-metrics-v1.",
+        "x-notion-request-summary": "studentId(path), from(query), to(query)",
+        "x-notion-response-summary": "from, to, unit, calculationVersion, voiceChangeRate, gazeChangeRate, points",
         "x-review-status": "reviewed",
         "security": [
           {
@@ -3742,9 +3754,9 @@
     "/api/admin/story/{studentId}/{storyId}/gaze-analysis": {
       "get": {
         "operationId": "get_admin_story_by_studentId_by_storyId_gaze_analysis",
-        "summary": "GET /api/admin/story/{studentId}/{storyId}/gaze-analysis",
+        "summary": "이야기 문장별 시선 체류 시간 분석, 이야기 시선 분석 결과 저장",
         "tags": [
-          "admin"
+          "gaze"
         ],
         "parameters": [
           {
@@ -3836,10 +3848,23 @@
                               },
                               "description": "Per-page gaze metrics"
                             },
+                            "wordMetrics": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                              },
+                              "description": "Authoritative per-word metrics: storyLineId, pageNo, tokenIndex, text, dwellDurationMs, visitCount, skipped, regressionCount and firstSeenMs"
+                            },
+                            "replay": {
+                              "type": "object",
+                              "additionalProperties": true,
+                              "description": "Playback-only normalized words and samples without raw coordinates"
+                            },
                             "analysisMeta": {
                               "type": "object",
                               "additionalProperties": true,
-                              "description": "Analysis metadata"
+                              "description": "Calculation version, source, heatmap scale and dwell/skip/regression rule metadata"
                             }
                           },
                           "required": [
@@ -3851,7 +3876,9 @@
                             "totalDwellTime",
                             "dwellCount",
                             "regressionCount",
-                            "pageMetrics"
+                            "pageMetrics",
+                            "wordMetrics",
+                            "analysisMeta"
                           ]
                         }
                       },
@@ -3860,6 +3887,44 @@
                       ]
                     }
                   ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "gazeSessionId": 7001,
+                    "gazeAnalysisId": 7101,
+                    "calibrationStatus": "VALID",
+                    "startedAt": "2026-08-04T10:00:00+09:00",
+                    "endedAt": "2026-08-04T10:01:00+09:00",
+                    "totalDwellTime": 12000,
+                    "dwellCount": 18,
+                    "regressionCount": 2,
+                    "averageFixationTime": 667,
+                    "pageMetrics": [],
+                    "wordMetrics": [
+                      {
+                        "storyLineId": 1001,
+                        "pageNo": 1,
+                        "tokenIndex": 0,
+                        "text": "어느",
+                        "dwellDurationMs": 900,
+                        "visitCount": 1,
+                        "skipped": false,
+                        "regressionCount": 0,
+                        "firstSeenMs": 80
+                      }
+                    ],
+                    "replay": null,
+                    "analysisMeta": {
+                      "calculationVersion": "story-gaze-word-v1",
+                      "calculationSource": "BACKEND",
+                      "heatmapScale": "PAGE_RELATIVE_MAX",
+                      "dwellThresholdMethod": "PAGE_CHARACTER_AVERAGE",
+                      "sampleTailMs": 80,
+                      "skipRequiresDwell": true,
+                      "regressionRequiresDwell": true
+                    }
+                  }
                 }
               }
             }
@@ -3876,10 +3941,13 @@
         },
         "x-notion-page-id": "git-admin-story-gaze-analysis-v1",
         "x-notion-url": "git:contracts/api-resolutions.json#admin-story-gaze-analysis",
-        "x-feature-ids": [],
-        "description": "Normalizes the latest completed STORY gaze result into page metrics. Raw gaze coordinates are never returned.",
+        "x-feature-ids": [
+          "ST-GAZE-02",
+          "ST-GAZE-03"
+        ],
+        "description": "Backend returns authoritative pageMetrics and wordMetrics. analysisMeta includes calculationVersion=story-gaze-word-v1, calculationSource=BACKEND, heatmapScale=PAGE_RELATIVE_MAX, dwellThresholdMethod=PAGE_CHARACTER_AVERAGE, sampleTailMs=80, skipRequiresDwell=true and regressionRequiresDwell=true. The Frontend uses replay only for playback and never recalculates classifications. Raw gaze coordinates are never returned.",
         "x-notion-request-summary": "studentId(path), storyId(path)",
-        "x-notion-response-summary": "gazeSessionId, gazeAnalysisId, calibrationStatus, startedAt, endedAt, totalDwellTime, dwellCount, regressionCount, averageFixationTime, pageMetrics, analysisMeta",
+        "x-notion-response-summary": "gazeSessionId, gazeAnalysisId, calibrationStatus, startedAt, endedAt, totalDwellTime, dwellCount, regressionCount, averageFixationTime, pageMetrics, wordMetrics, replay, analysisMeta",
         "x-review-status": "reviewed",
         "security": [
           {
@@ -4265,65 +4333,191 @@
         "operationId": "get_admin_story_history_image",
         "summary": "교사 인증 이야기 장면 이미지 조회",
         "description": "담당 아동과 이야기 소유권을 확인하고 해당 이야기에 저장된 생성 이미지만 바이너리로 반환한다.",
-        "tags": ["admin"],
+        "tags": [
+          "admin"
+        ],
         "parameters": [
-          {"name": "studentId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}},
-          {"name": "storyId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}},
-          {"name": "fileName", "in": "path", "required": true, "schema": {"type": "string", "pattern": "^[0-9a-f-]{36}\\.(png|jpg|jpeg)$"}}
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "storyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "fileName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f-]{36}\\.(png|jpg|jpeg)$"
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "이야기 장면 이미지",
-            "headers": {"Cache-Control": {"schema": {"type": "string"}}},
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
-              "image/png": {"schema": {"type": "string", "format": "binary"}},
-              "image/jpeg": {"schema": {"type": "string", "format": "binary"}}
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
             }
           },
-          "400": {"$ref": "#/components/responses/BadRequest"},
-          "401": {"$ref": "#/components/responses/Unauthorized"},
-          "403": {"$ref": "#/components/responses/Forbidden"},
-          "404": {"$ref": "#/components/responses/NotFound"}
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
         },
         "x-contract-origin": "repository",
         "x-review-status": "reviewed",
-        "security": [{"bearerAuth": []}]
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/api/admin/student/{studentId}/story-history/{storyId}/pages/{storyLineId}": {
       "put": {
         "operationId": "update_admin_unread_story_page",
         "summary": "읽지 않은 AI 이야기 페이지 수정",
-        "tags": ["admin"],
+        "tags": [
+          "admin"
+        ],
         "parameters": [
-          {"name": "studentId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}},
-          {"name": "storyId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}},
-          {"name": "storyLineId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}}
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "storyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "storyLineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
         ],
         "requestBody": {
           "required": true,
-          "content": {"application/json": {"schema": {
-            "type": "object",
-            "required": ["revision"],
-            "properties": {
-              "revision": {"type": "integer", "format": "int64", "minimum": 0},
-              "subtitle": {"type": "string", "minLength": 1, "maxLength": 40},
-              "body": {"type": "string", "minLength": 1, "maxLength": 500, "description": "정확히 3문장, 문장당 한글 10~22음절(권장 13~19음절)"},
-              "choices": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "string", "minLength": 1, "maxLength": 40}}
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "revision"
+                ],
+                "properties": {
+                  "revision": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 0
+                  },
+                  "subtitle": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  "body": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500,
+                    "description": "정확히 3문장, 문장당 한글 10~22음절(권장 13~19음절)"
+                  },
+                  "choices": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 40
+                    }
+                  }
+                }
+              }
             }
-          }}}
+          }
         },
         "responses": {
-          "200": {"description": "수정된 페이지"},
-          "400": {"$ref": "#/components/responses/BadRequest"},
-          "401": {"$ref": "#/components/responses/Unauthorized"},
-          "403": {"$ref": "#/components/responses/Forbidden"},
-          "404": {"$ref": "#/components/responses/NotFound"},
-          "409": {"description": "이미 읽었거나 revision 충돌"}
+          "200": {
+            "description": "수정된 페이지"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "description": "이미 읽었거나 revision 충돌"
+          }
         },
-        "security": [{"bearerAuth": []}],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "x-review-status": "reviewed",
-        "x-feature-ids": ["ST-BRANCH-05"],
+        "x-feature-ids": [
+          "ST-BRANCH-05"
+        ],
         "x-notion-page-id": "git-admin-story-page-update-v1",
         "x-notion-url": "git:contracts/api-resolutions.json#admin-story-page-update"
       }
@@ -4332,22 +4526,92 @@
       "post": {
         "operationId": "upload_admin_unread_story_page_image",
         "summary": "읽지 않은 AI 이야기 페이지 이미지 업로드",
-        "tags": ["admin"],
-        "parameters": [
-          {"name": "studentId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}},
-          {"name": "storyId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}},
-          {"name": "storyLineId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}}
+        "tags": [
+          "admin"
         ],
-        "requestBody": {"required": true, "content": {"multipart/form-data": {"schema": {
-          "type": "object", "required": ["revision", "image"], "properties": {
-            "revision": {"type": "integer", "format": "int64", "minimum": 0},
-            "image": {"type": "string", "format": "binary"}
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "storyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "storyLineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
-        }}}},
-        "responses": {"200": {"description": "수정된 페이지"}, "400": {"$ref": "#/components/responses/BadRequest"}, "401": {"$ref": "#/components/responses/Unauthorized"}, "403": {"$ref": "#/components/responses/Forbidden"}, "404": {"$ref": "#/components/responses/NotFound"}, "409": {"description": "이미 읽었거나 revision 충돌"}},
-        "security": [{"bearerAuth": []}],
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "revision",
+                  "image"
+                ],
+                "properties": {
+                  "revision": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 0
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "수정된 페이지"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "description": "이미 읽었거나 revision 충돌"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "x-review-status": "reviewed",
-        "x-feature-ids": ["ST-BRANCH-05"],
+        "x-feature-ids": [
+          "ST-BRANCH-05"
+        ],
         "x-notion-page-id": "git-admin-story-page-image-upload-v1",
         "x-notion-url": "git:contracts/api-resolutions.json#admin-story-page-image-upload"
       }
@@ -4356,17 +4620,90 @@
       "post": {
         "operationId": "regenerate_admin_unread_story_page_image",
         "summary": "읽지 않은 AI 이야기 페이지 Gemini 이미지 재생성",
-        "tags": ["admin"],
-        "parameters": [
-          {"name": "studentId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}},
-          {"name": "storyId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}},
-          {"name": "storyLineId", "in": "path", "required": true, "schema": {"type": "integer", "format": "int64"}}
+        "tags": [
+          "admin"
         ],
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["revision"], "properties": {"revision": {"type": "integer", "format": "int64", "minimum": 0}}}}}},
-        "responses": {"200": {"description": "수정된 페이지"}, "400": {"$ref": "#/components/responses/BadRequest"}, "401": {"$ref": "#/components/responses/Unauthorized"}, "403": {"$ref": "#/components/responses/Forbidden"}, "404": {"$ref": "#/components/responses/NotFound"}, "409": {"description": "이미 읽었거나 revision 충돌"}, "502": {"description": "Gemini 이미지 생성 실패"}},
-        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "storyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "storyLineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "revision"
+                ],
+                "properties": {
+                  "revision": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "수정된 페이지"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "description": "이미 읽었거나 revision 충돌"
+          },
+          "502": {
+            "description": "Gemini 이미지 생성 실패"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "x-review-status": "reviewed",
-        "x-feature-ids": ["ST-BRANCH-05"],
+        "x-feature-ids": [
+          "ST-BRANCH-05"
+        ],
         "x-notion-page-id": "git-admin-story-page-image-regenerate-v1",
         "x-notion-url": "git:contracts/api-resolutions.json#admin-story-page-image-regenerate"
       }
@@ -5035,7 +5372,7 @@
           "RP-GEN-03",
           "RP-GEN-01"
         ],
-        "description": "완료 훈련의 finishedAt 기준 서로 다른 학습일이 2일 이상이어야 생성한다. 동일 날짜의 여러 훈련은 1일로 계산하고 완료 검사는 학습일에 포함하지 않는다. 조건 미충족 시 REPORT_INSUFFICIENT_LEARNING_DAYS와 requiredDays, actualDays를 반환한다. 동일 아동·시작일·종료일 보고서가 있으면 REPORT_PERIOD_ALREADY_EXISTS와 기존 reportId를 반환한다. 생성 시 교수자 의견은 입력받지 않으며 저장된 보고서는 삭제하지 않는다.",
+        "description": "완료 훈련의 finishedAt 기준 서로 다른 학습일이 1일 이상이면 생성한다. 동일 날짜의 여러 훈련은 1일로 계산하고 완료 검사는 학습일에 포함하지 않는다. 0일이면 REPORT_INSUFFICIENT_LEARNING_DAYS와 requiredDays=1, actualDays를 반환한다. 1일 보고서는 핵심 성과와 한 시점 growth를 저장하고 비교 상태만 INSUFFICIENT_DATA로 표시한다. 동일 아동·시작일·종료일 보고서가 있으면 REPORT_PERIOD_ALREADY_EXISTS와 existingReportId를 반환한다. 생성 시 교수자 의견은 입력받지 않으며 저장된 보고서는 삭제하지 않는다.",
         "x-notion-request-summary": "studentId(body)\nstartDate(body)\nendDate(body)",
         "x-notion-response-summary": "reportId\ncreatedAt",
         "x-review-status": "reviewed",
@@ -5145,7 +5482,7 @@
                             "snapshot": {
                               "type": "object",
                               "additionalProperties": true,
-                              "description": "생성 시점에 저장한 보고서 분석 스냅샷"
+                              "description": "snapshotVersion, calculationVersion, 핵심 성과, 일별 growthHistory, growthComparisonStatus와 automaticAnalysis를 포함한 생성 시점 분석 스냅샷"
                             },
                             "teacherMemo": {
                               "type": "string",
@@ -5171,21 +5508,42 @@
                 "example": {
                   "success": true,
                   "data": {
-                    "reportId": "5001",
-                    "startDate": "2026-07-01",
-                    "endDate": "2026-07-31",
-                    "createdAt": "2026-07-24T12:00:00+09:00",
-                    "learningDays": 12,
-                    "totalTrainingTime": 420,
-                    "completedTrainingCount": 18,
-                    "averageAccuracy": 86.5,
-                    "averageReadingSpeed": 72.0,
-                    "growthByPeriod": [],
-                    "achievementByDomain": {},
-                    "frequentErrorWords": [],
-                    "improvedPatterns": [],
-                    "persistentDifficulties": [],
-                    "teacherMemo": "읽기 자신감이 향상되었습니다."
+                    "reportId": 5001,
+                    "studentId": 1001,
+                    "startDate": "2026-08-04",
+                    "endDate": "2026-08-04",
+                    "createdAt": "2026-08-04T12:00:00+09:00",
+                    "snapshot": {
+                      "snapshotVersion": "teacher-report-v2",
+                      "calculationVersion": "reading-metrics-v1",
+                      "learningDays": 1,
+                      "totalTrainingTimeMinutes": 10,
+                      "completedTrainingCount": 1,
+                      "averageAccuracy": 80,
+                      "averageReadingSpeed": 60,
+                      "readingSpeedUnit": "CORRECT_WORDS_PER_MINUTE",
+                      "growthHistory": [
+                        {
+                          "date": "2026-08-04",
+                          "accuracy": 80,
+                          "readingSpeed": 60,
+                          "pronunciationScore": null
+                        }
+                      ],
+                      "growthComparisonStatus": "INSUFFICIENT_DATA",
+                      "automaticAnalysis": {
+                        "status": "INSUFFICIENT_DATA",
+                        "metricChanges": [],
+                        "descriptions": [
+                          "비교할 기록이 부족합니다."
+                        ]
+                      },
+                      "areaAchievements": [],
+                      "frequentlyIncorrectWords": [],
+                      "improvedPatterns": [],
+                      "persistentDifficultyPatterns": []
+                    },
+                    "teacherMemo": null
                   }
                 }
               }
@@ -5210,9 +5568,780 @@
           "RP-DSP-03",
           "RP-DSP-07"
         ],
-        "description": "reports.snapshot_data를 snapshot 객체로 반환한다. studentId는 보고서가 속한 아동 식별자이며 teacherMemo는 null일 수 있다.",
+        "description": "reports.snapshot_data를 snapshot 객체로 반환한다. 신규 snapshot은 snapshotVersion=teacher-report-v2, calculationVersion=reading-metrics-v1을 포함하며 학습 현황과 같은 accuracy-records와 reading-speed-records를 집계한다. growthComparisonStatus와 automaticAnalysis.status는 AVAILABLE, INSUFFICIENT_DATA, NO_DATA를 구분한다. 1개 시점은 현재 값과 핵심 성과를 표시하되 비교 분석은 INSUFFICIENT_DATA다. 제품 임계값이 필요한 persistentDifficultyPatterns는 [TBD] 확정 전 임의 생성하지 않는다. studentId는 보고서가 속한 아동 식별자이며 teacherMemo는 null일 수 있다.",
         "x-notion-request-summary": "reportId(path)",
         "x-notion-response-summary": "reportId\nstudentId\nstartDate\nendDate\ncreatedAt\nsnapshot\nteacherMemo",
+        "x-review-status": "reviewed",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/student/{studentId}/accuracy-records": {
+      "get": {
+        "operationId": "get_admin_student_by_studentId_accuracy_records",
+        "summary": "읽기 정확도 추이 표시, 학습 이벤트 상세 표시",
+        "tags": [
+          "student"
+        ],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Student identifier"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Start date"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "End date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "from": {
+                              "type": "string",
+                              "format": "date",
+                              "description": "Applied start date"
+                            },
+                            "to": {
+                              "type": "string",
+                              "format": "date",
+                              "description": "Applied end date"
+                            },
+                            "unit": {
+                              "type": "string",
+                              "description": "Accuracy unit"
+                            },
+                            "calculationVersion": {
+                              "type": "string",
+                              "description": "reading-metrics-v1"
+                            },
+                            "records": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                              },
+                              "description": "Records with sourceType, sourceId, measuredAt, correctAttemptCount, attemptCount, accuracyRate, unit and calculationVersion"
+                            }
+                          },
+                          "required": [
+                            "from",
+                            "to",
+                            "unit",
+                            "calculationVersion",
+                            "records"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "from": "2026-07-01",
+                    "to": "2026-07-31",
+                    "unit": "PERCENT",
+                    "calculationVersion": "reading-metrics-v1",
+                    "records": [
+                      {
+                        "sourceType": "TRAINING",
+                        "sourceId": 251136,
+                        "measuredAt": "2026-07-10T10:00:00+09:00",
+                        "correctAttemptCount": 8,
+                        "attemptCount": 10,
+                        "accuracyRate": 80,
+                        "unit": "PERCENT",
+                        "calculationVersion": "reading-metrics-v1"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "x-notion-page-id": "git-admin-accuracy-records-v1",
+        "x-notion-url": "git:contracts/api-resolutions.json#admin-accuracy-records",
+        "x-feature-ids": [
+          "MH-STAT-01",
+          "MH-DSP-04"
+        ],
+        "description": "Returns only reading-accuracy source records. Each record is keyed by sourceType + sourceId and exposes the numerator and denominator used for accuracyRate. Daily trend and report aggregation must reuse these records and calculationVersion.",
+        "x-notion-request-summary": "studentId(path), from(query), to(query)",
+        "x-notion-response-summary": "from, to, unit, calculationVersion, records",
+        "x-review-status": "reviewed",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/student/{studentId}/reading-speed-records": {
+      "get": {
+        "operationId": "get_admin_student_by_studentId_reading_speed_records",
+        "summary": "읽기 속도 추이 표시, 학습 이벤트 상세 표시",
+        "tags": [
+          "training"
+        ],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Student identifier"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Start date"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "End date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "from": {
+                              "type": "string",
+                              "format": "date",
+                              "description": "Applied start date"
+                            },
+                            "to": {
+                              "type": "string",
+                              "format": "date",
+                              "description": "Applied end date"
+                            },
+                            "unit": {
+                              "type": "string",
+                              "description": "Reading speed unit"
+                            },
+                            "calculationVersion": {
+                              "type": "string",
+                              "description": "reading-metrics-v1"
+                            },
+                            "records": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                              },
+                              "description": "Records with sourceType, sourceId, measuredAt, correctWordCount, measuredDurationMs, readingSpeed, unit and calculationVersion"
+                            }
+                          },
+                          "required": [
+                            "from",
+                            "to",
+                            "unit",
+                            "calculationVersion",
+                            "records"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "from": "2026-07-01",
+                    "to": "2026-07-31",
+                    "unit": "CORRECT_WORDS_PER_MINUTE",
+                    "calculationVersion": "reading-metrics-v1",
+                    "records": [
+                      {
+                        "sourceType": "TRAINING",
+                        "sourceId": 251136,
+                        "measuredAt": "2026-07-10T10:00:00+09:00",
+                        "correctWordCount": 60,
+                        "measuredDurationMs": 60000,
+                        "readingSpeed": 60,
+                        "unit": "CORRECT_WORDS_PER_MINUTE",
+                        "calculationVersion": "reading-metrics-v1"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "x-notion-page-id": "git-admin-reading-speed-records-v1",
+        "x-notion-url": "git:contracts/api-resolutions.json#admin-reading-speed-records",
+        "x-feature-ids": [
+          "TH-STAT-01",
+          "MH-DSP-04"
+        ],
+        "description": "Returns only voice reading-speed source records. readingSpeed is correctWordCount * 60000 / measuredDurationMs and is never mixed with gaze speed. Daily trend and report aggregation must reuse these records and calculationVersion.",
+        "x-notion-request-summary": "studentId(path), from(query), to(query)",
+        "x-notion-response-summary": "from, to, unit, calculationVersion, records",
+        "x-review-status": "reviewed",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/test/{studentId}/curriculums": {
+      "get": {
+        "operationId": "get_admin_test_by_studentId_curriculums",
+        "summary": "테스트 날짜 선택 항목 표시",
+        "tags": [
+          "test"
+        ],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Student identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "curriculums": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                              },
+                              "description": "Test curriculum summaries with testCurriculumId, status, createdAt, completedAt, completedQuestions, totalQuestions and overallScore"
+                            }
+                          },
+                          "required": [
+                            "curriculums"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "curriculums": [
+                      {
+                        "testCurriculumId": "9001",
+                        "status": "COMPLETED",
+                        "createdAt": "2026-08-04T09:00:00+09:00",
+                        "completedAt": "2026-08-04T09:20:00+09:00",
+                        "completedQuestions": 9,
+                        "totalQuestions": 9,
+                        "overallScore": 82.5
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "x-notion-page-id": "git-admin-test-curriculums-v1",
+        "x-notion-url": "git:contracts/api-resolutions.json#admin-test-curriculums",
+        "x-feature-ids": [
+          "TI-DSP-01"
+        ],
+        "description": "Returns test curriculum history. Each curriculum groups the ordered student tests completed in one skill-challenge session.",
+        "x-notion-request-summary": "studentId(path)",
+        "x-notion-response-summary": "curriculums",
+        "x-review-status": "reviewed",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/test/{studentId}/curriculums/{testCurriculumId}": {
+      "get": {
+        "operationId": "get_admin_test_by_studentId_curriculums_by_testCurriculumId",
+        "summary": "선택 검사 종합 표시, 테스트 영역별 통계 표시",
+        "tags": [
+          "test"
+        ],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Student identifier"
+          },
+          {
+            "name": "testCurriculumId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Test curriculum identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "testCurriculumId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Test curriculum identifier"
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "NOT_STARTED",
+                                "IN_PROGRESS",
+                                "COMPLETED"
+                              ],
+                              "description": "Test curriculum status"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "Creation time"
+                            },
+                            "completedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "Completion time"
+                            },
+                            "completedQuestions": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Completed question count"
+                            },
+                            "totalQuestions": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Total question count"
+                            },
+                            "overallScore": {
+                              "type": "number",
+                              "description": "Overall score from 0 to 100"
+                            },
+                            "areaScores": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                              },
+                              "description": "Area score summaries"
+                            },
+                            "solvingTimeSeconds": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Total solving time"
+                            },
+                            "questions": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                              },
+                              "description": "Question results with testId, questionNo, sequenceNo, trackCode, questionType, question, responseType, selectedAnswer, correctAnswer, correct, score, pronunciationScore, solvingTimeSeconds and gazeDepartureCount"
+                            }
+                          },
+                          "required": [
+                            "testCurriculumId",
+                            "status",
+                            "createdAt",
+                            "completedQuestions",
+                            "totalQuestions",
+                            "areaScores",
+                            "questions"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "testCurriculumId": "9001",
+                    "status": "COMPLETED",
+                    "createdAt": "2026-08-04T09:00:00+09:00",
+                    "completedAt": "2026-08-04T09:20:00+09:00",
+                    "completedQuestions": 9,
+                    "totalQuestions": 9,
+                    "overallScore": 82.5,
+                    "areaScores": [],
+                    "solvingTimeSeconds": 1200,
+                    "questions": [
+                      {
+                        "testId": "9101",
+                        "questionNo": 1,
+                        "sequenceNo": 1,
+                        "trackCode": "WORD",
+                        "questionType": "WORD_READING",
+                        "question": "바다",
+                        "responseType": "AUDIO",
+                        "selectedAnswer": null,
+                        "correctAnswer": "바다",
+                        "correct": true,
+                        "score": 90,
+                        "pronunciationScore": 90,
+                        "solvingTimeSeconds": 120,
+                        "gazeDepartureCount": 0
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "x-notion-page-id": "git-admin-test-curriculum-detail-v1",
+        "x-notion-url": "git:contracts/api-resolutions.json#admin-test-curriculum-detail",
+        "x-feature-ids": [
+          "TI-DSP-02",
+          "TI-STAT-02"
+        ],
+        "description": "Returns all test questions. The stable question key is testId + questionNo; sequenceNo is display order only. Questions that share one testId must have distinct questionNo values. Recommendation generation and curriculum review fields are not part of the test-history screen contract.",
+        "x-notion-request-summary": "studentId(path), testCurriculumId(path)",
+        "x-notion-response-summary": "testCurriculumId, status, createdAt, completedAt, completedQuestions, totalQuestions, overallScore, areaScores, solvingTimeSeconds, questions",
+        "x-review-status": "reviewed",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/admin/test/{studentId}/{testId}/questions/{questionNo}/gaze-analysis": {
+      "get": {
+        "operationId": "get_admin_test_by_studentId_by_testId_questions_by_questionNo_gaze_analysis",
+        "summary": "테스트 시선 분석 결과 표시",
+        "tags": [
+          "test"
+        ],
+        "parameters": [
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Student identifier"
+          },
+          {
+            "name": "testId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "description": "Student test identifier"
+          },
+          {
+            "name": "questionNo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            },
+            "description": "Question number within the test"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "요청 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "testId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Student test identifier"
+                            },
+                            "questionNo": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Question number within the test"
+                            },
+                            "gazeSessionId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Gaze session identifier"
+                            },
+                            "gazeAnalysisId": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Gaze analysis identifier"
+                            },
+                            "totalDwellTime": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Total dwell time in milliseconds"
+                            },
+                            "dwellCount": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Fixation count"
+                            },
+                            "regressionCount": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Regression count"
+                            },
+                            "averageFixationTime": {
+                              "type": "integer",
+                              "format": "int64",
+                              "description": "Average fixation time in milliseconds"
+                            },
+                            "wordMetrics": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                              },
+                              "description": "Metrics limited to the requested question"
+                            },
+                            "analysisMeta": {
+                              "type": "object",
+                              "additionalProperties": true,
+                              "description": "Calculation source and version"
+                            }
+                          },
+                          "required": [
+                            "testId",
+                            "questionNo",
+                            "gazeSessionId",
+                            "gazeAnalysisId",
+                            "totalDwellTime",
+                            "dwellCount",
+                            "regressionCount",
+                            "wordMetrics",
+                            "analysisMeta"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "testId": 9101,
+                    "questionNo": 1,
+                    "gazeSessionId": 9201,
+                    "gazeAnalysisId": 9301,
+                    "totalDwellTime": 5000,
+                    "dwellCount": 8,
+                    "regressionCount": 1,
+                    "averageFixationTime": 625,
+                    "wordMetrics": [],
+                    "analysisMeta": {
+                      "calculationVersion": "gaze-word-v1",
+                      "calculationSource": "BACKEND"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "x-notion-page-id": "git-admin-test-question-gaze-v1",
+        "x-notion-url": "git:contracts/api-resolutions.json#admin-test-question-gaze",
+        "x-feature-ids": [
+          "TI-GAZE-01"
+        ],
+        "description": "Returns gaze analysis for exactly one test question identified by testId + questionNo. The legacy test-level gaze endpoint remains temporarily compatible but must not be used for per-question selection.",
+        "x-notion-request-summary": "studentId(path), testId(path), questionNo(path)",
+        "x-notion-response-summary": "testId, questionNo, gazeSessionId, gazeAnalysisId, totalDwellTime, dwellCount, regressionCount, averageFixationTime, wordMetrics, analysisMeta",
         "x-review-status": "reviewed",
         "security": [
           {

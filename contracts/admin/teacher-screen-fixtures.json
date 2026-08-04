@@ -1,0 +1,253 @@
+{
+  "version": "teacher-screen-contract-v1",
+  "trainingHistory": {
+    "endpoint": "GET /api/admin/training/{studentId}/{curriculumId}/training-log",
+    "response": {
+      "success": true,
+      "data": {
+        "trainings": [
+          {
+            "trainingId": 251136,
+            "trainingName": "낱말 읽기",
+            "startedAt": "2026-08-04T10:00:00+09:00",
+            "endedAt": "2026-08-04T10:10:00+09:00",
+            "accuracyRate": 80,
+            "questions": [
+              {
+                "questionNo": 1,
+                "questionType": "WORD_READING",
+                "question": {
+                  "text": "바다"
+                },
+                "responseType": "AUDIO",
+                "selectedAnswer": null,
+                "correctAnswer": "바다",
+                "correct": true,
+                "score": 90
+              },
+              {
+                "questionNo": 2,
+                "questionType": "SINGLE_CHOICE",
+                "question": {
+                  "prompt": "같은 소리를 고르세요",
+                  "choices": ["가", "나"]
+                },
+                "responseType": "SINGLE_CHOICE",
+                "selectedAnswer": "나",
+                "correctAnswer": "가",
+                "correct": false,
+                "score": 0
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "testHistory": {
+    "detailEndpoint": "GET /api/admin/test/{studentId}/curriculums/{testCurriculumId}",
+    "questionGazeEndpoint": "GET /api/admin/test/{studentId}/{testId}/questions/{questionNo}/gaze-analysis",
+    "response": {
+      "success": true,
+      "data": {
+        "testCurriculumId": "9001",
+        "status": "COMPLETED",
+        "createdAt": "2026-08-04T09:00:00+09:00",
+        "completedAt": "2026-08-04T09:20:00+09:00",
+        "completedQuestions": 3,
+        "totalQuestions": 3,
+        "overallScore": 82.5,
+        "areaScores": [],
+        "solvingTimeSeconds": 1200,
+        "questions": [
+          {
+            "testId": "9101",
+            "questionNo": 1,
+            "sequenceNo": 1,
+            "trackCode": "WORD",
+            "questionType": "WORD_READING",
+            "question": "바다",
+            "responseType": "AUDIO",
+            "selectedAnswer": null,
+            "correctAnswer": "바다",
+            "correct": true,
+            "score": 90,
+            "pronunciationScore": 90,
+            "solvingTimeSeconds": 120,
+            "gazeDepartureCount": 0
+          },
+          {
+            "testId": "9101",
+            "questionNo": 2,
+            "sequenceNo": 2,
+            "trackCode": "WORD",
+            "questionType": "SINGLE_CHOICE",
+            "question": "같은 소리를 고르세요",
+            "responseType": "SINGLE_CHOICE",
+            "selectedAnswer": "나",
+            "correctAnswer": "가",
+            "correct": false,
+            "score": 0,
+            "pronunciationScore": null,
+            "solvingTimeSeconds": null,
+            "gazeDepartureCount": null
+          },
+          {
+            "testId": "9101",
+            "questionNo": 3,
+            "sequenceNo": 3,
+            "trackCode": "WORD",
+            "questionType": "ORDERING",
+            "question": "순서대로 배열하세요",
+            "responseType": "ORDERING",
+            "selectedAnswer": [1, 0],
+            "correctAnswer": [0, 1],
+            "correct": false,
+            "score": 0,
+            "pronunciationScore": null,
+            "solvingTimeSeconds": null,
+            "gazeDepartureCount": null
+          }
+        ]
+      }
+    }
+  },
+  "learningStatus": {
+    "accuracyEndpoint": "GET /api/admin/student/{studentId}/accuracy-records",
+    "readingSpeedEndpoint": "GET /api/admin/student/{studentId}/reading-speed-records",
+    "accuracyResponse": {
+      "success": true,
+      "data": {
+        "from": "2026-07-01",
+        "to": "2026-07-31",
+        "unit": "PERCENT",
+        "calculationVersion": "reading-metrics-v1",
+        "records": [
+          {
+            "sourceType": "TRAINING",
+            "sourceId": 251136,
+            "measuredAt": "2026-07-10T10:00:00+09:00",
+            "correctAttemptCount": 8,
+            "attemptCount": 10,
+            "accuracyRate": 80,
+            "unit": "PERCENT",
+            "calculationVersion": "reading-metrics-v1"
+          }
+        ]
+      }
+    },
+    "readingSpeedResponse": {
+      "success": true,
+      "data": {
+        "from": "2026-07-01",
+        "to": "2026-07-31",
+        "unit": "CORRECT_WORDS_PER_MINUTE",
+        "calculationVersion": "reading-metrics-v1",
+        "records": [
+          {
+            "sourceType": "TRAINING",
+            "sourceId": 251136,
+            "measuredAt": "2026-07-10T10:00:00+09:00",
+            "correctWordCount": 60,
+            "measuredDurationMs": 60000,
+            "readingSpeed": 60,
+            "unit": "CORRECT_WORDS_PER_MINUTE",
+            "calculationVersion": "reading-metrics-v1"
+          }
+        ]
+      }
+    }
+  },
+  "storyHistory": {
+    "endpoint": "GET /api/admin/story/{studentId}/{storyId}/gaze-analysis",
+    "response": {
+      "success": true,
+      "data": {
+        "gazeSessionId": 7001,
+        "gazeAnalysisId": 7101,
+        "calibrationStatus": "VALID",
+        "startedAt": "2026-08-04T10:00:00+09:00",
+        "endedAt": "2026-08-04T10:01:00+09:00",
+        "totalDwellTime": 12000,
+        "dwellCount": 18,
+        "regressionCount": 2,
+        "averageFixationTime": 667,
+        "pageMetrics": [],
+        "wordMetrics": [
+          {
+            "storyLineId": 1001,
+            "pageNo": 1,
+            "tokenIndex": 0,
+            "text": "어느",
+            "dwellDurationMs": 900,
+            "visitCount": 1,
+            "skipped": false,
+            "regressionCount": 0,
+            "firstSeenMs": 80
+          }
+        ],
+        "replay": null,
+        "analysisMeta": {
+          "calculationVersion": "story-gaze-word-v1",
+          "calculationSource": "BACKEND",
+          "heatmapScale": "PAGE_RELATIVE_MAX",
+          "dwellThresholdMethod": "PAGE_CHARACTER_AVERAGE",
+          "sampleTailMs": 80,
+          "skipRequiresDwell": true,
+          "regressionRequiresDwell": true
+        }
+      }
+    }
+  },
+  "report": {
+    "createEndpoint": "POST /api/admin/report",
+    "detailEndpoint": "GET /api/admin/report/{reportId}",
+    "minimumLearningDays": 1,
+    "zeroDayError": {
+      "code": "REPORT_INSUFFICIENT_LEARNING_DAYS",
+      "details": {
+        "requiredDays": 1,
+        "actualDays": 0
+      }
+    },
+    "oneDayResponse": {
+      "success": true,
+      "data": {
+        "reportId": 5001,
+        "studentId": 1001,
+        "startDate": "2026-08-04",
+        "endDate": "2026-08-04",
+        "createdAt": "2026-08-04T12:00:00+09:00",
+        "snapshot": {
+          "snapshotVersion": "teacher-report-v2",
+          "calculationVersion": "reading-metrics-v1",
+          "learningDays": 1,
+          "totalTrainingTimeMinutes": 10,
+          "completedTrainingCount": 1,
+          "averageAccuracy": 80,
+          "averageReadingSpeed": 60,
+          "readingSpeedUnit": "CORRECT_WORDS_PER_MINUTE",
+          "growthHistory": [
+            {
+              "date": "2026-08-04",
+              "accuracy": 80,
+              "readingSpeed": 60,
+              "pronunciationScore": null
+            }
+          ],
+          "growthComparisonStatus": "INSUFFICIENT_DATA",
+          "automaticAnalysis": {
+            "status": "INSUFFICIENT_DATA",
+            "metricChanges": [],
+            "descriptions": ["비교할 기록이 부족합니다."]
+          },
+          "areaAchievements": [],
+          "frequentlyIncorrectWords": [],
+          "improvedPatterns": [],
+          "persistentDifficultyPatterns": []
+        },
+        "teacherMemo": null
+      }
+    }
+  }
+}
