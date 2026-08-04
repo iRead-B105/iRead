@@ -9443,6 +9443,56 @@
       ]
     },
     {
+      "page_id": "git-feature-story-library-tabs-v1",
+      "url": "git:docs/product/features/story-library.md#상태별-탭",
+      "feature_id": "ST-LIB-08",
+      "name": "이야기 상태 탭 분류",
+      "description": "진행 중 이야기와 완료 이야기를 별도 탭으로 구분해 표시한다.",
+      "api_page_ids": [
+        "3a4027df-9053-8057-9ea8-dfce6b6f42bd"
+      ]
+    },
+    {
+      "page_id": "git-feature-story-library-limit-v1",
+      "url": "git:docs/product/features/story-library.md#진행-중-이야기-수-제한",
+      "feature_id": "ST-LIB-09",
+      "name": "진행 중 이야기 보관 제한",
+      "description": "완료와 삭제 이야기를 제외하고 아동별 진행 중 이야기를 최대 15권까지 생성한다.",
+      "api_page_ids": [
+        "3a4027df-9053-8049-832f-cf2d2c2ee174"
+      ]
+    },
+    {
+      "page_id": "git-feature-story-library-delete-v1",
+      "url": "git:docs/product/features/story-library.md#삭제-정책",
+      "feature_id": "ST-LIB-10",
+      "name": "진행 중 이야기 삭제",
+      "description": "진행 중 이야기만 DELETED로 변경해 아동과 교사 책장에서 제외한다.",
+      "api_page_ids": [
+        "git-app-story-session-delete-v1"
+      ]
+    },
+    {
+      "page_id": "git-feature-story-entry-image-v1",
+      "url": "git:docs/product/features/story-library.md#수용-기준",
+      "feature_id": "ST-LIB-11",
+      "name": "이야기 진입 이미지 제공",
+      "description": "책장 조회에서 이야기 상태에 맞는 진입 장면 이미지 URL을 제공한다.",
+      "api_page_ids": [
+        "3a4027df-9053-8057-9ea8-dfce6b6f42bd"
+      ]
+    },
+    {
+      "page_id": "git-feature-story-library-preload-v1",
+      "url": "git:docs/product/features/story-library.md#수용-기준",
+      "feature_id": "ST-LIB-12",
+      "name": "이야기 책장 사전 준비",
+      "description": "아동 선택 로그인 시 책장 데이터와 진입 이미지를 미리 준비하고 독서 진행 후 최신 데이터로 갱신한다.",
+      "api_page_ids": [
+        "3a4027df-9053-8057-9ea8-dfce6b6f42bd"
+      ]
+    },
+    {
       "page_id": "3a3027df-9053-803a-80c1-ee16715e04ba",
       "url": "https://app.notion.com/p/3a3027df9053803a80c1ee16715e04ba",
       "feature_id": "ST-READ-01",
