@@ -103,7 +103,7 @@ services:
       AI_MOCK_IMAGE: "false"
       AI_MOCK_EVALUATE: "true"
       AI_MOCK_SPEECH: "true"
-      AI_MOCK_PRONUNCIATION: "true"
+      AI_MOCK_PRONUNCIATION: "false"
       AI_MOCK_TRANSCRIBE: "true"
       AI_MOCK_TTS: "true"
       GRADLE_USER_HOME: /gradle-cache
