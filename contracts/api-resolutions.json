@@ -419,7 +419,7 @@
       "domain":"gaze",
       "request_summary":"studentId(path), storyId(path)",
       "response_summary":"gazeSessionId, gazeAnalysisId, calibrationStatus, startedAt, endedAt, totalDwellTime, dwellCount, regressionCount, averageFixationTime, pageMetrics, wordMetrics, replay, analysisMeta",
-      "note":"Backend returns authoritative pageMetrics and wordMetrics. analysisMeta includes calculationVersion=story-gaze-word-v1, calculationSource=BACKEND, heatmapScale=PAGE_RELATIVE_MAX, dwellThresholdMethod=PAGE_CHARACTER_AVERAGE, sampleTailMs=80, skipRequiresDwell=true and regressionRequiresDwell=true. The Frontend uses replay only for playback and never recalculates classifications. Raw gaze coordinates are never returned.",
+      "note":"Backend returns authoritative pageMetrics, wordMetrics and replay.events. A visit continues only for the same page/token while the sample gap is at most 250ms; another token, an off-word sample or a larger gap ends it. Dwell uses PAGE_CHARACTER_AVERAGE with an 80ms tail. SKIP records the actually omitted intermediate token indexes and a later read clears the final wordMetrics.skipped flag without deleting the event. firstSeenMs and eventAtMs are relative to the page's first valid token sample. The Frontend renders events at 700ms each, switches to the PAGE_RELATIVE_MAX heatmap after the last event and never recalculates classifications. Raw gaze coordinates are never returned.",
       "feature_ids":["3a5027df-9053-8090-9012-fddb0c1149b7","3a5027df-9053-80a0-8f00-d96adedd6152"],
       "request_parameters":[
         {"name":"studentId","type":"long","in":"Path","required":true,"description":"Student identifier"},
@@ -436,13 +436,13 @@
         {"name":"regressionCount","type":"integer","required":true,"description":"Total regression count"},
         {"name":"averageFixationTime","type":"integer","required":false,"description":"Average fixation time in milliseconds"},
         {"name":"pageMetrics","type":"array<object>","required":true,"description":"Per-page gaze metrics"},
-        {"name":"wordMetrics","type":"array<object>","required":true,"description":"Authoritative per-word metrics: storyLineId, pageNo, tokenIndex, text, dwellDurationMs, visitCount, skipped, regressionCount and firstSeenMs"},
-        {"name":"replay","type":"object","required":false,"description":"Playback-only normalized words and samples without raw coordinates"},
-        {"name":"analysisMeta","type":"object","required":true,"description":"Calculation version, source, heatmap scale and dwell/skip/regression rule metadata"}
+        {"name":"wordMetrics","type":"array<object>","required":true,"description":"Authoritative per-word metrics keyed by storyLineId+pageNo+tokenIndex: text, dwellDurationMs, all-visit visitCount, final skipped state, dwell-qualified regressionCount and page-relative firstSeenMs"},
+        {"name":"replay","type":"object","required":false,"description":"Playback-only normalized data without raw coordinates. replay.events items contain pageNo, eventIndex, page-relative eventAtMs, nullable fromTokenIndex, toTokenIndex, movementType READ|SKIP|REGRESSION, dwellQualified, dwellDurationMs and skippedTokenIndexes"},
+        {"name":"analysisMeta","type":"object","required":true,"description":"calculationVersion=story-gaze-word-v1, calculationSource=BACKEND, heatmapScale=PAGE_RELATIVE_MAX, dwellThresholdMethod=PAGE_CHARACTER_AVERAGE, sampleTailMs=80, maxSampleGapMs=250, firstSeenReference=PAGE_FIRST_VALID_SAMPLE, skipRequiresDwell=true and regressionRequiresDwell=true"}
       ],
       "response_codes":["200","401","403","404"],
       "request_example":"",
-      "response_example":"{\"success\":true,\"data\":{\"gazeSessionId\":7001,\"gazeAnalysisId\":7101,\"calibrationStatus\":\"VALID\",\"startedAt\":\"2026-08-04T10:00:00+09:00\",\"endedAt\":\"2026-08-04T10:01:00+09:00\",\"totalDwellTime\":12000,\"dwellCount\":18,\"regressionCount\":2,\"averageFixationTime\":667,\"pageMetrics\":[],\"wordMetrics\":[{\"storyLineId\":1001,\"pageNo\":1,\"tokenIndex\":0,\"text\":\"어느\",\"dwellDurationMs\":900,\"visitCount\":1,\"skipped\":false,\"regressionCount\":0,\"firstSeenMs\":80}],\"replay\":null,\"analysisMeta\":{\"calculationVersion\":\"story-gaze-word-v1\",\"calculationSource\":\"BACKEND\",\"heatmapScale\":\"PAGE_RELATIVE_MAX\",\"dwellThresholdMethod\":\"PAGE_CHARACTER_AVERAGE\",\"sampleTailMs\":80,\"skipRequiresDwell\":true,\"regressionRequiresDwell\":true}}}"
+      "response_example":"{\"success\":true,\"data\":{\"gazeSessionId\":7001,\"gazeAnalysisId\":7101,\"calibrationStatus\":\"VALID\",\"startedAt\":\"2026-08-04T10:00:00+09:00\",\"endedAt\":\"2026-08-04T10:01:00+09:00\",\"totalDwellTime\":2100,\"dwellCount\":2,\"regressionCount\":0,\"averageFixationTime\":1050,\"pageMetrics\":[],\"wordMetrics\":[{\"storyLineId\":1001,\"pageNo\":1,\"tokenIndex\":0,\"text\":\"어느\",\"dwellDurationMs\":900,\"visitCount\":1,\"skipped\":false,\"regressionCount\":0,\"firstSeenMs\":0},{\"storyLineId\":1001,\"pageNo\":1,\"tokenIndex\":1,\"text\":\"날\",\"dwellDurationMs\":0,\"visitCount\":0,\"skipped\":true,\"regressionCount\":0,\"firstSeenMs\":null},{\"storyLineId\":1001,\"pageNo\":1,\"tokenIndex\":2,\"text\":\"토끼가\",\"dwellDurationMs\":1200,\"visitCount\":1,\"skipped\":false,\"regressionCount\":0,\"firstSeenMs\":1000}],\"replay\":{\"events\":[{\"pageNo\":1,\"eventIndex\":0,\"eventAtMs\":0,\"fromTokenIndex\":null,\"toTokenIndex\":0,\"movementType\":\"READ\",\"dwellQualified\":true,\"dwellDurationMs\":900,\"skippedTokenIndexes\":[]},{\"pageNo\":1,\"eventIndex\":1,\"eventAtMs\":1000,\"fromTokenIndex\":0,\"toTokenIndex\":2,\"movementType\":\"SKIP\",\"dwellQualified\":true,\"dwellDurationMs\":1200,\"skippedTokenIndexes\":[1]}]},\"analysisMeta\":{\"calculationVersion\":\"story-gaze-word-v1\",\"calculationSource\":\"BACKEND\",\"heatmapScale\":\"PAGE_RELATIVE_MAX\",\"dwellThresholdMethod\":\"PAGE_CHARACTER_AVERAGE\",\"sampleTailMs\":80,\"maxSampleGapMs\":250,\"firstSeenReference\":\"PAGE_FIRST_VALID_SAMPLE\",\"skipRequiresDwell\":true,\"regressionRequiresDwell\":true}}}"
     },
     {
       "page_id":"git-admin-lesson-material-get-v1",
@@ -669,11 +669,11 @@
         {"name":"to","type":"string(date)","required":true,"description":"Applied end date"},
         {"name":"unit","type":"string(PERCENT)","required":true,"description":"Accuracy unit"},
         {"name":"calculationVersion","type":"string","required":true,"description":"reading-metrics-v1"},
-        {"name":"records","type":"array<object>","required":true,"description":"Records with sourceType, sourceId, measuredAt, correctAttemptCount, attemptCount, accuracyRate, unit and calculationVersion"}
+        {"name":"records","type":"array<object>","required":true,"description":"Records with sourceType, sourceId, trainingName, measuredAt, correctAttemptCount, attemptCount, accuracyRate, unit and calculationVersion"}
       ],
       "response_codes":["200","400","401","403","404"],
       "request_example":"",
-      "response_example":"{\"success\":true,\"data\":{\"from\":\"2026-07-01\",\"to\":\"2026-07-31\",\"unit\":\"PERCENT\",\"calculationVersion\":\"reading-metrics-v1\",\"records\":[{\"sourceType\":\"TRAINING\",\"sourceId\":251136,\"measuredAt\":\"2026-07-10T10:00:00+09:00\",\"correctAttemptCount\":8,\"attemptCount\":10,\"accuracyRate\":80,\"unit\":\"PERCENT\",\"calculationVersion\":\"reading-metrics-v1\"}]}}"
+      "response_example":"{\"success\":true,\"data\":{\"from\":\"2026-07-01\",\"to\":\"2026-07-31\",\"unit\":\"PERCENT\",\"calculationVersion\":\"reading-metrics-v1\",\"records\":[{\"sourceType\":\"TRAINING\",\"sourceId\":251136,\"trainingName\":\"받침 소리 구분\",\"measuredAt\":\"2026-07-10T10:00:00+09:00\",\"correctAttemptCount\":8,\"attemptCount\":10,\"accuracyRate\":80,\"unit\":\"PERCENT\",\"calculationVersion\":\"reading-metrics-v1\"}]}}"
     },
     {
       "page_id":"git-admin-reading-speed-records-v1",
@@ -695,11 +695,11 @@
         {"name":"to","type":"string(date)","required":true,"description":"Applied end date"},
         {"name":"unit","type":"string(CORRECT_WORDS_PER_MINUTE)","required":true,"description":"Reading speed unit"},
         {"name":"calculationVersion","type":"string","required":true,"description":"reading-metrics-v1"},
-        {"name":"records","type":"array<object>","required":true,"description":"Records with sourceType, sourceId, measuredAt, correctWordCount, measuredDurationMs, readingSpeed, unit and calculationVersion"}
+        {"name":"records","type":"array<object>","required":true,"description":"Records with sourceType, sourceId, trainingName, measuredAt, correctWordCount, measuredDurationMs, readingSpeed, unit and calculationVersion"}
       ],
       "response_codes":["200","400","401","403","404"],
       "request_example":"",
-      "response_example":"{\"success\":true,\"data\":{\"from\":\"2026-07-01\",\"to\":\"2026-07-31\",\"unit\":\"CORRECT_WORDS_PER_MINUTE\",\"calculationVersion\":\"reading-metrics-v1\",\"records\":[{\"sourceType\":\"TRAINING\",\"sourceId\":251136,\"measuredAt\":\"2026-07-10T10:00:00+09:00\",\"correctWordCount\":60,\"measuredDurationMs\":60000,\"readingSpeed\":60,\"unit\":\"CORRECT_WORDS_PER_MINUTE\",\"calculationVersion\":\"reading-metrics-v1\"}]}}"
+      "response_example":"{\"success\":true,\"data\":{\"from\":\"2026-07-01\",\"to\":\"2026-07-31\",\"unit\":\"CORRECT_WORDS_PER_MINUTE\",\"calculationVersion\":\"reading-metrics-v1\",\"records\":[{\"sourceType\":\"TRAINING\",\"sourceId\":251136,\"trainingName\":\"짧은 이야기 읽기\",\"measuredAt\":\"2026-07-10T10:00:00+09:00\",\"correctWordCount\":60,\"measuredDurationMs\":60000,\"readingSpeed\":60,\"unit\":\"CORRECT_WORDS_PER_MINUTE\",\"calculationVersion\":\"reading-metrics-v1\"}]}}"
     },
     {
       "page_id":"git-admin-reading-speed-trend-v2",
