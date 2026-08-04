@@ -3,7 +3,7 @@ type: Feature Catalog
 title: "기능 카탈로그: student"
 description: "student 도메인의 기능 식별자, 설명과 API 관계를 정리합니다."
 tags: [feature, catalog, student]
-timestamp: 2026-07-29T11:17:47+09:00
+timestamp: 2026-08-04T19:21:22+09:00
 ---
 # 기능 카탈로그: student
 
@@ -31,14 +31,14 @@ timestamp: 2026-07-29T11:17:47+09:00
 | MH-DSP-01 | 학습 기록 표시 | 선택한 아동의 학습 날짜, 학습 종류, 분류와 성취도를 표시한다. | server | `get_admin_student_by_studentId_training_history` |
 | MH-DSP-02 | 학습 상태 요약 표시 | 선택한 아동의 현재 단계, 최근 학습일과 확인이 필요한 학습 이벤트 수를 표시한다. | server | `get_admin_student_by_studentId_learning_summary` |
 | MH-DSP-03 | 다음 권장 훈련 표시 | 아동의 최근 결과를 바탕으로 다음 권장 훈련과 권장 시간·횟수를 표시한다. | server | `get_admin_student_by_studentId_learning_events` |
-| MH-DSP-04 | 학습 이벤트 상세 표시 | 선택한 최근 학습 기록의 발생 정보, 문제 구간, 재시도와 시스템 대응을 표시한다. | server | `get_admin_student_by_studentId_learning_events` |
+| MH-DSP-04 | 학습 이벤트 상세 표시 | 선택한 실제 지표 source record의 출처·측정시각·값·단위와 근거 수치를 가로 상세로 표시한다. | server | `get_admin_student_by_studentId_learning_events`, `get_admin_student_by_studentId_accuracy_records`, `get_admin_student_by_studentId_reading_speed_records` |
 | MH-SAVE-01 | 교수자 내부 메모 저장 | 아동의 단일 교수 메모를 students.teacher_memo에 저장한다. 별도 메모 목록이나 이력은 생성하지 않는다. | server | `patch_admin_student_by_studentId` |
 | MH-SAVE-02 | 교수자 내부 메모 입력값 검증 | students.teacher_memo에 저장할 선택 입력값의 허용 길이와 형식을 검증한다. | server | `patch_admin_student_by_studentId` |
 | MH-SAVE-03 | 교수자 내부 메모 저장 성공 처리 | students.teacher_memo 갱신이 완료되면 저장 성공 결과를 표시한다. | server | `patch_admin_student_by_studentId` |
 | MH-SAVE-04 | 교수자 내부 메모 저장 실패 처리 | students.teacher_memo 갱신에 실패하면 실패 사유를 표시하고 다시 시도할 수 있도록 한다. | server | `patch_admin_student_by_studentId` |
 | MH-SAVE-05 | 학습 이벤트 내용을 교수 메모에 추가 | 선택한 학습 이벤트 내용을 현재 teacher_memo 입력값에 추가한 뒤 단일 교수 메모로 저장한다. | server | `patch_admin_student_by_studentId` |
 | MH-SAVE-07 | 교수자 내부 메모 수정 | 기존 students.teacher_memo 값을 수정한다. | server | `patch_admin_student_by_studentId` |
-| MH-STAT-01 | 읽기 정확도 추이 표시 | 최근 6주의 읽기 정확도 변화, 변화폭과 해석을 차트로 표시한다. | server | `get_admin_student_by_studentId_accuracy_trend` |
+| MH-STAT-01 | 읽기 정확도 추이 표시 | 읽기 정확도 탭에서 정확도 source record만 조회하고 동일 calculationVersion으로 집계한 일별 추이를 표시한다. | server | `get_admin_student_by_studentId_accuracy_trend`, `get_admin_student_by_studentId_accuracy_records` |
 | SM-DSP-01 | 아동 상세 정보 표시 | 아동 정보 수정 화면에서 선택한 아동의 기본 정보와 보호자 정보를 표시한다. | server | `get_admin_student_by_studentId` |
 | SM-SAVE-01 | 아동 등록 처리 | 입력한 아동 정보를 저장하고 현재 교수자의 담당 아동으로 등록한다. | server | `post_admin_student` |
 | SM-SAVE-02 | 아동 삭제 처리 | 삭제를 확인한 아동의 정보를 삭제한다. | server | `delete_admin_student_by_studentId` |

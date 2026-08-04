@@ -3,7 +3,7 @@ type: Feature Catalog
 title: "기능 카탈로그: story"
 description: "story 도메인의 기능 식별자, 설명과 API 관계를 정리합니다."
 tags: [feature, catalog, story]
-timestamp: 2026-07-29T11:17:47+09:00
+timestamp: 2026-08-04T19:21:22+09:00
 ---
 # 기능 카탈로그: story
 
@@ -17,7 +17,7 @@ timestamp: 2026-07-29T11:17:47+09:00
 | ST-DTL-01 | 이야기 상세 정보 조회 | 선택한 이야기의 표지, 제목, 설명, 예상 시간, 장면 수와 등장인물을 조회한다. | server | `get_app_story_by_studentId_by_storyTemplateId` |
 | ST-DTL-02 | 이야기 상세 정보 표시 | 조회한 이야기 정보를 상세 화면에 표시한다. | server | `get_app_story_by_studentId_by_storyTemplateId` |
 | ST-DTL-03 | 이야기 책장 화면 이동 | 책장으로 버튼을 선택하면 이야기 목록 화면으로 이동한다. | server | `get_app_story_by_studentId_by_storyTemplateId` |
-| ST-DTL-04 | 신규 이야기 생성 | 읽기 시작 버튼 선택 시 해당 이야기의 읽기 세션을 생성한다. | server | `post_app_story_by_studentId_by_storyTemplateId_sessions` |
+| ST-DTL-04 | 신규 이야기 생성 | 읽기 시작 버튼 선택 시 템플릿 줄거리를 바탕으로 실제 AI 이야기와 장면 이미지를 생성한다. 페이지 품질 계약을 통과하지 못하면 최대 2회 다시 생성하며 계속 실패하면 세션 저장을 롤백한다. | server | `post_app_story_by_studentId_by_storyTemplateId_sessions` |
 | ST-DTL-05 | 이야기 읽기 진입 경로 결정 | 최초 읽기이면 조작 안내 화면으로, 기존 기록이 있으면 저장된 장면으로 이동한다. | server | `get_app_story_by_studentId_by_storyTemplateId` |
 | ST-DTL-06 | 이야기 읽기 세션 재개 | 저장된 마지막 장면부터 이야기를 다시 시작한다. | server | `get_app_story_by_studentId_by_storyId_resume` |
 | ST-DTL-07 | 이어보기 | 이전의 보던 책의 마지막으로 읽은 대사의 화면으로 이동한다. | server | `get_app_story_by_studentId_by_storyId_resume` |
@@ -30,9 +30,14 @@ timestamp: 2026-07-29T11:17:47+09:00
 | ST-LIB-04 | 이야기 진행률 표시 | 읽는 중인 이야기의 현재 장면과 전체 장면 수를 표시한다. | server | `get_app_story_by_studentId` |
 | ST-LIB-05 | 이야기 상세 화면 이동 | 선택 가능한 이야기 카드를 선택하면 해당 이야기의 상세 화면으로 이동한다. | server | `get_app_story_by_studentId` |
 | ST-LIB-06 | 이야기 선택 안내 표시 | 대표 캐릭터를 통해 학습자가 읽을 이야기를 선택할 수 있도록 안내 문구를 표시한다. | server | `get_app_story_by_studentId` |
-| ST-LIB-07 | 내 책장 | 내가 이전에 읽은 기록이있는(진행중, 완결) 책의 목록을 확인한다. | server | `get_app_story_by_studentId` |
+| ST-LIB-07 | 내 책장 | 삭제되지 않은 진행 중·완료 이야기 목록을 확인한다. | server | `get_app_story_by_studentId` |
+| ST-LIB-08 | 이야기 상태 탭 분류 | 진행 중 이야기와 완료 이야기를 별도 탭으로 구분해 표시한다. | client | `get_app_story_by_studentId` |
+| ST-LIB-09 | 진행 중 이야기 보관 제한 | 완료·삭제 이야기를 제외하고 아동별 진행 중 이야기를 최대 15권까지 생성한다. | server | `post_app_story_by_studentId_by_storyTemplateId_sessions` |
+| ST-LIB-10 | 진행 중 이야기 삭제 | 제목과 진행률을 확인한 뒤 진행 중 이야기 상태를 `DELETED`로 변경해 아동·교사 책장에서 제외한다. | server | `delete_app_story_session` |
+| ST-LIB-11 | 이야기 진입 이미지 제공 | 책장 조회 시 진행 중 이야기는 첫 미열람 장면, 완료 이야기는 첫 장면 이미지 URL을 제공한다. | server | `get_app_story_by_studentId` |
+| ST-LIB-12 | 이야기 책장 사전 준비 | 아동 선택 로그인 시 책장 데이터와 진입 이미지를 미리 준비하고, 이야기 나라 첫 렌더부터 캐시된 실제 콘텐츠를 표시한다. 독서 진행 후에는 캐시를 갱신한다. | client | `get_app_story_by_studentId` |
 | ST-READ-01 | 이야기 장면 조회 | 현재 장면의 이미지, 제목, 본문, 음성과 음성 분기 입력 필요 여부를 조회한다. | server | `get_app_story_by_studentId_by_storyId_lines_by_lineId` |
-| ST-READ-02 | 이야기 장면 표시 | 현재 장면의 이미지와 본문을 화면에 표시한다. | server | `get_app_story_by_studentId_by_storyId_lines_by_lineId` |
+| ST-READ-02 | 이야기 장면 표시 | 현재 장면의 이미지와 본문을 화면에 표시하며, 장면 이미지는 인증된 아동이 소유한 이야기에서만 Blob으로 조회한다. | server | `get_app_story_by_studentId_by_storyId_lines_by_lineId`, `get_app_story_image` |
 | ST-READ-03 | 이야기 장면 진행 상태 표시 | 현재 장면 번호와 전체 장면 수를 표시한다. | server | `get_app_story_by_studentId_by_storyId_lines_by_lineId` |
 | ST-READ-04 | 이전 이야기 장면 이동 | 이전 장면이 존재하면 이전 장면으로 이동한다. | server | `get_app_story_by_studentId_by_storyId_lines_by_lineId` |
 | ST-READ-05 | 다음 이야기 장면 이동 | 다음 장면이 존재하면 다음 이야기 장면으로 이동한다. | server | `get_app_story_by_studentId_by_storyId_lines_by_lineId` |

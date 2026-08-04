@@ -3,7 +3,7 @@ type: Feature Catalog
 title: "기능 카탈로그: report"
 description: "report 도메인의 기능 식별자, 설명과 API 관계를 정리합니다."
 tags: [feature, catalog, report]
-timestamp: 2026-07-29T11:17:47+09:00
+timestamp: 2026-08-04T19:21:22+09:00
 ---
 # 기능 카탈로그: report
 
@@ -16,10 +16,10 @@ timestamp: 2026-07-29T11:17:47+09:00
 | RP-DSP-05 | 보고서 조회 실패 처리 | 보고서를 조회할 수 없으면 오류를 표시하고 다시 선택할 수 있도록 한다. | server | `get_admin_report_by_reportId` |
 | RP-DSP-07 | 보고서 생성일 표시 | reports.created_at을 보고서 생성일로 표시한다. 발행 버전은 사용하지 않는다. | server | `get_admin_report_by_reportId` |
 | RP-GAZE-01 | 시선 분석 결과 보고서 반영 | 저장된 시선 분석 결과를 보고서 작성 화면에 반영하여 아동의 읽기 패턴을 참고할 수 있도록 한다. | server | `post_admin_report_by_reportId_gaze_analysis` |
-| RP-GEN-01 | 보고서 분석 결과 자동 생성 | 선택한 기간의 학습 데이터를 동기 처리하여 보고서 분석 결과를 생성하고 reports.snapshot_data에 저장한다. | server | `post_admin_report` |
+| RP-GEN-01 | 보고서 분석 결과 자동 생성 | 학습 현황과 같은 source record·단위·calculationVersion으로 보고서 핵심 성과와 성장 값을 만들고 비교 시점이 부족하면 INSUFFICIENT_DATA 상태를 저장한다. | server | `post_admin_report` |
 | RP-GEN-02 | 보고서 분석 결과 생성 성공 처리 | 동기 보고서 생성이 완료되면 저장된 보고서 상세와 교수자 메모 입력 화면을 표시한다. | server | `post_admin_report` |
 | RP-GEN-03 | 보고서 분석 결과 생성 실패 처리 | 동기 보고서 생성에 실패하면 저장하지 않고 오류를 표시한 뒤 다시 시도할 수 있도록 한다. | server | `post_admin_report` |
-| RP-SAVE-01 | 보고서 저장 | 완료 학습이 있는 선택 기간의 동기 분석 결과와 최대 2,000자의 교수자 의견을 reports에 저장한다. 동일 아동·시작일·종료일 보고서는 한 건만 허용하며 삭제 기능을 제공하지 않는다. | server | `post_admin_report` |
+| RP-SAVE-01 | 보고서 저장 | 완료 훈련일이 1일 이상인 선택 기간의 동기 분석 결과를 버전이 있는 snapshot으로 reports에 저장한다. 동일 아동·시작일·종료일 보고서는 한 건만 허용하며 삭제 기능을 제공하지 않는다. | server | `post_admin_report` |
 | RP-SEL-01 | 보고서 기간 선택 | 보고서 작성에 사용할 시작일과 종료일을 선택한다. | client | - |
 | RP-SEL-02 | 보고서 선택 | 저장된 보고서 목록에서 발행일-v번호 형식의 보고서를 선택해 상세 내용을 확인한다. | client | - |
 | RP-SEL-03 | 보고서 기간 입력값 검증 | 보고서 시작일과 종료일의 필수 입력 여부와 기간 순서를 검증한다. | client | - |

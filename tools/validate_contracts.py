@@ -49,6 +49,12 @@ class DuplicateJsonKeyError(ValueError):
     pass
 
 
+def flyway_sort_key(path: Path) -> tuple[int, str]:
+    match = re.match(r"V(\d+)__", path.name)
+    version = int(match.group(1)) if match else sys.maxsize
+    return version, path.name
+
+
 def reject_duplicate_json_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for key, value in pairs:
@@ -281,6 +287,7 @@ def validate_ai_contract() -> list[str]:
         "/api/v1/trainings/evaluate",
         "/api/v1/story/generate",
         "/api/v1/story/continue",
+        "/api/v1/story/branch-input/review",
         "/api/v1/speech/transcribe",
         "/api/v1/speech/pronunciation/analyze",
         "/api/v1/speech/synthesize",
@@ -365,8 +372,12 @@ def validate_schema() -> tuple[list[str], dict[str, int]]:
             "database ERD is out of date; run python tools/generate_erd.py"
         )
     flyway_baseline = FLYWAY_MIGRATIONS / "V1__baseline_schema.sql"
-    migration_files = sorted(FLYWAY_MIGRATIONS.glob("V*__*.sql"))
-    demo_files = sorted(FLYWAY_DEMO.glob("V*__*.sql"))
+    migration_files = sorted(
+        FLYWAY_MIGRATIONS.glob("V*__*.sql"), key=flyway_sort_key
+    )
+    demo_files = sorted(
+        FLYWAY_DEMO.glob("V*__*.sql"), key=flyway_sort_key
+    )
     all_flyway_files = migration_files + demo_files
     migration_versions = [
         re.match(r"V(\d+)__", path.name).group(1)

@@ -3,7 +3,7 @@ type: Feature Catalog
 title: "기능 카탈로그: test"
 description: "test 도메인의 기능 식별자, 설명과 API 관계를 정리합니다."
 tags: [feature, catalog, test]
-timestamp: 2026-07-29T11:17:47+09:00
+timestamp: 2026-08-04T19:21:22+09:00
 ---
 # 기능 카탈로그: test
 
@@ -43,15 +43,15 @@ timestamp: 2026-07-29T11:17:47+09:00
 | TE-SEL-02 | 단일 선택 처리 | 사용자가 선택지 중 하나만 선택할 수 있도록 처리하며, 다른 선택지를 누르면 기존 선택을 변경한다. | server | `post_app_test_by_studentId_questions_by_questionNumber_responses` |
 | TE-SEL-03 | 선택 상태 표시 | 사용자가 선택한 선택지를 테두리, 배경 등의 시각적 효과로 구분한다. | server | `post_app_test_by_studentId_questions_by_questionNumber_responses` |
 | TE-SEL-04 | 선택 응답 저장 | 선택한 항목의 식별값과 응답 시각을 현재 문항의 응답으로 저장한다. | server | `post_app_test_by_studentId_questions_by_questionNumber_responses` |
-| TI-DSP-01 | 테스트 날짜 선택 항목 표시 | 선택 검사 1건과 비교 검사 최대 2건의 날짜 입력 항목을 표시한다. | server | `get_admin_test_by_studentId_list` |
-| TI-DSP-02 | 선택 검사 종합 표시 | 선택 검사의 총점, 이전 대비 변화, 강점·보완 영역, 권장 과정과 다음 검사 시점을 표시한다. | server | `get_admin_test_by_studentId_compare` |
-| TI-GAZE-01 | 테스트 시선 분석 결과 표시 | 교수자가 테스트 이력 화면에서 아동의 시선 체류 시간, 되돌아보기 횟수와 읽기 이탈 구간을 확인할 수 있도록 표시한다. | server | `get_admin_test_by_studentId_by_testId_gaze_analysis` |
+| TI-DSP-01 | 테스트 날짜 선택 항목 표시 | 선택 검사 1건과 비교 검사 최대 2건의 날짜 입력 항목을 표시한다. | server | `get_admin_test_by_studentId_list`, `get_admin_test_by_studentId_curriculums` |
+| TI-DSP-02 | 선택 검사 종합 표시 | 선택한 검사 커리큘럼의 종합 결과와 모든 문항을 testId + questionNo로 구분해 표시한다. 추천 커리큘럼 운영 상태는 검사 이력에서 표시하지 않는다. | server | `get_admin_test_by_studentId_compare`, `get_admin_test_by_studentId_curriculums_by_testCurriculumId` |
+| TI-GAZE-01 | 테스트 시선 분석 결과 표시 | testId + questionNo로 지정한 개별 검사 문항의 시선 분석 결과를 표시한다. | server | `get_admin_test_by_studentId_by_testId_gaze_analysis`, `get_admin_test_by_studentId_by_testId_questions_by_questionNo_gaze_analysis` |
 | TI-SEL-01 | 테스트 비교 대상 선택 | 기준이 되는 선택 검사 1건과 비교 검사 최대 2건을 날짜 기준으로 선택한다. | server | `get_admin_test_by_studentId_compare` |
 | TI-SEL-02 | 테스트 비교 대상 선택 해제 | 선택한 비교 검사 날짜를 해제한다. | server | `get_admin_test_by_studentId_compare` |
 | TI-SEL-03 | 테스트 기록 비교 | 선택 검사 1건과 비교 검사 최대 2건의 영역별 결과 비교를 실행한다. | server | `get_admin_test_by_studentId_compare` |
 | TI-SEL-04 | 테스트 비교 대상 선택 제한 처리 | 비교 검사 두 건을 이미 추가한 상태에서는 추가 버튼을 비활성화하고 선택 제한을 안내한다. | server | `get_admin_test_by_studentId_compare` |
 | TI-STAT-01 | 테스트 결과 비교 차트 표시 | 선택 검사와 비교 검사들의 영역별 환산 점수를 차트로 비교하여 표시한다. | server | `get_admin_test_by_studentId_compare` |
-| TI-STAT-02 | 테스트 영역별 통계 표시 | 선택한 두 테스트의 읽기 시간, 정답률, 문제 풀이 시간과 시선 관련 통계를 표시한다. | server | `get_admin_test_by_studentId_compare` |
+| TI-STAT-02 | 테스트 영역별 통계 표시 | 선택한 두 테스트의 읽기 시간, 정답률, 문제 풀이 시간과 시선 관련 통계를 표시한다. | server | `get_admin_test_by_studentId_compare`, `get_admin_test_by_studentId_curriculums_by_testCurriculumId` |
 
 # Sources
 
