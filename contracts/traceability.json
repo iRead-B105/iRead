@@ -44,8 +44,7 @@
       "3a3027df-9053-806b-82dd-d2ddcac5e323"
     ],
     "operation_ids": [
-      "get_admin_training_by_studentId",
-      "get_app_training_by_studentId"
+      "get_admin_training_by_studentId"
     ]
   },
   {
@@ -1188,10 +1187,14 @@
     "deprecated": false,
     "responsibility": "server",
     "api_page_ids": [
-      "3a6027df-9053-8187-839f-ccedc173f001"
+      "3a6027df-9053-8187-839f-ccedc173f001",
+      "git-admin-accuracy-records-v1",
+      "git-admin-reading-speed-records-v1"
     ],
     "operation_ids": [
-      "get_admin_student_by_studentId_learning_events"
+      "get_admin_student_by_studentId_learning_events",
+      "get_admin_student_by_studentId_accuracy_records",
+      "get_admin_student_by_studentId_reading_speed_records"
     ]
   },
   {
@@ -1280,10 +1283,12 @@
     "deprecated": false,
     "responsibility": "server",
     "api_page_ids": [
-      "3a3027df-9053-800c-aea1-c944cedcbca0"
+      "3a3027df-9053-800c-aea1-c944cedcbca0",
+      "git-admin-accuracy-records-v1"
     ],
     "operation_ids": [
-      "get_admin_student_by_studentId_accuracy_trend"
+      "get_admin_student_by_studentId_accuracy_trend",
+      "get_admin_student_by_studentId_accuracy_records"
     ]
   },
   {
@@ -2178,10 +2183,12 @@
     "deprecated": false,
     "responsibility": "server",
     "api_page_ids": [
-      "3a5027df-9053-8080-b5bd-f724976c2ed1"
+      "3a5027df-9053-8080-b5bd-f724976c2ed1",
+      "git-admin-story-gaze-analysis-v1"
     ],
     "operation_ids": [
-      "post_app_gaze_sessions_by_gazeSessionId_analysis_results"
+      "post_app_gaze_sessions_by_gazeSessionId_analysis_results",
+      "get_admin_story_by_studentId_by_storyId_gaze_analysis"
     ]
   },
   {
@@ -2190,10 +2197,12 @@
     "deprecated": false,
     "responsibility": "server",
     "api_page_ids": [
-      "3a5027df-9053-8080-b5bd-f724976c2ed1"
+      "3a5027df-9053-8080-b5bd-f724976c2ed1",
+      "git-admin-story-gaze-analysis-v1"
     ],
     "operation_ids": [
-      "post_app_gaze_sessions_by_gazeSessionId_analysis_results"
+      "post_app_gaze_sessions_by_gazeSessionId_analysis_results",
+      "get_admin_story_by_studentId_by_storyId_gaze_analysis"
     ]
   },
   {
@@ -2320,9 +2329,13 @@
     "feature_id": "ST-LIB-08",
     "feature_page_id": "git-feature-story-library-tabs-v1",
     "deprecated": false,
-    "responsibility": "client",
-    "api_page_ids": [],
-    "operation_ids": []
+    "responsibility": "server",
+    "api_page_ids": [
+      "3a4027df-9053-8057-9ea8-dfce6b6f42bd"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId"
+    ]
   },
   {
     "feature_id": "ST-LIB-09",
@@ -2345,7 +2358,7 @@
       "git-app-story-session-delete-v1"
     ],
     "operation_ids": [
-      "delete_app_story_session"
+      "delete_app_story_by_studentId_sessions_by_storyId"
     ]
   },
   {
@@ -2364,9 +2377,13 @@
     "feature_id": "ST-LIB-12",
     "feature_page_id": "git-feature-story-library-preload-v1",
     "deprecated": false,
-    "responsibility": "client",
-    "api_page_ids": [],
-    "operation_ids": []
+    "responsibility": "server",
+    "api_page_ids": [
+      "3a4027df-9053-8057-9ea8-dfce6b6f42bd"
+    ],
+    "operation_ids": [
+      "get_app_story_by_studentId"
+    ]
   },
   {
     "feature_id": "ST-READ-01",
@@ -2374,12 +2391,10 @@
     "deprecated": false,
     "responsibility": "server",
     "api_page_ids": [
-      "3a4027df-9053-8020-bab8-ed3764429102",
-      "git-app-story-image-v1"
+      "3a4027df-9053-8020-bab8-ed3764429102"
     ],
     "operation_ids": [
-      "get_app_story_by_studentId_by_storyId_lines_by_lineId",
-      "get_app_story_image"
+      "get_app_story_by_studentId_by_storyId_lines_by_lineId"
     ]
   },
   {
@@ -3192,10 +3207,14 @@
     "deprecated": false,
     "responsibility": "server",
     "api_page_ids": [
-      "3a3027df-9053-8031-8f09-ceeb2a8989d8"
+      "3a3027df-9053-8031-8f09-ceeb2a8989d8",
+      "git-admin-reading-speed-records-v1",
+      "git-admin-reading-speed-trend-v2"
     ],
     "operation_ids": [
-      "get_admin_training_by_studentId_by_curriculumId_statistics"
+      "get_admin_training_by_studentId_by_curriculumId_statistics",
+      "get_admin_student_by_studentId_reading_speed_records",
+      "get_admin_student_by_studentId_reading_speed_trend"
     ]
   },
   {
@@ -3204,10 +3223,12 @@
     "deprecated": false,
     "responsibility": "server",
     "api_page_ids": [
-      "3a3027df-9053-801e-96c2-f710113ac385"
+      "3a3027df-9053-801e-96c2-f710113ac385",
+      "git-admin-test-curriculums-v1"
     ],
     "operation_ids": [
-      "get_admin_test_by_studentId_list"
+      "get_admin_test_by_studentId_list",
+      "get_admin_test_by_studentId_curriculums"
     ]
   },
   {
@@ -3216,10 +3237,12 @@
     "deprecated": false,
     "responsibility": "server",
     "api_page_ids": [
-      "3a3027df-9053-8067-be37-ca050184ea26"
+      "3a3027df-9053-8067-be37-ca050184ea26",
+      "git-admin-test-curriculum-detail-v1"
     ],
     "operation_ids": [
-      "get_admin_test_by_studentId_compare"
+      "get_admin_test_by_studentId_compare",
+      "get_admin_test_by_studentId_curriculums_by_testCurriculumId"
     ]
   },
   {
@@ -3228,10 +3251,12 @@
     "deprecated": false,
     "responsibility": "server",
     "api_page_ids": [
-      "3a5027df-9053-806c-ba01-fe3efbf75214"
+      "3a5027df-9053-806c-ba01-fe3efbf75214",
+      "git-admin-test-question-gaze-v1"
     ],
     "operation_ids": [
-      "get_admin_test_by_studentId_by_testId_gaze_analysis"
+      "get_admin_test_by_studentId_by_testId_gaze_analysis",
+      "get_admin_test_by_studentId_by_testId_questions_by_questionNo_gaze_analysis"
     ]
   },
   {
@@ -3308,10 +3333,12 @@
     "deprecated": false,
     "responsibility": "server",
     "api_page_ids": [
-      "3a3027df-9053-8067-be37-ca050184ea26"
+      "3a3027df-9053-8067-be37-ca050184ea26",
+      "git-admin-test-curriculum-detail-v1"
     ],
     "operation_ids": [
-      "get_admin_test_by_studentId_compare"
+      "get_admin_test_by_studentId_compare",
+      "get_admin_test_by_studentId_curriculums_by_testCurriculumId"
     ]
   },
   {

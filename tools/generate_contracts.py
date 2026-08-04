@@ -431,6 +431,60 @@ def openapi_document(
     }
 
 
+def changed_operation_keys(resolutions: dict[str, Any]) -> set[tuple[str, str]]:
+    keys = {
+        (addition["method"].lower(), addition["path"])
+        for addition in resolutions.get("additional_apis", [])
+        if addition.get("replace_existing") is True
+    }
+    for resolution in resolutions.get("resolutions", []):
+        action = resolution.get("action")
+        if action == "update" and resolution.get("replace_existing") is True:
+            method, path = resolution["source"].split(" ", 1)
+            keys.add((method.lower(), path))
+        elif (
+            action == "merge"
+            and resolution.get("replace_existing") is True
+            and resolution.get("target")
+        ):
+            method, path = resolution["target"].split(" ", 1)
+            keys.add((method.lower(), path))
+    return keys
+
+
+def merge_existing_contracts(
+    generated: dict[str, Any],
+    existing: dict[str, Any],
+    changed_keys: set[tuple[str, str]],
+    expected_notion_page_ids: set[str],
+) -> dict[str, Any]:
+    """Replace changed contracts while preserving unrelated Git-owned refinements."""
+    for route, path_item in list(existing.get("paths", {}).items()):
+        for method, operation in list(path_item.items()):
+            if method not in HTTP_METHODS:
+                continue
+            page_id = operation.get("x-notion-page-id")
+            if page_id and page_id not in expected_notion_page_ids:
+                del path_item[method]
+        if not path_item:
+            del existing["paths"][route]
+
+    for route, path_item in generated.get("paths", {}).items():
+        for method, operation in path_item.items():
+            target = existing["paths"].setdefault(route, {})
+            if (method, route) in changed_keys or method not in target:
+                target[method] = operation
+
+    existing_components = existing.setdefault("components", {})
+    for section, values in generated.get("components", {}).items():
+        if not isinstance(values, dict):
+            continue
+        target = existing_components.setdefault(section, {})
+        for name, value in values.items():
+            target.setdefault(name, value)
+    return existing
+
+
 def markdown_escape(value: str) -> str:
     return value.replace("|", "\\|").replace("\r", "").replace("\n", "<br>")
 
@@ -458,11 +512,32 @@ def write_feature_catalogs(
     features: list[dict[str, Any]],
     apis: list[dict[str, Any]],
     output_dir: Path,
+    changed_feature_ids: set[str],
 ) -> None:
     api_by_page = {api["page_id"]: api for api in apis}
+    existing_rows: dict[str, str] = {}
+    existing_domains: dict[str, str] = {}
+    for path in output_dir.glob("*.md"):
+        if path.name == "index.md":
+            continue
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if not line.startswith("| "):
+                continue
+            cells = line.split("|")
+            if len(cells) < 3:
+                continue
+            feature_id = cells[1].strip()
+            if not feature_id or feature_id in {"기능 ID", "---"}:
+                continue
+            existing_rows[feature_id] = line
+            existing_domains[feature_id] = path.stem
+
     groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for feature in features:
-        groups[feature_domain(feature, api_by_page)].append(feature)
+        domain = existing_domains.get(
+            feature["feature_id"], feature_domain(feature, api_by_page)
+        )
+        groups[domain].append(feature)
 
     output_dir.mkdir(parents=True, exist_ok=True)
     index_lines = [
@@ -493,6 +568,12 @@ def write_feature_catalogs(
         for feature in sorted(
             items, key=lambda item: (item["feature_id"], item["name"])
         ):
+            if (
+                feature["feature_id"] not in changed_feature_ids
+                and feature["feature_id"] in existing_rows
+            ):
+                lines.append(existing_rows[feature["feature_id"]])
+                continue
             operations = [
                 operation_id(api_by_page[page_id])
                 for page_id in feature["api_page_ids"]
@@ -525,9 +606,19 @@ def write_feature_catalogs(
                 "",
             ]
         )
-        (output_dir / filename).write_text(
-            "\n".join(lines), encoding="utf-8"
-        )
+        output_path = output_dir / filename
+        rendered = "\n".join(lines)
+        if output_path.exists():
+            current = output_path.read_text(encoding="utf-8")
+            without_timestamp = re.sub(
+                r"(?m)^timestamp: .+$", "timestamp: <ignored>", rendered
+            )
+            current_without_timestamp = re.sub(
+                r"(?m)^timestamp: .+$", "timestamp: <ignored>", current
+            )
+            if without_timestamp == current_without_timestamp:
+                continue
+        output_path.write_text(rendered, encoding="utf-8")
 
     (output_dir / "index.md").write_text(
         "\n".join(index_lines) + "\n", encoding="utf-8"
@@ -755,12 +846,17 @@ def write_review_queue(apis: list[dict[str, Any]], output: Path) -> None:
         rows, key=lambda item: (item[0]["path"], item[0]["method"])
     ):
         category, recommendation = review_recommendation(api)
+        source = (
+            f"`{api['url'][4:]}`"
+            if api["url"].startswith("git:")
+            else f"[원본]({api['url']})"
+        )
         lines.append(
             f"| `{api['method']} {api['path']}` "
             f"| {category} "
             f"| {markdown_escape(recommendation)} "
             f"| {markdown_escape(', '.join(reasons))} "
-            f"| [원본]({api['url']}) |"
+            f"| {source} |"
         )
     lines.extend(
         [
@@ -810,13 +906,13 @@ def main() -> int:
     args = parser.parse_args()
 
     snapshot = json.loads(args.snapshot.read_text(encoding="utf-8"))
-    snapshot = resolve_snapshot(
-        snapshot,
-        load_resolutions(args.resolutions),
-    )
+    resolutions = load_resolutions(args.resolutions)
+    snapshot = resolve_snapshot(snapshot, resolutions)
     apis = snapshot["apis"]
     features = snapshot["features"]
     feature_by_page = {feature["page_id"]: feature for feature in features}
+    changed_keys = changed_operation_keys(resolutions)
+    expected_notion_page_ids = {api["page_id"] for api in apis}
 
     grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for api in apis:
@@ -827,7 +923,20 @@ def main() -> int:
         document = openapi_document(
             prefix, grouped.get(prefix, []), feature_by_page
         )
-        (args.openapi_dir / filename).write_text(
+        output_path = args.openapi_dir / filename
+        if output_path.exists():
+            existing_text = output_path.read_text(encoding="utf-8")
+            existing = json.loads(existing_text)
+            document = merge_existing_contracts(
+                document,
+                existing,
+                changed_keys,
+                expected_notion_page_ids,
+            )
+            if document == json.loads(existing_text):
+                print(f"Kept {filename}: no semantic changes", flush=True)
+                continue
+        output_path.write_text(
             json.dumps(document, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
@@ -836,7 +945,12 @@ def main() -> int:
             flush=True,
         )
 
-    write_feature_catalogs(features, apis, args.feature_dir)
+    write_feature_catalogs(
+        features,
+        apis,
+        args.feature_dir,
+        set(resolutions.get("catalog_feature_ids", [])),
+    )
     rows = traceability(features, apis)
     args.traceability.parent.mkdir(parents=True, exist_ok=True)
     args.traceability.write_text(

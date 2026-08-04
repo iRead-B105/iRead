@@ -3,7 +3,7 @@ type: Feature Catalog
 title: "기능 카탈로그: training"
 description: "training 도메인의 기능 식별자, 설명과 API 관계를 정리합니다."
 tags: [feature, catalog, training]
-timestamp: 2026-07-29T11:17:47+09:00
+timestamp: 2026-08-04T19:21:22+09:00
 ---
 # 기능 카탈로그: training
 
@@ -35,13 +35,13 @@ timestamp: 2026-07-29T11:17:47+09:00
 | CU-SEL-03 | 교안 학습 자료 삭제 확인 | 선택한 교안 학습 자료의 삭제 여부를 확인한다. | server | `get_admin_training_by_studentId_by_curriculumId` |
 | CU-SEL-04 | 아동별 교안 편집 화면 표시 | 다음 회차 훈련의 교안 편집 화면을 열어 기본 정보와 학습 자료를 표시한다. | server | `get_admin_training_by_studentId_by_curriculumId` |
 | TH-DSP-01 | 훈련 기록 목록 표시 | 선택한 아동의 학습일, 훈련명, 결과와 학습 판단을 훈련 기록 목록으로 표시한다. | server | `get_admin_training_by_studentId_curriculum_log` |
-| TH-DSP-02 | 훈련 이력 표시 | 선택한 커리큘럼 로그에 포함된 훈련 이력을 표시한다. | server | `get_admin_training_by_studentId_by_curriculumId_training_log` |
+| TH-DSP-02 | 훈련 이력 표시 | 선택한 완료 훈련의 모든 문항에 대해 문항 번호·유형·본문·응답 유형·학습자 답·정답·정오·점수를 표시한다. | server | `get_admin_training_by_studentId_by_curriculumId_training_log` |
 | TH-DSP-03 | 선택 훈련 세부 결과 표시 | 선택한 훈련의 요약과 세부 활동별 문항 수, 학습 시간, 점수와 학습 판단을 표시한다. | server | `get_admin_training_by_studentId_by_trainingId_detail` |
 | TH-EXP-01 | 훈련 결과 CSV 저장 | 선택한 훈련의 결과 데이터를 CSV 형식으로 저장한다. | server | `post_admin_training_by_studentId_by_trainingId_export` |
 | TH-EXP-02 | 훈련 결과 JSON 저장 | 선택한 훈련의 결과 데이터를 JSON 형식으로 저장한다. | server | `post_admin_training_by_studentId_by_trainingId_export` |
 | TH-GAZE-01 | 훈련 시선 분석 결과 표시 | 교수자가 훈련 이력 화면에서 훈련별 시선 분석 결과와 읽기 어려움이 나타난 영역을 확인할 수 있도록 표시한다. | server | `get_admin_training_by_studentId_by_trainingId_gaze_analysis` |
 | TH-SEL-01 | 훈련 기록 선택 | 세부 결과와 읽기 속도 통계를 확인할 개별 훈련 기록을 선택한다. | client | - |
-| TH-STAT-01 | 읽기 속도 추이 표시 | 조회 기간의 분당 정확하게 읽은 단어 수와 기간 시작 대비 변화율을 차트로 표시한다. | server | `get_admin_training_by_studentId_by_curriculumId_statistics` |
+| TH-STAT-01 | 읽기 속도 추이 표시 | 읽기 속도 탭에서 음성 읽기 속도 source record만 조회하고 CORRECT_WORDS_PER_MINUTE 단위의 일별 추이를 표시한다. | server | `get_admin_training_by_studentId_by_curriculumId_statistics`, `get_admin_student_by_studentId_reading_speed_records`, `get_admin_student_by_studentId_reading_speed_trend` |
 | TR-AUD-01 | 문제 음성 재생 | 재생 버튼을 선택하면 현재 문항에 등록된 음성을 재생한다. | server | `get_app_training_by_studentId_by_trainingId_questions_by_questionNumber` |
 | TR-AUD-02 | 문제 음성 다시 듣기 처리 | 현재 문항의 발음을 다시 들을 수 있게 한다 | client | - |
 | TR-AUD-03 | 문제 음성 재생 상태 제어 | 훈련 문제 음성의 재생, 일시 정지, 종료 및 중복 재생 방지 상태를 제어한다. | client | - |

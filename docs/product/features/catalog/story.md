@@ -3,7 +3,7 @@ type: Feature Catalog
 title: "기능 카탈로그: story"
 description: "story 도메인의 기능 식별자, 설명과 API 관계를 정리합니다."
 tags: [feature, catalog, story]
-timestamp: 2026-07-29T11:17:47+09:00
+timestamp: 2026-08-04T19:21:22+09:00
 ---
 # 기능 카탈로그: story
 
@@ -45,11 +45,6 @@ timestamp: 2026-07-29T11:17:47+09:00
 | ST-READ-07 | 목차 장면 이동 | 목차에서 선택한 읽기 완료 장면으로 이동한다. | server | `get_app_story_by_studentId_by_storyId_lines` |
 | ST-READ-08 | 이야기 진행 상태 저장 | 현재 장면과 마지막 읽기 시각을 이야기 읽기 세션에 저장한다. | server | `post_app_story_by_studentId_by_storyId_lines_by_lineId_branches` |
 | ST-READ-09 | 이야기 완료 처리 | 마지막 장면까지 읽으면 이야기 읽기 세션을 완료 상태로 변경하고 완료 시각을 저장한다. | server | `post_app_story_by_studentId_by_storyId_lines_by_lineId_branches` |
-| ST-READ-10 | 읽은 장면 탐색 | 이전 장면은 언제든 이동하고 다음 장면은 이미 읽어 잠금 해제된 범위까지만 이동한다. 첫 미열람 장면은 기존 읽기 완료 조건을 유지한다. | client | `get_app_story_by_studentId_by_storyId_lines` |
-| ST-READ-11 | 글·그림 보기 전환 | 글 보기에서는 장면을 흐리게 하고 넓은 고대비 본문을, 그림 보기에서는 장면을 크게 하고 본문을 하단에 축소해 표시한다. | client | - |
-| ST-AI-01 | 이야기 AI 공급자 분리 | 텍스트와 이미지 생성 공급자·모델을 각각 GMS, Gemini 직접 API, OpenAI 직접 API 중 환경변수로 선택한다. | ai | - |
-| ST-AI-02 | 표지 기반 장면 생성 | 서버가 관리하는 원본 이야기 표지를 이미지 생성 참조로 첨부해 그림체와 등장인물 일관성을 유지한다. | ai | - |
-| ST-HISTORY-01 | 교사 이야기 장면 검토 | 교사 화면에 분기별 생성 배경, 하단 본문, 챕터명과 단어별 시선 강도를 표시하고 이미지 실패 시 플레이스홀더를 제공한다. | server | `get_admin_student_by_studentId_story_history_by_storyId` |
 | ST-STT-01 | 마이크 사용 권한 확인 | 소리 내어 읽기 시작 전에 마이크 권한과 장치 사용 가능 여부를 확인한다. | server | `post_app_story_by_studentId_by_storyId_speech` |
 | ST-STT-02 | 이야기 문장 음성 입력 시작 | 학습자가 현재 읽기 대상 문장을 소리 내어 읽을 수 있도록 음성 입력을 시작한다. | server | `post_app_story_by_studentId_by_storyId_speech` |
 | ST-STT-03 | 이야기 문장 음성 입력 종료 | 사용자의 읽기 완료 요청 또는 제한 시간 도달 시 음성 입력을 종료한다. | server | `post_app_story_by_studentId_by_storyId_speech` |

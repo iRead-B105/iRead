@@ -13,7 +13,7 @@ timestamp: 2026-08-04T13:30:00+09:00
 - 교사 화면의 페이지별 읽기 리플레이와 체류·건너뜀·되돌아보기 요약
 - 아이트래커 입력과 마우스 cursor fallback 입력
 
-두 입력 방식은 같은 원시 시선 샘플 형식으로 저장하고, 교사 화면에서 동일한 판정 규칙을 적용한다.
+두 입력 방식은 같은 원시 시선 샘플 형식으로 저장한다. Backend가 버전이 있는 동일 판정 규칙을 적용해 `wordMetrics`를 만들고, 교사 화면은 그 결과를 표시한다.
 
 ## 학습자 앱: 읽음과 페이지 이동
 
@@ -22,7 +22,7 @@ timestamp: 2026-08-04T13:30:00+09:00
 - 모든 단어가 읽음이 되면 다음 페이지 이동을 활성화한다.
 - 다음 페이지로 이동할 때 현재 페이지의 시선 세션을 종료하고 원시 샘플을 전송한다.
 
-## 교사 화면: 리플레이 판정
+## Backend: 리플레이 판정
 
 페이지별 원시 시선 샘플을 연속적으로 같은 단어에 머문 구간으로 묶어, 방문당 하나의 읽기 프레임을 만든다. 체류가 발생한 방문은 읽기 프레임과 체류 프레임을 모두 남긴다.
 
@@ -34,6 +34,20 @@ timestamp: 2026-08-04T13:30:00+09:00
 | 되돌아보기 | 이미 정순 읽기가 진행된 앞 단어에 **체류**한 경우 |
 
 짧은 순서 이탈은 읽음으로만 남기며 건너뜀·되돌아보기로 과대 판정하지 않는다. 반대로 순서가 맞는 단어의 긴 방문은 체류로만 표시한다.
+
+최초 계약 버전은 `story-gaze-word-v1`이며 `analysisMeta`에 다음 값을 함께 반환한다.
+
+| 필드 | 값 |
+| --- | --- |
+| `calculationSource` | `BACKEND` |
+| `calculationVersion` | `story-gaze-word-v1` |
+| `heatmapScale` | `PAGE_RELATIVE_MAX` |
+| `dwellThresholdMethod` | `PAGE_CHARACTER_AVERAGE` |
+| `sampleTailMs` | `80` |
+| `skipRequiresDwell` | `true` |
+| `regressionRequiresDwell` | `true` |
+
+교사 화면은 `wordMetrics`를 히트맵과 체류·건너뜀·되돌아보기 목록의 기준으로 사용한다. raw replay는 이동 순서 재생에만 사용하며 운영 판정을 다시 계산하지 않는다. Backend `wordMetrics`가 없으면 추정값을 만들지 않고 `NO_DATA`를 표시한다.
 
 ## 분석 상태 표시
 
