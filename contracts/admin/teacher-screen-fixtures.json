@@ -183,16 +183,65 @@
             "visitCount": 1,
             "skipped": false,
             "regressionCount": 0,
-            "firstSeenMs": 80
+            "firstSeenMs": 0
+          },
+          {
+            "storyLineId": 1001,
+            "pageNo": 1,
+            "tokenIndex": 1,
+            "text": "날",
+            "dwellDurationMs": 0,
+            "visitCount": 0,
+            "skipped": true,
+            "regressionCount": 0,
+            "firstSeenMs": null
+          },
+          {
+            "storyLineId": 1001,
+            "pageNo": 1,
+            "tokenIndex": 2,
+            "text": "토끼가",
+            "dwellDurationMs": 1200,
+            "visitCount": 1,
+            "skipped": false,
+            "regressionCount": 0,
+            "firstSeenMs": 1000
           }
         ],
-        "replay": null,
+        "replay": {
+          "events": [
+            {
+              "pageNo": 1,
+              "eventIndex": 0,
+              "eventAtMs": 0,
+              "fromTokenIndex": null,
+              "toTokenIndex": 0,
+              "movementType": "READ",
+              "dwellQualified": true,
+              "dwellDurationMs": 900,
+              "skippedTokenIndexes": []
+            },
+            {
+              "pageNo": 1,
+              "eventIndex": 1,
+              "eventAtMs": 1000,
+              "fromTokenIndex": 0,
+              "toTokenIndex": 2,
+              "movementType": "SKIP",
+              "dwellQualified": true,
+              "dwellDurationMs": 1200,
+              "skippedTokenIndexes": [1]
+            }
+          ]
+        },
         "analysisMeta": {
           "calculationVersion": "story-gaze-word-v1",
           "calculationSource": "BACKEND",
           "heatmapScale": "PAGE_RELATIVE_MAX",
           "dwellThresholdMethod": "PAGE_CHARACTER_AVERAGE",
           "sampleTailMs": 80,
+          "maxSampleGapMs": 250,
+          "firstSeenReference": "PAGE_FIRST_VALID_SAMPLE",
           "skipRequiresDwell": true,
           "regressionRequiresDwell": true
         }

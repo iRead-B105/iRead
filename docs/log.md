@@ -1,5 +1,10 @@
 # 문서 업데이트 로그
 
+## 2026-08-05
+
+* **교수자 이야기 시선 판정 계약**: Backend가 `story-gaze-word-v1`로 동일 단어 응시 구간, 체류·건너뜀·되돌아보기를 판정하고 `wordMetrics`와 `replay.events`를 반환하도록 확정했다. 동일 token sample 공백은 최대 250ms, 방문 tail은 80ms, 최초 확인 시점은 페이지 첫 유효 token sample 기준 상대 시간으로 통일했다.
+* **이동 경로·히트맵 책임 분리**: 교수자 Frontend는 Backend event를 700ms 간격으로 재생하고 마지막 event에서 페이지 상대 체류 히트맵으로 전환한다. raw 좌표 재생·판정과 page metric 단어 균등 분배는 사용하지 않는다.
+
 ## 2026-07-31
 
 * **Flyway V1·V2 기준선 통합 검증**: 최종 스키마를 V1, 전체 데모 데이터를 V2로 통합하고 공식 MySQL Community Server 8.4.11의 빈 DB에서 Flyway·Hibernate mapping·제약조건·동시성·데모 seed 테스트 8건을 최신 `develop` 병합 전후 모두 통과했다.

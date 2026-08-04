@@ -49,10 +49,14 @@ timestamp: 2026-08-04T00:00:00+09:00
 
 - Backend가 `wordMetrics`와 `analysisMeta`를 계산해 권위 있는 판정 결과로 반환한다.
 - `analysisMeta.calculationVersion`의 최초 값은 `story-gaze-word-v1`이다.
-- 체류는 페이지 글자당 기대 시간보다 긴 연속 방문이며 각 방문 끝에 80ms sample tail을 적용한다.
+- 동일 단어의 sample 공백이 250ms 이하일 때만 같은 응시 구간으로 유지하며, 다른 token이나 단어 밖 sample이 들어오면 즉시 새 방문으로 분리한다.
+- 체류는 페이지 글자당 기대 시간보다 긴 동일 단어 연속 응시 구간이며 각 방문 끝에 80ms sample tail을 적용한다.
 - 건너뜀과 되돌아보기는 체류 판정을 통과한 이동에만 적용한다.
+- 건너뜀은 도착한 뒤 단어가 아니라 실제로 건너뛴 중간 token에 적용한다. 해당 token을 나중에 읽으면 최종 `skipped`는 `false`지만 과거 `replay.events`의 건너뜀 event는 유지한다.
+- `firstSeenMs`와 `replay.events[].eventAtMs`는 페이지 첫 유효 token sample을 0ms로 한 상대 시간이다.
 - 히트맵은 페이지 안에서 최대 단어 체류 시간을 1로 둔 상대 강도다.
-- raw replay는 재생에만 사용하고 Frontend는 체류·건너뜀·되돌아보기를 다시 계산하지 않는다.
+- Backend는 판정 완료 `replay.events`를 반환하며 Frontend는 event당 700ms로 최근 이동 경로를 재생한다. 마지막 event에서는 자동 반복하지 않고 `wordMetrics` 히트맵으로 전환한다.
+- raw replay는 판정 입력으로만 사용하고 Frontend는 체류·건너뜀·되돌아보기를 다시 계산하지 않는다.
 - 원시 좌표는 Admin 응답에 포함하지 않는다.
 
 ## 수용 기준
@@ -62,6 +66,7 @@ timestamp: 2026-08-04T00:00:00+09:00
 - 정확도·속도 탭에는 선택 지표의 source record만 표시한다.
 - source record, trend와 보고서의 값·단위·계산 버전이 일치한다.
 - 이야기 도움말이 응답의 `calculationVersion`과 판정 metadata를 그대로 설명한다.
+- 이야기 이동 경로는 Backend `replay.events` 순서를 사용하고 마지막 event에서 페이지 상대 히트맵으로 전환한다.
 - 다른 교수자의 학생 또는 다른 학생의 실행 ID로 조회하면 접근을 거부한다.
 
 ## API 관계
