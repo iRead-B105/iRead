@@ -105,7 +105,8 @@ services:
       AI_MOCK_SPEECH: "true"
       AI_MOCK_PRONUNCIATION: "false"
       AI_MOCK_TRANSCRIBE: "true"
-      AI_MOCK_TTS: "true"
+      AI_MOCK_TTS: "false"
+      TYPECAST_API_KEY: ${TYPECAST_API_KEY:-__pltKZyMMHJSSNMGgkRL8irf3JGvpUJxKjkfBDNzUaPF}
       GRADLE_USER_HOME: /gradle-cache
     volumes:
       - ./services/backend:/workspace
