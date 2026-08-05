@@ -59,7 +59,10 @@ services:
       STORY_COVER_DIR: /app/story-covers
       CHAPTER_CANDIDATE_COUNT: "3"
       CHAPTER_QUALITY_RETRY_COUNT: "2"
-      CHAPTER_REQUIRE_CONTRACT_PASS: "true"
+      # 품질 계약(음절 범위·대화 형식) 미달 시 502 대신 최선 후보를 채택한다.
+      # 계약 위반은 story_quality_gate 로그로 남는다. 모델이 음절 예산을
+      # 안정적으로 지키게 되면 true로 되돌린다.
+      CHAPTER_REQUIRE_CONTRACT_PASS: "false"
       AI_PRONUNCIATION_PROVIDER: ${AI_PRONUNCIATION_PROVIDER:-azure}
       AI_SPEECH_PROVIDER: ${AI_SPEECH_PROVIDER:-azure}
       AZURE_SPEECH_VOICE: ${AZURE_SPEECH_VOICE:-ko-KR-SunHiNeural}
