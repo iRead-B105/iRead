@@ -157,9 +157,6 @@ services:
       VITE_BACKEND_URL: http://iread-backend:8080
       VITE_GAZE_WS_URL: ws://host.docker.internal:8765/gaze
       VITE_GAZE_MODE_URL: http://host.docker.internal:8765/api/mode
-      VITE_MOCK_DEVICE_SUBMISSIONS: "false"
-      VITE_MOCK_VOICE_SUBMISSIONS: "false"
-      VITE_MOCK_GAZE_SUBMISSIONS: "false"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
