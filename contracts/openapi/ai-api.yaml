@@ -585,7 +585,8 @@
         "properties": {
           "requestId": {"type": "string"},
           "text": {"type": "string", "minLength": 1},
-          "voice": {"type": "string"}
+          "voice": {"type": "string"},
+          "tempo": {"type": "number", "minimum": 0.5, "maximum": 2.0, "default": 1.0}
         }
       },
       "GazeAnalysisRequest": {
