@@ -16,7 +16,7 @@ timestamp: 2026-07-29T11:17:47+09:00
 | SB-SAVE-03 | 교수자 프로필 저장 성공 처리 | 교수자 프로필 저장이 완료되면 저장 결과를 표시하고 프로필 정보를 갱신한다. | server | `patch_admin_teacher_profile`, `patch_admin_teacher_profile_image` |
 | SB-SAVE-04 | 교수자 프로필 저장 실패 처리 | 교수자 프로필 저장에 실패하면 실패 사유를 표시하고 다시 시도할 수 있도록 한다. | server | `patch_admin_teacher_profile`, `patch_admin_teacher_profile_image` |
 | SB-SAVE-05 | 교수자 프로필 수정 취소 처리 | 저장하지 않은 교수자 프로필 수정사항을 취소하고 기존 값으로 되돌린다. | server | `patch_admin_teacher_profile` |
-| SB-SEL-01 | 교수자 프로필 이미지 선택 | JPG 또는 PNG 형식의 5MB 이하 교수자 프로필 이미지를 선택하거나 변경한다. | server | `get_admin_teacher_info`, `patch_admin_teacher_profile_image` |
+| SB-SEL-01 | 교수자 프로필 이미지 선택 | 확장자·MIME·실제 파일 내용이 일치하는 JPG 또는 PNG 형식의 5MB 이하 교수자 프로필 이미지만 선택하고 저장한다. | server | `get_admin_teacher_info`, `patch_admin_teacher_profile_image` |
 | SB-SEL-02 | 교수자 프로필 정보 수정 입력 | 교수자의 이름, 소속 기관과 성별을 수정한다. 로그인 이메일은 읽기 전용으로 표시한다. | server | `get_admin_teacher_info` |
 | SB-SEL-03 | 아동 변경 메뉴 표시 | 현재 아동 요약을 선택하면 최근 본 아동과 전체 아동 목록을 표시한다. | server | `get_admin_teacher_info` |
 | SB-SEL-04 | 아동 변경 목록 검색 | 아동 변경 메뉴에서 이름을 입력해 전환할 아동을 검색한다. | server | `get_admin_teacher_info` |

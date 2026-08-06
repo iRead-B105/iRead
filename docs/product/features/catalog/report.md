@@ -14,7 +14,7 @@ timestamp: 2026-08-04T19:21:22+09:00
 | RP-DSP-03 | 보고서 상세 미리보기 표시 | 선택 기간의 학습 분석 결과와 교수자 의견을 저장된 보고서 상세 화면에 표시한다. | server | `get_admin_report_by_reportId` |
 | RP-DSP-04 | 보고서 상세 표시 | 동기 생성되어 저장된 보고서의 분석 결과와 교수자 메모를 표시한다. | server | `get_admin_report_by_reportId` |
 | RP-DSP-05 | 보고서 조회 실패 처리 | 보고서를 조회할 수 없으면 오류를 표시하고 다시 선택할 수 있도록 한다. | server | `get_admin_report_by_reportId` |
-| RP-DSP-07 | 보고서 생성일 표시 | reports.created_at을 보고서 생성일로 표시한다. 발행 버전은 사용하지 않는다. | server | `get_admin_report_by_reportId` |
+| RP-DSP-07 | 보고서 생성일 표시 | reports.created_at을 한국시간(Asia/Seoul) 기준의 실제 보고서 생성일시로 표시한다. 발행 버전은 사용하지 않는다. | server | `get_admin_report_by_reportId` |
 | RP-GAZE-01 | 시선 분석 결과 보고서 반영 | 저장된 시선 분석 결과를 보고서 작성 화면에 반영하여 아동의 읽기 패턴을 참고할 수 있도록 한다. | server | `post_admin_report_by_reportId_gaze_analysis` |
 | RP-GEN-01 | 보고서 분석 결과 자동 생성 | 학습 현황과 같은 source record·단위·calculationVersion으로 보고서 핵심 성과와 성장 값을 만들고 비교 시점이 부족하면 INSUFFICIENT_DATA 상태를 저장한다. | server | `post_admin_report` |
 | RP-GEN-02 | 보고서 분석 결과 생성 성공 처리 | 동기 보고서 생성이 완료되면 저장된 보고서 상세와 교수자 메모 입력 화면을 표시한다. | server | `post_admin_report` |
