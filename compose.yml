@@ -117,6 +117,9 @@ services:
       AI_MOCK_TTS: ${AI_MOCK_TTS:-false}
       TYPECAST_API_KEY: ${TYPECAST_API_KEY:-}
       IREAD_QA_DEMO_DATASET_ENABLED: ${IREAD_QA_DEMO_DATASET_ENABLED:-true}
+      # QA 데이터셋 부트스트랩이 켜져 있으면 필수다. 값이 없으면 backend 가 기동에서
+      # 실패한다. 태그가 바뀔 때 한 번만 다시 설치하므로 로컬은 고정값을 쓴다.
+      IREAD_QA_DEMO_DATASET_DEPLOY_TAG: ${IREAD_QA_DEMO_DATASET_DEPLOY_TAG:-local-demo}
       APP_FILE_STORAGE_LOCAL_UPLOAD_DIR: /data/uploads/images
       APP_AUDIO_STORAGE_LOCAL_UPLOAD_DIR: /data/audio
       APP_GAZE_STORAGE_LOCAL_UPLOAD_DIR: /data/gaze
