@@ -107,7 +107,9 @@ services:
       AI_MOCK_EVALUATE: "true"
       AI_MOCK_SPEECH: "true"
       AI_MOCK_PRONUNCIATION: "false"
-      AI_MOCK_TRANSCRIBE: "true"
+      # 이야기 분기 음성 입력은 아이가 실제로 말한 내용을 받아써야 한다.
+      # 목이면 항상 같은 문장("친구를 따라간다")이 되어 기능이 무의미해진다.
+      AI_MOCK_TRANSCRIBE: "false"
       AI_MOCK_TTS: "false"
       TYPECAST_API_KEY: ${TYPECAST_API_KEY:-__pltKZyMMHJSSNMGgkRL8irf3JGvpUJxKjkfBDNzUaPF}
       GRADLE_USER_HOME: /gradle-cache
