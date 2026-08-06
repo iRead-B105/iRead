@@ -30,7 +30,7 @@ timestamp: 2026-08-04T19:21:22+09:00
 | GR-STAT-04 | 성장 단계 표시 | 클라이언트가 min(completedCount, 5)로 현재 성장 단계를 계산한다. | client | - |
 | MH-DSP-01 | 학습 기록 표시 | 선택한 아동의 학습 날짜, 학습 종류, 분류와 성취도를 표시한다. | server | `get_admin_student_by_studentId_training_history` |
 | MH-DSP-02 | 학습 상태 요약 표시 | 선택한 아동의 현재 단계, 최근 학습일과 확인이 필요한 학습 이벤트 수를 표시한다. | server | `get_admin_student_by_studentId_learning_summary` |
-| MH-DSP-03 | 다음 권장 훈련 표시 | 아동의 최근 결과를 바탕으로 다음 권장 훈련과 권장 시간·횟수를 표시한다. | server | `get_admin_student_by_studentId_learning_events` |
+| MH-DSP-03 | 최근 학습 기록 표시 | 실제 DB의 완료 학습 이벤트를 발생시각 내림차순으로 최대 4건 표시하며 카드는 펼침·선택·클릭 포커스를 제공하지 않는다. | server | `get_admin_student_by_studentId_learning_events_recent` |
 | MH-DSP-04 | 학습 이벤트 상세 표시 | 선택한 실제 지표 source record의 출처·측정시각·값·단위와 근거 수치를 가로 상세로 표시한다. | server | `get_admin_student_by_studentId_learning_events`, `get_admin_student_by_studentId_accuracy_records`, `get_admin_student_by_studentId_reading_speed_records` |
 | MH-SAVE-01 | 교수자 내부 메모 저장 | 아동의 단일 교수 메모를 students.teacher_memo에 저장한다. 별도 메모 목록이나 이력은 생성하지 않는다. | server | `patch_admin_student_by_studentId` |
 | MH-SAVE-02 | 교수자 내부 메모 입력값 검증 | students.teacher_memo에 저장할 선택 입력값의 허용 길이와 형식을 검증한다. | server | `patch_admin_student_by_studentId` |
@@ -56,7 +56,7 @@ timestamp: 2026-08-04T19:21:22+09:00
 | SM-SEL-01 | 아동 관리 하위 화면 이동 | 메인 홈, 커리큘럼, 훈련 이력, 테스트 이력 또는 보고서 화면으로 이동한다. | server | `get_admin_student_by_studentId` |
 | SM-SEL-02 | 아동 등록 정보 입력 | 새 아동과 보호자의 등록 정보를 입력한다. | server | `get_admin_student_by_studentId` |
 | SM-SEL-03 | 아동 삭제 확인 | 선택한 아동의 삭제 여부를 확인한다. | server | `get_admin_student_by_studentId` |
-| SM-SEL-04 | 아동 프로필 이미지 선택 | 아동 등록 또는 수정 화면에서 JPG·PNG 형식의 5MB 이하 프로필 이미지를 선택한다. | server | `get_admin_student_by_studentId` |
+| SM-SEL-04 | 아동 프로필 이미지 선택 | 아동 등록 또는 수정 화면에서 확장자·MIME·실제 파일 내용이 일치하는 JPG·PNG 형식의 5MB 이하 프로필 이미지만 선택하고 저장한다. | server | `get_admin_student_by_studentId` |
 | TH-FLT-01 | 훈련 이력 조회 기간 선택 | 최근 30일 또는 최근 3개월을 선택해 훈련 이력 조회 범위를 변경한다. | server | `get_admin_student_by_studentId_training_history` |
 | TI-STAT-03 | 아동 테스트 평균 추이 표시 | 선택한 아동의 날짜별 테스트 평균값 추이를 테스트 비교 막대그래프와 함께 꺾은선 그래프로 표시한다. | server | `get_admin_student_by_studentId_accuracy_trend` |
 

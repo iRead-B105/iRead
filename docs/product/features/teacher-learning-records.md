@@ -34,10 +34,13 @@ timestamp: 2026-08-04T00:00:00+09:00
 - `sequenceNo`는 검사 커리큘럼 안의 표시 순서이며 영속 문항 식별자로 사용하지 않는다.
 - 같은 `testId`에 3문항이 있으면 각 문항은 서로 다른 `questionNo`를 가진다.
 - 문항별 시선 분석은 `GET /api/admin/test/{studentId}/{testId}/questions/{questionNo}/gaze-analysis`로 조회한다.
+- 문항별 시선 데이터가 없으면 조회 오류로 표시하지 않고 데이터 없음 placeholder를 표시한다.
 - 검사 이력은 검사 결과를 표시하며 추천 커리큘럼 생성·검수 상태는 커리큘럼 관리 화면에서 처리한다.
 
 ## 학습 현황
 
+- 최근 학습 기록은 완료된 검사·훈련·이야기와 완료·실패 시선 세션을 실제 발생시각 내림차순으로 최대 4건 표시한다.
+- 최근 학습 기록 카드는 펼침·선택·클릭 포커스 없이 읽기 전용 목록으로 표시한다.
 - 정확도 탭은 `GET /api/admin/student/{studentId}/accuracy-records`의 기록만 표시한다.
 - 읽기 속도 탭은 `GET /api/admin/student/{studentId}/reading-speed-records`의 음성 기록만 표시한다.
 - source record는 `sourceType`, `sourceId`, `measuredAt`, 원본 분자·분모, 값, 단위와 `calculationVersion`을 포함한다.

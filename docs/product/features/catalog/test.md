@@ -45,7 +45,7 @@ timestamp: 2026-08-04T19:21:22+09:00
 | TE-SEL-04 | 선택 응답 저장 | 선택한 항목의 식별값과 응답 시각을 현재 문항의 응답으로 저장한다. | server | `post_app_test_by_studentId_questions_by_questionNumber_responses` |
 | TI-DSP-01 | 테스트 날짜 선택 항목 표시 | 선택 검사 1건과 비교 검사 최대 2건의 날짜 입력 항목을 표시한다. | server | `get_admin_test_by_studentId_list`, `get_admin_test_by_studentId_curriculums` |
 | TI-DSP-02 | 선택 검사 종합 표시 | 선택한 검사 커리큘럼의 종합 결과와 모든 문항을 testId + questionNo로 구분해 표시한다. 추천 커리큘럼 운영 상태는 검사 이력에서 표시하지 않는다. | server | `get_admin_test_by_studentId_compare`, `get_admin_test_by_studentId_curriculums_by_testCurriculumId` |
-| TI-GAZE-01 | 테스트 시선 분석 결과 표시 | testId + questionNo로 지정한 개별 검사 문항의 시선 분석 결과를 표시한다. | server | `get_admin_test_by_studentId_by_testId_gaze_analysis`, `get_admin_test_by_studentId_by_testId_questions_by_questionNo_gaze_analysis` |
+| TI-GAZE-01 | 테스트 시선 분석 결과 표시 | testId + questionNo로 지정한 개별 검사 문항의 시선 분석 결과를 표시하고, 데이터가 없으면 오류 대신 placeholder를 표시한다. | server | `get_admin_test_by_studentId_by_testId_gaze_analysis`, `get_admin_test_by_studentId_by_testId_questions_by_questionNo_gaze_analysis` |
 | TI-SEL-01 | 테스트 비교 대상 선택 | 기준이 되는 선택 검사 1건과 비교 검사 최대 2건을 날짜 기준으로 선택한다. | server | `get_admin_test_by_studentId_compare` |
 | TI-SEL-02 | 테스트 비교 대상 선택 해제 | 선택한 비교 검사 날짜를 해제한다. | server | `get_admin_test_by_studentId_compare` |
 | TI-SEL-03 | 테스트 기록 비교 | 선택 검사 1건과 비교 검사 최대 2건의 영역별 결과 비교를 실행한다. | server | `get_admin_test_by_studentId_compare` |

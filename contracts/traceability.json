@@ -1178,7 +1178,7 @@
       "3a6027df-9053-8187-839f-ccedc173f001"
     ],
     "operation_ids": [
-      "get_admin_student_by_studentId_learning_events"
+      "get_admin_student_by_studentId_learning_events_recent"
     ]
   },
   {
