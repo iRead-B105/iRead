@@ -141,6 +141,9 @@ no malformed hands, extra fingers, merged eyes or distorted anatomy
 - `import.meta.glob(..., { eager: true })`는 작은 공통 세트 외에는 사용하지 않는다.
 - 이미지 슬롯에 비율을 먼저 지정해 로딩 중 레이아웃이 움직이지 않게 한다.
 - 목록 아래쪽과 아직 열지 않은 모달 이미지는 지연 로딩한다.
+- 인증된 이야기 장면은 학생별 Cache Storage에 최대 60장까지 보존하고, UUID 파일명이 바뀌면 새 리소스로 취급한다.
+- 로그인 후 이어 읽을 장면부터 캐시를 준비하고 현재·다음 장면은 `img.decode()`까지 완료한다.
+- 로그아웃·학생 전환 때 인증 이미지의 Blob URL과 영속 캐시를 삭제하며, Cache Storage 미지원 환경은 인증 다운로드로 폴백한다.
 
 ## 11. 미리보기와 화면 사용처 확인
 
