@@ -1,0 +1,12 @@
+services:
+  ai:
+    build:
+      context: ../iRead-ai
+
+  backend:
+    volumes:
+      - ../iRead-backend:/workspace
+
+  frontend-web:
+    volumes:
+      - ../iRead-frontend-web:/workspace

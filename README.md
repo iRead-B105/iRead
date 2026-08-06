@@ -42,8 +42,13 @@ git submodule update --init --recursive
 Backend, 데이터베이스, 개발 인프라와 두 Frontend를 하나의 Docker 네트워크에서 실행합니다.
 
 ```bash
+cp .env.example .env
 docker compose up -d
 ```
+
+Windows에서는 `.env.example`을 `.env`로 복사한 뒤 `start-all-local.bat`을 실행해도 됩니다.
+MySQL 데이터와 이야기 이미지·음성·시선 원천 파일은 각각 이름 있는 Docker 볼륨에 보존됩니다.
+`.env`의 MySQL 비밀번호와 `AUTH_JWT_SECRET`은 필수이며, 외부 환경에서는 예시 값을 그대로 사용하지 않습니다.
 
 | 서비스 | 주소 |
 | --- | --- |
@@ -52,7 +57,7 @@ docker compose up -d
 | Backend API | `http://localhost:8080` |
 | MySQL | `localhost:3307` |
 | Redis | `localhost:6379` |
-| AI Mock | `http://localhost:8081` |
+| AI 서비스 | `http://localhost:8081` |
 | Mailpit | `http://localhost:8025` |
 
 모든 컨테이너는 `iread-network`에 연결됩니다. 종료할 때는 데이터 볼륨을 보존하는
@@ -66,9 +71,9 @@ Tobii Eye Tracker 5는 브라우저에서 직접 접근하지 않고, `services/
 
 ### 데모 계정과 실시간 연동 확인
 
-- 교수자: `demo@iread.local` / `demo1234`
-- 기본 아동: 샛별 (`studentId=2001`)
-- 기본 교육과정: `curriculumId=190001`
+- 교수자: `test@test.com` / `qwer1234`
+- 등록 아동: 김OO (`studentId=2001`), 이OO (`studentId=2002`), 박OO (`studentId=2103`)
+- 다음 교육과정: 김OO `310190`, 이OO `310290`, 박OO `310390` (각 훈련 5개)
 
 Backend가 준비된 뒤 다음 명령으로 교수자 → 아동과 아동 → 교수자 SSE 전달이 각각
 3초 이내인지 확인합니다.
@@ -84,12 +89,19 @@ Frontend는 소스 디렉터리를 컨테이너에 연결한 Vite 개발 서버�
 docker compose restart backend
 ```
 
-Backend 재시작은 교육과정 `190001`의 학습 진행 상태를 데모 시작 상태로 복구합니다.
-교수자 이력·분석용 기존 fixture는 유지합니다.
+Backend를 재시작해도 학습 진행 상태와 데모 데이터는 유지됩니다. 시연 시작 상태로 되돌릴 때만
+다음 전용 명령을 실행합니다. 이 명령은 세 아동의 QA 데이터와 이미지·시선 원천 파일을 함께 복원합니다.
 
-Flyway V1 또는 V2를 변경한 경우에는 기존 볼륨의 migration checksum과 맞지 않으므로
-데모 MySQL 볼륨을 재생성해야 합니다. 다음 명령은 로컬 데모 DB를 모두 삭제하므로
-보존할 데이터가 없는지 먼저 확인합니다.
+```bash
+# Windows
+reset-qa-demo.bat
+
+# macOS / Linux
+./reset-qa-demo.sh
+```
+
+Flyway 마이그레이션 검증처럼 데이터베이스 자체를 완전히 새로 만들 필요가 있을 때만 다음 명령을
+사용합니다. 이 명령은 로컬 데모 DB 전체를 삭제하므로 일상적인 시연 복구에는 사용하지 않습니다.
 
 ```bash
 docker compose down
