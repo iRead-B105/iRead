@@ -43,14 +43,14 @@ timestamp: 2026-08-04T19:21:22+09:00
 | SM-SAVE-01 | 아동 등록 처리 | 입력한 아동 정보를 저장하고 현재 교수자의 담당 아동으로 등록한다. | server | `post_admin_student` |
 | SM-SAVE-02 | 아동 삭제 처리 | 삭제를 확인한 아동의 정보를 삭제한다. | server | `delete_admin_student_by_studentId` |
 | SM-SAVE-03 | 아동 정보 수정 입력 | 아동 정보와 보호자 정보를 입력하거나 수정한다. | server | `patch_admin_student_by_studentId` |
-| SM-SAVE-04 | 아동 등록 입력값 검증 | 아동과 보호자 등록 정보의 필수 입력 여부와 허용 형식을 검증한다. | server | `patch_admin_student_by_studentId` |
+| SM-SAVE-04 | 아동 등록 입력값 검증 | 아동명·과거 생년월일·성별·학교명·보호자명·연락처의 필수값, 이름 문자 형식, 010으로 시작하는 연락처 숫자 11자리와 자동 하이픈 형식, 이메일·주소·이미지·메모의 형식과 길이 및 제어문자 포함 여부를 검증한다. | server | `post_admin_student`, `patch_admin_student_by_studentId` |
 | SM-SAVE-05 | 아동 정보 수정 저장 | 현재 입력한 아동 정보 수정사항의 저장을 요청한다. | server | `patch_admin_student_by_studentId` |
 | SM-SAVE-06 | 아동 정보 수정 취소 처리 | 저장하지 않은 아동 정보 수정사항을 취소하고 기존 값으로 되돌린다. | server | `patch_admin_student_by_studentId` |
 | SM-SAVE-07 | 아동 등록 성공 처리 | 아동 등록이 완료되면 등록 결과를 표시하고 아동 정보를 갱신한다. | server | `patch_admin_student_by_studentId` |
 | SM-SAVE-08 | 아동 등록 실패 처리 | 아동 등록에 실패하면 실패 사유를 표시하고 다시 시도할 수 있도록 한다. | server | `patch_admin_student_by_studentId` |
 | SM-SAVE-09 | 아동 삭제 성공 처리 | 아동 삭제가 완료되면 삭제 결과를 표시하고 아동 목록을 갱신한다. | server | `patch_admin_student_by_studentId` |
 | SM-SAVE-10 | 아동 삭제 실패 처리 | 아동 삭제에 실패하면 실패 사유를 표시하고 삭제를 중단한다. | server | `patch_admin_student_by_studentId` |
-| SM-SAVE-11 | 아동 정보 수정 입력값 검증 | 수정한 아동과 보호자 정보의 필수 입력 여부와 허용 형식을 검증한다. | server | `patch_admin_student_by_studentId` |
+| SM-SAVE-11 | 아동 정보 수정 입력값 검증 | 전달된 수정 필드에 등록과 같은 형식·길이·허용값 검증을 적용하고 공백만인 필수 필드와 허용되지 않은 제어문자를 거부한다. | server | `patch_admin_student_by_studentId` |
 | SM-SAVE-12 | 아동 정보 수정 성공 처리 | 아동 정보 수정이 완료되면 수정 결과를 표시하고 상세 정보를 갱신한다. | server | `patch_admin_student_by_studentId` |
 | SM-SAVE-13 | 아동 정보 수정 실패 처리 | 아동 정보 수정에 실패하면 실패 사유를 표시하고 다시 시도할 수 있도록 한다. | server | `patch_admin_student_by_studentId` |
 | SM-SEL-01 | 아동 관리 하위 화면 이동 | 메인 홈, 커리큘럼, 훈련 이력, 테스트 이력 또는 보고서 화면으로 이동한다. | server | `get_admin_student_by_studentId` |

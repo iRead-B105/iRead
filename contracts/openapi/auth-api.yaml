@@ -559,6 +559,8 @@
                 "properties": {
                   "email": {
                     "type": "string",
+                    "format": "email",
+                    "minLength": 1,
                     "maxLength": 50,
                     "description": "고유 가입 이메일, 최대 50자"
                   },
@@ -570,11 +572,14 @@
                   },
                   "name": {
                     "type": "string",
+                    "minLength": 1,
                     "maxLength": 10,
+                    "pattern": "^[\\p{L}\\p{M}]+(?:[ .\\-·'’][\\p{L}\\p{M}]+)*$",
                     "description": "교수자 이름, 최대 10자"
                   },
                   "organization": {
                     "type": "string",
+                    "minLength": 1,
                     "maxLength": 100,
                     "description": "소속 기관, 최대 100자"
                   }

@@ -20,7 +20,7 @@ timestamp: 2026-08-04T19:21:22+09:00
 | CU-SAVE-04 | 차회 커리큘럼 입력값 검증 | 수정한 차회 커리큘럼의 훈련 구성과 순서를 검증한다. | server | `patch_admin_training_by_studentId_by_curriculumId` |
 | CU-SAVE-05 | 차회 커리큘럼 저장 성공 처리 | 차회 커리큘럼 저장이 완료되면 저장 결과를 표시하고 커리큘럼을 갱신한다. | server | `patch_admin_training_by_studentId_by_curriculumId` |
 | CU-SAVE-06 | 차회 커리큘럼 저장 실패 처리 | 차회 커리큘럼 저장에 실패하면 실패 사유를 표시하고 다시 시도할 수 있도록 한다. | server | `patch_admin_training_by_studentId_by_curriculumId` |
-| CU-SAVE-07 | 교안 학습 자료 입력값 검증 | 학습 자료의 유형, 활동 이름, 제시 내용과 배치 순서 등 필수 입력값을 검증한다. | server | `patch_admin_training_by_studentId_by_curriculumId` |
+| CU-SAVE-07 | 교안 학습 자료 입력값 검증 | 1~5개 학습 자료의 유형·순서·활동 이름·제시 내용·정답 필수값과 허용 선택값, 문자열·목록·숫자 범위, JSON 크기·깊이·제어문자 및 내용–정답 일치를 검증한다. | server | `put_admin_training_by_studentId_by_trainingId_lesson_material` |
 | CU-SAVE-08 | 교안 학습 자료 추가 성공 처리 | 학습 자료 추가가 완료되면 결과를 표시하고 교안 자료 목록과 미리보기를 갱신한다. | server | `patch_admin_training_by_studentId_by_curriculumId` |
 | CU-SAVE-09 | 교안 학습 자료 추가 실패 처리 | 학습 자료 추가에 실패하면 실패 사유를 표시하고 다시 시도할 수 있도록 한다. | server | `patch_admin_training_by_studentId_by_curriculumId` |
 | CU-SAVE-10 | 교안 학습 자료 삭제 성공 처리 | 학습 자료 삭제가 완료되면 결과를 표시하고 교안 자료 목록과 미리보기를 갱신한다. | server | `patch_admin_training_by_studentId_by_curriculumId` |
