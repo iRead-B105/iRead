@@ -12,9 +12,9 @@ timestamp: 2026-08-04T19:21:22+09:00
 | GZ-GAZE-01 | 시선 추적 장치 연결 상태 확인 | 테스트 시작 전 시선 추적 장치가 정상적으로 연결되어 있는지 확인하고, 연결 상태를 사용자에게 표시한다. | server | `get_app_gaze_device_status` |
 | GZ-GAZE-02 | 시선 추적 보정 안내 표시 | 정확한 시선 측정을 위해 학습자에게 화면 응시 위치와 보정 방법을 안내한다. | server | `get_app_gaze_calibration_guide` |
 | GZ-GAZE-03 | 시선 추적 실패 처리 | 장치 연결 끊김, 보정 실패, 데이터 수집 오류가 발생한 경우 안내 메시지를 표시하고 대체 흐름을 처리한다. | server | `patch_app_gaze_sessions_by_gazeSessionId_failed` |
-| ST-GAZE-01 | 이야기 읽기 시선 데이터 수집 시작 | 이야기 장면을 읽는 동안 학습자의 문장별 시선 위치와 체류 시간 데이터를 수집한다. | server | `post_app_gaze_sessions` |
+| ST-GAZE-01 | 이야기 읽기 시선 데이터 수집 시작 | 아직 읽지 않은 이야기 장면을 처음 읽는 동안에만 학습자의 문장별 시선 위치와 체류 시간 데이터를 수집한다. 이미 진행한 페이지를 다시 보는 경우에는 시선 세션을 생성하지 않는다. | server | `post_app_gaze_sessions` |
 | ST-GAZE-02 | 이야기 문장별 시선 체류 시간 분석 | Backend가 calculationVersion에 따라 계산한 페이지·단어별 체류·건너뜀·되돌아보기 결과를 표시한다. | server | `post_app_gaze_sessions_by_gazeSessionId_analysis_results`, `get_admin_story_by_studentId_by_storyId_gaze_analysis` |
-| ST-GAZE-03 | 이야기 시선 분석 결과 저장 | 이야기 읽기 과정에서 분석된 시선 결과를 이야기 진행 기록과 함께 저장한다. | server | `post_app_gaze_sessions_by_gazeSessionId_analysis_results`, `get_admin_story_by_studentId_by_storyId_gaze_analysis` |
+| ST-GAZE-03 | 이야기 시선 분석 결과 저장 | 이야기 장면의 최초 읽기 과정에서 분석된 시선 결과만 이야기 진행 기록과 함께 저장한다. 이전 페이지 재조회에서 발생한 시선 데이터는 저장하지 않는다. | server | `post_app_gaze_sessions_by_gazeSessionId_analysis_results`, `get_admin_story_by_studentId_by_storyId_gaze_analysis` |
 | ST-GAZE-04 | 이야기 읽기 시선 데이터 수집 종료 | 이야기 장면이 완료되면 해당 이야기에 대한 시선 데이터 수집을 종료한다. | server | `patch_app_gaze_sessions_by_gazeSessionId_end` |
 | TE-GAZE-01 | 테스트 시선 데이터 수집 시작 | 테스트 문항이 표시되면 학습자의 시선 위치, 응시 시간, 이동 흐름 등의 데이터 수집을 시작한다. | server | `post_app_gaze_sessions` |
 | TE-GAZE-02 | 테스트 시선 데이터 수집 종료 | 테스트 문항 풀이가 종료되면 해당 문항에 대한 시선 데이터 수집을 중단한다. | server | `patch_app_gaze_sessions_by_gazeSessionId_end` |
