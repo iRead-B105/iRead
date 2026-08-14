@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/readme/iread-logo.png" width="420" alt="iRead 로고" />
+<img src="docs/assets/readme/iread-logo.png" width="360" alt="iRead 로고" />
 
 # iRead
 
