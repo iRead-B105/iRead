@@ -12,7 +12,7 @@
 **개발 인원** 6명<br />
 **플랫폼** 교수자 Web · 아동 Windows Electron App
 
-**[TBD] 서비스 시연 영상** · **[TBD] Notion API 명세** · **[TBD] 화면 설계서**
+**[TBD] 서비스 시연 영상** · **[OpenAPI 명세](#api-specification)** · **[TBD] 화면 설계서**
 
 </div>
 
@@ -265,8 +265,6 @@ iRead는 난독증 또는 읽기곤란 위험이 있는 초등 저학년 아동�
 | Infrastructure | AWS EC2, Nginx, Redis, Docker Compose | Single EC2 데모 경계에서 TLS, 정적 파일, API proxy와 서비스 실행 환경을 구성합니다. |
 | Eye Tracking | FastAPI, JavaScript, C++, Tobii Game Integration SDK | 브라우저에서 직접 접근하기 어려운 시선 추적 장치를 로컬 bridge를 통해 연동합니다. |
 
-기술 기준선과 선택 배경은 [ADR-0002](docs/decisions/ADR-0002-technology-baseline.md), [ADR-0006](docs/decisions/ADR-0006-mysql-primary-database.md), [ADR-0013](docs/decisions/ADR-0013-azure-speech-pronunciation-assessment.md)에서 확인할 수 있습니다.
-
 ---
 
 <a id="system-architecture"></a>
@@ -304,8 +302,6 @@ iRead 데모는 AWS Single EC2 안에서 Nginx, Spring Boot Backend, FastAPI AI 
 
 </details>
 
-상세한 서비스 경계와 배포 기준은 [시스템 컨텍스트](docs/architecture/system-context.md)와 [ADR-0017](docs/decisions/ADR-0017-single-ec2-demo-architecture.md)에서 확인할 수 있습니다.
-
 ---
 
 <a id="erd"></a>
@@ -335,9 +331,11 @@ iRead 데모는 AWS Single EC2 안에서 Nginx, Spring Boot Backend, FastAPI AI 
 
 <div align="center">
 
-### [TBD] Notion API 명세 링크를 추가합니다
+### OpenAPI 명세
 
 </div>
+
+API의 요청·응답, 오류와 서비스 간 계약은 저장소의 OpenAPI YAML을 기준으로 관리합니다.
 
 | API 영역 | 기준 명세 | 주요 기능 |
 | --- | --- | --- |
@@ -345,9 +343,6 @@ iRead 데모는 AWS Single EC2 안에서 Nginx, Spring Boot Backend, FastAPI AI 
 | App | [App–Backend API](contracts/openapi/app-api.yaml) | 아동용 앱의 교육과정·훈련·검사 기능 |
 | Admin | [Admin–Backend API](contracts/openapi/admin-api.yaml) | 교수자용 아동·교육과정·학습 현황 관리 |
 | AI | [Backend–AI API](contracts/openapi/ai-api.yaml) | 발음 평가 등 AI 분석 요청 |
-| Eye Tracking | [Eye Tracker 연동 초안](contracts/gaze/eyetracker-api-contract.md) | 시선 데이터 수집 및 전달 |
-
-전체 계약 현황은 [계약 카탈로그](contracts/catalog.md)에서 확인할 수 있습니다.
 
 ---
 
@@ -425,36 +420,3 @@ Backend를 중심으로 SSE 연결을 구성해 교수자에서 아동으로 전
 
 - 통합 데모 환경에서 양방향 이벤트 전달을 확인할 수 있습니다.
 - [TBD] 최종 측정 환경과 응답 시간 결과를 작성합니다.
-
----
-
-<details>
-<summary><strong>🚀 개발자 가이드</strong></summary>
-
-<br />
-
-저장소 구성, 통합 데모 실행 방법과 검증 절차는 [README_V1.md](README_V1.md)에서 확인할 수 있습니다.
-
-</details>
-
-<details>
-<summary><strong>📁 프로젝트 문서</strong></summary>
-
-<br />
-
-- [문서 인덱스](docs/index.md)
-- [제품 비전과 범위](docs/product/vision-and-scope.md)
-- [시스템 컨텍스트](docs/architecture/system-context.md)
-- [계약 카탈로그](contracts/catalog.md)
-- [ADR 목록](docs/decisions/index.md)
-
-</details>
-
-<details>
-<summary><strong>🌿 브랜치 및 커밋 컨벤션</strong></summary>
-
-<br />
-
-[Git Flow 및 커밋 정책](docs/workflows/git-flow.md)을 확인합니다.
-
-</details>
