@@ -181,8 +181,7 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
 <table>
   <tr>
     <td width="55%" align="center">
-      <!-- 기능 GIF: docs/assets/readme/features/personalized-training.gif -->
-      기능 화면
+      <img src="docs/assets/readme/features/training/letter-practice.gif" width="100%" alt="개인화 글자 연습 화면" />
     </td>
     <td width="45%">
       <strong>아동에게 필요한 다음 훈련 구성</strong><br /><br />
@@ -195,13 +194,37 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
   </tr>
 </table>
 
+#### 아동 앱 훈련 및 커리큘럼 화면
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <img src="docs/assets/readme/features/child-app/login.gif" width="100%" alt="아동 앱 로그인 화면" /><br />
+      <strong>아동 앱 로그인</strong>
+    </td>
+    <td width="50%" align="center">
+      <img src="docs/assets/readme/features/training/syllable-combination.gif" width="100%" alt="음절 합치기 화면" /><br />
+      <strong>음절 합치기</strong>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <img src="docs/assets/readme/features/training/initial-consonant-finding.gif" width="100%" alt="초성 찾기 화면" /><br />
+      <strong>초성 찾기</strong>
+    </td>
+    <td width="50%" align="center">
+      <img src="docs/assets/readme/features/training/sentence-assembly.gif" width="100%" alt="문장 조립 화면" /><br />
+      <strong>문장 조립</strong>
+    </td>
+  </tr>
+</table>
+
 ### 2. 시선 기반 읽기 분석
 
 <table>
   <tr>
     <td width="55%" align="center">
-      <!-- 기능 GIF: docs/assets/readme/features/eye-tracking.gif -->
-      기능 화면
+      <img src="docs/assets/readme/features/training/picture-sentence-matching.gif" width="100%" alt="시선 분석이 적용되는 그림과 문장 연결 훈련 화면" />
     </td>
     <td width="45%">
       <strong>읽기 과정의 시선 데이터 분석</strong><br /><br />
@@ -219,8 +242,7 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
 <table>
   <tr>
     <td width="55%" align="center">
-      <!-- 기능 GIF: docs/assets/readme/features/pronunciation-assessment.gif -->
-      기능 화면
+      <img src="docs/assets/readme/features/training/word-reading.gif" width="100%" alt="단어 읽기와 발음 평가 화면" />
     </td>
     <td width="45%">
       <strong>읽기 음성의 단어 단위 분석</strong><br /><br />
@@ -238,8 +260,7 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
 <table>
   <tr>
     <td width="55%" align="center">
-      <!-- 기능 GIF: docs/assets/readme/features/ai-story-learning.gif -->
-      기능 화면
+      <img src="docs/assets/readme/features/story/story-branch.gif" width="100%" alt="AI 이야기 분기 선택 화면" />
     </td>
     <td width="45%">
       <strong>참여형 이야기 읽기 경험</strong><br /><br />
@@ -252,13 +273,19 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
   </tr>
 </table>
 
+#### 이야기 학습 화면
+
+<p align="center">
+  <img src="docs/assets/readme/features/story/story-world.gif" width="75%" alt="이야기나라 화면" /><br />
+  <strong>이야기나라</strong>
+</p>
+
 ### 5. 교수자 학습 관리
 
 <table>
   <tr>
     <td width="55%" align="center">
-      <!-- 기능 GIF: docs/assets/readme/features/learning-dashboard.gif -->
-      기능 화면
+      <img src="docs/assets/readme/features/teacher/report.gif" width="100%" alt="교수자용 학습 분석 리포트 화면" />
     </td>
     <td width="45%">
       <strong>학습 과정과 읽기 변화 확인</strong><br /><br />
@@ -267,6 +294,41 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
       · 아동별 훈련 상태 확인<br />
       · SSE 기반 실시간 상태 전달<br />
       · 학습 결과와 분석 리포트 제공
+    </td>
+  </tr>
+</table>
+
+#### 교수자 관리 화면
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <img src="docs/assets/readme/features/teacher/curriculum-ai-generation.gif" width="100%" alt="AI 기반 개인화 커리큘럼 생성 화면" /><br />
+      <strong>AI 커리큘럼 생성</strong>
+    </td>
+    <td width="50%" align="center">
+      <img src="docs/assets/readme/features/teacher/curriculum-material-editing.gif" width="100%" alt="개인화 커리큘럼 교안 편집 화면" /><br />
+      <strong>커리큘럼 교안 편집</strong>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <img src="docs/assets/readme/features/teacher/learning-status.gif" width="100%" alt="아동 학습 현황 화면" /><br />
+      <strong>학습 현황</strong>
+    </td>
+    <td width="50%" align="center">
+      <img src="docs/assets/readme/features/teacher/learning-history.gif" width="100%" alt="아동 학습 이력 화면" /><br />
+      <strong>학습 이력</strong>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <img src="docs/assets/readme/features/teacher/story-image-regeneration.gif" width="100%" alt="이야기 이미지 재생성 화면" /><br />
+      <strong>이야기 이미지 재생성</strong>
+    </td>
+    <td width="50%" align="center">
+      <img src="docs/assets/readme/features/teacher/story-reading-replay.gif" width="100%" alt="이야기 읽기 리플레이 화면" /><br />
+      <strong>이야기 읽기 리플레이</strong>
     </td>
   </tr>
 </table>
@@ -543,6 +605,14 @@ iRead/
 │  ├─ openapi/          # App·Admin·Auth·AI API 계약
 │  └─ database/         # MySQL 스키마와 ERD
 ├─ docs/                # 제품·아키텍처·결정·계획 문서
+│  └─ assets/readme/
+│     ├─ api/           # Swagger 명세 이미지
+│     ├─ architecture/  # 시스템·데이터 흐름도
+│     └─ features/
+│        ├─ child-app/  # 아동 앱 공통 화면 GIF
+│        ├─ training/   # 아동 읽기 훈련 GIF
+│        ├─ story/      # AI 이야기 학습 GIF
+│        └─ teacher/    # 교수자 관리 화면 GIF
 ├─ design-resources/    # UI와 콘텐츠 제작 원본
 ├─ tools/               # 계약·문서·통합 데모 검증 도구
 ├─ compose.yml          # 로컬 통합 실행 구성
