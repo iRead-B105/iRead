@@ -6,8 +6,8 @@
 
 ### 아동의 읽기 특성을 이해하는 개인화 읽기 훈련 시스템
 
-**개발 기간** 2026.07.06 ~ 2026.08.10 (6주)<br />
 **개발 인원** 6명<br />
+**개발 기간** 2026.07.06 ~ 2026.08.10 (6주)<br />
 **플랫폼** 교수자 Web · 아동 Windows Electron App<br />
 **프로젝트 자료** [발표 자료 보기](docs/assets/readme/portfolio/iread-presentation-b105.pdf) · [소개 영상 보기](docs/assets/readme/portfolio/iread-video-portfolio-b105.mp4)<br />
 <img src="docs/assets/readme/overview/cta-mascot.png" width="180" alt="iRead 마스코트 토리" />
@@ -240,11 +240,10 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
 <table>
   <tr>
     <td width="55%" align="center">
-      <img src="docs/assets/readme/features/training/picture-sentence-matching.gif" width="100%" alt="그림에 맞는 문장 찾기 훈련 화면" /><br />
-      <strong>그림에 맞는 문장 찾기</strong><br />
-      <sub>그림의 내용을 확인하고 세 개의 보기에서 알맞은 문장을 선택합니다.</sub>
+      <img src="docs/assets/readme/features/training/picture-sentence-matching.gif" width="100%" alt="그림에 맞는 문장 찾기 훈련 화면" />
     </td>
     <td width="45%">
+      <strong>그림에 맞는 문장 찾기</strong><br /><br />
       그림에 맞는 문장을 고르는 훈련을 진행하는 동안 Tobii Eye Tracker가 시선 좌표를 수집합니다. 수집한 좌표를 화면의 그림과 문장 영역에 연결해 머문 시간, 건너뜀과 되읽기 정보를 기록하며, 장치가 연결되지 않은 환경에서는 마우스 입력으로 같은 흐름을 확인할 수 있습니다.
     </td>
   </tr>
@@ -255,11 +254,10 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
 <table>
   <tr>
     <td width="55%" align="center">
-      <img src="docs/assets/readme/features/training/word-reading.gif" width="100%" alt="낱말 읽기와 발음 평가 화면" /><br />
-      <strong>낱말 읽기와 발음 평가</strong><br />
-      <sub>화면에 제시된 낱말을 마이크로 읽고 단어별 발음 평가를 진행합니다.</sub>
+      <img src="docs/assets/readme/features/training/word-reading.gif" width="100%" alt="낱말 읽기와 발음 평가 화면" />
     </td>
     <td width="45%">
+      <strong>낱말 읽기와 발음 평가</strong><br /><br />
       단어 읽기 화면에서 아동이 마이크로 제시된 단어를 읽으면 Azure Speech의 한국어 발음 평가가 음성을 분석합니다. 분석 결과에는 단어별 정확도와 오류 유형이 포함되며, 분석이 끝난 음성 원본은 별도로 저장하지 않습니다.
     </td>
   </tr>
@@ -270,11 +268,10 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
 <table>
   <tr>
     <td width="55%" align="center">
-      <img src="docs/assets/readme/features/story/story-branch.gif" width="100%" alt="이야기 내용을 읽고 다음 내용을 선택하는 화면" /><br />
-      <strong>이야기 선택</strong><br />
-      <sub>이야기를 읽은 뒤 질문에 답하며 다음 장면의 흐름을 선택합니다.</sub>
+      <img src="docs/assets/readme/features/story/story-branch.gif" width="100%" alt="이야기 내용을 읽고 다음 내용을 선택하는 화면" />
     </td>
     <td width="45%">
+      <strong>이야기 선택</strong><br /><br />
       아동의 학습 진행을 반영해 이야기 본문과 장면 이미지를 생성합니다. 아동은 생성된 이야기를 읽고 화면에 제시된 선택지에서 다음 내용을 고르며 이야기 활동을 진행합니다.
     </td>
   </tr>
@@ -293,11 +290,10 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
 <table>
   <tr>
     <td width="55%" align="center">
-      <img src="docs/assets/readme/features/teacher/report.gif" width="100%" alt="교수자용 학습 분석 리포트 화면" /><br />
-      <strong>학습 분석 보고서</strong><br />
-      <sub>학습 참여, 발음 정확도, 읽기 속도와 기간별 변화 추이를 조회합니다.</sub>
+      <img src="docs/assets/readme/features/teacher/report.gif" width="100%" alt="교수자용 학습 분석 리포트 화면" />
     </td>
     <td width="45%">
+      <strong>학습 분석 보고서</strong><br /><br />
       보고서 화면에서 아동의 학습 참여 일수, 총 학습 시간, 총 학습 횟수, 발음 정확도, 평균 읽기 속도와 기간별 변화 추이를 조회합니다.
     </td>
   </tr>
