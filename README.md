@@ -11,7 +11,7 @@
 **개발 기간** 2026.07.06 ~ 2026.08.10 (6주)<br />
 **개발 인원** 6명<br />
 **플랫폼** 교수자 Web · 아동 Windows Electron App<br />
-**프로젝트 자료** [발표 자료 보기](docs/assets/readme/portfolio/iread-presentation-b105.pdf) · [영상 포트폴리오 보기](docs/assets/readme/portfolio/iread-video-portfolio-b105.mp4)
+**프로젝트 자료** [발표 자료 보기](docs/assets/readme/portfolio/iread-presentation-b105.pdf) · [소개 영상 보기](docs/assets/readme/portfolio/iread-video-portfolio-b105.mp4)
 
 
 </div>
@@ -97,6 +97,26 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
     </td>
   </tr>
   <tr>
+    <td valign="top">
+      <strong>담당 기능</strong><br />
+      프로젝트 관리 · 커리큘럼 및 훈련 백엔드<br /><br />
+      <strong>주요 구현 내용</strong><br />
+      훈련 카탈로그와 문항 정책을 정리하고 커리큘럼 교안 자동 생성, 진단 문항, 발음 평가와 성장 정보 API를 구현·안정화했습니다.
+    </td>
+    <td valign="top">
+      <strong>담당 기능</strong><br />
+      교수자 웹 API · 학습 및 이야기 관리<br /><br />
+      <strong>주요 구현 내용</strong><br />
+      학습 현황·이력·보고서 API와 커리큘럼·교안 편집 계약을 구현하고, SSE 학습 상태 동기화와 이야기 수정·이미지 관리 흐름을 연동했습니다.
+    </td>
+    <td valign="top">
+      <strong>담당 기능</strong><br />
+      아동 앱 API · 훈련 및 이야기 실행<br /><br />
+      <strong>주요 구현 내용</strong><br />
+      훈련 제출·진행·재진입과 성장 정보 API를 아동 앱에 연결하고, 이야기 분기 중복 제어와 교안 생성 완료 실시간 알림을 구현했습니다.
+    </td>
+  </tr>
+  <tr>
     <td align="center" width="33%">
       <strong>김민재</strong>
       <br />
@@ -117,6 +137,26 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
       AI
       <br />
       <a href="https://github.com/themancalledsong"><code>themancalledsong</code></a>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <strong>담당 기능</strong><br />
+      교수자 웹 프론트엔드<br /><br />
+      <strong>주요 구현 내용</strong><br />
+      학습 현황·이력·보고서 화면과 커리큘럼·교안 편집 UI를 구현하고, 이야기 이미지 재생성과 시선 리플레이 화면을 실제 API에 연동했습니다.
+    </td>
+    <td valign="top">
+      <strong>담당 기능</strong><br />
+      배포 인프라 · Tobii 아이트래커<br /><br />
+      <strong>주요 구현 내용</strong><br />
+      AWS·Nginx·Docker Compose 배포 환경을 구성하고, Tobii 보정·연결 상태·자동 실행과 단어별 시선 수집·분석·리플레이 흐름을 구현했습니다.
+    </td>
+    <td valign="top">
+      <strong>담당 기능</strong><br />
+      개인화 학습 · 생성형 AI · 발음 평가<br /><br />
+      <strong>주요 구현 내용</strong><br />
+      읽기 프로필 기반 커리큘럼과 교안 생성·검증, 개인화 이야기·장면 이미지 생성 API와 Azure Speech 발음 평가 피드백을 구현했습니다.
     </td>
   </tr>
 </table>
@@ -143,27 +183,32 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
   <tr>
     <td colspan="2" align="center">
       <img src="docs/assets/readme/features/child-app/login.gif" width="75%" alt="아동 앱 로그인 후 학습 영역을 선택하는 화면" /><br />
-      <strong>아동 앱 로그인 및 학습 영역 선택</strong>
+      <strong>아동 앱 로그인 및 학습 영역 선택</strong><br />
+      <sub>아동 프로필로 로그인한 뒤 학습 섬에서 진행할 영역을 선택합니다.</sub>
     </td>
   </tr>
   <tr>
     <td width="50%" align="center">
       <img src="docs/assets/readme/features/training/letter-practice.gif" width="100%" alt="글자를 따라 읽는 훈련 화면" /><br />
-      <strong>글자 따라 읽기</strong>
+      <strong>글자 따라 읽기</strong><br />
+      <sub>제시된 글자의 획순을 확인하고 마이크로 소리 내어 읽습니다.</sub>
     </td>
     <td width="50%" align="center">
       <img src="docs/assets/readme/features/training/syllable-combination.gif" width="100%" alt="소리 합치기 훈련 화면" /><br />
-      <strong>소리 합치기</strong>
+      <strong>소리 합치기</strong><br />
+      <sub>제시된 소리 조각을 순서대로 합쳐 알맞은 낱말을 완성합니다.</sub>
     </td>
   </tr>
   <tr>
     <td width="50%" align="center">
       <img src="docs/assets/readme/features/training/initial-consonant-finding.gif" width="100%" alt="첫소리 찾기 훈련 화면" /><br />
-      <strong>첫소리 찾기</strong>
+      <strong>첫소리 찾기</strong><br />
+      <sub>낱말의 첫소리를 듣고 보기에서 알맞은 글자를 고릅니다.</sub>
     </td>
     <td width="50%" align="center">
       <img src="docs/assets/readme/features/training/sentence-assembly.gif" width="100%" alt="문장 만들기 훈련 화면" /><br />
-      <strong>문장 만들기</strong>
+      <strong>문장 만들기</strong><br />
+      <sub>낱말 카드를 문장 순서에 맞게 배치해 문장을 완성합니다.</sub>
     </td>
   </tr>
 </table>
@@ -173,7 +218,9 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
 <table>
   <tr>
     <td width="55%" align="center">
-      <img src="docs/assets/readme/features/training/picture-sentence-matching.gif" width="100%" alt="그림에 맞는 문장 찾기 훈련 화면" />
+      <img src="docs/assets/readme/features/training/picture-sentence-matching.gif" width="100%" alt="그림에 맞는 문장 찾기 훈련 화면" /><br />
+      <strong>그림에 맞는 문장 찾기</strong><br />
+      <sub>그림의 내용을 확인하고 세 개의 보기에서 알맞은 문장을 선택합니다.</sub>
     </td>
     <td width="45%">
       그림에 맞는 문장을 고르는 훈련을 진행하는 동안 Tobii Eye Tracker가 시선 좌표를 수집합니다. 수집한 좌표를 화면의 그림과 문장 영역에 연결해 머문 시간, 건너뜀과 되읽기 정보를 기록하며, 장치가 연결되지 않은 환경에서는 마우스 입력으로 같은 흐름을 확인할 수 있습니다.
@@ -186,7 +233,9 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
 <table>
   <tr>
     <td width="55%" align="center">
-      <img src="docs/assets/readme/features/training/word-reading.gif" width="100%" alt="낱말 읽기와 발음 평가 화면" />
+      <img src="docs/assets/readme/features/training/word-reading.gif" width="100%" alt="낱말 읽기와 발음 평가 화면" /><br />
+      <strong>낱말 읽기와 발음 평가</strong><br />
+      <sub>화면에 제시된 낱말을 마이크로 읽고 단어별 발음 평가를 진행합니다.</sub>
     </td>
     <td width="45%">
       단어 읽기 화면에서 아동이 마이크로 제시된 단어를 읽으면 Azure Speech의 한국어 발음 평가가 음성을 분석합니다. 분석 결과에는 단어별 정확도와 오류 유형이 포함되며, 분석이 끝난 음성 원본은 별도로 저장하지 않습니다.
@@ -199,7 +248,9 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
 <table>
   <tr>
     <td width="55%" align="center">
-      <img src="docs/assets/readme/features/story/story-branch.gif" width="100%" alt="이야기 내용을 읽고 다음 내용을 선택하는 화면" />
+      <img src="docs/assets/readme/features/story/story-branch.gif" width="100%" alt="이야기 내용을 읽고 다음 내용을 선택하는 화면" /><br />
+      <strong>이야기 선택</strong><br />
+      <sub>이야기를 읽은 뒤 질문에 답하며 다음 장면의 흐름을 선택합니다.</sub>
     </td>
     <td width="45%">
       아동의 학습 진행을 반영해 이야기 본문과 장면 이미지를 생성합니다. 아동은 생성된 이야기를 읽고 화면에 제시된 선택지에서 다음 내용을 고르며 이야기 활동을 진행합니다.
@@ -211,7 +262,8 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
 
 <p align="center">
   <img src="docs/assets/readme/features/story/story-world.gif" width="75%" alt="새 이야기 생성 진행 화면" /><br />
-  <strong>새 이야기 생성</strong>
+  <strong>새 이야기 생성</strong><br />
+  <sub>아동의 학습 진행을 반영한 이야기 본문과 장면 이미지를 생성합니다.</sub>
 </p>
 
 ### 5. 교수자 학습 관리
@@ -219,7 +271,9 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
 <table>
   <tr>
     <td width="55%" align="center">
-      <img src="docs/assets/readme/features/teacher/report.gif" width="100%" alt="교수자용 학습 분석 리포트 화면" />
+      <img src="docs/assets/readme/features/teacher/report.gif" width="100%" alt="교수자용 학습 분석 리포트 화면" /><br />
+      <strong>학습 분석 보고서</strong><br />
+      <sub>학습 참여, 발음 정확도, 읽기 속도와 기간별 변화 추이를 조회합니다.</sub>
     </td>
     <td width="45%">
       보고서 화면에서 아동의 학습 참여 일수, 총 학습 시간, 총 학습 횟수, 발음 정확도, 평균 읽기 속도와 기간별 변화 추이를 조회합니다.
@@ -233,31 +287,37 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
   <tr>
     <td width="50%" align="center">
       <img src="docs/assets/readme/features/teacher/curriculum-ai-generation.gif" width="100%" alt="AI 기반 개인화 커리큘럼 생성 화면" /><br />
-      <strong>AI 커리큘럼 생성</strong>
+      <strong>AI 커리큘럼 생성</strong><br />
+      <sub>아동과 학습 기간을 선택해 개인화 커리큘럼 생성을 요청합니다.</sub>
     </td>
     <td width="50%" align="center">
       <img src="docs/assets/readme/features/teacher/curriculum-material-editing.gif" width="100%" alt="개인화 커리큘럼 교안 편집 화면" /><br />
-      <strong>커리큘럼 교안 편집</strong>
+      <strong>커리큘럼 교안 편집</strong><br />
+      <sub>훈련별 문항, 정답, 보기와 안내 내용을 확인하고 수정합니다.</sub>
     </td>
   </tr>
   <tr>
     <td width="50%" align="center">
       <img src="docs/assets/readme/features/teacher/learning-status.gif" width="100%" alt="아동 학습 현황 화면" /><br />
-      <strong>학습 현황</strong>
+      <strong>학습 현황</strong><br />
+      <sub>아동의 학습 진행률과 지표별 변화 추이를 조회합니다.</sub>
     </td>
     <td width="50%" align="center">
       <img src="docs/assets/readme/features/teacher/learning-history.gif" width="100%" alt="아동 학습 이력 화면" /><br />
-      <strong>학습 이력</strong>
+      <strong>학습 이력</strong><br />
+      <sub>회차별 훈련 결과와 문항별 상세 기록을 확인합니다.</sub>
     </td>
   </tr>
   <tr>
     <td width="50%" align="center">
       <img src="docs/assets/readme/features/teacher/story-image-regeneration.gif" width="100%" alt="이야기 이미지 재생성 화면" /><br />
-      <strong>이야기 이미지 재생성</strong>
+      <strong>이야기 이미지 재생성</strong><br />
+      <sub>이야기 장면과 생성 정보를 확인하고 필요한 이미지를 다시 생성합니다.</sub>
     </td>
     <td width="50%" align="center">
       <img src="docs/assets/readme/features/teacher/story-reading-replay.gif" width="100%" alt="이야기 읽기 리플레이 화면" /><br />
-      <strong>이야기 읽기 리플레이</strong>
+      <strong>이야기 읽기 리플레이</strong><br />
+      <sub>이야기 페이지와 함께 단어별 시선 이동과 읽기 기록을 재생합니다.</sub>
     </td>
   </tr>
 </table>
