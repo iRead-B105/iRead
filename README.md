@@ -1,6 +1,6 @@
 <div align="center">
 
-<!-- iRead 로고: docs/assets/readme/overview/iread-logo.png -->
+<img src="docs/assets/readme/iread-logo.png" width="420" alt="iRead 로고" />
 
 # iRead
 
@@ -58,8 +58,6 @@ iRead는 난독증 또는 읽기곤란 위험이 있는 초등 저학년 아동�
 3. 아동과 교수자 사이의 학습 현황을 실시간으로 연결합니다.
 
 <!-- 서비스 이용 흐름 이미지: docs/assets/readme/overview/service-flow.png -->
-
-> iRead는 의료적 진단이나 전문가의 판단을 대체하지 않습니다. 아동의 안전과 존엄성, 개인정보 보호를 우선하며 전문가의 읽기 교육과 지원을 보조하는 도구를 지향합니다.
 
 ---
 
@@ -326,18 +324,6 @@ iRead는 난독증 또는 읽기곤란 위험이 있는 초등 저학년 아동�
 ## 🏗️ 시스템 아키텍처
 
 ![iRead 시스템 아키텍처](docs/assets/readme/architecture/system-architecture.png)
-
-iRead 데모는 AWS Single EC2 안에서 Nginx, Spring Boot Backend, FastAPI AI server, MySQL, Redis와 파일 저장소를 함께 운영합니다. 교수자는 브라우저로 접속하고, 아동은 로컬 시선 추적 환경이 포함된 Electron 앱을 사용합니다. 발음 평가와 이야기 텍스트·이미지 생성은 AI server가 외부 AI 서비스와 연동합니다.
-
-| 서비스 | 역할 | 주요 연결 |
-| --- | --- | --- |
-| Nginx | TLS 종료, 정적 파일 제공과 API proxy | 교수자 브라우저, 아동 앱, Backend |
-| Frontend Web | 교수자용 사용자 인터페이스 | HTTPS, Backend API, SSE |
-| Frontend App | Electron 기반 아동용 읽기 훈련 애플리케이션 | HTTPS, Electron IPC, Tobii 로컬 서비스 |
-| Backend | 인증, 서비스 로직, 세션·분석 결과와 파일 관리 | MySQL, Redis, 파일 저장소, AI server |
-| AI server | 발음 평가와 이야기 콘텐츠 생성 연동 | Backend–AI API, 외부 AI 서비스 |
-| Eye Tracking | Tobii 시선 데이터 수집, 보정과 단어·문장별 지표 생성 | Frontend App, Electron IPC, Backend |
-| MySQL·Redis·File | 영구 데이터, 캐시와 원시 파일 저장 | Backend |
 
 <a id="gaze-data-flow"></a>
 
