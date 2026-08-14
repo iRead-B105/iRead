@@ -1,4 +1,6 @@
-<div align="center">
+<img src="docs/assets/readme/overview/service-overview.png" width="100%" alt="난독증 훈련 보조 서비스 iRead 대표 이미지" />
+<div align="center"><br>
+
 
 # iRead
 
@@ -7,9 +9,8 @@
 **개발 기간** 2026.07.06 ~ 2026.08.10 (6주)<br />
 **개발 인원** 6명<br />
 **플랫폼** 교수자 Web · 아동 Windows Electron App<br />
-**프로젝트 자료** [발표 자료 보기](docs/assets/readme/portfolio/iread-presentation-b105.pdf) · [소개 영상 보기](docs/assets/readme/portfolio/iread-video-portfolio-b105.mp4)
-
-<img src="docs/assets/readme/overview/service-overview.png" width="100%" alt="난독증 훈련 보조 서비스 iRead 대표 이미지" />
+**프로젝트 자료** [발표 자료 보기](docs/assets/readme/portfolio/iread-presentation-b105.pdf) · [소개 영상 보기](docs/assets/readme/portfolio/iread-video-portfolio-b105.mp4)<br />
+<img src="docs/assets/readme/overview/cta-mascot.png" width="180" alt="iRead 마스코트 토리" />
 
 </div>
 
