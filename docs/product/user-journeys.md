@@ -1,22 +1,28 @@
-# User journeys
+---
+type: User Journey
+title: "사용자 여정"
+description: "아동과 교수자 등 주요 사용자가 iRead를 이용하는 흐름과 접점을 설명합니다."
+tags: [product, users, journey]
+timestamp: 2026-07-24T00:00:00+09:00
+---
+# 사용자 여정
 
-- Status: draft
-- Last reviewed: 2026-07-15
+- 상태: draft
+- 최종 검토일: 2026-07-15
 
-## Journey template
+## 작성 형식
 
-### `<journey name>`
+### `<여정 이름>`
 
-- Actor: [TBD]
-- Trigger: [TBD]
-- Desired outcome: [TBD]
-- Related requirements: [TBD]
+- 사용자: [TBD]
+- 시작 조건: [TBD]
+- 기대 결과: [TBD]
+- 관련 요구사항: [TBD]
 
-| Step | User intent | System response | Failure / recovery |
+| 단계 | 사용자 의도 | 시스템 응답 | 실패 및 복구 |
 | --- | --- | --- | --- |
 | 1 | [TBD] | [TBD] | [TBD] |
 
-## Open work
+## 후속 작업
 
-- [TBD] 제품 비전과 핵심 사용자를 확정한 후 MVP 핵심 여정을 작성한다.
-
+- [BLOCKED] TASK-003에서 MVP 대상 사용자와 핵심 기능을 확정한 후 아동, 보호자와 전문가의 핵심 여정을 작성한다.

@@ -24,6 +24,8 @@ logs/
 tmp/
 temp/
 .cache/
+.codex-chrome-*/
+.codex-screenshots/
 
 # Java / Gradle
 .gradle/
@@ -51,4 +53,3 @@ venv/
 .ruff_cache/
 .coverage
 htmlcov/
-

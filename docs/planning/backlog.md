@@ -1,29 +1,58 @@
-# Product discovery backlog
+---
+type: Backlog
+title: "제품 탐색 백로그"
+description: "iRead 제품 탐색과 아키텍처 준비 작업의 우선순위, 선행 조건과 상태를 관리합니다."
+tags: [planning, backlog, product]
+timestamp: 2026-07-24T00:00:00+09:00
+---
+# 제품 탐색 백로그
 
-- Status: active
-- Last reviewed: 2026-07-15
+- 상태: active
+- 최종 검토일: 2026-07-24
 
 작업 순서는 선행 결정을 반영한다. 상태는 `todo`, `in-progress`, `blocked`, `done`을 사용한다.
 
-| ID | Priority | Work item | Depends on | Status |
+| ID | 우선순위 | 작업 | 선행 조건 | 상태 |
 | --- | --- | --- | --- | --- |
-| TASK-001 | P0 | 해결할 사용자 문제와 근거 정의 | 사용자 입력 | todo |
-| TASK-002 | P0 | 핵심 사용자와 이해관계자 정의 | TASK-001 | blocked |
-| TASK-003 | P0 | MVP 범위와 성공 지표 정의 | TASK-001, TASK-002 | blocked |
+| TASK-001 | P0 | 해결할 사용자 문제와 근거 정의 | 사용자 입력 | done |
+| TASK-002 | P0 | 핵심 사용자와 이해관계자 정의 | TASK-001 | done |
+| TASK-003 | P0 | MVP 범위와 성공 지표 정의 | TASK-001, TASK-002, 내부 기능 회의 | blocked |
 | TASK-004 | P0 | 핵심 사용자 여정과 요구사항 작성 | TASK-003 | blocked |
-| TASK-005 | P1 | Backend·Frontend·AI server 책임 경계 정의 | TASK-004 | blocked |
-| TASK-006 | P1 | 데이터 소유권, 주 데이터베이스, Redis 역할 결정 | TASK-005 | blocked |
-| TASK-007 | P1 | 인증·인가·개인정보 요구사항 정의 | TASK-002, TASK-004 | blocked |
+| TASK-005 | P1 | Backend·Frontend·AI server·아동 앱 책임 경계 정의 | TASK-004 | blocked |
+| TASK-006 | P1 | 데이터 소유권, MySQL 운영 방식과 Redis 역할 결정 | TASK-005 | blocked |
+| TASK-007 | P1 | 인증·인가, 법정대리인 동의와 아동 개인정보 요구사항 정의 | TASK-002, TASK-004 | blocked |
 | TASK-008 | P1 | 서비스 간 API/이벤트 계약 초안 작성 | TASK-005, TASK-006 | blocked |
-| TASK-009 | P2 | 각 서비스 저장소명과 submodule 경로 결정 | TASK-005 | blocked |
+| TASK-009 | P2 | 각 서비스 저장소명과 submodule 경로 결정 | 사용자 결정 | done |
 | TASK-010 | P2 | 배포 환경, 관측성과 운영 목표 정의 | TASK-005 | blocked |
-| TASK-011 | P2 | Git 저장소 및 submodule 구성 | TASK-009 | blocked |
+| TASK-011 | P2 | Git 저장소 및 submodule 구성 | TASK-009 | done |
+| TASK-012 | P0 | 전문가·보호자 인터뷰로 문제 가설 검증 | TASK-001, 참여자 확보 | blocked |
+| TASK-013 | P0 | 진단·선별·훈련·치료 용어와 제품 책임 범위 검토 | TASK-001 | done |
 
-## Next clarification
+## 다음 확인 사항
 
-다음 작업을 시작하려면 TASK-001에 필요한 아래 정보를 사용자에게 질문한다.
+TASK-012의 질문지와 대체 검증 계획은 작성했지만 실제 검증은 참여자가 없어 차단되어 있다. TASK-013은 임시 운영 경계까지 검토했으며 최종 제품 분류는 MVP 범위와 함께 결정한다.
 
-- 주 사용자는 누구인가?
-- 사용자가 현재 겪는 가장 중요한 문제는 무엇인가?
-- 서비스가 제공해야 할 핵심 결과는 무엇인가?
-- 문제와 사용자에 대해 이미 확보한 조사나 제약이 있는가?
+TASK-003을 시작하려면 아래 사항을 결정해야 한다.
+
+- 첫 번째 MVP에서 검증할 사용자와 사용 환경
+- 포함할 핵심 기능과 제외할 기능
+- 구매자·운영자와 전문가의 개입 방식
+- 효과, 참여도와 업무 절감 중 우선할 성공 지표
+- `진단`, `선별`, `훈련`, `치료` 가운데 서비스가 책임질 범위
+
+## TASK-012 진행 기록
+
+- [x] 검증할 문제 가설과 판단 근거 정의
+- [x] 전문가·보호자 질문지와 기록 양식 작성
+- [x] 인터뷰가 어려울 때의 대체 검증 방법 정리
+- [ ] 인터뷰 또는 승인된 대체 검증 수행
+- [ ] 가설별 검증 결과 기록
+
+세부 절차는 [문제 가설 검증 계획](../product/problem-validation-plan.md)을 따른다.
+
+## TASK-013 결과
+
+- 교육용 읽기 훈련 및 학습 지원을 현재 임시 운영 경계로 제안한다.
+- 진단·치료 목적과 효과를 표방하기 전 규제·전문가 검토가 필요하다.
+- 선별 결과는 위험 신호로 제한하고 전문가 평가를 대체하지 않는다.
+- 세부 기준은 [제품 용어 및 책임 경계](../product/product-responsibility-boundary.md)에 기록한다.

@@ -1,36 +1,31 @@
-# TASK-000: `<title>`
+# TASK-000: `<제목>`
 
-- Status: todo
-- Owner: [TBD]
-- Priority: P0 / P1 / P2
-- Related requirements: [TBD]
-- Related ADRs: [TBD]
+- 상태: todo
+- 우선순위: P0 / P1 / P2
+- 관련 요구사항·ADR: 해당할 때만 작성
 
-## Goal
+## 목표
 
 [TBD]
 
-## Context
+## 범위와 제약
 
-- 관련 문서와 현재 상태
+- 포함 범위:
+- 제외 범위:
 
-## Constraints and non-goals
-
-- [TBD]
-
-## Clarifications required
+## 확인이 필요한 사항
 
 - [TBD] 또는 `없음`
 
-## Acceptance criteria
+## 수용 기준
 
 - [ ] 검증 가능한 결과
 
-## Validation
+## 검증
 
-- 실행 후보 명령 또는 검토 방법
-- 소스 테스트·빌드·린트·정적 분석 실행 여부: 사용자 명시적 요청 필요
+- 실행할 명령 또는 검토 방법:
+- 동작 변경 또는 검증 공백이 있을 때 추가·수정할 테스트:
 
-## Risks and follow-up
+## 중요한 위험과 후속 작업
 
-- [TBD]
+- 없음 또는 실제로 남은 항목

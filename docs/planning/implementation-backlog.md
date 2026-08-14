@@ -1,0 +1,291 @@
+---
+type: Implementation Backlog
+title: "Backend·Frontend 구현 백로그"
+description: "AI server를 제외한 Backend와 교수자 Frontend·아동 App 구현 작업, 우선순위와 의존성을 관리합니다."
+tags: [planning, implementation, backend, frontend, app, demo]
+timestamp: 2026-07-29T00:00:00+09:00
+---
+# Backend·Frontend 구현 백로그
+
+- 상태: active
+- 최종 검토일: 2026-07-31
+- 적용 범위: `services/backend`, `services/frontend-web`, `services/frontend-app`
+- 계약 기준: [OpenAPI](../../contracts/openapi/index.md), [MySQL 스키마](../../contracts/database/index.md), [기능 카탈로그](../product/features/catalog/index.md)
+
+## 범위
+
+이번 구현 주기는 `BE`와 `FE` 두 작업 영역만 사용한다.
+
+- `BE`: Backend API, 인증·권한, MySQL, 파일과 데모 데이터
+- `FE`: 교수자 Frontend와 아동 App. 대상 저장소는 각 작업의 `경로` 열로 구분한다.
+- AI server 구현과 `services/ai` 연동은 현재 범위에서 제외한다.
+- AI 처리가 필요한 데모 흐름은 Backend의 `demo` profile에서 결정적인 fixture 응답으로 대체한다.
+- Redis, 객체 스토리지, 운영 배포·고가용성과 Notion 재수집 자동화는 현재 백로그에 포함하지 않는다.
+
+상태는 `todo`, `in-progress`, `blocked`, `done`, `deferred`를 사용한다. 컨트롤러나 화면 파일이 존재하는 것만으로 `done`으로 처리하지 않고 계약과 수용 기준을 충족한 뒤 완료한다.
+
+## Backend TODO
+
+| ID | 우선순위 | 작업 | 계약·영역 | 선행 작업 | 상태 |
+| --- | --- | --- | --- | --- | --- |
+| BE-001 | P0 | 확정 ERD 기준 Flyway V1과 엔티티 재정합화 | MySQL 23개 테이블, `training_datas`, `test_datas`, `test_curriculums`, 이야기 장면·선택 | 없음 | done |
+| BE-002 | P0 | Admin·App 인증 API를 Auth OpenAPI 10개 operation에 맞춤 | `auth-api.yaml` | BE-001 | done |
+| BE-003 | P0 | 역할과 리소스 소유권 검증 및 민감정보 로그 차단 | 인증, 학생·보고서·훈련 접근 | BE-002 | done |
+| BE-004 | P0 | 교수자·학생 관리 API 계약 정합화 | Admin `teacher`, `student` 12개 operation | BE-002, BE-003 | done |
+| BE-005 | P0 | 관리자 훈련·검사 API 계약 정합화 | Admin `training`, `test` 중 시선 조회를 제외한 13개 operation | BE-001, BE-004 | done |
+| BE-006 | P1 | 관리자 보고서·시선 결과 API 계약 정합화 | Admin `report` 4개, 검사·훈련 시선 조회 2개 operation | BE-004, BE-005 | done |
+| BE-007 | P0 | 아동 로그인·성장·마이페이지 API 구현 | App 인증, `student`, `mypage` | BE-002, BE-003 | done |
+| BE-008 | P0 | 아동 검사·훈련 세션 API 구현 | App `test` 7개, `training` 7개 operation | BE-001, BE-007 | done |
+| BE-009 | P1 | 이야기·시선 세션 API 구현 | App `story` 9개, `gaze` 6개 operation | BE-007, BE-010 | done |
+| BE-010 | P0 | AI 없는 데모용 결정적 fixture provider 구현 | 훈련 생성·평가, 이야기, STT·TTS 대체 결과 | BE-001 | done |
+| BE-011 | P1 | 비식별 데모 seed와 파일·DB 초기화 절차 작성 | Flyway, 데모 데이터, `audio/` | BE-001 | done |
+| BE-012 | P1 | OpenAPI 기준 오류 응답과 입력 검증 통일 | Auth·Admin·App 전체 | BE-002~BE-010 | done |
+| BE-013 | P0 | 맞춤 훈련 생성 기능·OpenAPI·JSON 계약 확정 | 34개 `trainingType`, AI 후보 `{type,data}`, 최종 `generated_data` V2 | BE-005, BE-008 | done |
+| BE-014 | P0 | 최종 ERD 기준 읽기 특징 스키마와 엔티티 정합화 | `reading_features`, `student_feature_profiles`, Flyway V1 | BE-001, BE-013 | done |
+| BE-015 | P0 | 읽기 특징·훈련 템플릿 멱등 초기화 구현 | 자모·음절·음운 규칙 특징, 34개 `training_templates.prompt` JSON | BE-014 | done |
+| BE-016 | P0 | 최종 훈련 데이터 모델과 타입별 구조 검증기 구현 | `questionNo`, `content`, `answer`, `analysisTargets`, profile snapshot | BE-013, BE-015 | done |
+| BE-017 | P0 | 한국어 형태·자모·G2P·음운 규칙 분석기 구현 | KOMORAN 3.3.9, 자모 특징, 주요 음운 규칙 7종 | BE-014, BE-015 | done |
+| BE-018 | P0 | 34개 훈련 타입 AI 후보 Mock provider 구현 | 공통 프롬프트, 타입별 출력 형식, `count=5`, 비식별 요청 | BE-010, BE-013, BE-015 | done |
+| BE-019 | P0 | 후보 분석·검증·보충 생성·최종 저장 오케스트레이션 구현 | 통과 문항 유지, 최대 3회 재생성, `training_datas` 원자 저장 | BE-016~BE-018 | done |
+| BE-020 | P0 | 일시 음성 업로드와 발음 분석 Mock adapter 구현 | multipart 수신, 원본 미보관, 발음·오류·신뢰도 결과 | BE-010, BE-013 | done |
+| BE-021 | P0 | 최종 단어 시도 연결과 발음 상세 결과 집계 구현 | `trainings.result`의 로그 ID·문항 위치·발음 상세, 마지막 확정 시도만 반영 | BE-016, BE-020 | done |
+| BE-022 | P0 | 학생별 특징 프로필 계산·조회 구현 | `WEAKNESS_V1`, 고정 임계값, 신뢰도·상태 계산 | BE-017, BE-021, BE-026 | done |
+| BE-023 | P1 | 커리큘럼 완료 후 다음 맞춤 목록 자동 편성 구현 | 직접 보완 3개, 확장 1개, 복습·유창성 1개 | BE-015, BE-022 | done |
+| BE-024 | P1 | 학습 시작 전 커리큘럼 편집 구현 | 교사 목록·순서·유형 편집, 생성 자료 무효화 후 재생성 대기 | BE-023 | done |
+| BE-025 | P1 | 매일 03:00 커리큘럼 훈련 데이터 생성 배치 구현 | Asia/Seoul, 5개 전체 성공 시 저장·학습 준비 | BE-019, BE-024 | done |
+| BE-026 | P1 | 단어 단위 시선 분석 연동·Mock adapter 구현 | 응시 시간·횟수·회귀·건너뛰기, 원시 좌표 비전달 | BE-009, BE-010, BE-013 | done |
+| BE-027 | P0 | 맞춤 생성 파이프라인 계약·통합·보안 회귀 테스트 | MySQL, 34개 타입, 분석 규칙, 배치 원자성, 개인정보 차단 | BE-013~BE-026 | done |
+| BE-028 | P0 | 아동 App 실행 payload JSON 계약 확정 | 검사·훈련·이야기의 `generatedData`, `question`, `result` 요청·응답 구조 | BE-008, BE-009, BE-013 | blocked |
+| BE-029 | P0 | 갱신 ERD 단어 수행 스키마 정합화 | 발음 정확도, 문항·토큰 위치, 최종 시도, 인식 문자열 제거 | BE-014, BE-021 | done |
+| BE-030 | P0 | Azure Speech 단어 발음 평가 연동 | `ko-KR` scripted assessment, Backend–AI 계약, 장애·보안 정책 | BE-020, BE-029 | todo |
+| BE-031 | P0 | 교수자 보고서·프로필·계정 복구 계약 정합화 | 보고서 불변성·메모 2,000자, 이메일 읽기 전용, JPG·PNG 5MB, 일회용 재설정 링크 | BE-002, BE-004, BE-006 | done |
+| BE-032 | P1 | 교수자 검사 비교 요약·영역 통계 계약 및 계산 구현 | `TI-DSP-02`, `TI-STAT-01`, `TI-STAT-02` | BE-005, BE-028 | deferred |
+
+### 아동 App JSON 계약 상태
+
+- `BE-013`의 `generated_data` V2와 Backend–AI 후보 생성 구조는 맞춤 훈련 Backend 내부 계약으로 완료됐다.
+- `BE-028`은 아동 App이 직접 소비·제출하는 검사·훈련·이야기 payload의 세부 구조를 별도로 관리한다.
+- 팀 합의 전에는 OpenAPI의 자유 형식 객체를 강타입 DTO로 고정하거나 Vue 매핑, 정답 필드 allowlist와 전체 E2E fixture를 확정하지 않는다.
+- 인증·소유권, 상태 전이, 동시성, 파일 정책과 MySQL·CI 검증은 payload 세부 구조와 독립적으로 계속 보강할 수 있다.
+
+### 교수자 검사 비교 통계 보류 메모
+
+- `[TBD]` 종합 점수, 이전 검사 대비 변화, 영역별 환산 점수, 강점·보완 영역, 권장 과정과 다음 검사 시점의 계산 규칙을 확정해야 한다.
+- 현재 Backend 비교 응답은 정확도, 읽기·풀이 시간, 시선 이탈 횟수와 문항 결과만 제공하므로 교수자 Frontend의 종합 영역과 영역별 차트가 실제 API에서 비어 있다.
+- 판정과 계산은 Backend가 담당하고 Frontend는 결과만 표시하는 방향을 권장한다. `tests.result` 계약이 확정되는 `BE-028` 이후 재개한다.
+- ERD 변경 없이 `tests.result`, `tests.accuracy`와 이전 완료 검사 조회로 구현하는 것을 우선 검토한다.
+
+### 2026-07-28 맞춤 훈련 데이터 생성 결정
+
+- 세부 실행 순서와 수용 기준은 [맞춤 훈련 데이터 생성 파이프라인 실행 계획](../../plans/2026-07-28-personalized-training-generation.md)을 따른다.
+- AI server는 훈련 후보와 발음 분석을 Mock 응답으로 제공한다. 형태소 분석, 자모 분해, G2P, 읽기 특징 판정, 취약도 계산과 최종 저장 여부는 Backend가 결정한다.
+- 최종 ERD 이미지를 기준으로 단일 Flyway V1을 수정한다. `word_attempt_logs`는 `pronunciation_accuracy_score`, `question_no`, `target_index`, `token_index`, `is_final`을 직접 저장한다.
+- 인식 문자열, 예상·관찰 발음 문자열은 저장하지 않는다. 공급자 신뢰도·오류 유형·분석 버전과 전체 발화 점수만 부모 `result` JSON에 저장한다.
+- `student_feature_profiles.status`는 저장하지 않고 `weakness_score`에서 계산한다. 분석 버전은 코드 상수와 `profileSnapshot`에 저장한다.
+- DB의 발음·취약도 점수는 `0~1000`, API와 생성 JSON은 각각 `0~100`, `0~1`로 변환한다.
+- 현재 커리큘럼 전체 완료 직후 최신 프로필을 갱신하고 다음 커리큘럼 목록 5개를 편성한다. 교사는 03:00 생성 전까지 목록을 편집할 수 있고 생성 성공 후에는 수정할 수 없다.
+- 실제 발음 분석 전환은 [ADR-0013](../decisions/ADR-0013-azure-speech-pronunciation-assessment.md)과 [Azure Speech 실행 계획](../../plans/2026-07-28-azure-speech-pronunciation-assessment.md)을 따른다.
+- 03:00 배치는 목록의 5개 훈련이 모두 검증에 성공했을 때만 결과를 한 번에 저장한다. 한 건이라도 실패하면 전체를 저장하거나 잠그지 않는다.
+
+### 2026-07-28 맞춤 훈련 데이터 생성 완료
+
+- Backend 기능 브랜치에서 119개 읽기 특징, 34개 훈련 템플릿, 형태·자모·G2P·7개 음운 규칙 분석, 후보 검증·재생성, 발음·시선 Mock adapter와 `WEAKNESS_V1` 프로필 갱신을 구현했다.
+- 커리큘럼 완료 직후 직접 보완 3개·확장 1개·복습·유창성 1개의 목록을 편성하고, 교사 편집은 정확히 5개를 유지하며 생성 전까지만 허용한다.
+- `Asia/Seoul` 03:00 배치는 커리큘럼 행 잠금과 상태 확인 후 5개를 모두 생성·검증하고, 전체 성공 시에만 한 트랜잭션으로 저장한다.
+- Backend 전체 테스트, 34개 타입 계약, 개인정보 비전달, 배치 실패·중복 실행, MySQL 8.4 Flyway·JPA 매핑, 계약·문서 하네스와 `git diff --check`를 검증했다.
+
+### 2026-07-30 BE-029 완료
+
+- 확정 ERD의 `word_attempt_logs` 기준으로 `pronunciation_accuracy_score`, `question_no`, `target_index`, `token_index`, `is_final`과 Backend 엔티티 매핑을 재검토했다.
+- 인식 문자열 `recognized_text`와 중복 시선 존재값 `has_gaze_data`가 Flyway·엔티티·계약에서 제거된 상태를 확인했다.
+- 훈련·검사 녹음 저장이 문항·분석 대상·토큰 위치를 기록하고 같은 위치의 이전 성공 시도를 `is_final=false`로 전환하는지 서비스와 회귀 테스트를 확인했다.
+- MySQL 스키마 테스트를 데모 seed와 분리하고, MySQL 8.4에서 V1 적용과 Hibernate `validate`, 점수·위치 CHECK 5개, `is_final=true` 기본값을 실제 INSERT로 검증했다.
+- `.\gradlew.bat test --tests com.iread.backend.MySqlFlywayIntegrationTest --rerun-tasks --no-daemon`: 4개 성공, 실패 0개.
+
+### 2026-07-25 Backend 구현 검토
+
+- 검토 기준: Backend `develop`의 `ea07f82`, OpenAPI 74개 operation, Flyway V1과 엔티티 매핑
+- API 경로·HTTP method가 정확히 일치하는 컨트롤러 매핑: 38/74
+  - Auth: 0/10. 기존 교수자 세션 인증이 있으나 Admin·App JWT 계약과 경로·요청 모델이 다르다.
+  - Admin: 25/31. 교수자·학생 9/12, 훈련·검사 11/13, 보고서·시선 5/6이 일치한다.
+  - App: 13/33. 이야기·시선 12/15와 마이페이지 캐릭터 조회 1개가 일치한다.
+- `BE-001`은 Flyway V1과 계약 SQL의 일치, 24개 테이블·25개 외래 키 및 필수 엔티티 매핑을 확인해 완료로 변경했다.
+- 기존 구현이 있으나 계약 전체를 충족하지 않는 작업은 `in-progress`로 변경했다. 파일이나 메서드의 존재만으로 완료 처리하지 않았다.
+- 아동 검사·훈련 컨트롤러는 아직 없으므로 `BE-008`은 `todo`를 유지한다.
+- 이번 정합화에서 공통 성공·오류 응답 envelope, 회원가입·보고서 생성·시선 세션·이야기 세션의 HTTP 상태, 보고서 메모 경로와 응답, 학생 수정의 교수자 메모, 이야기 장면 경로 변수를 계약에 맞췄다.
+- 남은 주요 차이는 Admin·App JWT 인증, 오류별 HTTP 상태와 세부 코드, 기존 조회 API의 목록 wrapper·일부 응답 필드명, 학생 요약·학습 이벤트, 훈련 상세·내보내기, 보고서 시선 반영, 성장·대표 캐릭터, 이야기 분기·STT·TTS와 App 검사·훈련 API다.
+
+### Backend 수용 기준
+
+- 각 작업에 연결된 OpenAPI 경로, method, 요청·응답과 오류 상태가 구현과 일치한다.
+- App·Admin 요청은 인증, 역할과 해당 학생·리소스 소유권을 검증한다.
+- 토큰, 비밀번호, 이름, 연락처, 음성 파일 경로·URL과 요청 본문을 로그에 기록하지 않는다.
+- 빈 MySQL에서 Flyway V1과 비식별 seed로 동일한 데모 상태를 만들 수 있다.
+- `demo` profile은 `services/ai` 실행 없이 동일 입력에 동일한 결과를 반환한다.
+- 작업별 관련 테스트 코드를 추가·수정하고 테스트 성공을 확인한 뒤 결과를 기록한다.
+
+### 2026-07-28 BE-009·BE-010 완료
+
+- App Story 9개와 Gaze 6개 operation의 경로·method를 회귀 테스트로 고정했다.
+- 이야기 생성 결과를 `story_scenes`와 `story_lines`에 순서대로 저장하고, 음성 분기의 최종 STT 텍스트를 `story_choices`에 저장한다.
+- 분기 대사를 비관적 잠금으로 직렬화하고 이미 저장된 선택은 STT·AI를 다시 호출하지 않은 채 최초 다음 장면을 반환한다.
+- STT 음성 원본은 외부 응답에 내부 경로를 노출하지 않고 `audio/{studentId}/story/`에 저장한다. TTS 결과는 생성 파일명만 포함한 인증 API URL로 제공한다.
+- Backend–AI의 이야기 생성·이어쓰기·STT·TTS 호출을 구현하고 `AI_MOCK_GENERATE`, `AI_MOCK_SPEECH` 기본 fixture 모드에서 동일 입력에 결정적 결과를 반환한다.
+- 시선 세션은 `contentType`과 일치하는 검사·훈련·이야기 식별자 하나만 허용하고, 종료 시 원시 시선 JSON을 저장하며 완료 세션당 분석 결과 하나만 허용한다.
+- App 시선 계약은 확정 ERD에 맞춰 조건부 콘텐츠 식별자, `endStatus`, 원시 `data`와 `collectionStatus` 응답으로 정합화했다.
+- Backend 전체 `.\gradlew.bat test`와 계약·하네스 검증을 실행해 모두 성공했다.
+
+### 2026-07-28 BE-011 완료
+
+- `demo` 프로필에서만 Flyway demo V2 seed와 훈련 템플릿 초기화를 활성화하고 일반 실행 환경의 자동 seed는 비활성화했다.
+- 비식별 교수자·아동, 훈련·검사·완료 이야기·획득 캐릭터를 고정 ID로 구성해 빈 데모 DB를 같은 상태로 재현한다.
+- 외부 AI 없이 Story·훈련·STT·TTS fixture를 사용하도록 demo 프로필을 고정했다.
+- 데모 계정, 실행 방법, DB와 `audio/` 초기화 경계를 Backend `DEMO.md`에 기록했다.
+- H2의 JPA 스키마 위에서 demo seed 전체 SQL과 BCrypt 데모 비밀번호를 통합 테스트로 검증했다.
+
+### 2026-07-28 BE-012 완료
+
+- 인증 실패, 권한 거부, 리소스 없음, 상태 충돌, AI upstream 실패와 내부 오류를 각각 `401`, `403`, `404`, `409`, `502`, `500`으로 분리했다.
+- 내부 저장·JSON·토큰 처리 실패는 메시지와 경로를 노출하지 않는 `INTERNAL_ERROR`로 통일했다.
+- multipart 누락·용량 초과, query·path 타입 오류와 method validation을 `400` 입력 오류로 통일했다.
+- 검사·훈련·이야기·시선의 사용자 상태 충돌은 명시적인 `ConflictException`을 사용해 내부 실패와 구분했다.
+
+### 2026-07-26 BE-002 완료
+
+- Auth OpenAPI의 Admin 6개·App 4개 operation을 구현하고 기존 HTTP session 인증을 audience 분리 JWT 인증으로 교체했다.
+- Access token은 Admin 15분, 학습 App 15분, 아동 선택용 bootstrap token 5분으로 발급하며 refresh token은 14일 동안 유효하다.
+- Refresh token 원문은 HttpOnly cookie로만 전달하고 MySQL에는 SHA-256 해시를 저장하며 rotation 시 이전 세션을 폐기한다.
+- 로그아웃 시 refresh session을 폐기하며 이미 발급된 access token은 최대 15분의 남은 유효 시간까지 허용한다.
+- MVP demo 비밀번호 재설정은 `AUTH_DEMO_VERIFICATION_CODE` 환경변수를 사용하며 외부 메일 발송은 범위에서 제외한다.
+- `teachers.email`을 유일한 로그인 식별자로 사용하고 `auth_refresh_sessions`를 단일 Flyway V1과 계약 SQL·ERD에 동기화했다.
+- 인증 서비스·JWT·refresh rotation 테스트 12개를 추가하고 Backend 전체 테스트를 실행했다.
+- `.\gradlew.bat test --rerun-tasks`: 68개 중 일반 테스트 67개 성공, opt-in MySQL 통합 테스트 1개 skip, 실패 0개.
+- DB 적용 전 인증 스키마를 단일 V1으로 통합했으며 MySQL 8.4와 JPA mapping validation 재검증이 필요하다.
+- `python -m unittest tools.tests.test_validate_contracts`: 1개 성공.
+- `python tools/validate_contracts.py`: 81 operations, 334 features, 25 MySQL tables, 27 foreign keys 검증 성공.
+- `python tools/validate_harness.py`: 82 Markdown files, 63 OKF concepts, 92 explicit open markers 검증 성공.
+- 별도 린트·정적 분석은 구성된 명령이 없어 실행하지 않았다.
+
+### 2026-07-26 BE-003 완료
+
+- JWT principal에서 `TEACHER` 역할은 Admin·bootstrap audience와 학생 식별자 없음, `STUDENT` 역할은 learning audience와 학생 식별자 있음을 불변식으로 검증한다.
+- 학습 App의 마이페이지·이야기·시선 API에서 토큰의 `studentId`와 경로·쿼리·요청 본문의 `studentId`가 같은지 서비스 호출 전에 검사한다.
+- Admin API는 Admin audience, 학습 App API는 learning audience로 분리하고 서로 다른 영역의 토큰 접근이 `403 Forbidden`인지 HTTP 통합 테스트로 확인했다.
+- 학생·훈련·검사·보고서·이야기·시선 서비스가 교수자와 학생 또는 하위 리소스의 연결 관계를 제한하는 저장소 조회를 사용하는지 확인했다.
+- 제품 범위에서 제거된 `/api/admin/report/shared/**` 익명 접근 허용 규칙을 삭제했다.
+- 요청 상세 로그와 Tomcat access log를 명시적으로 비활성화하고 직접 콘솔 출력 금지 회귀 테스트를 추가했다.
+- 역할·audience, 아동 리소스 접근, 보안 HTTP 응답과 로그 정책 테스트 17개를 추가했다.
+- `.\gradlew.bat test --rerun-tasks`: 85개 중 일반 테스트 84개 성공, opt-in MySQL 통합 테스트 1개 skip, 실패 0개.
+- 데이터베이스 스키마와 엔티티 매핑 변경이 없어 MySQL 통합 테스트는 별도로 실행하지 않았다.
+- 별도 린트·정적 분석은 구성된 명령이 없어 실행하지 않았다.
+
+### 2026-07-27 확정 ERD 교체
+
+- 사용자가 ERDCloud에서 확정한 23개 테이블 설계로 MySQL 계약과 단일 Flyway V1을 교체했다.
+- `story_scenes`, `story_choices`, `test_curriculums`를 포함하고 이전 초안의 누적 통계·학습 진도 테이블과 대표 캐릭터 플래그를 제거했다.
+- 검사, 이야기, 시선, 보고서와 캐릭터 매핑이 현재 Backend 엔티티와 달라 `BE-001`을 `in-progress`로 되돌렸다.
+- 대표 캐릭터 변경 API를 제거하고 관련 표시 상태를 클라이언트 책임으로 변경했다.
+- 성장 API는 완료된 훈련을 학생·훈련 템플릿별로 실시간 집계한 `completedCount`를 반환하고, 클라이언트는 매회 한 단계씩 성장시켜 5회에 만개하도록 변경했다.
+- 음성 분기 API는 최종 STT 텍스트를 `story_choices`에 한 건 저장하고 다음 장면·대사·진행률과 함께 반영한다. 같은 분기 대사의 재시도는 최초 결과를 `200 OK`로 반환한다.
+- Backend 엔티티 정합화와 MySQL 8.4.10 실행 검증을 완료해 `BE-001`을 `done`으로 변경했다.
+- 계약 검증은 23개 테이블·31개 외래 키 기준으로 성공했고 문서 하네스도 성공했다.
+- 공식 MySQL 8.4.10 ZIP의 일회성 서버에서 빈 테스트 DB를 생성하고 Flyway V1 전체 적용과 Hibernate schema validation을 완료했다.
+- MySQL 통합 테스트는 애플리케이션 테이블 23개, 외래 키 31개, UNIQUE 11개, CHECK 7개와 핵심 물리 명칭을 검증한다.
+
+### 2026-07-27 교수자 앱 Backend 순차 구현
+
+- `services/frontend-web` 변경은 롤백했고, 이후 작업은 Backend와 루트의 Backend submodule 포인터·현황 문서로 제한했다.
+- `BE-004`: 교수자 정보와 학생 관리 12개 operation의 경로, 소유권, 목록 검색·나이·최근 학습 필터, 요약, 정확도·읽기 속도 추이, 훈련 이력 기간 필터, 학습 요약과 추천 규칙을 구현했다.
+- 학생 등록·상세는 기존 `birthday`, `guardian`, `guardianContact`, `imageUrl`과 OpenAPI의 `birthDate`, `guardianName`, `guardianPhone`, `profileImage`를 함께 처리한다. 상세의 `studentCode`는 서버의 `studentId` 문자열로 반환하고 배열형 주소 입력도 기존 문자열 컬럼에 호환 저장한다.
+- `get_admin_student_by_studentId_learning_events`는 필수 `eventType(test|training|story|gaze)`과 `eventId` 조합으로 원본 테이블을 구분하며 네 유형을 모두 조회한다.
+- 최종 계약 감사에서 훈련 이력의 잘못된 필수 `trainingRecord`를 선택 `from`·`to` 날짜 query로 교체하고, 교수자 조회의 이미지 필드를 `profileImageUrl`로 통일했다.
+- `BE-005`: 관리자 훈련·검사 목록 wrapper와 응답 필드, 커리큘럼 상세·수정, 훈련 상세, JSON·CSV 동기 다운로드, 검사 비교 계약을 구현했다.
+- `BE-006`: 보고서 목록·생성·상세·메모·시선 분석 반영과 검사·훈련 시선 결과 조회 계약을 구현했다. 제거된 `student_word_stats` 대신 `word_attempt_logs`를 보고서 기간별로 집계한다.
+- `BE-012`: 관리자 범위의 `400`, `401`, `403`, `404`, `409`, `500` 오류 응답과 입력 검증을 통일했다. Auth·App 전체 범위가 남아 있어 작업 상태는 `in-progress`를 유지한다.
+- 확정 ERD의 검사 커리큘럼, 보고서 기간 timestamp, 시선 원시 데이터, 훈련 정확도, 캐릭터와 이야기 장면 관계를 Backend 엔티티에 반영했다. 엔티티가 생성하는 모든 테이블의 컬럼 집합을 Flyway V1과 비교하는 회귀 테스트를 추가했다.
+- Admin OpenAPI 31개 operation의 경로·HTTP method 회귀 테스트를 추가했다.
+- MySQL 통합 검증을 활성화한 `.\gradlew.bat test --rerun-tasks`: 119개 전체 성공, skip·실패 0개.
+- `python tools/validate_contracts.py`: 80 operations, 334 features, 73 reviewed, 23 MySQL tables, 31 foreign keys 검증 성공.
+- `python tools/validate_harness.py`: 82 Markdown files와 31 record docs 검증 성공.
+- 공식 MySQL 8.4.10 ZIP을 임시 런타임으로 사용해 빈 DB Flyway 적용, 23개 애플리케이션 테이블·31개 외래 키와 Hibernate 엔티티 매핑을 검증했다.
+
+### 2026-07-27 BE-007 완료
+
+- App 인증 4개 operation은 `BE-002`에서 완료한 learning audience JWT와 refresh rotation을 사용한다.
+- 캐릭터 목록은 query parameter 없이 학습 토큰의 `studentId`를 사용하며 `characterId`, `storyId`, `imageUrl`, `name`, `createdAt`을 `characters` 목록으로 반환한다.
+- 잘못된 캐릭터 `EntityGraph("image")`를 실제 연관관계인 `story`로 수정하고 영속성 통합 테스트로 조회를 검증했다.
+- 성장 조회는 완료된 `trainings`를 학생·훈련 템플릿별로 집계해 `trainingTemplateId`, `trainingTemplateName`, `completedCount`를 반환한다.
+- 학습 토큰과 성장 조회 경로의 학생이 다르면 서비스 호출 전에 `403 Forbidden`으로 차단하며, 교수자 소유 관계가 없으면 `404 Not Found`로 처리한다.
+- `.\gradlew.bat test --rerun-tasks`: 126개 중 일반 테스트 125개 성공, opt-in MySQL 통합 테스트 1개 skip, 실패 0개.
+- `python tools/validate_contracts.py`: 80 operations, 334 features, 73 reviewed, 23 MySQL tables, 31 foreign keys 검증 성공.
+- `python tools/validate_harness.py`: 82 Markdown files와 31 record docs 검증 성공.
+- DB 스키마 변경이 없어 MySQL 통합 테스트는 다시 실행하지 않았다.
+
+### 2026-07-27 BE-008 완료
+
+- App 훈련 7개 operation을 별도 이력 식별자 없이 `trainings.id`를 세션 식별자로 사용하는 ERD 중심 계약으로 정리했다.
+- 안내·문항은 `training_datas.generated_data`를 조회하며 App에는 `questionType`, `responseType`, `content`와 선택적 `requiredInputs`만 반환한다.
+- 비음성 훈련 제출은 App이 보낸 `submissionId`, `responseType`, 원시 `response`를 Backend가 저장된 `answer`와 비교한다. 최대 3회, 힌트, 3회차 정답 공개와 동일 `submissionId` 재전송 멱등성을 `trainings.result`에서 처리한다.
+- App 검사 7개 operation은 `tests.id`를 세션 식별자로 사용하고 최신 `test_datas.generated_data`의 문항을 같은 표시용 문항 계약으로 변환한다.
+- 비음성 검사는 문항당 최초 제출만 `tests.result`에 저장하고 App에는 정답·점수 없이 진행률만 반환한다. 제거된 문항별 완료 API 대신 제출 자체를 완료 단위로 사용한다.
+- 훈련 완료 요청에는 body를 받지 않고 검사 완료 요청에는 `testId`만 받는다. Backend가 전체 문항 제출 여부와 서버 완료 시각을 검증하며 아동 응답에는 정확도와 상세 분석을 노출하지 않는다.
+- 비음성 평가 점수는 교수자 결과와 프로필 계산을 위해 서버 내부 결과에만 저장한다. 음성 제출은 별도 팀 작업 범위로 유지한다.
+- 모든 검사·훈련 App 경로에서 학습 토큰의 학생과 경로 학생을 먼저 대조하고 교수자 소유 학생·세션 관계를 검증한다.
+- 2026-07-28 비음성 계약 정합화 후 Backend 전체 `.\gradlew.bat test`가 성공했다.
+- `python tools/validate_contracts.py`: 80 operations, 334 features, 73 reviewed, 23 MySQL tables, 31 foreign keys 검증 성공.
+- `python tools/validate_harness.py`: 82 Markdown files와 31 record docs 검증 성공.
+- DB 스키마 변경은 없으며 기존 ERD의 `tests`, `test_datas`, `trainings`, `training_datas`, `word_attempt_logs`만 사용한다.
+
+## Frontend TODO
+
+`FE`는 하나의 관리 영역이며 교수자용 화면은 `services/frontend-web`, 아동용 화면은 `services/frontend-app`에서 구현한다.
+
+| ID | 경로 | 우선순위 | 작업 | 계약·영역 | 선행 작업 | 상태 |
+| --- | --- | --- | --- | --- | --- | --- |
+| FE-001 | `services/frontend-web` | P0 | Vue 3·TypeScript·Vite·pnpm 애플리케이션 기반 구성 | 라우팅, 상태, API client, 환경변수 | 없음 | done |
+| FE-002 | `services/frontend-web` | P0 | 교수자 인증과 공통 레이아웃 구현 | Auth Admin operation | FE-001, BE-002 | done |
+| FE-003 | `services/frontend-web` | P0 | 학생 목록·요약·등록·상세·수정 화면 구현 | Admin `student`, `teacher` | FE-002, BE-004 | done |
+| FE-004 | `services/frontend-web` | P0 | 훈련 교안·이력·통계와 검사 비교 화면 구현 | Admin `training`, `test` | FE-003, BE-005 | done |
+| FE-005 | `services/frontend-web` | P1 | 보고서·시선 결과·교수자 프로필 화면 구현 | Admin `report`, gaze, `teacher` | FE-003, FE-004, BE-006 | done |
+| FE-006 | `services/frontend-app` | P0 | 아동 App 기술 스택 확정과 애플리케이션 기반 구성 | 라우팅, 상태, API client, 미디어 권한 | 없음 | todo |
+| FE-007 | `services/frontend-app` | P0 | 교수자 로그인·연결 아동 프로필 선택과 홈·성장·캐릭터 화면 구현 | Auth App, App `student`, `mypage` | FE-006, BE-007 | todo |
+| FE-008 | `services/frontend-app` | P0 | 검사·훈련 안내, 문항, 녹음·응답과 완료 흐름 구현 | App `test`, `training` | FE-007, BE-008 | todo |
+| FE-009 | `services/frontend-app` | P1 | 이야기 책장·읽기·분기·음성 재생 흐름 구현 | App `story` | FE-007, BE-009, BE-010 | todo |
+| FE-010 | `services/frontend-app` | P1 | 시선 장치 안내, 세션 시작·종료·실패 흐름 구현 | App `gaze` | FE-006, BE-009 | todo |
+| FE-011 | 두 저장소 | P1 | 공통 로딩·빈 상태·오류·재인증 UX 정리 | 공통 오류 응답, 401·403·404·409 | FE-002, FE-007, BE-012 | todo |
+| FE-012 | 두 저장소 | P1 | 핵심 데모 시나리오와 접근성·반응형 마무리 | 교수자 관리, 아동 검사·훈련·이야기 | FE-003~FE-011 | todo |
+| FE-013 | `services/frontend-web` | P0 | 교수자 이메일 기반 계정 복구와 보고서·프로필 계약 정합화 | Auth, Admin `teacher`, `report` | FE-002, FE-005, BE-031 | done |
+| FE-014 | `services/frontend-web` | P0 | 예상 단어 UI를 제거하고 생성 교안 전체 편집으로 전환 | Admin `lesson-material` GET/PUT, revision·409·422 | FE-004 | todo |
+
+### Frontend 수용 기준
+
+- 화면 요청은 해당 OpenAPI `operationId`와 추적할 수 있다.
+- 로딩, 빈 결과, 검증 실패, 인증 만료와 서버 오류 상태를 처리한다.
+- 교수자 Frontend와 아동 App의 토큰·환경변수·API URL을 소스에 하드코딩하지 않는다.
+- 아동 App은 마이크·시선 장치 권한 거부와 장치 미지원 상태를 사용자에게 설명한다.
+- `services/ai` 없이 Backend `demo` profile만으로 핵심 시나리오를 시연할 수 있다.
+- 작업별 관련 테스트 코드를 추가·수정하고 테스트 성공을 확인한 뒤 결과를 기록한다.
+
+## 구현 순서
+
+1. `BE-001`, `BE-010`, `FE-001`, `FE-006`
+2. `BE-002`, `BE-003`, `FE-002`
+3. `BE-004`, `BE-007`, `FE-003`, `FE-007`
+4. `BE-005`, `BE-008`, `FE-004`, `FE-008`
+5. `BE-006`, `BE-009`, `BE-012`, `FE-005`, `FE-009`, `FE-010`
+6. `BE-011`, `FE-011`, `FE-012`
+7. `BE-013`, `BE-014`
+8. `BE-015`, `BE-016`, `BE-017`, `BE-020`, `BE-026`
+9. `BE-018`, `BE-021`
+10. `BE-019`, `BE-022`
+11. `BE-023`, `BE-024`
+12. `BE-025`, `BE-027`
+
+## 관리 규칙
+
+- 이 문서는 서비스 간 우선순위, 의존성과 상태의 기준 문서다.
+- 세부 구현이 한 번에 검토하기 어려우면 [작업 템플릿](../templates/task.md)으로 별도 계획을 작성하거나 해당 서비스 저장소의 GitHub Issue에 연결한다.
+- 상태를 변경할 때 구현 PR 또는 커밋, 검증 결과와 남은 차단 요인을 함께 기록한다.
+- 구현과 필수 테스트가 모두 완료되고 테스트 결과가 기록된 뒤에만 상태를 `done`으로 변경한다.
+- OpenAPI나 MySQL 계약 변경이 필요하면 구현에서 임의로 우회하지 않고 iRead 계약을 먼저 수정한다.
+- 제품 탐색과 MVP 결정은 [제품 탐색 백로그](backlog.md)에서 별도로 관리한다.

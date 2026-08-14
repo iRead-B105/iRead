@@ -1,59 +1,65 @@
-# Feature: `<name>`
+---
+type: Template
+---
+# 기능 명세: `<이름>`
 
-- Status: draft
-- Owner: [TBD]
-- Created: YYYY-MM-DD
-- Related requirements: [TBD]
+이 파일을 복사한 뒤 frontmatter의 `type`을 `Feature Specification`으로 바꾸고 제목을 갱신한다.
 
-## Problem and outcome
+- 상태: draft
+- 담당: [TBD]
+- 작성일: YYYY-MM-DD
+- 관련 요구사항: [TBD]
+
+## 문제와 기대 결과
 
 - 사용자 문제:
 - 기대하는 관찰 가능한 결과:
 - 성공 지표:
 
-## Scope
+## 범위
 
-### In scope
-
-- [TBD]
-
-### Out of scope
+### 포함 범위
 
 - [TBD]
 
-## User journey
+### 제외 범위
+
+- [TBD]
+
+## 사용자 여정
 
 - 시작 조건:
 - 정상 흐름:
 - 오류 및 복구 흐름:
 
-## Requirements and acceptance criteria
+## 요구사항과 수용 기준
 
 - REQ-000: [TBD]
 
-## Service and data impact
+## 서비스와 데이터 영향
 
 - 책임 서비스:
 - 데이터 소유권/보존:
 - API 또는 이벤트 계약:
 - Redis 사용 여부와 목적:
 
-## Non-functional requirements
+## 비기능 요구사항
 
 - 보안/개인정보:
 - 성능/확장성:
 - 가용성/복구:
 - 관측성:
 
-## Clarifications required
+## 확인이 필요한 사항
 
 - [TBD]
 
-## Validation
+## 검증
 
-- 검증 후보:
-- 실행 승인: 소스 테스트·빌드·린트·정적 분석은 사용자 명시적 요청 필요
+- 수용 기준 검증:
+- 동작 변경 또는 검증 공백이 있을 때 추가·수정할 테스트:
+- 실행할 테스트·빌드·린트:
 
-## Rollout and rollback
+## 배포와 롤백
 
 - [TBD]

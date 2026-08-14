@@ -1,0 +1,32 @@
+{
+  "studentId": 1,
+  "endedAt": "2026-07-28T10:03:20+09:00",
+  "status": "COMPLETED",
+  "data": {
+    "samplingHz": 10,
+    "filters": {
+      "validPresence": true,
+      "outlierFilter": true,
+      "blinkCooldown": true,
+      "headPoseGuard": true
+    },
+    "sampleSummary": {
+      "validSampleCount": 1420,
+      "invalidSampleCount": 34,
+      "outlierSampleCount": 8,
+      "blinkCooldownCount": 12
+    },
+    "samples": [
+      {
+        "offsetMs": 120,
+        "x": 0.32,
+        "y": 0.41,
+        "valid": true,
+        "presence": true,
+        "gazeUsable": true,
+        "targetType": "WORD",
+        "targetIndex": 3
+      }
+    ]
+  }
+}

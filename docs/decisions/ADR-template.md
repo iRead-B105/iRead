@@ -1,37 +1,41 @@
-# ADR-0000: `<decision title>`
+---
+type: Template
+---
+# ADR-0000: `<결정 제목>`
 
-- Status: proposed
-- Date: YYYY-MM-DD
-- Deciders: [TBD]
-- Supersedes: 없음
+이 파일을 복사한 뒤 frontmatter의 `type`을 `Architecture Decision`으로 바꾸고 ID와 제목을 갱신한다.
 
-## Context
+- 상태: proposed
+- 결정일: YYYY-MM-DD
+- 결정자: [TBD]
+- 대체 대상: 없음
+
+## 배경
 
 결정이 필요한 문제, 제약과 근거를 적는다.
 
-## Decision drivers
+## 결정 기준
 
 - [TBD]
 
-## Options considered
+## 검토한 대안
 
 1. [TBD]
 
-## Decision
+## 결정
 
 [TBD]
 
-## Consequences
+## 영향
 
-### Positive
-
-- [TBD]
-
-### Negative / trade-offs
+### 긍정적 영향
 
 - [TBD]
 
-## Validation and revisit trigger
+### 부정적 영향과 트레이드오프
+
+- [TBD]
+
+## 검증 및 재검토 조건
 
 - 결정이 유효한지 확인할 방법과 재검토 조건을 적는다.
-

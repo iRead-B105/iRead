@@ -1,0 +1,15 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "learner-app",
+      "url": "http://localhost:5174",
+      "port": 5174
+    },
+    {
+      "name": "teacher-web",
+      "url": "http://localhost:5173",
+      "port": 5173
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "studentId": 1,
+  "totalVisitedDuration": 84500,
+  "totalVisitedCount": 128,
+  "reverseReadCount": 7,
+  "avgVisitedDuration": 660,
+  "sentenceMetrics": [
+    {
+      "storyLineId": 5,
+      "sequenceNo": 1,
+      "surfaceText": "개미는 부지런히 먹이를 옮겼어요.",
+      "dwellDurationMs": 4200,
+      "fixationCount": 6,
+      "firstGazeOffsetMs": 1200,
+      "lastGazeOffsetMs": 5400
+    }
+  ],
+  "wordAttempts": [
+    {
+      "wordId": 23,
+      "storyLineId": 5,
+      "wordIndex": 0,
+      "surfaceText": "개미는",
+      "hasAudioData": false,
+      "fixationDurationMs": 620,
+      "fixationCount": 2,
+      "gazeStartOffsetMs": 1200,
+      "gazeEndOffsetMs": 1820,
+      "isRead": true,
+      "isFixated": false,
+      "isSkipped": false,
+      "isRegressed": false,
+      "regressionCount": 0
+    }
+  ],
+  "regressions": [
+    {
+      "fromWordIndex": 5,
+      "toWordIndex": 2,
+      "offsetMs": 6800
+    }
+  ],
+  "analysisMeta": {
+    "contentType": "STORY",
+    "storyId": 10,
+    "calculationSource": "frontend",
+    "gazeSessionDurationMs": 200000
+  }
+}

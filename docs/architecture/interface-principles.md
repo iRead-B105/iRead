@@ -1,30 +1,48 @@
-# Interface principles
+---
+type: Architecture Principle
+title: "인터페이스 원칙"
+description: "서비스 간 API와 이벤트 계약이 따라야 할 입력, 오류, 보안과 호환성 원칙입니다."
+tags: [architecture, interface, api, contracts]
+timestamp: 2026-07-24T00:00:00+09:00
+---
+# 인터페이스 원칙
 
-- Status: proposed
-- Last reviewed: 2026-07-15
+- 상태: proposed
+- 최종 검토일: 2026-07-15
 
-실제 API나 이벤트를 정의하기 전에 적용할 원칙이다. 제품 요구사항과 서비스 책임이 확정되기 전에는 구체적인 endpoint를 만들지 않는다.
+실제 API나 이벤트를 정의하기 전에 적용할 원칙이다. 제품 요구사항과 서비스 책임이 확정되기 전에는 구체적인 엔드포인트를 만들지 않는다.
 
-## Principles
+## 기본 원칙
 
 - 계약은 소비자가 관찰하는 동작과 오류를 명시한다.
 - 서비스가 소유한 데이터만 직접 변경한다.
 - 시간 제한, 재시도, 멱등성, 취소와 부분 실패를 계약에 포함한다.
 - 장시간 AI 작업은 동기 요청으로 고정하지 말고 사용자 경험과 운영 제약을 확인해 결정한다.
-- Redis를 영구 데이터의 source of truth로 가정하지 않는다.
+- Redis를 영구 데이터의 기준 저장소로 가정하지 않는다.
 - 호환성을 깨는 변경에는 버전 전환 및 롤백 계획이 필요하다.
-- 비밀값과 개인정보를 예시 payload, 로그, 프롬프트에 넣지 않는다.
+- 비밀값과 개인정보를 예시 페이로드, 로그, 프롬프트에 넣지 않는다.
+- 데모에서도 인증 여부, 사용자 역할과 리소스 소유권을 검사한다.
+- 토큰, 비밀번호, 이름, 연락처, 음성 파일 경로·접근 URL과 요청 본문은 로그에 기록하지 않는다.
 
-## Contract template
+## 계약 작성 형식
 
-| Field | Description |
+| 항목 | 설명 |
 | --- | --- |
-| Owner / consumers | 계약 제공자와 소비자 |
-| Trigger | 호출 또는 이벤트 발생 조건 |
-| Input / output | 스키마와 예시 |
-| Errors | 코드, 재시도 가능성, 사용자 표시 방식 |
+| 제공자 / 소비자 | 계약 제공자와 소비자 |
+| 시작 조건 | 호출 또는 이벤트 발생 조건 |
+| 입력 / 출력 | 스키마와 예시 |
+| 오류 | 코드, 재시도 가능성, 사용자 표시 방식 |
 | SLO | 시간 제한, 처리량, 가용성 |
-| Security | 인증, 인가, 민감정보 분류 |
-| Compatibility | 버전과 변경 정책 |
-| Observability | correlation ID, 로그, 메트릭, 추적 |
+| 보안 | 인증, 인가, 민감정보 분류 |
+| 호환성 | 버전과 변경 정책 |
+| 관측성 | correlation ID, 로그, 메트릭, 추적 |
 
+## Backend–AI 내부 API
+
+- Backend만 AI server를 호출하고 아동 앱과 관리자 Frontend는 AI server에 직접 접근하지 않는다.
+- 모든 요청은 `X-API-Key`로 서비스 인증하고 `Idempotency-Key`로 중복 처리를 방지한다.
+- 연결 제한은 3초, operation 처리 제한은 30초를 기준으로 한다.
+- 연결 실패와 HTTP 502·503·504만 같은 멱등성 키로 최대 한 번 재시도한다.
+- 요청의 `requestId`와 `schemaVersion`을 응답에서 대조하고 불일치하면 저장하지 않는다.
+- 이야기 생성 응답의 `nextProgress`는 현재 진행률 이상 100 이하인지 검증한 뒤 장면과 같은 트랜잭션으로 저장한다.
+- 세부 요청·응답은 [Backend–AI OpenAPI](../../contracts/openapi/ai-api.yaml)를 따른다.

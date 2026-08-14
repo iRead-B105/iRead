@@ -1,0 +1,20 @@
+[submodule "services/backend"]
+	path = services/backend
+	url = https://github.com/iRead-B105/iRead-backend.git
+	branch = develop
+[submodule "services/frontend-web"]
+	path = services/frontend-web
+	url = https://github.com/iRead-B105/iRead-frontend-web.git
+	branch = develop
+[submodule "services/ai"]
+	path = services/ai
+	url = https://github.com/iRead-B105/iRead-ai.git
+	branch = develop
+[submodule "services/frontend-app"]
+	path = services/frontend-app
+	url = https://github.com/iRead-B105/iRead-frontend-app.git
+	branch = develop
+[submodule "services/eyetracking"]
+	path = services/eyetracking
+	url = https://github.com/iRead-B105/iRead-eyetracking.git
+	branch = develop

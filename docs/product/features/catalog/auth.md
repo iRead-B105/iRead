@@ -1,0 +1,50 @@
+---
+type: Feature Catalog
+title: "기능 카탈로그: auth"
+description: "auth 도메인의 기능 식별자, 설명과 API 관계를 정리합니다."
+tags: [feature, catalog, auth]
+timestamp: 2026-07-29T11:17:47+09:00
+---
+# 기능 카탈로그: auth
+
+| 기능 ID | 기능 | 설명 | 책임 | API operationId |
+| --- | --- | --- | --- | --- |
+| AU-ADM-REF-01 | 관리자 앱 인증 토큰 갱신 | 관리자 앱의 유효한 refresh token을 검증하고 세션을 회전한 뒤 새 access token을 발급한다. | server | `post_auth_admin_refresh` |
+| AU-APP-OUT-01 | 학습 앱 로그아웃 처리 | 현재 학습 앱 access token과 refresh session을 폐기하고 학습용 인증 쿠키를 만료시킨다. | server | `post_auth_app_logout` |
+| AU-APP-REF-01 | 학습 앱 인증 토큰 갱신 | 학습 앱의 유효한 refresh token을 검증하고 세션을 회전한 뒤 새 access token을 발급한다. | server | `post_auth_app_refresh` |
+| LG-01 | 교수자 이메일 입력 | 교수자가 로그인 식별자로 사용할 가입 이메일을 입력한다. | server | `post_auth_admin_login` |
+| LG-02 | 교수자 비밀번호 입력 | 교수자가 로그인에 사용할 비밀번호를 입력한다. | server | `post_auth_admin_login` |
+| LG-03 | 교수자 이메일 입력값 검증 | 로그인 이메일의 필수 입력 여부와 이메일 형식 및 길이를 검증한다. | server | `post_auth_admin_login` |
+| LG-04 | 교수자 비밀번호 입력값 검증 | 비밀번호의 필수 입력 여부와 허용 형식 및 길이를 검증한다. | server | `post_auth_admin_login` |
+| LG-05 | 교수자 로그인 인증 | 입력한 이메일과 비밀번호로 교수자 인증을 요청한다. | server | `post_auth_admin_login` |
+| LG-06 | 교수자 로그인 성공 처리 | 인증에 성공하면 교수자 세션을 생성하고 대시보드 화면으로 이동한다. | server | `post_auth_admin_login` |
+| LG-07 | 교수자 로그인 실패 처리 | 교수자 인증에 실패하면 구체적인 원인을 구분하지 않고 오류를 표시한 뒤 로그인을 중단한다. | server | `post_auth_admin_login` |
+| LG-13 | 비밀번호 표시 상태 전환 | 교수자가 입력한 비밀번호의 표시와 숨김 상태를 전환한다. | server | `post_auth_admin_login` |
+| LG-PW-01 | 교수자 비밀번호 재설정 | 교수자가 가입 이메일로 10분 만료 일회용 링크를 요청하고 새 비밀번호를 설정한다. | server | `post_auth_admin_password_reset_confirm`, `post_auth_admin_password_reset_request` |
+| LG-PW-02 | 비밀번호 재설정 링크 요청 | 계정 존재 여부를 노출하지 않는 동일 응답으로 가입 이메일에 일회용 링크 발송을 요청한다. | server | `post_auth_admin_password_reset_request` |
+| LG-PW-03 | 새 비밀번호 입력값 검증 | 일회용 링크의 토큰과 8~100자의 새 비밀번호 및 확인 값을 검증한다. | server | `post_auth_admin_password_reset_confirm` |
+| LG-PW-04 | 비밀번호 재설정 완료 처리 | 유효한 일회용 링크로 비밀번호를 변경하고 기존 refresh session을 모두 폐기한 뒤 로그인 화면으로 이동한다. | server | `post_auth_admin_password_reset_confirm` |
+| LG-STU-01 | 연결 아동 정보 조회 | 현재 교수자 세션을 기준으로 해당 교수자에게 연결된 아동 정보와 인증된 프로필 이미지를 조회한다. | server | `post_auth_app_student_login`, `get_auth_app_student_profile_image` |
+| LG-STU-02 | 아동 이름 입력 | 학습을 시작할 아동의 이름을 입력할 수 있도록 한다. | server | `post_auth_app_student_login` |
+| LG-STU-03 | 아동 이름 입력값 검증 | 아동 이름의 필수 입력 여부와 허용 형식을 검증한다. | server | `post_auth_app_student_login` |
+| LG-STU-04 | 연결 아동 식별 | 입력한 이름과 현재 교수자에게 연결된 아동 정보를 비교하여 대상 아동을 식별한다. | server | `post_auth_app_student_login` |
+| LG-STU-05 | 아동 로그인 실패 처리 | 일치하는 연결 아동이 없거나 한 명으로 식별할 수 없는 경우 오류를 표시한다. | server | `post_auth_app_student_login` |
+| LG-STU-06 | 아동 세션 생성 | 식별된 아동의 고유 식별 정보를 교수자 세션과 연결하여 아동 세션을 생성한다. | server | `post_auth_app_student_login` |
+| LG-STU-07 | 아동 로그인 성공 처리 | 아동 세션 생성 후 해당 아동의 학습 앱 메인 화면으로 이동한다. | server | `post_auth_app_student_login` |
+| LG-SU-01 | 교수자 회원가입 정보 입력 | 교수자가 이메일, 비밀번호, 비밀번호 확인, 이름과 소속기관을 입력한다. | server | `post_auth_admin_sign_up` |
+| LG-SU-02 | 교수자 회원가입 입력값 검증 | 모든 필수값, 이메일 형식·50자 제한, 제어문자가 없는 8~100자 비밀번호, 비밀번호 확인 일치, 문자 기반 1~10자 이름과 제어문자가 없는 1~100자 소속을 검증한다. | server | `post_auth_admin_sign_up` |
+| LG-SU-03 | 교수자 회원가입 제출 | 교수자가 회원가입 버튼을 선택하면 입력값을 검증하고, 유효한 경우 회원가입 완료 흐름을 진행한다. | server | `post_auth_admin_sign_up` |
+| LG-SU-04 | 교수자 회원가입 성공 처리 | 회원가입 입력값 검증을 통과하면 회원가입을 완료하고 로그인 화면으로 이동한다. | server | `post_auth_admin_sign_up` |
+| LG-SU-05 | 교수자 회원가입 실패 처리 | 필수값 누락, 이메일 형식 오류, 비밀번호 길이 미달 또는 비밀번호 확인 불일치 시 제출을 중단하고 입력값을 수정할 수 있도록 안내한다. | server | `post_auth_admin_sign_up` |
+| LG-TEA-01 | 교수자 이메일 입력 | 교수자가 로그인을 위한 가입 이메일을 입력할 수 있도록 한다. | server | `post_auth_app_teacher_login` |
+| LG-TEA-02 | 교수자 비밀번호 입력 | 교수자가 로그인을 위한 비밀번호를 입력할 수 있도록 한다. | server | `post_auth_app_teacher_login` |
+| LG-TEA-03 | 교수자 로그인 입력값 검증 | 교수자 이메일과 비밀번호의 필수 입력 여부 및 허용 형식을 검증한다. | server | `post_auth_app_teacher_login` |
+| LG-TEA-04 | 교수자 인증 | 입력한 이메일과 비밀번호로 교수자 인증을 요청한다. | server | `post_auth_app_teacher_login` |
+| LG-TEA-05 | 교수자 세션 생성 | 인증된 교수자의 식별 정보와 권한을 포함한 교수자 세션을 생성하고 학습 앱에 전달한다. | server | `post_auth_app_teacher_login` |
+| LG-TEA-06 | 교수자 로그인 성공 처리 | 교수자 세션 생성 후 연결 아동 로그인 화면을 표시한다. | server | `post_auth_app_teacher_login` |
+| LG-TEA-07 | 교수자 로그인 실패 처리 | 교수자 인증 실패 사유를 표시하고 로그인 입력을 다시 수행할 수 있도록 한다. | server | `post_auth_app_teacher_login` |
+| SB-COM-01 | 교수자 로그아웃 처리 | 현재 로그인한 교수자의 세션을 종료한다. | server | `post_auth_admin_logout` |
+
+# Sources
+
+[Notion 기능 명세](https://app.notion.com/p/de0027df905383e98fb00120c64321fc)
