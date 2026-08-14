@@ -170,10 +170,11 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
 
 | 기능 | 설명 |
 | --- | --- |
-| 📚 개인화 읽기 훈련 | 아동의 읽기 특성과 학습 진행에 맞춰 읽기 훈련을 제공합니다. |
-| 👁️ 시선 추적 | 읽기 과정에서 아동의 시선 위치와 움직임을 수집합니다. |
-| 🗣️ 발음 평가 | 읽기 음성을 분석하여 단어별 발음 수행 결과를 제공합니다. |
-| 📊 학습 현황 확인 | 교수자가 아동의 훈련 진행 상황과 변화를 확인할 수 있도록 지원합니다. |
+| 📚 개인화 읽기 훈련 | 시선, 발음, 정답과 학습 이력을 종합해 아동에게 필요한 다음 읽기 훈련을 구성합니다. |
+| 👁️ 시선 기반 읽기 분석 | Tobii Eye Tracker로 읽기 중 시선을 수집하고, 단어별 머문 시간·건너뜀·되읽기 등 읽기 특성을 분석합니다. |
+| 🗣️ 단어별 발음 평가 | Azure Speech를 활용해 아동의 읽기 음성을 단어 단위로 분석하고 정확도와 오류 유형을 제공합니다. |
+| ✨ AI 이야기 학습 | 아동의 학습 진행에 맞는 이야기와 장면 이미지를 생성하고, 선택과 음성을 활용한 참여형 읽기 경험을 제공합니다. |
+| 📊 교수자 학습 관리 | 아동별 훈련 과정과 읽기 변화를 확인하고, 실시간 학습 현황과 분석 리포트로 다음 지도를 준비할 수 있도록 돕습니다. |
 
 ### 1. 개인화 읽기 훈련
 
@@ -184,17 +185,17 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
       기능 화면
     </td>
     <td width="45%">
-      <strong>아동별 읽기 훈련</strong><br /><br />
-      아동의 읽기 특성과 변화 속도에 맞춰 단계적으로 훈련할 수 있도록 돕습니다.<br /><br />
+      <strong>아동에게 필요한 다음 훈련 구성</strong><br /><br />
+      시선, 발음, 정답과 학습 이력을 종합해 아동의 읽기 특성에 맞는 다음 훈련을 제공합니다.<br /><br />
       <strong>핵심 가치</strong><br />
-      · 아동별 수준을 반영한 훈련<br />
-      · 단계별 학습 진행<br />
-      · 훈련 결과의 지속적인 확인
+      · 읽기 특성별 학습 결과 종합<br />
+      · 취약 영역을 반영한 훈련 구성<br />
+      · 보완·확장·복습 훈련의 균형
     </td>
   </tr>
 </table>
 
-### 2. 시선 추적
+### 2. 시선 기반 읽기 분석
 
 <table>
   <tr>
@@ -203,17 +204,17 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
       기능 화면
     </td>
     <td width="45%">
-      <strong>읽기 과정의 시선 데이터 수집</strong><br /><br />
-      Tobii Eye Tracker를 이용해 아동이 글을 읽는 동안의 시선 데이터를 수집합니다.<br /><br />
+      <strong>읽기 과정의 시선 데이터 분석</strong><br /><br />
+      Tobii Eye Tracker로 읽기 중 시선을 수집하고 단어별 머문 시간, 건너뜀, 되읽기 등의 읽기 특성을 분석합니다.<br /><br />
       <strong>핵심 가치</strong><br />
-      · 읽기 중 시선 위치 수집<br />
-      · native bridge 기반 장치 연동<br />
-      · 장치 미연결 시 마우스 기반 fallback
+      · 단어와 문장별 시선 좌표 매칭<br />
+      · 머문 시간·건너뜀·되읽기 분석<br />
+      · 장치 미연결 시 마우스 기반 대체 입력
     </td>
   </tr>
 </table>
 
-### 3. 발음 평가
+### 3. 단어별 발음 평가
 
 <table>
   <tr>
@@ -222,8 +223,8 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
       기능 화면
     </td>
     <td width="45%">
-      <strong>단어 단위 발음 수행 분석</strong><br /><br />
-      Azure Speech의 한국어 발음 평가를 활용해 읽기 음성의 단어별 정확도를 분석합니다.<br /><br />
+      <strong>읽기 음성의 단어 단위 분석</strong><br /><br />
+      Azure Speech의 한국어 발음 평가를 활용해 단어별 정확도와 오류 유형을 제공합니다.<br /><br />
       <strong>핵심 가치</strong><br />
       · 실제 음성 기반 발음 평가<br />
       · 단어별 정확도와 오류 유형 확인<br />
@@ -232,7 +233,26 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
   </tr>
 </table>
 
-### 4. 학습 현황 확인
+### 4. AI 이야기 학습
+
+<table>
+  <tr>
+    <td width="55%" align="center">
+      <!-- 기능 GIF: docs/assets/readme/features/ai-story-learning.gif -->
+      기능 화면
+    </td>
+    <td width="45%">
+      <strong>참여형 이야기 읽기 경험</strong><br /><br />
+      아동의 학습 진행에 맞는 이야기와 장면 이미지를 생성하고 선택과 음성으로 이야기에 참여할 수 있도록 지원합니다.<br /><br />
+      <strong>핵심 가치</strong><br />
+      · 학습 진행을 반영한 이야기 생성<br />
+      · 이야기 흐름에 맞는 장면 이미지 제공<br />
+      · 선택과 음성을 활용한 읽기 참여
+    </td>
+  </tr>
+</table>
+
+### 5. 교수자 학습 관리
 
 <table>
   <tr>
@@ -241,12 +261,12 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
       기능 화면
     </td>
     <td width="45%">
-      <strong>아동과 교수자의 실시간 학습 연동</strong><br /><br />
-      아동 앱의 훈련 진행 상황을 교수자 앱에 전달하여 학습 현황을 함께 확인할 수 있도록 지원합니다.<br /><br />
+      <strong>학습 과정과 읽기 변화 확인</strong><br /><br />
+      아동별 훈련 과정과 읽기 변화를 확인하고 실시간 학습 현황과 분석 리포트를 다음 지도에 활용할 수 있도록 돕습니다.<br /><br />
       <strong>핵심 가치</strong><br />
       · 아동별 훈련 상태 확인<br />
       · SSE 기반 실시간 상태 전달<br />
-      · 교수자와 아동 사이의 학습 흐름 연결
+      · 학습 결과와 분석 리포트 제공
     </td>
   </tr>
 </table>
@@ -378,73 +398,223 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
 
 ## 🔬 핵심 기술 상세
 
-각 기술은 해결하려는 문제, 적용한 방법, 검증 결과를 중심으로 정리합니다.
+아동의 학습 데이터가 수집되고 분석되어 다음 학습으로 이어지는 과정을 중심으로 정리합니다.
 
-### 1. 시선 추적 데이터 수집 및 보정
+### 1. 시선 데이터 수집 및 분석
 
-#### 문제
+Electron IPC와 로컬 시선 추적 bridge를 통해 Tobii Eye Tracker의 시선 프레임을 아동 앱으로 전달합니다. 수집한 좌표는 화면 요소와 매칭해 단어별 머문 시간, 건너뜀, 되읽기 등의 지표로 변환합니다. 장치 연결이 어려운 개발 환경에서는 마우스 기반 입력으로 전체 흐름을 검증할 수 있도록 구성했습니다.
 
-브라우저는 Tobii Eye Tracker에 직접 접근할 수 없으므로 아동 앱과 시선 추적 장치 사이를 연결할 별도 실행 경계가 필요합니다.
 
-#### 해결
+### 2. 발음 평가
 
-로컬 FastAPI bridge와 C++ native bridge를 이용해 장치 데이터를 수집하고 WebSocket으로 아동 앱에 전달합니다. 장치가 없거나 연결에 실패하면 마우스 포인터 기반 fallback으로 동작할 수 있도록 구성했습니다.
-
-[시선 데이터 흐름과 상세 처리 단계 보기](#gaze-data-flow)
-
-#### 결과
-
-- [TBD] 시선 데이터 수집 주기와 보정 결과를 작성합니다.
-- [TBD] 장치 연결 및 fallback 검증 결과를 작성합니다.
-
-### 2. Azure Speech 기반 발음 평가
-
-#### 문제
-
-일반 STT 전사와 기준 문자열 비교만으로는 표기와 실제 발음이 다른 한국어 단어의 발음 정확도를 평가하기 어렵습니다.
-
-#### 해결
-
-AI server가 Azure Speech `ko-KR` scripted Pronunciation Assessment를 호출합니다. 단어별 정확도와 오류 유형을 Backend 계약으로 전달하며, 음성 원본은 분석 요청 동안만 사용하고 성공·실패 후 보관하지 않습니다.
+AI server가 Azure Speech의 한국어 발음 평가를 호출하고, 단어별 정확도와 오류 유형을 Backend에 전달합니다. Backend는 기준 문장과 분석 결과의 단어 순서를 검증한 뒤 학습 결과로 저장합니다. 음성 원본은 분석 과정에서만 사용하며, 처리가 끝나면 별도로 보관하지 않습니다.
 
 <!-- 기술 흐름 이미지: docs/assets/readme/details/pronunciation-flow.png -->
 
-#### 결과
+### 3. 개인화 훈련 구성
 
-- 단어 단위 `AccuracyScore`와 읽기 누락 여부를 학습 수행 근거로 사용할 수 있습니다.
-- Azure 자격증명과 분석 호출을 AI server 경계에 한정합니다.
-- [TBD] 실제 음성 fixture 검증 결과와 평균 처리 시간을 작성합니다.
-
-### 3. 개인화 읽기 훈련
-
-#### 문제
-
-아동마다 읽기 특성과 변화 속도가 다르므로 동일한 순서와 난이도의 훈련만으로는 개인별 학습 과정을 충분히 지원하기 어렵습니다.
-
-#### 해결
-
-[TBD] 시선, 발음, 읽기 수행 데이터를 훈련 구성에 반영하는 기준과 과정을 작성합니다.
+완료된 학습에서 정답 여부, 발음 정확도, 시선 부담과 응답 지연을 읽기 특성별로 집계합니다. 분석된 취약 특성을 기준으로 직접 보완 훈련, 확장 훈련, 복습 훈련을 조합해 다음 학습을 구성합니다. 생성 결과는 문제 형식과 정답, 필수 입력 조건을 검증하며, 검증에 실패한 결과는 저장하지 않습니다.
 
 <!-- 기술 흐름 이미지: docs/assets/readme/details/personalization-flow.png -->
 
-#### 결과
+### 4. AI 이야기 생성
 
-- [TBD] 개인화 기준과 적용 결과를 작성합니다.
-- [TBD] 훈련 전후 비교 또는 검증 결과를 작성합니다.
+아동의 학습 진행과 선택을 바탕으로 다음 이야기와 장면 이미지를 생성합니다. 생성된 페이지는 필수 구성과 내용 품질을 확인하며, 검증에 실패하면 제한된 횟수만큼 다시 생성합니다. 최종 검증을 통과한 경우에만 이야기를 저장해 불완전한 콘텐츠가 노출되지 않도록 합니다.
 
-### 4. 실시간 학습 현황 연동
+<!-- 기술 흐름 이미지: docs/assets/readme/details/ai-story-flow.png -->
 
-#### 문제
+### 5. 실시간 학습 연동
 
-아동 앱과 교수자 앱이 서로 분리되어 있어 훈련 진행 상태를 별도의 새로고침 없이 전달할 방법이 필요합니다.
-
-#### 해결
-
-Backend를 중심으로 SSE 연결을 구성해 교수자에서 아동으로 전달되는 상태와 아동에서 교수자로 전달되는 훈련 진행 정보를 실시간으로 연동합니다.
+아동 앱과 교수자 Web은 서로 직접 연결하지 않고, Backend의 인증된 SSE 연결을 통해 상태를 전달합니다. 훈련 시작과 완료, 학습 정보 변경 등의 이벤트가 발생하면 관련 데이터를 다시 조회하도록 하며, heartbeat와 재연결 처리로 화면 상태를 유지합니다.
 
 <!-- 기술 흐름 이미지: docs/assets/readme/details/realtime-sync-flow.png -->
 
-#### 결과
+---
 
-- 통합 데모 환경에서 양방향 이벤트 전달을 확인할 수 있습니다.
-- [TBD] 최종 측정 환경과 응답 시간 결과를 작성합니다.
+<details>
+<summary><strong>🚀 개발자 가이드 (빌드·실행)</strong></summary>
+
+<br />
+
+### 사전 준비
+
+| 도구 | 용도 |
+| --- | --- |
+| Git | 루트 저장소와 submodule 내려받기 |
+| Docker Desktop | 통합 데모 환경 실행 |
+| Node.js·pnpm | 교수자 Web과 아동 App 개발·검증 |
+| Java 21 | Spring Boot Backend 실행·검증 |
+| Python 3.12·uv | AI server 실행·검증 |
+| Windows·Tobii SDK | 실제 Eye Tracker를 사용하는 경우에만 필요 |
+
+### 저장소 받기
+
+```bash
+git clone --recurse-submodules https://github.com/iRead-B105/iRead.git
+cd iRead
+```
+
+이미 루트 저장소만 clone했다면 submodule을 초기화합니다.
+
+```bash
+git submodule update --init --recursive
+```
+
+### 통합 데모 실행
+
+Docker Compose로 전체 서비스를 실행합니다.
+
+```bash
+cp .env.example .env
+docker compose up -d
+```
+
+Windows에서 각 서비스를 로컬 프로세스로 실행하려면 `.env.example`을 `.env`로 복사한 뒤 다음 스크립트를 사용할 수 있습니다.
+
+```powershell
+.\start-all-local.bat
+```
+
+| 서비스 | 주소 |
+| --- | --- |
+| 교수자 Web | `http://localhost:5173` |
+| 아동 App | `http://localhost:5174` |
+| Backend API | `http://localhost:8080` |
+| AI server | `http://localhost:8081` |
+| Mailpit | `http://localhost:8025` |
+
+### 서비스별 검증
+
+아래 명령은 저장소 루트에서 각 서비스 디렉터리로 이동해 실행합니다.
+
+```bash
+# Frontend Web
+cd services/frontend-web
+pnpm install
+pnpm build
+pnpm test
+cd ../..
+
+# Frontend App
+cd services/frontend-app
+pnpm install
+pnpm build
+pnpm test
+cd ../..
+```
+
+```powershell
+# Backend
+cd services\backend
+.\gradlew.bat test
+cd ..\..
+
+# AI server
+cd services\ai
+uv sync --extra dev
+uv run pytest
+cd ..\..
+```
+
+Tobii Eye Tracker를 사용할 때는 Windows에서 시선 추적 bridge를 먼저 실행합니다.
+
+```powershell
+cd services\eyetracking
+.\run_server.bat
+cd ..\..
+```
+
+</details>
+
+<details>
+<summary><strong>📁 디렉터리 구조</strong></summary>
+
+<br />
+
+```text
+iRead/
+├─ services/
+│  ├─ backend/          # Spring Boot API와 데이터 처리
+│  ├─ frontend-web/     # 교수자용 Vue Web
+│  ├─ frontend-app/     # 아동용 Vue·Electron App
+│  ├─ ai/               # FastAPI 기반 AI 기능
+│  └─ eyetracking/      # Tobii 시선 수집·보정 bridge
+├─ contracts/
+│  ├─ openapi/          # App·Admin·Auth·AI API 계약
+│  └─ database/         # MySQL 스키마와 ERD
+├─ docs/                # 제품·아키텍처·결정·계획 문서
+├─ design-resources/    # UI와 콘텐츠 제작 원본
+├─ tools/               # 계약·문서·통합 데모 검증 도구
+├─ compose.yml          # 로컬 통합 실행 구성
+├─ .env.example         # 환경 변수 예시
+└─ README.md
+```
+
+`services/*`는 각각 독립된 Git 저장소이며 루트 저장소에는 submodule로 연결됩니다.
+
+</details>
+
+<details>
+<summary><strong>🌿 브랜치 전략 & 커밋 컨벤션</strong></summary>
+
+### 브랜치 전략
+
+| 브랜치 | 용도 |
+| --- | --- |
+| `main` | 배포 가능한 릴리스 이력 |
+| `develop` | 다음 릴리스의 통합 기준 |
+| `feature/*` | 기능 개발과 검토가 필요한 변경 |
+| `release/*` | 정식 릴리스 안정화 |
+| `hotfix/*` | 운영 버전 긴급 수정 |
+
+
+### 커밋 컨벤션
+
+```text
+<type>(<scope>): <한국어 제목>
+```
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>용도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>feat</code></td><td>사용자 기능 추가</td></tr>
+          <tr><td><code>fix</code></td><td>오류 수정</td></tr>
+          <tr><td><code>docs</code></td><td>문서 변경</td></tr>
+          <tr><td><code>refactor</code></td><td>동작 변경 없는 구조 개선</td></tr>
+          <tr><td><code>test</code></td><td>테스트 추가·수정</td></tr>
+          <tr><td><code>perf</code></td><td>성능 개선</td></tr>
+          <tr><td><code>style</code></td><td>동작과 무관한 서식 변경</td></tr>
+          <tr><td><code>build</code></td><td>빌드와 의존성 변경</td></tr>
+          <tr><td><code>ci</code></td><td>CI/CD 설정 변경</td></tr>
+          <tr><td><code>chore</code></td><td>기타 유지보수</td></tr>
+          <tr><td><code>revert</code></td><td>이전 커밋 되돌리기</td></tr>
+        </tbody>
+      </table>
+    </td>
+    <td width="50%" valign="top">
+      <table>
+        <thead>
+          <tr>
+            <th>Scope</th>
+            <th>용도</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>feat(training)</code></td><td>개인화 훈련 조회 기능 추가</td></tr>
+          <tr><td><code>fix(gaze)</code></td><td>시선 세션 종료 오류 수정</td></tr>
+          <tr><td><code>docs(readme)</code></td><td>프로젝트 소개 갱신</td></tr>
+        </tbody>
+      </table>
+    </td>
+  </tr>
+</table>
+
+</details>
