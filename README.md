@@ -12,7 +12,7 @@
 **개발 인원** 6명<br />
 **플랫폼** 교수자 Web · 아동 Windows Electron App
 
-**[TBD] 서비스 시연 영상** · **[OpenAPI 명세](#api-specification)** · **[TBD] 화면 설계서**
+**[TBD] 서비스 시연 영상** · **[Swagger API 명세](#api-specification)** · **[TBD] 화면 설계서**
 
 </div>
 
@@ -329,20 +329,14 @@ iRead 데모는 AWS Single EC2 안에서 Nginx, Spring Boot Backend, FastAPI AI 
 
 ## 📋 API 명세
 
-<div align="center">
+<details>
+<summary><strong>Swagger API 명세 보기</strong></summary>
 
-### OpenAPI 명세
+<br />
 
-</div>
+![iRead Swagger API 명세](docs/assets/readme/api/swagger-api.png)
 
-API의 요청·응답, 오류와 서비스 간 계약은 저장소의 OpenAPI YAML을 기준으로 관리합니다.
-
-| API 영역 | 기준 명세 | 주요 기능 |
-| --- | --- | --- |
-| Authentication | [공통 인증 API](contracts/openapi/auth-api.yaml) | 로그인, 토큰 갱신, 비밀번호 재설정 |
-| App | [App–Backend API](contracts/openapi/app-api.yaml) | 아동용 앱의 교육과정·훈련·검사 기능 |
-| Admin | [Admin–Backend API](contracts/openapi/admin-api.yaml) | 교수자용 아동·교육과정·학습 현황 관리 |
-| AI | [Backend–AI API](contracts/openapi/ai-api.yaml) | 발음 평가 등 AI 분석 요청 |
+</details>
 
 ---
 
