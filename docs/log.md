@@ -1,5 +1,10 @@
 # 문서 업데이트 로그
 
+## 2026-08-14
+
+* **데모 배포 아키텍처 확정**: [ADR-0017](decisions/ADR-0017-single-ec2-demo-architecture.md)에 따라 교수자 브라우저, 아동 Electron 앱과 Tobii 로컬 처리, AWS Single EC2의 Nginx·Backend·AI server·데이터 계층 경계를 확정했다.
+* **시선 데이터 흐름 확정**: 장치 확인·보정, Electron IPC 수집, DOM 좌표 매칭, Backend 원시 파일·분석 결과 저장과 SSE 기반 교수자 재조회 흐름을 시스템 컨텍스트와 README에 반영했다.
+
 ## 2026-08-05
 
 * **교수자 이야기 시선 판정 계약**: Backend가 `story-gaze-word-v1`로 동일 단어 응시 구간, 체류·건너뜀·되돌아보기를 판정하고 `wordMetrics`와 `replay.events`를 반환하도록 확정했다. 동일 token sample 공백은 최대 250ms, 방문 tail은 80ms, 최초 확인 시점은 페이지 첫 유효 token sample 기준 상대 시간으로 통일했다.

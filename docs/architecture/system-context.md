@@ -7,43 +7,30 @@ timestamp: 2026-07-24T00:00:00+09:00
 ---
 # 시스템 컨텍스트
 
-- 상태: proposed
-- 최종 검토일: 2026-07-24
+- 상태: accepted
+- 최종 검토일: 2026-08-14
 
-현재 다이어그램은 확정된 사용자·이해관계자와 저장소 분리 원칙만 표현한다. 사용자별 흐름, 서비스 책임, 호출 방향과 외부 시스템은 결정하지 않았다.
+외부 데모는 [ADR-0017](../decisions/ADR-0017-single-ec2-demo-architecture.md)에 따라 아동 PC의 로컬 시선 처리 경계와 AWS Single EC2의 서버 경계를 분리한다.
 
-```mermaid
-flowchart LR
-    U["아동 학습자 · 보호자<br/>전문가 · 교육기관"]
-    F["Frontend 저장소<br/>Vue 3 + TypeScript"]
-    P["아동 앱 저장소<br/>기술 스택 [TBD]"]
-    B["Backend 저장소<br/>Spring Boot 4.0.7 + Java 21"]
-    A["AI server 저장소<br/>FastAPI + Python 3.12"]
-    E["시선 추적 저장소<br/>FastAPI + C++ · Tobii"]
-    R["Redis<br/>역할 [TBD]"]
-    O["Orchestration 저장소<br/>기획 · 계약 · 결정 · 통합 구성"]
+![iRead 시스템 아키텍처](../assets/readme/architecture/system-architecture.png)
 
-    U -. "사용 흐름 [TBD]" .-> F
-    U -. "아동 앱 사용 흐름 [TBD]" .-> P
-    F -. "Admin–Backend OpenAPI" .-> B
-    P -. "App–Backend OpenAPI" .-> B
-    B -. "Backend–AI OpenAPI" .-> A
-    E -. "시선 데이터 계약 [TBD]" .-> B
-    B -. "사용 목적 [TBD]" .-> R
-    A -. "사용 목적 [TBD]" .-> R
-    O -. "submodule / 계약" .-> F
-    O -. "submodule / 계약" .-> B
-    O -. "submodule / 계약" .-> A
-    O -. "submodule / 계약" .-> P
-    O -. "submodule / 계약" .-> E
-```
+## 확정 경계
+
+- 교수자는 브라우저에서 HTTPS로 교수자 Frontend를 사용한다.
+- 아동은 Windows PC의 Electron 앱을 사용하며 Tobii 장치 제어, 보정과 시선 프레임 처리는 로컬 서비스와 Electron IPC 경계에서 수행한다.
+- AWS Single EC2에서 Nginx, Spring Boot Backend, FastAPI AI server, MySQL, Redis와 파일 저장소를 운영한다.
+- Nginx는 TLS 종료, 정적 파일 제공과 Backend API proxy를 담당한다.
+- Backend는 인증과 서비스 로직, 시선 세션·분석 결과·원시 파일 저장과 SSE 이벤트 발행을 조율한다.
+- AI server는 Azure Speech 발음 평가와 독립된 이야기 텍스트·이미지 공급자 호출을 담당한다.
+
+## 시선 데이터 흐름
+
+![iRead 시선 데이터 흐름 요약](../assets/readme/architecture/gaze-data-flow-overview.png)
+
+상세 처리 단계는 [시선 데이터 상세 흐름도](../assets/readme/architecture/gaze-data-flow-detail.png)에서 확인한다.
 
 ## 미결 경계
 
-- 인증과 사용자 데이터의 소유 서비스
-- 동기 HTTP, 비동기 메시징 등 서비스 간 통신 방식
-- AI 작업의 요청·상태·결과 저장 방식
-- Redis를 사용하는 서비스와 장애 시 동작
-- 외부 AI 모델, 스토리지, 관측 도구와 배포 환경
-- Frontend와 아동 앱의 사용자·기능 책임 경계
-- 시선 추적 프로토타입을 Frontend와 Backend에 통합할 책임 경계
+- Redis에 저장할 구체적인 데이터와 장애 시 fallback
+- 운영 전환 시 고가용성, 백업·복구와 관측성
+- 원시 시선·음성 파일의 운영 보관 주기와 삭제 보장

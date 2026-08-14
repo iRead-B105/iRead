@@ -8,9 +8,9 @@
 
 <!-- 대표 이미지 또는 핵심 기능 GIF: docs/assets/readme/overview/service-overview.* -->
 
-**개발 기간** [TBD]<br />
-**개발 인원** [TBD]<br />
-**플랫폼** 교수자 Web · 아동 Web App
+**개발 기간** 2026.07.06 ~ 2026.08.10 (6주)<br />
+**개발 인원** 6명<br />
+**플랫폼** 교수자 Web · 아동 Windows Electron App
 
 **[TBD] 서비스 시연 영상** · **[TBD] Notion API 명세** · **[TBD] 화면 설계서**
 
@@ -72,27 +72,70 @@ iRead는 난독증 또는 읽기곤란 위험이 있는 초등 저학년 아동�
 <table>
   <tr>
     <td align="center" width="33%">
-      <!-- 프로필 이미지: docs/assets/readme/team/member-name.* -->
+      <!-- 프로필 이미지: docs/assets/readme/team/kim-min-jae.* -->
       <br />
-      <strong>[TBD] 이름</strong>
-      <br />
-      [TBD] 역할
-      <br />
-      [TBD] GitHub
-    </td>
-    <td align="center" width="33%">
-      <!-- 프로필 이미지: docs/assets/readme/team/member-name.* -->
-      <br />
-      <strong>[TBD] 이름</strong>
+      <strong>김민재</strong>
       <br />
       [TBD] 역할
       <br />
       [TBD] GitHub
     </td>
     <td align="center" width="33%">
-      <!-- 프로필 이미지: docs/assets/readme/team/member-name.* -->
+      <!-- 프로필 이미지: docs/assets/readme/team/kim-ji-hun.* -->
       <br />
-      <strong>[TBD] 이름</strong>
+      <strong>김지훈</strong>
+      <br />
+      [TBD] 역할
+      <br />
+      [TBD] GitHub
+    </td>
+    <td align="center" width="33%">
+      <!-- 프로필 이미지: docs/assets/readme/team/song-seung-woo.* -->
+      <br />
+      <strong>송승우</strong>
+      <br />
+      [TBD] 역할
+      <br />
+      [TBD] GitHub
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      [TBD] 담당 기능<br />
+      [TBD] 주요 구현 내용
+    </td>
+    <td align="center">
+      [TBD] 담당 기능<br />
+      [TBD] 주요 구현 내용
+    </td>
+    <td align="center">
+      [TBD] 담당 기능<br />
+      [TBD] 주요 구현 내용
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="33%">
+      <!-- 프로필 이미지: docs/assets/readme/team/yoon-jeong.* -->
+      <br />
+      <strong>윤정</strong>
+      <br />
+      팀장 · [TBD] 역할
+      <br />
+      [TBD] GitHub
+    </td>
+    <td align="center" width="33%">
+      <!-- 프로필 이미지: docs/assets/readme/team/lee-seung-hwan.* -->
+      <br />
+      <strong>이승환</strong>
+      <br />
+      [TBD] 역할
+      <br />
+      [TBD] GitHub
+    </td>
+    <td align="center" width="33%">
+      <!-- 프로필 이미지: docs/assets/readme/team/jeong-ui-chan.* -->
+      <br />
+      <strong>정의찬</strong>
       <br />
       [TBD] 역할
       <br />
@@ -214,11 +257,12 @@ iRead는 난독증 또는 읽기곤란 위험이 있는 초등 저학년 아동�
 
 | 분류 | 기술 | 선택 이유 |
 | --- | --- | --- |
-| Frontend | Vue 3, TypeScript, Vite, pnpm | [TBD] 기술 선택 이유를 작성합니다. |
+| Frontend Web | Vue 3, TypeScript, Vite, pnpm | [TBD] 기술 선택 이유를 작성합니다. |
+| Frontend App | Vue 3, TypeScript, Vite, Electron | Tobii 장치와 로컬 시선 처리 모듈을 연동하고 Windows 앱으로 배포합니다. |
 | Backend | Spring Boot 4.0.7, Java 21, Gradle | [TBD] 기술 선택 이유를 작성합니다. |
 | AI server | FastAPI, Python 3.12, uv, Azure Speech | AI 기능을 별도 서비스 경계에서 제공하고 한국어 단어 단위 발음 평가를 수행합니다. |
 | Database | MySQL 8.4 LTS | 관계형 학습 데이터를 일관되게 저장하고 migration 기반 스키마 이력을 관리합니다. |
-| Infrastructure | Redis, Docker Compose | [TBD] Redis의 최종 책임과 선택 이유를 작성합니다. |
+| Infrastructure | AWS EC2, Nginx, Redis, Docker Compose | Single EC2 데모 경계에서 TLS, 정적 파일, API proxy와 서비스 실행 환경을 구성합니다. |
 | Eye Tracking | FastAPI, JavaScript, C++, Tobii Game Integration SDK | 브라우저에서 직접 접근하기 어려운 시선 추적 장치를 로컬 bridge를 통해 연동합니다. |
 
 기술 기준선과 선택 배경은 [ADR-0002](docs/decisions/ADR-0002-technology-baseline.md), [ADR-0006](docs/decisions/ADR-0006-mysql-primary-database.md), [ADR-0013](docs/decisions/ADR-0013-azure-speech-pronunciation-assessment.md)에서 확인할 수 있습니다.
@@ -229,19 +273,38 @@ iRead는 난독증 또는 읽기곤란 위험이 있는 초등 저학년 아동�
 
 ## 🏗️ 시스템 아키텍처
 
-<!-- 시스템 아키텍처 이미지: docs/assets/readme/architecture/system-architecture.png -->
+![iRead 시스템 아키텍처](docs/assets/readme/architecture/system-architecture.png)
+
+iRead 데모는 AWS Single EC2 안에서 Nginx, Spring Boot Backend, FastAPI AI server, MySQL, Redis와 파일 저장소를 함께 운영합니다. 교수자는 브라우저로 접속하고, 아동은 로컬 시선 추적 환경이 포함된 Electron 앱을 사용합니다. 발음 평가와 이야기 텍스트·이미지 생성은 AI server가 외부 AI 서비스와 연동합니다.
 
 | 서비스 | 역할 | 주요 연결 |
 | --- | --- | --- |
-| Frontend Web | 교수자용 사용자 인터페이스 | Backend API, SSE |
-| Frontend App | 아동용 읽기 훈련 애플리케이션 | Backend API, SSE, 시선 WebSocket |
-| Backend | 인증, 도메인 로직, API 및 데이터 관리 | MySQL, Redis, AI server |
-| AI server | 발음 평가 등 AI 기능 제공 | Backend–AI API, Azure Speech |
-| Eye Tracking | 시선 데이터 수집 및 보정 | Tobii Eye Tracker, Frontend App |
-| MySQL | 서비스 영구 데이터 저장 | Backend |
-| Redis | [TBD] 최종 책임 확정 필요 | Backend |
+| Nginx | TLS 종료, 정적 파일 제공과 API proxy | 교수자 브라우저, 아동 앱, Backend |
+| Frontend Web | 교수자용 사용자 인터페이스 | HTTPS, Backend API, SSE |
+| Frontend App | Electron 기반 아동용 읽기 훈련 애플리케이션 | HTTPS, Electron IPC, Tobii 로컬 서비스 |
+| Backend | 인증, 서비스 로직, 세션·분석 결과와 파일 관리 | MySQL, Redis, 파일 저장소, AI server |
+| AI server | 발음 평가와 이야기 콘텐츠 생성 연동 | Backend–AI API, 외부 AI 서비스 |
+| Eye Tracking | Tobii 시선 데이터 수집, 보정과 단어·문장별 지표 생성 | Frontend App, Electron IPC, Backend |
+| MySQL·Redis·File | 영구 데이터, 캐시와 원시 파일 저장 | Backend |
 
-상세한 서비스 경계는 [시스템 컨텍스트](docs/architecture/system-context.md)에서 확인할 수 있습니다.
+<a id="gaze-data-flow"></a>
+
+### 시선 데이터 흐름
+
+아동 앱에서 시작한 학습 세션은 장치 확인과 좌표 보정을 거쳐 단어·문장별 시선 지표로 변환됩니다. Backend는 원시 파일과 분석 결과를 저장하고, 교수자 앱은 저장된 결과를 조회해 분석 화면과 보고서로 제공합니다.
+
+![iRead 시선 데이터 흐름 요약](docs/assets/readme/architecture/gaze-data-flow-overview.png)
+
+<details>
+<summary><strong>시선 데이터 상세 흐름도 보기</strong></summary>
+
+<br />
+
+![iRead 시선 데이터 상세 흐름도](docs/assets/readme/architecture/gaze-data-flow-detail.png)
+
+</details>
+
+상세한 서비스 경계와 배포 기준은 [시스템 컨텍스트](docs/architecture/system-context.md)와 [ADR-0017](docs/decisions/ADR-0017-single-ec2-demo-architecture.md)에서 확인할 수 있습니다.
 
 ---
 
@@ -304,7 +367,7 @@ iRead는 난독증 또는 읽기곤란 위험이 있는 초등 저학년 아동�
 
 로컬 FastAPI bridge와 C++ native bridge를 이용해 장치 데이터를 수집하고 WebSocket으로 아동 앱에 전달합니다. 장치가 없거나 연결에 실패하면 마우스 포인터 기반 fallback으로 동작할 수 있도록 구성했습니다.
 
-<!-- 기술 흐름 이미지: docs/assets/readme/details/eye-tracking-flow.png -->
+[시선 데이터 흐름과 상세 처리 단계 보기](#gaze-data-flow)
 
 #### 결과
 

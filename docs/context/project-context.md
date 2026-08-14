@@ -8,7 +8,7 @@ timestamp: 2026-07-24T00:00:00+09:00
 # 프로젝트 컨텍스트
 
 - 상태: draft
-- 최종 검토일: 2026-07-29
+- 최종 검토일: 2026-08-14
 - 서비스명: `iRead`
 
 ## 저장소 목적
@@ -39,6 +39,9 @@ timestamp: 2026-07-24T00:00:00+09:00
 - 아동 앱은 `iRead-B105/iRead-frontend-app`을 `services/frontend-app`에 연결한다.
 - 시선 추적 프로토타입은 `iRead-B105/iRead-eyetracking`을 `services/eyetracking`에 연결한다.
 - 단어 발음 평가는 [ADR-0013](../decisions/ADR-0013-azure-speech-pronunciation-assessment.md)에 따라 AI server가 Azure Speech `ko-KR` scripted Pronunciation Assessment를 호출하는 방향으로 전환한다.
+- 외부 데모는 [ADR-0017](../decisions/ADR-0017-single-ec2-demo-architecture.md)에 따라 AWS Single EC2에서 Nginx, Spring Boot Backend, FastAPI AI server, MySQL, Redis와 파일 저장소를 함께 운영한다.
+- 아동 앱은 Windows PC의 Electron 앱으로 배포하며 Tobii 장치 제어, 보정과 시선 프레임 처리는 로컬 서비스와 Electron IPC 경계에서 수행한다.
+- 교수자는 브라우저에서 HTTPS로 접속하고 Backend가 세션·분석 결과 저장과 SSE 알림을 조율한다.
 - 향후 Git 운영은 [Git Flow 및 커밋 정책](../workflows/git-flow.md)을 따른다.
 - 요구사항이나 필수 정보가 모호하면 변경 작업 전에 사용자에게 질문한다.
 
@@ -51,7 +54,6 @@ timestamp: 2026-07-24T00:00:00+09:00
 
 - [TBD] MVP 범위와 성공 지표
 - [TBD] 각 서비스의 구체적인 책임
-- [TBD] 아동 앱의 기술 스택
 - [TBD] Redis의 책임(캐시, 세션, 큐, pub/sub 등)
 - [TBD] 서비스별 데이터 소유권
 - [TBD] 운영 전환 시 MySQL 토폴로지, 백업·복구와 배포 제약

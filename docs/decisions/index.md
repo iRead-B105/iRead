@@ -20,5 +20,6 @@
 | [ADR-0014](ADR-0014-email-password-reset.md) | 이메일 일회용 링크로 교수자 비밀번호 재설정 | accepted | 2026-07-28 |
 | [ADR-0015](ADR-0015-lightweight-story-branch-input-review.md) | 경량 LLM으로 이야기 음성 분기 입력 검토 | accepted | 2026-08-04 |
 | [ADR-0016](ADR-0016-independent-story-ai-provider-routing.md) | 이야기 텍스트와 이미지 공급자를 독립적으로 라우팅 | accepted | 2026-08-04 |
+| [ADR-0017](ADR-0017-single-ec2-demo-architecture.md) | AWS Single EC2 데모 아키텍처 채택 | accepted | 2026-08-14 |
 
 새 기록은 [ADR 템플릿](ADR-template.md)을 복사하고 다음 번호를 사용한다.
