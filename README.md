@@ -253,17 +253,71 @@ iRead는 난독증 또는 읽기곤란 위험이 있는 초등 저학년 아동�
 
 ## 🛠️ 기술 스택
 
-<!-- 최종 작성 시 기술명 대신 shields.io 배지를 사용할 수 있습니다. -->
-
-| 분류 | 기술 | 선택 이유 |
-| --- | --- | --- |
-| Frontend Web | Vue 3, TypeScript, Vite, pnpm | [TBD] 기술 선택 이유를 작성합니다. |
-| Frontend App | Vue 3, TypeScript, Vite, Electron | Tobii 장치와 로컬 시선 처리 모듈을 연동하고 Windows 앱으로 배포합니다. |
-| Backend | Spring Boot 4.0.7, Java 21, Gradle | [TBD] 기술 선택 이유를 작성합니다. |
-| AI server | FastAPI, Python 3.12, uv, Azure Speech | AI 기능을 별도 서비스 경계에서 제공하고 한국어 단어 단위 발음 평가를 수행합니다. |
-| Database | MySQL 8.4 LTS | 관계형 학습 데이터를 일관되게 저장하고 migration 기반 스키마 이력을 관리합니다. |
-| Infrastructure | AWS EC2, Nginx, Redis, Docker Compose | Single EC2 데모 경계에서 TLS, 정적 파일, API proxy와 서비스 실행 환경을 구성합니다. |
-| Eye Tracking | FastAPI, JavaScript, C++, Tobii Game Integration SDK | 브라우저에서 직접 접근하기 어려운 시선 추적 장치를 로컬 bridge를 통해 연동합니다. |
+<table>
+  <tr>
+    <th width="18%">분류</th>
+    <th>기술</th>
+  </tr>
+  <tr>
+    <td><strong>Frontend Web</strong></td>
+    <td>
+      <img src="https://img.shields.io/badge/Vue.js%203-4FC08D?style=flat-square&logo=vuedotjs&logoColor=white" alt="Vue.js 3" />
+      <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
+      <img src="https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite" />
+      <img src="https://img.shields.io/badge/pnpm-F69220?style=flat-square&logo=pnpm&logoColor=white" alt="pnpm" />
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Frontend App</strong></td>
+    <td>
+      <img src="https://img.shields.io/badge/Vue.js%203-4FC08D?style=flat-square&logo=vuedotjs&logoColor=white" alt="Vue.js 3" />
+      <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
+      <img src="https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite" />
+      <img src="https://img.shields.io/badge/Electron-47848F?style=flat-square&logo=electron&logoColor=white" alt="Electron" />
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Backend</strong></td>
+    <td>
+      <img src="https://img.shields.io/badge/Java%2021-ED8B00?style=flat-square&logo=openjdk&logoColor=white" alt="Java 21" />
+      <img src="https://img.shields.io/badge/Spring%20Boot%204.0.7-6DB33F?style=flat-square&logo=springboot&logoColor=white" alt="Spring Boot 4.0.7" />
+      <img src="https://img.shields.io/badge/Gradle-02303A?style=flat-square&logo=gradle&logoColor=white" alt="Gradle" />
+    </td>
+  </tr>
+  <tr>
+    <td><strong>AI Server</strong></td>
+    <td>
+      <img src="https://img.shields.io/badge/Python%203.12-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.12" />
+      <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI" />
+      <img src="https://img.shields.io/badge/uv-DE5FE9?style=flat-square&logo=astral&logoColor=white" alt="uv" />
+      <img src="https://img.shields.io/badge/Azure%20Speech-0078D4?style=flat-square&logo=microsoftazure&logoColor=white" alt="Azure Speech" />
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Database</strong></td>
+    <td>
+      <img src="https://img.shields.io/badge/MySQL%208.4%20LTS-4479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL 8.4 LTS" />
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Infrastructure</strong></td>
+    <td>
+      <img src="https://img.shields.io/badge/Amazon%20EC2-FF9900?style=flat-square&logo=amazonec2&logoColor=white" alt="Amazon EC2" />
+      <img src="https://img.shields.io/badge/Nginx-009639?style=flat-square&logo=nginx&logoColor=white" alt="Nginx" />
+      <img src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white" alt="Redis" />
+      <img src="https://img.shields.io/badge/Docker%20Compose-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker Compose" />
+    </td>
+  </tr>
+  <tr>
+    <td><strong>Eye Tracking</strong></td>
+    <td>
+      <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI" />
+      <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript" />
+      <img src="https://img.shields.io/badge/C%2B%2B-00599C?style=flat-square&logo=cplusplus&logoColor=white" alt="C++" />
+      <img src="https://img.shields.io/badge/Tobii%20Game%20Integration%20SDK-5B2C83?style=flat-square" alt="Tobii Game Integration SDK" />
+    </td>
+  </tr>
+</table>
 
 ---
 
@@ -289,14 +343,16 @@ iRead 데모는 AWS Single EC2 안에서 Nginx, Spring Boot Backend, FastAPI AI 
 
 ### 시선 데이터 흐름
 
-아동 앱에서 시작한 학습 세션은 장치 확인과 좌표 보정을 거쳐 단어·문장별 시선 지표로 변환됩니다. Backend는 원시 파일과 분석 결과를 저장하고, 교수자 앱은 저장된 결과를 조회해 분석 화면과 보고서로 제공합니다.
+<details>
+<summary><strong>시선 데이터 흐름도 보기</strong></summary>
+
+<br />
+
+#### 요약 흐름도
 
 ![iRead 시선 데이터 흐름 요약](docs/assets/readme/architecture/gaze-data-flow-overview.png)
 
-<details>
-<summary><strong>시선 데이터 상세 흐름도 보기</strong></summary>
-
-<br />
+#### 상세 흐름도
 
 ![iRead 시선 데이터 상세 흐름도](docs/assets/readme/architecture/gaze-data-flow-detail.png)
 
