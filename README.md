@@ -1,18 +1,15 @@
 <div align="center">
 
-<img src="docs/assets/readme/iread-logo.png" width="360" alt="iRead 로고" />
-
 # iRead
 
 ### 아동의 읽기 특성을 이해하는 개인화 읽기 훈련 시스템
-
-<!-- 대표 이미지 또는 핵심 기능 GIF: docs/assets/readme/overview/service-overview.* -->
 
 **개발 기간** 2026.07.06 ~ 2026.08.10 (6주)<br />
 **개발 인원** 6명<br />
 **플랫폼** 교수자 Web · 아동 Windows Electron App<br />
 **프로젝트 자료** [발표 자료 보기](docs/assets/readme/portfolio/iread-presentation-b105.pdf) · [소개 영상 보기](docs/assets/readme/portfolio/iread-video-portfolio-b105.mp4)
 
+<img src="docs/assets/readme/overview/service-overview.png" width="100%" alt="난독증 훈련 보조 서비스 iRead 대표 이미지" />
 
 </div>
 
@@ -101,19 +98,31 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
       <strong>담당 기능</strong><br />
       프로젝트 관리 · 커리큘럼 및 훈련 백엔드<br /><br />
       <strong>주요 구현 내용</strong><br />
-      훈련 카탈로그와 문항 정책을 정리하고 커리큘럼 교안 자동 생성, 진단 문항, 발음 평가와 성장 정보 API를 구현·안정화했습니다.
+      <ul>
+        <li>훈련 카탈로그와 문항 정책 정리</li>
+        <li>커리큘럼 교안 자동 생성 연동</li>
+        <li>진단 문항·발음 평가·성장 정보 API 안정화</li>
+      </ul>
     </td>
     <td valign="top">
       <strong>담당 기능</strong><br />
       교수자 웹 API · 학습 및 이야기 관리<br /><br />
       <strong>주요 구현 내용</strong><br />
-      학습 현황·이력·보고서 API와 커리큘럼·교안 편집 계약을 구현하고, SSE 학습 상태 동기화와 이야기 수정·이미지 관리 흐름을 연동했습니다.
+      <ul>
+        <li>학습 현황·이력·보고서 API 구현</li>
+        <li>커리큘럼·교안 편집 계약 구현</li>
+        <li>SSE 학습 상태와 이야기·이미지 관리 연동</li>
+      </ul>
     </td>
     <td valign="top">
       <strong>담당 기능</strong><br />
       아동 앱 API · 훈련 및 이야기 실행<br /><br />
       <strong>주요 구현 내용</strong><br />
-      훈련 제출·진행·재진입과 성장 정보 API를 아동 앱에 연결하고, 이야기 분기 중복 제어와 교안 생성 완료 실시간 알림을 구현했습니다.
+      <ul>
+        <li>훈련 제출·진행·재진입과 성장 정보 API 연동</li>
+        <li>이야기 분기 생성 중복 제어</li>
+        <li>교안 생성 완료 실시간 알림 구현</li>
+      </ul>
     </td>
   </tr>
   <tr>
@@ -144,19 +153,31 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
       <strong>담당 기능</strong><br />
       교수자 웹 프론트엔드<br /><br />
       <strong>주요 구현 내용</strong><br />
-      학습 현황·이력·보고서 화면과 커리큘럼·교안 편집 UI를 구현하고, 이야기 이미지 재생성과 시선 리플레이 화면을 실제 API에 연동했습니다.
+      <ul>
+        <li>학습 현황·이력·보고서 화면 구현</li>
+        <li>커리큘럼·교안 편집 UI 구현</li>
+        <li>이야기 이미지 재생성과 시선 리플레이 연동</li>
+      </ul>
     </td>
     <td valign="top">
       <strong>담당 기능</strong><br />
       배포 인프라 · Tobii 아이트래커<br /><br />
       <strong>주요 구현 내용</strong><br />
-      AWS·Nginx·Docker Compose 배포 환경을 구성하고, Tobii 보정·연결 상태·자동 실행과 단어별 시선 수집·분석·리플레이 흐름을 구현했습니다.
+      <ul>
+        <li>AWS·Nginx·Docker Compose 배포 환경 구성</li>
+        <li>Tobii 보정·연결 상태·자동 실행 구현</li>
+        <li>단어별 시선 수집·분석·리플레이 구현</li>
+      </ul>
     </td>
     <td valign="top">
       <strong>담당 기능</strong><br />
       개인화 학습 · 생성형 AI · 발음 평가<br /><br />
       <strong>주요 구현 내용</strong><br />
-      읽기 프로필 기반 커리큘럼과 교안 생성·검증, 개인화 이야기·장면 이미지 생성 API와 Azure Speech 발음 평가 피드백을 구현했습니다.
+      <ul>
+        <li>읽기 프로필 기반 커리큘럼·교안 생성 및 검증</li>
+        <li>개인화 이야기·장면 이미지 생성 API 구현</li>
+        <li>Azure Speech 발음 평가 피드백 구현</li>
+      </ul>
     </td>
   </tr>
 </table>
