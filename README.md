@@ -135,6 +135,12 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
       <a href="https://github.com/minjaekim1122"><code>minjaekim1122</code></a>
     </td>
     <td align="center" width="33%">
+        <img
+          src="docs/assets/readme/profile/lee-seunghwan.jpg"
+          alt="이승환"
+          width="120"
+        />
+      <br />
       <strong>이승환</strong>
       <br />
       아이트래커
