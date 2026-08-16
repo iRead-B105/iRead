@@ -89,7 +89,7 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
     <td align="center" width="33%">
       <strong>정의찬</strong>
       <br />
-      아동 앱 백엔드
+      아동 앱 백엔드 · 인프라
       <br />
       <a href="https://github.com/uichan01"><code>uichan01</code></a>
     </td>
@@ -117,9 +117,10 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
     </td>
     <td valign="top">
       <strong>담당 기능</strong><br />
-      아동 앱 API · 훈련 및 이야기 실행<br /><br />
+      아동 앱 API · 훈련 및 이야기 실행 · 배포 인프라<br /><br />
       <strong>주요 구현 내용</strong><br />
       <ul>
+        <li>AWS·Nginx·Docker Compose 배포 환경 구성</li>
         <li>훈련 제출·진행·재진입과 성장 정보 API 연동</li>
         <li>이야기 분기 생성 중복 제어</li>
         <li>교안 생성 완료 실시간 알림 구현</li>
@@ -135,9 +136,15 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
       <a href="https://github.com/minjaekim1122"><code>minjaekim1122</code></a>
     </td>
     <td align="center" width="33%">
+        <img
+          src="docs/assets/readme/profile/lee-seunghwan.jpg"
+          alt="이승환"
+          width="120"
+        />
+      <br />
       <strong>이승환</strong>
       <br />
-      인프라 · 아이트래커
+      아이트래커
       <br />
       <a href="https://github.com/wanderingperson"><code>wanderingperson</code></a>
     </td>
@@ -162,12 +169,12 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
     </td>
     <td valign="top">
       <strong>담당 기능</strong><br />
-      배포 인프라 · Tobii 아이트래커<br /><br />
+      Tobii 아이트래커 연동 · 시선 데이터 처리 및 분석<br /><br />
       <strong>주요 구현 내용</strong><br />
       <ul>
-        <li>AWS·Nginx·Docker Compose 배포 환경 구성</li>
         <li>Tobii 보정·연결 상태·자동 실행 구현</li>
-        <li>단어별 시선 수집·분석·리플레이 구현</li>
+        <li>실시간 시선 좌표 수집 및 단어 단위 데이터 매핑</li>
+        <li>단어별 시선 분석·리플레이 구현</li>
       </ul>
     </td>
     <td valign="top">
