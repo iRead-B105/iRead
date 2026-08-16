@@ -31,38 +31,20 @@
 
 <a id="service-introduction"></a>
 
-## 📌 서비스 소개
+## iRead 서비스 소개
 
 iRead는 읽기에 어려움을 겪는 초등학교 저학년 난독증 아동을 위한 시선·발음 데이터 기반 맞춤형 읽기 훈련 서비스입니다.
 
-아동은 이야기와 놀이로 구성된 콘텐츠를 통해 즐겁게 읽기 훈련을 이어갈 수 있고, 교수자는 훈련 중 수집된 시선·발음·학습 데이터를 통해 아동이 어떤 부분에서 어려움을 겪는지 파악하고 학습 변화를 확인할 수 있습니다.
+기존 읽기 학습은 정답과 점수 같은 결과 중심으로 평가되어, 아동이 어디에서 머뭇거리고 어떤 단어나 문장을 어려워하는지는 알기 어려웠습니다. iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 이 읽기 과정 자체를 들여다봅니다. 그 결과를 바탕으로 아동에게는 수준과 특성에 맞는 훈련을, 교수자에게는 아동의 어려움과 학습 변화를 보여주는 데이터를 전달합니다.
 
-### 기획 배경
+아동은 이야기와 놀이 중심의 콘텐츠로 부담 없이 훈련을 이어갑니다. 교수자는 축적된 시선·발음·학습 데이터와 리포트로 아동의 읽기 과정을 파악하고 커리큘럼을 관리하며, 보호자는 같은 리포트로 아동의 학습 현황과 성장을 지켜볼 수 있습니다.
 
-기존의 읽기 학습 결과만으로는 아동이 글을 읽는 동안 어디에서 머뭇거리는지, 어떤 단어나 문장을 어려워하는지 구체적으로 파악하기 어렵습니다.
+## iRead가 제공하는 가치
 
-iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 특성을 파악하고, 그 결과를 바탕으로 아동에게는 맞춤형 훈련을, 교수자에게는 상세한 리포트를 제공합니다.
-
-### 대상 사용자
-
-| 사용자 | 제공 가치 |
-| --- | --- |
-| 아동 | 이야기와 놀이를 통해 자신의 수준에 맞는 읽기 훈련을 진행합니다. |
-| 교수자 | 시선·발음·학습 데이터를 바탕으로 아동의 읽기 과정과 변화를 확인하고, 커리큘럼을 관리합니다. |
-| 보호자 | 보고서를 통해 아동의 학습 현황과 성장 과정을 확인할 수 있습니다. |
-
-### 핵심 가치
-
-1. **읽는 과정까지 들여다보는 분석**<br>
-정답과 점수뿐 아니라 시선과 발음까지 함께 분석해 아동이 글을 읽어가는 과정을 살펴봅니다.
-2. **아동 맞춤형 읽기 훈련**<br>
-아동 개개인의 읽기 특성과 학습 진행 상황을 반영한 맞춤형 훈련을 제공합니다.
-3. **한눈에 보이는 학습 변화**<br>
-훈련 결과와 검사 데이터, 학습 변화 추이를 교수자 화면과 리포트로 한눈에 확인할 수 있습니다.
-4. **즐겁게 지속하는 학습 경험**<br>
-이야기와 상호작용 중심의 콘텐츠로 아동이 읽기 훈련을 부담 없이 꾸준히 이어갈 수 있도록 돕습니다.
-
-<!-- 서비스 이용 흐름 이미지: docs/assets/readme/overview/service-flow.png -->
+- **읽는 과정까지 이해하는 분석**: 정답과 점수만이 아니라 시선과 발음까지 함께 살펴 아동이 어디서 어려움을 겪는지 구체적으로 짚어냅니다.
+- **아동에게 맞는 읽기 훈련**: 읽기 특성과 학습 진행 상황을 반영해 훈련 내용을 개인별로 조정합니다.
+- **한눈에 보이는 학습 변화**: 훈련 결과와 검사 데이터, 변화 추이를 함께 보여주어 교수자가 다음 학습을 판단할 근거로 삼을 수 있습니다.
+- **즐겁게 지속하는 학습 경험**: 이야기와 놀이, 상호작용으로 구성된 콘텐츠 덕분에 훈련이 부담이 아닌 즐거운 경험이 됩니다.
 
 ---
 
@@ -191,11 +173,11 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
 
 | 기능 | 설명 |
 | --- | --- |
-| 📚 개인화 읽기 훈련 | 아동 앱에서 배정된 커리큘럼을 열고 글자 따라 읽기, 첫소리 찾기, 소리 합치기, 문장 만들기 등의 훈련을 진행합니다. |
-| 👁️ 시선 기반 읽기 분석 | Tobii Eye Tracker로 훈련 중 시선을 수집하고 화면의 단어·문장 영역과 연결해 머문 시간, 건너뜀, 되읽기 정보를 기록합니다. |
-| 🗣️ 단어별 발음 평가 | 마이크로 수집한 읽기 음성을 Azure Speech로 분석해 단어별 정확도와 오류 유형을 표시합니다. |
-| ✨ AI 이야기 학습 | 아동의 학습 진행과 선택을 반영해 이야기와 장면 이미지를 생성하고, 이야기 화면에서 읽기와 선택 활동을 진행합니다. |
-| 📊 교수자 학습 관리 | 교수자 웹에서 커리큘럼을 생성·편집하고 아동별 학습 현황, 학습 이력, 분석 보고서와 이야기 기록을 조회합니다. |
+| 개인화 읽기 훈련 | 아동 앱에서 배정된 커리큘럼을 열고 글자 따라 읽기, 첫소리 찾기, 소리 합치기, 문장 만들기 등의 훈련을 진행합니다. |
+| 시선 기반 읽기 분석 | Tobii Eye Tracker로 훈련 중 시선을 수집하고 화면의 단어·문장 영역과 연결해 머문 시간, 건너뜀, 되읽기 정보를 기록합니다. |
+| 단어별 발음 평가 | 마이크로 수집한 읽기 음성을 Azure Speech로 분석해 단어별 정확도와 오류 유형을 표시합니다. |
+| AI 이야기 학습 | 아동의 학습 진행과 선택을 반영해 이야기와 장면 이미지를 생성하고, 이야기 화면에서 읽기와 선택 활동을 진행합니다. |
+| 교수자 학습 관리 | 교수자 웹에서 커리큘럼을 생성·편집하고 아동별 학습 현황, 학습 이력, 분석 보고서와 이야기 기록을 조회합니다. |
 
 ### 1. 개인화 읽기 훈련
 
@@ -360,8 +342,9 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
     <td>
       <img src="https://img.shields.io/badge/Vue.js%203-4FC08D?style=flat-square&logo=vuedotjs&logoColor=white" alt="Vue.js 3" />
       <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
-      <img src="https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite" />
-      <img src="https://img.shields.io/badge/pnpm-F69220?style=flat-square&logo=pnpm&logoColor=white" alt="pnpm" />
+      <img src="https://img.shields.io/badge/Pinia-FFD859?style=flat-square&logo=pinia&logoColor=black" alt="Pinia" />
+      <img src="https://img.shields.io/badge/Tailwind%20CSS%204-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS 4" />
+      <img src="https://img.shields.io/badge/ECharts%206-AA344D?style=flat-square&logo=apacheecharts&logoColor=white" alt="ECharts 6" />
     </td>
   </tr>
   <tr>
@@ -369,7 +352,8 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
     <td>
       <img src="https://img.shields.io/badge/Vue.js%203-4FC08D?style=flat-square&logo=vuedotjs&logoColor=white" alt="Vue.js 3" />
       <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
-      <img src="https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite" />
+      <img src="https://img.shields.io/badge/Pinia-FFD859?style=flat-square&logo=pinia&logoColor=black" alt="Pinia" />
+      <img src="https://img.shields.io/badge/Rive-1D1D1D?style=flat-square&logo=rive&logoColor=white" alt="Rive" />
       <img src="https://img.shields.io/badge/Electron-47848F?style=flat-square&logo=electron&logoColor=white" alt="Electron" />
     </td>
   </tr>
@@ -378,7 +362,9 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
     <td>
       <img src="https://img.shields.io/badge/Java%2021-ED8B00?style=flat-square&logo=openjdk&logoColor=white" alt="Java 21" />
       <img src="https://img.shields.io/badge/Spring%20Boot%204.0.7-6DB33F?style=flat-square&logo=springboot&logoColor=white" alt="Spring Boot 4.0.7" />
-      <img src="https://img.shields.io/badge/Gradle-02303A?style=flat-square&logo=gradle&logoColor=white" alt="Gradle" />
+      <img src="https://img.shields.io/badge/Spring%20Data%20JPA-6DB33F?style=flat-square&logo=spring&logoColor=white" alt="Spring Data JPA" />
+      <img src="https://img.shields.io/badge/Spring%20Security-6DB33F?style=flat-square&logo=springsecurity&logoColor=white" alt="Spring Security" />
+      <img src="https://img.shields.io/badge/Flyway-CC0200?style=flat-square&logo=flyway&logoColor=white" alt="Flyway" />
     </td>
   </tr>
   <tr>
@@ -386,14 +372,16 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
     <td>
       <img src="https://img.shields.io/badge/Python%203.12-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.12" />
       <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI" />
-      <img src="https://img.shields.io/badge/uv-DE5FE9?style=flat-square&logo=astral&logoColor=white" alt="uv" />
+      <img src="https://img.shields.io/badge/OpenAI%20API-412991?style=flat-square&logo=openai&logoColor=white" alt="OpenAI API" />
+      <img src="https://img.shields.io/badge/Google%20Gemini-8E75B2?style=flat-square&logo=googlegemini&logoColor=white" alt="Google Gemini" />
       <img src="https://img.shields.io/badge/Azure%20Speech-0078D4?style=flat-square&logo=microsoftazure&logoColor=white" alt="Azure Speech" />
     </td>
   </tr>
   <tr>
-    <td><strong>Database</strong></td>
+    <td><strong>Data</strong></td>
     <td>
       <img src="https://img.shields.io/badge/MySQL%208.4%20LTS-4479A1?style=flat-square&logo=mysql&logoColor=white" alt="MySQL 8.4 LTS" />
+      <img src="https://img.shields.io/badge/Redis%207.4-DC382D?style=flat-square&logo=redis&logoColor=white" alt="Redis 7.4" />
     </td>
   </tr>
   <tr>
@@ -401,15 +389,17 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
     <td>
       <img src="https://img.shields.io/badge/Amazon%20EC2-FF9900?style=flat-square&logo=amazonec2&logoColor=white" alt="Amazon EC2" />
       <img src="https://img.shields.io/badge/Nginx-009639?style=flat-square&logo=nginx&logoColor=white" alt="Nginx" />
-      <img src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white" alt="Redis" />
       <img src="https://img.shields.io/badge/Docker%20Compose-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker Compose" />
+      <img src="https://img.shields.io/badge/GitHub%20Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white" alt="GitHub Actions" />
+      <img src="https://img.shields.io/badge/GHCR-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub Container Registry" />
     </td>
   </tr>
   <tr>
     <td><strong>Eye Tracking</strong></td>
     <td>
+      <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python" />
       <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI" />
-      <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript" />
+      <img src="https://img.shields.io/badge/WebSocket-010101?style=flat-square&logoColor=white" alt="WebSocket" />
       <img src="https://img.shields.io/badge/C%2B%2B-00599C?style=flat-square&logo=cplusplus&logoColor=white" alt="C++" />
       <img src="https://img.shields.io/badge/Tobii%20Game%20Integration%20SDK-5B2C83?style=flat-square" alt="Tobii Game Integration SDK" />
     </td>
@@ -471,36 +461,25 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
 
 ## 🔬 핵심 기술 상세
 
-아동의 학습 데이터가 수집되고 분석되어 다음 학습으로 이어지는 과정을 중심으로 정리합니다.
-
 ### 1. 시선 데이터 수집 및 분석
 
-Electron IPC와 로컬 시선 추적 bridge를 통해 Tobii Eye Tracker의 시선 프레임을 아동 앱으로 전달합니다. 수집한 좌표는 화면 요소와 매칭해 단어별 머문 시간, 건너뜀, 되읽기 등의 지표로 변환합니다. 장치 연결이 어려운 개발 환경에서는 마우스 기반 입력으로 전체 흐름을 검증할 수 있도록 구성했습니다.
-
+Tobii Eye Tracker는 브라우저에서 직접 제어할 수 없으므로, 아동용 Windows 앱과 함께 실행되는 로컬 브리지가 장치의 시선 좌표를 수집합니다. 수집된 좌표는 Electron IPC를 통해 앱으로 전달되고, 화면의 단어·문장 위치와 대조해 단어별 머문 시간, 고정 횟수, 건너뜀과 되읽기 지표로 변환됩니다. 계산 결과는 Backend에 저장되어 교수자 리포트와 이후 훈련 구성에 사용됩니다.
 
 ### 2. 발음 평가
 
-AI server가 Azure Speech의 한국어 발음 평가를 호출하고, 단어별 정확도와 오류 유형을 Backend에 전달합니다. Backend는 기준 문장과 분석 결과의 단어 순서를 검증한 뒤 학습 결과로 저장합니다. 음성 원본은 분석 과정에서만 사용하며, 처리가 끝나면 별도로 보관하지 않습니다.
-
-<!-- 기술 흐름 이미지: docs/assets/readme/details/pronunciation-flow.png -->
+아동이 읽은 음성은 아동 앱에서 Backend를 거쳐 AI server로 전달됩니다. AI server는 Azure Speech의 한국어 단어 단위 발음 평가를 이용해 단어별 정확도, 오류 유형과 발음 구간을 분석합니다. Backend는 분석된 단어가 기준 문장과 같은 순서로 정렬되는지 확인하고, 일치하는 결과만 학습 기록에 저장합니다.
 
 ### 3. 개인화 훈련 구성
 
-완료된 학습에서 정답 여부, 발음 정확도, 시선 부담과 응답 지연을 읽기 특성별로 집계합니다. 분석된 취약 특성을 기준으로 직접 보완 훈련, 확장 훈련, 복습 훈련을 조합해 다음 학습을 구성합니다. 생성 결과는 문제 형식과 정답, 필수 입력 조건을 검증하며, 검증에 실패한 결과는 저장하지 않습니다.
-
-<!-- 기술 흐름 이미지: docs/assets/readme/details/personalization-flow.png -->
+Backend는 완료된 학습에서 정답 여부, 발음 정확도, 평균 읽기 시간과 시선 지표를 모아 아동의 읽기 특성별 프로필을 구성합니다. AI server는 어려움이 크게 나타난 특성과 데이터의 신뢰도를 바탕으로 핵심 훈련 3개, 보완 훈련 1개, 확장 훈련 1개를 조합해 다음 커리큘럼을 추천합니다. 생성된 문항은 문제 형식, 정답과 필수 입력값을 확인한 뒤 조건을 충족한 경우에만 커리큘럼에 반영됩니다.
 
 ### 4. AI 이야기 생성
 
-아동의 학습 진행과 선택을 바탕으로 다음 이야기와 장면 이미지를 생성합니다. 생성된 페이지는 필수 구성과 내용 품질을 확인하며, 검증에 실패하면 제한된 횟수만큼 다시 생성합니다. 최종 검증을 통과한 경우에만 이야기를 저장해 불완전한 콘텐츠가 노출되지 않도록 합니다.
-
-<!-- 기술 흐름 이미지: docs/assets/readme/details/ai-story-flow.png -->
+AI server는 아동의 학습 진행 상황, 읽기 특성과 이전 선택을 반영해 다음 이야기와 장면 이미지를 생성합니다. 이야기 텍스트와 이미지는 OpenAI, Gemini, GMS 중 서로 다른 공급자를 선택할 수 있으며, 공급자가 달라도 Backend에는 같은 형식으로 전달됩니다. 생성된 내용은 페이지 구성, 이야기 분기, 어휘와 데이터 형식을 확인하고, 오류가 있으면 정해진 횟수만큼 다시 생성한 뒤 최종 조건을 충족한 결과만 저장합니다.
 
 ### 5. 실시간 학습 연동
 
-아동 앱과 교수자 Web은 서로 직접 연결하지 않고, Backend의 인증된 SSE 연결을 통해 상태를 전달합니다. 훈련 시작과 완료, 학습 정보 변경 등의 이벤트가 발생하면 관련 데이터를 다시 조회하도록 하며, heartbeat와 재연결 처리로 화면 상태를 유지합니다.
-
-<!-- 기술 흐름 이미지: docs/assets/readme/details/realtime-sync-flow.png -->
+아동 앱과 교수자 Web은 서로 직접 연결하지 않고 Backend를 통해 학습 상태를 공유합니다. Backend는 서버 전송 이벤트(SSE)로 훈련 시작·완료와 학습 정보 변경 사실을 알리고, 각 화면은 관련 API를 다시 조회해 최신 내용을 표시합니다. 연결이 끊어졌을 때는 하트비트와 자동 재연결을 이용해 실시간 동기화를 복구합니다.
 
 ---
 
