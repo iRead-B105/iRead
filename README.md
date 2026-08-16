@@ -62,6 +62,12 @@ iRead는 읽기에 어려움을 겪는 초등학교 저학년 난독증 아동�
       <a href="https://github.com/dbswjd0191a"><code>dbswjd0191a</code></a>
     </td>
     <td align="center" width="33%">
+      <img
+        src="docs/assets/readme/profile/kim-jihoon.jpg"
+        alt="김지훈"
+        width="120"
+      />
+      <br />
       <strong>김지훈</strong>
       <br />
       교수자 웹 백엔드
