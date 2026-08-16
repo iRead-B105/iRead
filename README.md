@@ -89,7 +89,7 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
     <td align="center" width="33%">
       <strong>정의찬</strong>
       <br />
-      아동 앱 백엔드
+      아동 앱 백엔드 · 인프라
       <br />
       <a href="https://github.com/uichan01"><code>uichan01</code></a>
     </td>
@@ -117,9 +117,10 @@ iRead는 아동이 글을 읽는 동안의 시선과 발음을 분석해 읽기 
     </td>
     <td valign="top">
       <strong>담당 기능</strong><br />
-      아동 앱 API · 훈련 및 이야기 실행<br /><br />
+      아동 앱 API · 훈련 및 이야기 실행 · 배포 인프라<br /><br />
       <strong>주요 구현 내용</strong><br />
       <ul>
+        <li>AWS·Nginx·Docker Compose 배포 환경 구성</li>
         <li>훈련 제출·진행·재진입과 성장 정보 API 연동</li>
         <li>이야기 분기 생성 중복 제어</li>
         <li>교안 생성 완료 실시간 알림 구현</li>
